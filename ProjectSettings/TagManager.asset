@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 3
+  tags: []
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Judge Circle
+    uniqueID: 321762465
+    locked: 0
+  - name: Slides
+    uniqueID: 1322064431
+    locked: 0
+  - name: Each Lines
+    uniqueID: 3074260573
+    locked: 0
+  - name: Lines
+    uniqueID: 999475227
+    locked: 0
+  - name: Taps
+    uniqueID: 177122611
+    locked: 0
+  - name: Holds
+    uniqueID: 1734621603
+    locked: 0
+  m_RenderingLayers:
+  - Default
