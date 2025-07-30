@@ -24,8 +24,8 @@ namespace Notes.Taps
                 ChartPlayer.Instance.time < timing - 1 * EmergingDuration && !_emerging)
             {
                 _emerging = true;
-                tapSpriteRenderer.enabled = true;
-                lineSpriteRenderer.enabled = true;
+
+                transform.position = Vector3.zero;
 
                 LMotion.Create(0, 1f, EmergingDuration / 1000f).WithEase(Ease.OutSine)
                     .Bind(x =>
@@ -46,8 +46,7 @@ namespace Notes.Taps
             if (ChartPlayer.Instance.time > timing + 100)
             {
                 _moving = false;
-                lineSpriteRenderer.enabled = false;
-                tapSpriteRenderer.enabled = false;
+                transform.position = NoteGenerator.Instance.outOfScreenPosition;
             }
 
             if (_moving)
@@ -61,10 +60,11 @@ namespace Notes.Taps
 
         protected override void LateStart()
         {
+            transform.position = Vector3.zero;
             tapTransform.localScale = Vector3.zero;
             tapTransform.position *= NoteGenerator.Instance.originCircleScale;
             tapSpriteRenderer.color = new Color(1, 1, 1, 0);
-            tapSpriteRenderer.enabled = false;
+            transform.position = NoteGenerator.Instance.outOfScreenPosition;
         }
     }
 }

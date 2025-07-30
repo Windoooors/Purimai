@@ -24,6 +24,8 @@ public class NoteGenerator : MonoBehaviour
 
     public float originCircleScale = 0.253f;
 
+    public Vector3 outOfScreenPosition = new Vector3(10, 10, 10);
+
     public readonly List<TapBasedNote>[] LaneList =
     {
         new(), new(), new(), new(),
@@ -36,7 +38,14 @@ public class NoteGenerator : MonoBehaviour
 
     private void Awake()
     {
-        Application.targetFrameRate = 120;
+        #if UNITY_IOS
+            Application.targetFrameRate = 120;
+        #endif
+
+        var mainCamera = FindAnyObjectByType<Camera>();
+
+        if (mainCamera)
+            outOfScreenPosition = mainCamera.ScreenToWorldPoint(new Vector3(0, 0, 0)) - new Vector3(0, 10, 0);
 
         Instance = this;
     }

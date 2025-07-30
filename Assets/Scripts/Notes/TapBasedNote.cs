@@ -38,8 +38,6 @@ namespace Notes
             lineSpriteRenderer.color = new Color(1, 1, 1, 0);
             lineTransform.localScale = NoteGenerator.Instance.originCircleScale * Vector3.one;
 
-            lineSpriteRenderer.enabled = false;
-
             LateStart();
         }
 

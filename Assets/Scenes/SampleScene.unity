@@ -489,6 +489,7 @@ MonoBehaviour:
   - {fileID: 5821571336286938200, guid: 50d6d666b978c944cb65ebdf8366b7bc, type: 3}
   - {fileID: 4201695303700987197, guid: 50d6d666b978c944cb65ebdf8366b7bc, type: 3}
   originCircleScale: 0.253
+  outOfScreenPosition: {x: 100, y: 100, z: 100}
 --- !u!114 &1054234681
 MonoBehaviour:
   m_ObjectHideFlags: 0

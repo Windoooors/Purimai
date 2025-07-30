@@ -16,7 +16,6 @@ namespace Notes.Taps
                 ChartPlayer.Instance.time < timing - 1 * EmergingDuration && !_emerging)
             {
                 _emerging = true;
-                lineSpriteRenderer.enabled = true;
                 lineSpriteRenderer.color = Color.white;
             }
 
@@ -29,7 +28,7 @@ namespace Notes.Taps
             if (ChartPlayer.Instance.time > timing + 100)
             {
                 _moving = false;
-                lineSpriteRenderer.enabled = false;
+                transform.position = NoteGenerator.Instance.outOfScreenPosition;
             }
 
             if (_moving) lineTransform.localScale += LineExpansionSpeed * Time.deltaTime * Vector3.one;

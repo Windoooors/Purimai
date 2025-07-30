@@ -44,8 +44,9 @@ namespace Notes
                     }
 
                 slideSpriteRenderer.sortingOrder += order;
-                slideSpriteRenderer.enabled = false;
             }
+
+            transform.position = NoteGenerator.Instance.outOfScreenPosition;
 
             LateStart();
         }
@@ -55,9 +56,10 @@ namespace Notes
         {
             if (ChartPlayer.Instance.time >= timing + ChartPlayer.Instance.starAppearanceDelay && !_revealed)
             {
+                transform.position = Vector3.zero;
+                
                 foreach (var spriteRenderer in slideSpriteRenderers)
                 {
-                    spriteRenderer.enabled = true;
                     LMotion.Create(0, 1f, ChartPlayer.Instance.starAppearanceDuration / 1000f).WithEase(Ease.Linear)
                         .Bind(x => spriteRenderer.color = new Color(1, 1, 1, x));
                 }
@@ -67,8 +69,10 @@ namespace Notes
 
             if (ChartPlayer.Instance.time >= timing + waitDuration + slideDuration && !_concealed)
             {
-                foreach (var spriteRenderer in slideSpriteRenderers) spriteRenderer.enabled = false;
+                //foreach (var spriteRenderer in slideSpriteRenderers) spriteRenderer.enabled = false;
 
+                transform.position = NoteGenerator.Instance.outOfScreenPosition;
+                
                 _concealed = true;
             }
         }

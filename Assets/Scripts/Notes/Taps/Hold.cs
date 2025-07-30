@@ -30,8 +30,8 @@ namespace Notes.Taps
                 ChartPlayer.Instance.time < timing - 1 * EmergingDuration && !_emerging)
             {
                 _emerging = true;
-                holdSpriteRenderer.enabled = true;
-                lineSpriteRenderer.enabled = true;
+
+                transform.position = Vector3.zero;
 
                 LMotion.Create(0, 1f, EmergingDuration / 1000f).WithEase(Ease.OutSine)
                     .Bind(x =>
@@ -52,7 +52,7 @@ namespace Notes.Taps
 
             if (ChartPlayer.Instance.time > timing + 100)
             {
-                lineSpriteRenderer.enabled = false;
+                lineSpriteRenderer.transform.position = NoteGenerator.Instance.outOfScreenPosition;
                 _lineMoving = false;
             }
 
@@ -99,7 +99,7 @@ namespace Notes.Taps
 
                 if (_grossHoldSize < 0)
                 {
-                    holdSpriteRenderer.enabled = false;
+                    transform.position = NoteGenerator.Instance.outOfScreenPosition;
                     _moving = false;
                 }
 
@@ -109,10 +109,11 @@ namespace Notes.Taps
 
         protected override void LateStart()
         {
+            transform.position = Vector3.zero;
             holdTransform.localScale = Vector3.zero;
             holdTransform.position *= NoteGenerator.Instance.originCircleScale;
             holdSpriteRenderer.color = new Color(1, 1, 1, 0);
-            holdSpriteRenderer.enabled = false;
+            transform.position = NoteGenerator.Instance.outOfScreenPosition;
             _initialHoldSize = holdSpriteRenderer.size.y;
 
             var laneIndex = lane - 1;
