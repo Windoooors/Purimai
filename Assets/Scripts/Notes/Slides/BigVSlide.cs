@@ -8,10 +8,25 @@ namespace Notes.Slides
 
         protected override void LateStart()
         {
+            var star = stars[0];
             var isClockwise = IsClockWise(fromLaneIndex + 1, toLaneIndexes[0] + 1, toLaneIndexes[1] + 1);
             transform.Rotate(isClockwise
                 ? new Vector3(0, 180, 45 * fromLaneIndex + 45f)
                 : new Vector3(0, 0, -45 * fromLaneIndex));
+
+            star.objectRotationOffset = -18;
+            star.pathDirection = StarMovementController.PathDirection.StartToEnd;
+
+            if (isClockwise)
+            {
+                star.flipPathY = true;
+                star.pathRotation = -45f * fromLaneIndex - 45;
+            }
+            else
+            {
+                star.flipPathY = false;
+                star.pathRotation = -45f * fromLaneIndex;
+            }
         }
 
         private static Vector2 GetPoint(int index)

@@ -9,6 +9,8 @@ namespace Notes.Slides
         protected override void LateStart()
         {
             transform.Rotate(new Vector3(0, 0, -45f * fromLaneIndex));
+
+            foreach (var star in stars) star.pathRotation = -45f * fromLaneIndex;
         }
     }
 }

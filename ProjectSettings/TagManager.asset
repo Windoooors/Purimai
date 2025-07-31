@@ -47,11 +47,14 @@ TagManager:
   - name: Slides
     uniqueID: 1322064431
     locked: 0
-  - name: Each Lines
-    uniqueID: 3074260573
+  - name: Stars
+    uniqueID: 3505199143
     locked: 0
   - name: Lines
     uniqueID: 999475227
+    locked: 0
+  - name: Each Lines
+    uniqueID: 3074260573
     locked: 0
   - name: Taps
     uniqueID: 177122611

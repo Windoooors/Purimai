@@ -6,15 +6,28 @@ namespace Notes.Slides
     public class CycleSlide : SlideBasedNote
     {
         public int toLaneIndex;
+        //public int interval;
 
         protected override void LateStart()
         {
             var isClockwise = IsClockwise(fromLaneIndex + 1, toLaneIndex + 1, slideType);
 
-            if (!isClockwise)
-                transform.eulerAngles = new Vector3(0, 180, 45 + 45f * fromLaneIndex);
+            var star = stars[0];
+            star.objectRotationOffset = -18;
+            star.pathDirection = StarMovementController.PathDirection.StartToEnd;
+
+            if (isClockwise)
+            {
+                transform.eulerAngles = new Vector3(0, 0, -45f * fromLaneIndex);
+                star.flipPathY = true;
+                star.pathRotation = -45f * fromLaneIndex - 45;
+            }
             else
-                transform.Rotate(new Vector3(0, 0, -45f * fromLaneIndex));
+            {
+                transform.eulerAngles = new Vector3(0, 180, 45 + 45f * fromLaneIndex);
+                star.flipPathY = false;
+                star.pathRotation = -45f * fromLaneIndex;
+            }
         }
 
         private static bool IsUpper(int point)

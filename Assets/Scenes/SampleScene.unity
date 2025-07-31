@@ -404,7 +404,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0993bf12023442cfad3953cb08eb627, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chartFile: {fileID: 4900000, guid: d4b727936155d4f97a7e44decd6d478c, type: 3}
+  chartFile: {fileID: 4900000, guid: 94a2663962f934d158edbaf75f5399a1, type: 3}
   tapPrefabs:
   - {fileID: 3052495769774026895, guid: 1655ad0a9bd504c22873d326a85b13e7, type: 3}
   - {fileID: 603680196717738998, guid: 6b38635249e5e46abb49978f81dd3cb4, type: 3}
@@ -476,6 +476,7 @@ MonoBehaviour:
     wifiSlidePrefab: {fileID: 2592134520801541204, guid: 460cd376e52d5fb40824e1ee8ccade3c,
       type: 3}
   slideEachSprite: {fileID: 21300000, guid: 689d5b8e699a64ec191273871af1cd10, type: 3}
+  eachStarSprite: {fileID: 21300000, guid: 55421a5b4520b4c05a4d44b15a41641b, type: 3}
   wifiSlideEachSprites:
   - {fileID: -2104979366251557822, guid: 50d6d666b978c944cb65ebdf8366b7bc, type: 3}
   - {fileID: -5508730858329978074, guid: 50d6d666b978c944cb65ebdf8366b7bc, type: 3}
@@ -1283,8 +1284,8 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 13bc31488dd7c4814bc4a93321905261, type: 3}
-  m_Resource: {fileID: 8300000, guid: 13bc31488dd7c4814bc4a93321905261, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 062b803637d944bb5aa881d429d86b32, type: 3}
+  m_Resource: {fileID: 8300000, guid: 062b803637d944bb5aa881d429d86b32, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1

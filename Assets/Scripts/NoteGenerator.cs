@@ -7,6 +7,7 @@ using Notes.Slides;
 using Notes.Taps;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class NoteGenerator : MonoBehaviour
 {
@@ -20,11 +21,12 @@ public class NoteGenerator : MonoBehaviour
     public SlidePrefabDataObject slidePrefabs;
 
     public Sprite slideEachSprite;
+    [FormerlySerializedAs("starSprite")] public Sprite eachStarSprite;
     public Sprite[] wifiSlideEachSprites;
 
     public float originCircleScale = 0.253f;
 
-    public Vector3 outOfScreenPosition = new Vector3(10, 10, 10);
+    public Vector3 outOfScreenPosition = new(10, 10, 10);
 
     public readonly List<TapBasedNote>[] LaneList =
     {
@@ -38,9 +40,9 @@ public class NoteGenerator : MonoBehaviour
 
     private void Awake()
     {
-        #if UNITY_IOS
-            Application.targetFrameRate = 120;
-        #endif
+#if UNITY_IOS
+        Application.targetFrameRate = 120;
+#endif
 
         var mainCamera = FindAnyObjectByType<Camera>();
 
