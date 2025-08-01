@@ -4,8 +4,6 @@ namespace Notes.Slides
 {
     public class BigVSlide : SlideBasedNote
     {
-        public int[] toLaneIndexes;
-
         protected override void LateStart()
         {
             var star = stars[0];
@@ -15,7 +13,6 @@ namespace Notes.Slides
                 : new Vector3(0, 0, -45 * fromLaneIndex));
 
             star.objectRotationOffset = -18;
-            star.pathDirection = StarMovementController.PathDirection.StartToEnd;
 
             if (isClockwise)
             {

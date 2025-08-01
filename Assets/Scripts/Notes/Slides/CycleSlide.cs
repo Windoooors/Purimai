@@ -5,16 +5,12 @@ namespace Notes.Slides
 {
     public class CycleSlide : SlideBasedNote
     {
-        public int toLaneIndex;
-        //public int interval;
-
         protected override void LateStart()
         {
-            var isClockwise = IsClockwise(fromLaneIndex + 1, toLaneIndex + 1, slideType);
+            var isClockwise = IsClockwise(fromLaneIndex + 1, toLaneIndexes[0] + 1, slideType);
 
             var star = stars[0];
             star.objectRotationOffset = -18;
-            star.pathDirection = StarMovementController.PathDirection.StartToEnd;
 
             if (isClockwise)
             {

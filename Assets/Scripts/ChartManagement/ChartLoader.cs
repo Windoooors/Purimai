@@ -34,9 +34,6 @@ namespace ChartManagement
                 ParseBpm();
                 ParseNoteValue();
 
-                if ((int)(1000 * _time) == 113903)
-                    Debug.Log(1);
-
                 if (TryParseNote(out var note))
                     noteList.Add(note);
 

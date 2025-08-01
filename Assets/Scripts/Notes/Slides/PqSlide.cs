@@ -5,8 +5,6 @@ namespace Notes.Slides
 {
     public class PqSlide : SlideBasedNote
     {
-        public int toLaneIndex;
-
         protected override void LateStart()
         {
             var isClockwise = slideType == NoteDataObject.SlideDataObject.SlideType.P;

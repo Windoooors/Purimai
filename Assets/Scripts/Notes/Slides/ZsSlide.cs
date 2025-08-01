@@ -5,8 +5,6 @@ namespace Notes.Slides
 {
     public class ZsSlide : SlideBasedNote
     {
-        public int toLaneIndex;
-
         protected override void LateStart()
         {
             var isMirror = slideType == NoteDataObject.SlideDataObject.SlideType.Z;

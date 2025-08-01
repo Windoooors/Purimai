@@ -211,11 +211,22 @@ public class NoteGenerator : MonoBehaviour
 
             if (slideBasedNoteObjectInstance)
             {
+                slideBasedNoteObjectInstance.order = order;
+
                 slideBasedNoteObjectInstance.timing = noteDataObject.Timing;
                 slideBasedNoteObjectInstance.slideType = slide.Type;
 
-                slideBasedNoteObjectInstance.order = order;
                 slideBasedNoteObjectInstance.isEach = isSlideEach;
+
+                if (SlideList.Count > 0)
+                {
+                    var lastSlide = SlideList[^1];
+                    if (lastSlide.timing + lastSlide.waitDuration >= slideBasedNoteObjectInstance.timing &&
+                        lastSlide.fromLaneIndex == slideBasedNoteObjectInstance.fromLaneIndex &&
+                        lastSlide.toLaneIndexes.SequenceEqual(slideBasedNoteObjectInstance.toLaneIndexes) &&
+                        lastSlide.slideType == slideBasedNoteObjectInstance.slideType)
+                        slideBasedNoteObjectInstance.order = order + 2;
+                }
 
                 order--;
 

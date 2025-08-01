@@ -10,6 +10,7 @@ namespace Notes
         public NoteDataObject.SlideDataObject.SlideType slideType;
 
         public int fromLaneIndex;
+        public int[] toLaneIndexes;
         public int timing;
         public int waitDuration;
         public int slideDuration;
@@ -18,6 +19,8 @@ namespace Notes
         public int order;
 
         public bool isWifi;
+
+        public bool coverLastSlide;
 
         public StarMovementController[] stars;
 
@@ -57,6 +60,7 @@ namespace Notes
                     star.spriteRenderer.sprite = NoteGenerator.Instance.eachStarSprite;
                 star.spriteRenderer.color = new Color(0, 0, 0, 0);
                 star.transform.localScale = Vector3.zero;
+                star.spriteRenderer.sortingOrder += order;
             }
 
             transform.position = NoteGenerator.Instance.outOfScreenPosition;
@@ -87,7 +91,7 @@ namespace Notes
                         .Bind(x =>
                         {
                             star.spriteRenderer.color = new Color(1, 1, 1, x);
-                            star.transform.localScale = 1.5f * new Vector3(x, x, x);
+                            star.transform.localScale = Vector3.one + 0.5f * new Vector3(x, x, x);
                         });
             }
 
@@ -104,6 +108,8 @@ namespace Notes
             if (ChartPlayer.Instance.time >= timing + waitDuration + slideDuration + 100 && !_concealed)
             {
                 //foreach (var spriteRenderer in slideSpriteRenderers) spriteRenderer.enabled = false;
+
+                foreach (var star in stars) star.StopMoving();
 
                 transform.position = NoteGenerator.Instance.outOfScreenPosition;
 

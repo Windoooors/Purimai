@@ -30,7 +30,7 @@ public class SlideGenerator : MonoBehaviour
             _ => Instantiate(cycleSlidePrefabs[1])
         };
 
-        cycleSlideInstance.toLaneIndex = toLane - 1;
+        cycleSlideInstance.toLaneIndexes = new[] { toLane - 1 };
         cycleSlideInstance.fromLaneIndex = fromLane - 1;
         cycleSlideInstance.waitDuration = slide.WaitDuration;
         cycleSlideInstance.slideDuration = slide.SlideDuration;
@@ -64,7 +64,7 @@ public class SlideGenerator : MonoBehaviour
             _ => Instantiate(pqSlidePrefabs[0])
         };
 
-        pqSlideInstance.toLaneIndex = toLane - 1;
+        pqSlideInstance.toLaneIndexes = new[] { toLane - 1 };
         pqSlideInstance.fromLaneIndex = fromLane - 1;
         pqSlideInstance.waitDuration = slide.WaitDuration;
         pqSlideInstance.slideDuration = slide.SlideDuration;
@@ -94,7 +94,7 @@ public class SlideGenerator : MonoBehaviour
             _ => Instantiate(vSlidePrefabs[0])
         };
 
-        vSlideInstance.toLaneIndex = toLane - 1;
+        vSlideInstance.toLaneIndexes = new[] { toLane - 1 };
         vSlideInstance.fromLaneIndex = fromLane - 1;
         vSlideInstance.waitDuration = slide.WaitDuration;
         vSlideInstance.slideDuration = slide.SlideDuration;
@@ -121,7 +121,7 @@ public class SlideGenerator : MonoBehaviour
             _ => Instantiate(lineSlidePrefabs[0])
         };
 
-        lineSlideInstance.toLaneIndex = toLane - 1;
+        lineSlideInstance.toLaneIndexes = new[] { toLane - 1 };
         lineSlideInstance.fromLaneIndex = fromLane - 1;
         lineSlideInstance.waitDuration = slide.WaitDuration;
         lineSlideInstance.slideDuration = slide.SlideDuration;
@@ -180,7 +180,7 @@ public class SlideGenerator : MonoBehaviour
             _ => Instantiate(bigPqSlidePrefabs[0])
         };
 
-        bigPqSlideInstance.toLaneIndex = toLane - 1;
+        bigPqSlideInstance.toLaneIndexes = new[] { toLane - 1 };
         bigPqSlideInstance.fromLaneIndex = fromLane - 1;
         bigPqSlideInstance.waitDuration = slide.WaitDuration;
         bigPqSlideInstance.slideDuration = slide.SlideDuration;
@@ -195,7 +195,7 @@ public class SlideGenerator : MonoBehaviour
 
         var zsSlideInstance = Instantiate(NoteGenerator.Instance.slidePrefabs.zsSlidePrefab);
 
-        zsSlideInstance.toLaneIndex = toLane - 1;
+        zsSlideInstance.toLaneIndexes = new[] { toLane - 1 };
         zsSlideInstance.fromLaneIndex = fromLane - 1;
         zsSlideInstance.waitDuration = slide.WaitDuration;
         zsSlideInstance.slideDuration = slide.SlideDuration;
@@ -210,7 +210,7 @@ public class SlideGenerator : MonoBehaviour
 
         var wifiSlideInstance = Instantiate(NoteGenerator.Instance.slidePrefabs.wifiSlidePrefab);
 
-        wifiSlideInstance.toLaneIndex = toLane - 1;
+        wifiSlideInstance.toLaneIndexes = new[] { toLane - 1 };
         wifiSlideInstance.fromLaneIndex = fromLane - 1;
         wifiSlideInstance.waitDuration = slide.WaitDuration;
         wifiSlideInstance.slideDuration = slide.SlideDuration;

@@ -5,25 +5,22 @@ using UnityEngine;
 
 public class StarMovementController : MonoBehaviour
 {
-    public enum PathDirection
-    {
-        StartToEnd,
-        EndToStart
-    }
-
     public SpriteRenderer spriteRenderer;
 
     public string svgAssetPath;
-    public float duration = 5f;
-    public bool bounceBackOnce = true;
-    public PathDirection pathDirection = PathDirection.StartToEnd;
 
-    public Vector2 pathPosition = Vector2.zero;
-    public Vector2 pathScale = Vector2.one;
-    public float pathRotation;
-    public bool flipPathY;
+    [HideInInspector] public float duration = 5f;
 
-    public float objectRotationOffset = 22.5f;
+    [HideInInspector] public float pathRotation;
+
+    [HideInInspector] public bool flipPathY;
+
+    [HideInInspector] public float objectRotationOffset = -18;
+
+    private readonly Vector2 _pathPosition = Vector2.zero;
+
+    private readonly Vector2 _pathScale = new(0.01005f, -0.01005f);
+
     private bool _isReturning;
     private bool _moving;
 
@@ -74,16 +71,15 @@ public class StarMovementController : MonoBehaviour
 
         var t = Mathf.Clamp01(_time / duration);
 
-        if (t >= 1f && bounceBackOnce && !_isReturning) _isReturning = true;
-        if ((t <= 0f && _isReturning) || (t >= 1f && !bounceBackOnce)) _moving = false;
+        if (t >= 1f) _moving = false;
 
         Move(t);
     }
 
     private Matrix4x4 GetPathTransform()
     {
-        var scale = new Vector3(flipPathY ? -pathScale.x : pathScale.x, pathScale.y, 1);
-        var position = pathPosition;
+        var scale = new Vector3(flipPathY ? -_pathScale.x : _pathScale.x, _pathScale.y, 1);
+        var position = _pathPosition;
         var rotation = Quaternion.Euler(0, 0, pathRotation);
 
         return Matrix4x4.TRS(position, rotation, scale);
@@ -91,9 +87,7 @@ public class StarMovementController : MonoBehaviour
 
     private void Move(float progress)
     {
-        var pathT = pathDirection == PathDirection.StartToEnd ? progress : 1f - progress;
-
-        var distance = pathT * _totalLength;
+        var distance = progress * _totalLength;
 
         SamplePointAtDistance(distance, out var pos, out var tangent);
 
@@ -109,11 +103,8 @@ public class StarMovementController : MonoBehaviour
 
     public void MoveToStart()
     {
-        if (bounceBackOnce)
-            duration /= 2;
-
         _startPosition = transform.position;
-        SamplePointAtDistance(pathDirection == PathDirection.StartToEnd ? 0 : 1, out _presetOffsetPosition, out _);
+        SamplePointAtDistance(0, out _presetOffsetPosition, out _);
         Move(0.001f); // 0.001f is for fixing some bizarre start point rotation issues.
         _time = duration * 0.001f;
     }
@@ -121,6 +112,11 @@ public class StarMovementController : MonoBehaviour
     public void StartMoving()
     {
         _moving = true;
+    }
+
+    public void StopMoving()
+    {
+        _moving = false;
     }
 
     private void SamplePointAtDistance(float dist, out Vector2 position, out Vector2 tangent)
