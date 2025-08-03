@@ -103,7 +103,7 @@ namespace ChartManagement
         private static readonly Regex HeadRegex = new("^([1-8])");
 
         private static readonly Regex HoldRegex =
-            new(@"(h\[([0-9]*)\:([0-9]*)\])|(h\[(\d+\.\d+?|\d+)#([0-9]*)\:([0-9]*)\])|(h\[#(\d+\.\d+?|\d+)\])");
+            new(@"(h\[([0-9]*)\:([0-9]*)\])|(h\[(\d+\.\d+?|\d+)#([0-9]*)\:([0-9]*)\])|(h\[#(\d+\.\d+?|\d+)\])|(h)");
 
         // I'm sorry for this
         private static readonly Regex SlideRegex = new(
@@ -170,6 +170,9 @@ namespace ChartManagement
 
                     if (holdMatch.Groups[9].Success)
                         holdDuration = (int)(double.Parse(holdMatch.Groups[9].Value) * 1000);
+
+                    if (holdMatch.Groups[10].Success)
+                        holdDuration = 0;
 
                     if (holdMatch.Groups[2].Success)
                         holdDuration = (int)(4000 * (60f / bpm / int.Parse(holdMatch.Groups[2].Value)) *

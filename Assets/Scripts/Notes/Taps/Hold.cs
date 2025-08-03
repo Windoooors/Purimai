@@ -92,10 +92,6 @@ namespace Notes.Taps
                 {
                     holdTransform.Translate(Speed * Time.deltaTime * Vector3.up);
                 }
-                else
-                {
-                    TrimHold(true);
-                }
             }
             else
             {
@@ -103,15 +99,18 @@ namespace Notes.Taps
                 holdTransform.Translate(0.5f * Speed * Time.deltaTime * Vector3.up);
             }
 
-            if (ChartPlayer.Instance.time > timing)
-                TrimHold();
-
             if (_grossHoldSize < 0)
             {
+                holdTransform.Translate(0.5f * _grossHoldSize * Vector3.up);
+                _grossHoldSize = 0;
                 _disappearTime = ChartPlayer.Instance.time + 100;
-                holdTransform.Translate(0.5f * Speed * Time.deltaTime * Vector3.up);
                 _holdDone = true;
+                holdSpriteRenderer.size = new Vector2(holdSpriteRenderer.size.x, _initialHoldSize);
+                return;
             }
+            
+            if (ChartPlayer.Instance.time > timing)
+                TrimHold(_nowEmergingDuration < duration);
 
             holdSpriteRenderer.size = new Vector2(holdSpriteRenderer.size.x, _initialHoldSize + _grossHoldSize);
         }

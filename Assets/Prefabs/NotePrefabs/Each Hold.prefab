@@ -49,11 +49,10 @@ MonoBehaviour:
   timing: 0
   lineSpriteRenderer: {fileID: 4383902258557369002}
   lineTransform: {fileID: 2637334185132102782}
-  isEach: 0
   lane: 0
-  isBreak: 0
   holdSpriteRenderer: {fileID: 4641981725421132556}
   holdTransform: {fileID: 8208154636116742362}
+  duration: 0
 --- !u!1 &8800934994270330977
 GameObject:
   m_ObjectHideFlags: 0
@@ -127,8 +126,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 1734621603
-  m_SortingLayer: 4
+  m_SortingLayerID: 177122611
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_Sprite: {fileID: 2168400294388069195, guid: a06254767d13f40d8881ec1deb01e6f8,
     type: 3}
@@ -216,7 +215,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 999475227
-  m_SortingLayer: 2
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 1a40750ad0e4fb747aeeb83536f52d09, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

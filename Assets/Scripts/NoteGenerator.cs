@@ -212,20 +212,24 @@ public class NoteGenerator : MonoBehaviour
             if (slideBasedNoteObjectInstance)
             {
                 slideBasedNoteObjectInstance.order = order;
-
                 slideBasedNoteObjectInstance.timing = noteDataObject.Timing;
                 slideBasedNoteObjectInstance.slideType = slide.Type;
-
                 slideBasedNoteObjectInstance.isEach = isSlideEach;
 
                 if (SlideList.Count > 0)
                 {
-                    var lastSlide = SlideList[^1];
-                    if (lastSlide.timing + lastSlide.waitDuration >= slideBasedNoteObjectInstance.timing &&
-                        lastSlide.fromLaneIndex == slideBasedNoteObjectInstance.fromLaneIndex &&
-                        lastSlide.toLaneIndexes.SequenceEqual(slideBasedNoteObjectInstance.toLaneIndexes) &&
-                        lastSlide.slideType == slideBasedNoteObjectInstance.slideType)
-                        slideBasedNoteObjectInstance.order = order + 2;
+                    var ordersOfSlidesToBeCovered = SlideList.Where(slideToBeCovered =>
+                        slideToBeCovered.timing + slideToBeCovered.waitDuration >=
+                        slideBasedNoteObjectInstance.timing &&
+                        slideToBeCovered.fromLaneIndex ==
+                        slideBasedNoteObjectInstance.fromLaneIndex &&
+                        slideToBeCovered.toLaneIndexes.SequenceEqual(
+                            slideBasedNoteObjectInstance.toLaneIndexes) &&
+                        slideToBeCovered.slideType ==
+                        slideBasedNoteObjectInstance.slideType).Select(x => x.order).ToArray();
+
+                    if (ordersOfSlidesToBeCovered.Length > 0)
+                        slideBasedNoteObjectInstance.order = ordersOfSlidesToBeCovered.Max() + 1;
                 }
 
                 order--;
