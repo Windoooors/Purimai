@@ -5,7 +5,7 @@ namespace Notes.Slides
 {
     public class PqSlide : SlideBasedNote
     {
-        protected override void LateStart()
+        protected override void InitializeSlideDirection()
         {
             var isClockwise = slideType == NoteDataObject.SlideDataObject.SlideType.P;
 
@@ -19,6 +19,8 @@ namespace Notes.Slides
             }
             else
             {
+                MirrorSlideSensorIds();
+                
                 transform.eulerAngles = new Vector3(0, 180, 45 + 45f * fromLaneIndex);
                 star.flipPathY = true;
                 star.pathRotation = -45f * fromLaneIndex - 45;

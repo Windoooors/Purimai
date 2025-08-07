@@ -5,7 +5,7 @@ namespace Notes.Slides
 {
     public class ZsSlide : SlideBasedNote
     {
-        protected override void LateStart()
+        protected override void InitializeSlideDirection()
         {
             var isMirror = slideType == NoteDataObject.SlideDataObject.SlideType.Z;
 
@@ -17,6 +17,8 @@ namespace Notes.Slides
             var star = stars[0];
             if (isMirror)
             {
+                MirrorSlideSensorIds();
+                
                 star.flipPathY = true;
                 star.pathRotation = -45f * fromLaneIndex - 45;
             }

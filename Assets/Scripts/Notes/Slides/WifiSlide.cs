@@ -4,7 +4,7 @@ namespace Notes.Slides
 {
     public class WifiSlide : SlideBasedNote
     {
-        protected override void LateStart()
+        protected override void InitializeSlideDirection()
         {
             transform.Rotate(new Vector3(0, 0, -45f * fromLaneIndex));
 

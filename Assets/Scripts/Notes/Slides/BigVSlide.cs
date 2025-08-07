@@ -4,7 +4,7 @@ namespace Notes.Slides
 {
     public class BigVSlide : SlideBasedNote
     {
-        protected override void LateStart()
+        protected override void InitializeSlideDirection()
         {
             var star = stars[0];
             var isClockwise = IsClockWise(fromLaneIndex + 1, toLaneIndexes[0] + 1, toLaneIndexes[1] + 1);
@@ -16,6 +16,8 @@ namespace Notes.Slides
 
             if (isClockwise)
             {
+                MirrorSlideSensorIds();
+                
                 star.flipPathY = true;
                 star.pathRotation = -45f * fromLaneIndex - 45;
             }

@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 15003, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: New iOS Profile
+  m_Name: iOS Profile
   m_EditorClassIdentifier: 
   m_AssetVersion: 1
   m_BuildTarget: 9
   m_Subtarget: 0
   m_PlatformId: ad48d16a66894befa4d8181998c3cb09
   m_PlatformBuildProfile:
-    rid: 3619904046116372538
+    rid: 2130052135367475277
   m_OverrideGlobalSceneList: 0
   m_Scenes: []
   m_ScriptingDefines: []
@@ -34,7 +34,7 @@ MonoBehaviour:
     - line: '|   targetDevice: 2'
     - line: '|   useOnDemandResources: 0'
     - line: '|   accelerometerFrequency: 60'
-    - line: '|   companyName: testSetchin'
+    - line: '|   companyName: TestSetchin'
     - line: '|   productName: Purimai'
     - line: '|   defaultCursor: {instanceID: 0}'
     - line: '|   cursorHotspot: {x: 0, y: 0}'
@@ -186,7 +186,7 @@ MonoBehaviour:
     - line: '|   androidMaxAspectRatio: 2.1'
     - line: '|   androidMinAspectRatio: 1'
     - line: '|   applicationIdentifier:'
-    - line: '|     iPhone: com.testSetchin.Purimai'
+    - line: '|     iPhone: com.TestSetchin.Purimai'
     - line: '|   buildNumber:'
     - line: '|     Standalone: 0'
     - line: '|     VisionOS: 0'
@@ -826,23 +826,23 @@ MonoBehaviour:
     - line: '|   webGLCloseOnQuit: 0'
     - line: '|   webWasm2023: 0'
     - line: '|   scriptingDefineSymbols:'
-    - line: '|     Android: DOTWEEN'
-    - line: '|     EmbeddedLinux: DOTWEEN'
-    - line: '|     GameCoreScarlett: DOTWEEN'
-    - line: '|     GameCoreXboxOne: DOTWEEN'
-    - line: '|     LinuxHeadlessSimulation: DOTWEEN'
-    - line: '|     Nintendo Switch: DOTWEEN'
-    - line: '|     PS4: DOTWEEN'
-    - line: '|     PS5: DOTWEEN'
-    - line: '|     QNX: DOTWEEN'
-    - line: '|     ReservedCFE: DOTWEEN'
-    - line: '|     Standalone: DOTWEEN'
-    - line: '|     VisionOS: DOTWEEN'
-    - line: '|     WebGL: DOTWEEN'
-    - line: '|     Windows Store Apps: DOTWEEN'
-    - line: '|     XboxOne: DOTWEEN'
-    - line: '|     iPhone: DOTWEEN'
-    - line: '|     tvOS: DOTWEEN'
+    - line: '|     Android: '
+    - line: '|     EmbeddedLinux: '
+    - line: '|     GameCoreScarlett: '
+    - line: '|     GameCoreXboxOne: '
+    - line: '|     LinuxHeadlessSimulation: '
+    - line: '|     Nintendo Switch: '
+    - line: '|     PS4: '
+    - line: '|     PS5: '
+    - line: '|     QNX: '
+    - line: '|     ReservedCFE: '
+    - line: '|     Standalone: '
+    - line: '|     VisionOS: '
+    - line: '|     WebGL: '
+    - line: '|     Windows Store Apps: '
+    - line: '|     XboxOne: '
+    - line: '|     iPhone: '
+    - line: '|     tvOS: '
     - line: '|   additionalCompilerArguments: {}'
     - line: '|   platformArchitecture: {}'
     - line: '|   scriptingBackend:'
@@ -873,7 +873,7 @@ MonoBehaviour:
     - line: '|   gcIncremental: 0'
     - line: '|   gcWBarrierValidation: 0'
     - line: '|   apiCompatibilityLevelPerPlatform: {}'
-    - line: '|   editorAssembliesCompatibilityLevel: 1'
+    - line: '|   editorAssembliesCompatibilityLevel: 3'
     - line: '|   m_RenderingPath: 1'
     - line: '|   m_MobileRenderingPath: 1'
     - line: '|   metroPackageName: Template_2D'
@@ -955,7 +955,7 @@ MonoBehaviour:
     - line: '|   qnxGraphicConfPath: '
     - line: '|   apiCompatibilityLevel: 6'
     - line: '|   captureStartupLogs: {}'
-    - line: '|   activeInputHandler: 0'
+    - line: '|   activeInputHandler: 1'
     - line: '|   windowsGamepadBackendHint: 0'
     - line: '|   cloudProjectId: '
     - line: '|   framebufferDepthMemorylessMode: 0'
@@ -974,7 +974,7 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 3619904046116372538
+    - rid: 2130052135367475277
       type: {class: iOSPlatformSettings, ns: UnityEditor.iOS, asm: UnityEditor.iOS.Extensions}
       data:
         m_Development: 0

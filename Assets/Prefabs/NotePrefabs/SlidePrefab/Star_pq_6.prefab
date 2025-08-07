@@ -510,7 +510,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -789768153
-  m_SortingLayer: 7
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 57e073b06f82de348ab42249bc7d1730, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -538,10 +538,6 @@ MonoBehaviour:
   spriteRenderer: {fileID: 8437371362877002751}
   svgAssetPath: U_Curve_6
   duration: 5
-  bounceBackOnce: 0
-  pathDirection: 0
-  pathPosition: {x: 0, y: 0}
-  pathScale: {x: 0.01005, y: -0.01005}
   pathRotation: -90
   flipPathY: 0
   objectRotationOffset: -18
@@ -3441,14 +3437,53 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slideType: 0
   fromLaneIndex: 0
+  toLaneIndexes: 
   timing: 0
   waitDuration: 0
   slideDuration: 0
   isEach: 0
   order: 0
   isWifi: 0
+  coverLastSlide: 0
   stars:
   - {fileID: 1252049196870442660}
+  segments:
+  - sensor: A1
+    sensorsNearby: []
+    slideSpriteRenderers: []
+  - sensor: B8
+    sensorsNearby: []
+    slideSpriteRenderers: []
+  - sensor: B7
+    sensorsNearby: []
+    slideSpriteRenderers: []
+  - sensor: B6
+    sensorsNearby: []
+    slideSpriteRenderers: []
+  - sensor: B5
+    sensorsNearby: []
+    slideSpriteRenderers: []
+  - sensor: B4
+    sensorsNearby: []
+    slideSpriteRenderers: []
+  - sensor: B3
+    sensorsNearby: []
+    slideSpriteRenderers: []
+  - sensor: B2
+    sensorsNearby: []
+    slideSpriteRenderers: []
+  - sensor: B1
+    sensorsNearby: []
+    slideSpriteRenderers: []
+  - sensor: B8
+    sensorsNearby: []
+    slideSpriteRenderers: []
+  - sensor: B7
+    sensorsNearby: []
+    slideSpriteRenderers: []
+  - sensor: A6
+    sensorsNearby: []
+    slideSpriteRenderers: []
   slideSpriteRenderers:
   - {fileID: 2434844293204463702}
   - {fileID: 5943764966508016646}
@@ -3492,7 +3527,6 @@ MonoBehaviour:
   - {fileID: 2864446692850312733}
   - {fileID: 2331819175535185956}
   - {fileID: 5590383179887470611}
-  toLaneIndex: 0
 --- !u!1 &8663334138417475594
 GameObject:
   m_ObjectHideFlags: 0

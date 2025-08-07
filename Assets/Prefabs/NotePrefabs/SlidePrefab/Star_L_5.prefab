@@ -249,7 +249,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -789768153
-  m_SortingLayer: 7
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 57e073b06f82de348ab42249bc7d1730, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -277,10 +277,6 @@ MonoBehaviour:
   spriteRenderer: {fileID: 5656987807937456435}
   svgAssetPath: L_5
   duration: 5
-  bounceBackOnce: 0
-  pathDirection: 0
-  pathPosition: {x: 0, y: 0}
-  pathScale: {x: 0.01005, y: -0.01005}
   pathRotation: -90
   flipPathY: 0
   objectRotationOffset: -18
@@ -2122,14 +2118,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slideType: 0
   fromLaneIndex: 0
+  toLaneIndexes: 
   timing: 0
   waitDuration: 0
   slideDuration: 0
   isEach: 0
   order: 0
   isWifi: 0
+  coverLastSlide: 0
   stars:
   - {fileID: 8800353968997434568}
+  segments:
+  - sensor: A1
+    sensorsNearby: []
+    slideSpriteRenderers: []
+  - sensor: A8
+    sensorsNearby:
+    - B8
+    slideSpriteRenderers: []
+  - sensor: A7
+    sensorsNearby: []
+    slideSpriteRenderers: []
+  - sensor: A6
+    sensorsNearby:
+    - B6
+    slideSpriteRenderers: []
+  - sensor: A5
+    sensorsNearby: []
+    slideSpriteRenderers: []
   slideSpriteRenderers:
   - {fileID: 3255989991526122814}
   - {fileID: 20599864023859155}
@@ -2159,7 +2175,6 @@ MonoBehaviour:
   - {fileID: 685393539296820344}
   - {fileID: 3102973789632991089}
   - {fileID: 1992876467095485710}
-  toLaneIndexes: 
 --- !u!1 &8401659666441861241
 GameObject:
   m_ObjectHideFlags: 0

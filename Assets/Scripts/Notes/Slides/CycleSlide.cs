@@ -5,7 +5,7 @@ namespace Notes.Slides
 {
     public class CycleSlide : SlideBasedNote
     {
-        protected override void LateStart()
+        protected override void InitializeSlideDirection()
         {
             var isClockwise = IsClockwise(fromLaneIndex + 1, toLaneIndexes[0] + 1, slideType);
 
@@ -20,6 +20,8 @@ namespace Notes.Slides
             }
             else
             {
+                MirrorSlideSensorIds();
+                
                 transform.eulerAngles = new Vector3(0, 180, 45 + 45f * fromLaneIndex);
                 star.flipPathY = false;
                 star.pathRotation = -45f * fromLaneIndex;

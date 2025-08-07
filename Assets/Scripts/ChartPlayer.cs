@@ -16,13 +16,16 @@ public class ChartPlayer : MonoBehaviour
     public void Awake()
     {
         Instance = this;
+
+        SimulatedSensor.OnTap += (sender, args) =>
+        {
+            if (!isPlaying)
+                Play();
+        };
     }
 
     private void Update()
     {
-        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0)) && !isPlaying)
-            Play();
-
         isPlaying = audioSource.isPlaying;
 
         if (isPlaying)
