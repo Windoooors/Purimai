@@ -24,41 +24,27 @@ namespace Notes
 
         public bool isWifi;
 
-        public bool coverLastSlide;
-
         public StarMovementController[] stars;
 
-        public Segment[] segments;
-
         public SpriteRenderer[] slideSpriteRenderers;
+
+        protected readonly List<Segment> UniversalSegments = new();
         private bool _concealed;
 
         private bool _revealed;
         private bool _starMovingStarted;
+
         private bool _waitingStarted;
 
         private void Start()
         {
+            InitializeSlideDirection();
+            InitializeSlideSensorIds();
+            UpdateUniversalSegments();
+
             isWifi = slideType == NoteDataObject.SlideDataObject.SlideType.Wifi;
 
-            var i = 0;
-            foreach (var slideSpriteRenderer in slideSpriteRenderers)
-            {
-                if (isEach)
-                {
-                    if (isWifi)
-                    {
-                        slideSpriteRenderer.sprite = NoteGenerator.Instance.wifiSlideEachSprites[i];
-                        i++;
-                    }
-                    else
-                    {
-                        slideSpriteRenderer.sprite = NoteGenerator.Instance.slideEachSprite;
-                    }
-                }
-
-                slideSpriteRenderer.sortingOrder += order;
-            }
+            ReplaceEachSlideSprite();
 
             foreach (var star in stars)
             {
@@ -69,64 +55,10 @@ namespace Notes
                 star.spriteRenderer.sortingOrder += order;
             }
 
-            InitializeSlideDirection();
-            InitializeSlideSensorIds();
-
-            var previousMatchedSlideIndex = 0;
-
-            for (var j = 0; j < segments.Length; j++)
-            {
-                var segment = segments[j];
-                var nextSegment = segments[j + 1 == segments.Length ? j : j + 1];
-                
-                var nextMatchedSensor = SimulatedSensor.Sensors.Find(x => x.sensorId == nextSegment.sensor);
-
-                var spriteList = new List<SpriteRenderer>();
-
-                var nextMatchedSlideIndex = 0;
-
-                if (j + 1 != segments.Length)
-                {
-                    for (var l = previousMatchedSlideIndex; l < slideSpriteRenderers.Length; l++)
-                    {
-                        var nextSlideSpriteRenderer = slideSpriteRenderers[l];
-
-                        var nextSlideSpritePosition = new Vector2(nextSlideSpriteRenderer.transform.position.x,
-                            nextSlideSpriteRenderer.transform.position.y);
-                        
-                        var overlapResults = new Collider2D[10];
-
-                        var nextSlideCollider = nextSlideSpriteRenderer.gameObject.AddComponent<BoxCollider2D>();
-
-                        nextMatchedSensor.GetComponent<Collider2D>().Overlap(new ContactFilter2D().NoFilter(), overlapResults);
-
-                        if (!overlapResults.Contains(nextSlideCollider))
-                        {
-                            nextSlideCollider.enabled = false;
-                            continue;
-                        }
-
-                        nextSlideCollider.enabled = false;
-                        nextMatchedSlideIndex = l;
-                        break;
-                    }
-                }
-
-                for (var k = previousMatchedSlideIndex;
-                     k < (nextMatchedSlideIndex == 0 ? slideSpriteRenderers.Length : nextMatchedSlideIndex);
-                     k++)
-                {
-                    var slideSpriteRenderer = slideSpriteRenderers[k];
-
-                    spriteList.Add(slideSpriteRenderer);
-                    previousMatchedSlideIndex = k + 1;
-                }
-
-                segment.slideSpriteRenderers = spriteList.ToArray();
-            }
+            InitializeSlideSegments();
 
             transform.position = NoteGenerator.Instance.outOfScreenPosition;
-            SimulatedSensor.OnTap += OnTouchSlidePath;
+            SimulatedSensor.OnHold += OnTouchSlidePath;
         }
 
         private void Update()
@@ -135,9 +67,11 @@ namespace Notes
             {
                 transform.position = Vector3.zero;
 
-                foreach (var spriteRenderer in slideSpriteRenderers)
-                    LMotion.Create(0, 1f, ChartPlayer.Instance.starAppearanceDuration / 1000f).WithEase(Ease.Linear)
-                        .Bind(x => spriteRenderer.color = new Color(1, 1, 1, x));
+                foreach (var segment in UniversalSegments)
+                    segment.MotionHandles = segment.slideSpriteRenderers.Select(spriteRenderer =>
+                        LMotion.Create(0, 1f, ChartPlayer.Instance.starAppearanceDuration / 1000f)
+                            .WithEase(Ease.Linear)
+                            .Bind(x => { spriteRenderer.color = new Color(1, 1, 1, x); })).ToArray();
 
                 foreach (var star in stars) star.MoveToStart();
 
@@ -148,10 +82,10 @@ namespace Notes
             {
                 _waitingStarted = true;
                 foreach (var star in stars)
-                    LMotion.Create(0, 1f, waitDuration / 1000f).WithEase(Ease.Linear)
+                    LMotion.Create(0, 1f, waitDuration / 2000f).WithEase(Ease.Linear).WithDelay(waitDuration / 2000f)
                         .Bind(x =>
                         {
-                            star.spriteRenderer.color = new Color(1, 1, 1, x);
+                            star.spriteRenderer.color = new Color(1, 1, 1, 0.5f + 0.5f * x);
                             star.transform.localScale = Vector3.one + 0.5f * new Vector3(x, x, x);
                         });
             }
@@ -178,36 +112,102 @@ namespace Notes
             }
         }
 
-
-        private int _touchedSegmentsIndex;
-
-        protected virtual void OnTouchSlidePath(object sender, SimulatedSensor.TouchEventArgs e)
+        protected string GetUpdatedSensorId(string sensorId)
         {
-            if (_touchedSegmentsIndex == segments.Length - 1 || _touchedSegmentsIndex == segments.Length)
-                return;
-            
-            if (_touchedSegmentsIndex - 1 != -1)
-                segments[_touchedSegmentsIndex - 1].slideSpriteRenderers[^1].color = new Color(0, 0, 0, 0);
-            
-            if (timing - 100 > ChartPlayer.Instance.time)
-                return;
+            if (sensorId == "C")
+                return "C";
+            var sensorLane = int.Parse(sensorId.Substring(1, 1));
+            var sensorName = sensorId.Substring(0, 1);
+            sensorLane += fromLaneIndex;
 
-            if ((segments[_touchedSegmentsIndex].sensor != e.SensorId &&
-                 !segments[_touchedSegmentsIndex].sensorsNearby.Contains(e.SensorId)) ||
-                _touchedSegmentsIndex >= segments.Length)
-                return;
+            if (sensorLane > 8)
+                sensorLane -= 8;
+            else if (sensorLane < 1)
+                sensorLane += 8;
 
-            var segment = segments[_touchedSegmentsIndex];
+            return sensorName + sensorLane;
+        }
 
-            foreach (var slideSprite in segment.slideSpriteRenderers)
+        private void OnTouchSlidePath(object sender, SimulatedSensor.TouchEventArgs e)
+        {
+            ProcessSlideTouch(e);
+        }
+
+        protected abstract void ProcessSlideTouch(SimulatedSensor.TouchEventArgs e,
+            bool sensorJumpedForLastSegment = false);
+
+        private void ReplaceEachSlideSprite()
+        {
+            var i = 0;
+            foreach (var slideSpriteRenderer in slideSpriteRenderers)
             {
-                slideSprite.color = new Color(0, 0, 0, 0);
+                if (isEach)
+                {
+                    if (isWifi)
+                    {
+                        slideSpriteRenderer.sprite = NoteGenerator.Instance.wifiSlideEachSprites[i];
+                        i++;
+                    }
+                    else
+                    {
+                        slideSpriteRenderer.sprite = NoteGenerator.Instance.slideEachSprite;
+                    }
+                }
+
+                slideSpriteRenderer.sortingOrder += order;
             }
+        }
 
-            if (_touchedSegmentsIndex != segments.Length - 2)
-                segment.slideSpriteRenderers[^1].color = new Color(1, 1, 1, 0.5f);
+        private void InitializeSlideSegments()
+        {
+            var previousMatchedSlideIndex = 0;
 
-            _touchedSegmentsIndex++;
+            for (var j = 0; j < UniversalSegments.Count; j++)
+            {
+                var segment = UniversalSegments[j];
+                var nextSegment = UniversalSegments[j + 1 == UniversalSegments.Count ? j : j + 1];
+
+                var nextMatchedSensor = SimulatedSensor.Sensors.Find(x => x.sensorId == nextSegment.mainSensor);
+
+                var spriteList = new List<SpriteRenderer>();
+
+                var nextMatchedSlideIndex = 0;
+
+                if (j + 1 != UniversalSegments.Count)
+                    for (var l = previousMatchedSlideIndex; l < slideSpriteRenderers.Length; l++)
+                    {
+                        var nextSlideSpriteRenderer = slideSpriteRenderers[l];
+
+                        var overlapResults = new Collider2D[10];
+
+                        var nextSlideCollider = nextSlideSpriteRenderer.gameObject.AddComponent<BoxCollider2D>();
+
+                        nextMatchedSensor.GetComponent<Collider2D>()
+                            .Overlap(new ContactFilter2D().NoFilter(), overlapResults);
+
+                        if (!overlapResults.Contains(nextSlideCollider))
+                        {
+                            nextSlideCollider.enabled = false;
+                            continue;
+                        }
+
+                        nextSlideCollider.enabled = false;
+                        nextMatchedSlideIndex = l;
+                        break;
+                    }
+
+                for (var k = previousMatchedSlideIndex;
+                     k < (nextMatchedSlideIndex == 0 ? slideSpriteRenderers.Length : nextMatchedSlideIndex);
+                     k++)
+                {
+                    var slideSpriteRenderer = slideSpriteRenderers[k];
+
+                    spriteList.Add(slideSpriteRenderer);
+                    previousMatchedSlideIndex = k + 1;
+                }
+
+                segment.slideSpriteRenderers = spriteList.ToArray();
+            }
         }
 
         protected virtual void InitializeSlideDirection()
@@ -218,50 +218,31 @@ namespace Notes
             star.pathRotation = -45f * fromLaneIndex;
         }
 
-        protected void MirrorSlideSensorIds()
+        protected string GetMirroredSensorId(string sensorId)
         {
-            foreach (var segment in segments)
+            if (sensorId == "C")
+                return "C";
+            var sensorLane = int.Parse(sensorId.Substring(1, 1));
+            var sensorName = sensorId.Substring(0, 1);
+
+            sensorLane = sensorLane switch
             {
-                if (segment.sensor == "C")
-                    continue;
-                var sensorLane = int.Parse(segment.sensor.Substring(1, 1));
-                var sensorName = segment.sensor.Substring(0, 1);
+                1 => 1,
+                2 => 8,
+                3 => 7,
+                4 => 6,
+                5 => 5,
+                8 => 2,
+                7 => 3,
+                6 => 4,
+                _ => sensorLane
+            };
 
-                sensorLane = sensorLane switch
-                {
-                    1 => 1,
-                    2 => 8,
-                    3 => 7,
-                    4 => 6,
-                    5 => 5,
-                    8 => 2,
-                    7 => 3,
-                    6 => 4,
-                    _ => sensorLane
-                };
-
-                segment.sensor = sensorName + sensorLane;
-            }
+            return sensorName + sensorLane;
         }
 
-        protected virtual void InitializeSlideSensorIds()
-        {
-            foreach (var segment in segments)
-            {
-                if (segment.sensor == "C")
-                    continue;
-                var sensorLane = int.Parse(segment.sensor.Substring(1, 1));
-                var sensorName = segment.sensor.Substring(0, 1);
-                sensorLane += fromLaneIndex;
-
-                if (sensorLane > 8)
-                    sensorLane -= 8;
-                else if (sensorLane < 1)
-                    sensorLane += 8;
-
-                segment.sensor = sensorName + sensorLane;
-            }
-        }
+        protected abstract void InitializeSlideSensorIds();
+        protected abstract void UpdateUniversalSegments();
 
         public static int GetShortestInterval(int fromLane, int toLane)
         {
@@ -286,9 +267,9 @@ namespace Notes
     [Serializable]
     public class Segment
     {
-        public string sensor;
-        public string[] sensorsNearby;
+        [FormerlySerializedAs("sensor")] public string mainSensor;
 
-        public SpriteRenderer[] slideSpriteRenderers;
+        [HideInInspector] public SpriteRenderer[] slideSpriteRenderers;
+        public MotionHandle[] MotionHandles;
     }
 }

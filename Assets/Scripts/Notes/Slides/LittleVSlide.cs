@@ -1,9 +1,6 @@
-using UnityEngine;
-
 namespace Notes.Slides
 {
-    public class LittleVSlide : SlideBasedNote
+    public class LittleVSlide : NormalSlide
     {
-
     }
 }

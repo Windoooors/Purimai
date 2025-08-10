@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Notes.Slides
 {
-    public class BigVSlide : SlideBasedNote
+    public class BigVSlide : NormalSlide
     {
         protected override void InitializeSlideDirection()
         {
@@ -17,7 +17,7 @@ namespace Notes.Slides
             if (isClockwise)
             {
                 MirrorSlideSensorIds();
-                
+
                 star.flipPathY = true;
                 star.pathRotation = -45f * fromLaneIndex - 45;
             }

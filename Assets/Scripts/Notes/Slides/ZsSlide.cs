@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Notes.Slides
 {
-    public class ZsSlide : SlideBasedNote
+    public class ZsSlide : NormalSlide
     {
         protected override void InitializeSlideDirection()
         {
@@ -18,7 +18,7 @@ namespace Notes.Slides
             if (isMirror)
             {
                 MirrorSlideSensorIds();
-                
+
                 star.flipPathY = true;
                 star.pathRotation = -45f * fromLaneIndex - 45;
             }

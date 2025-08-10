@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Notes.Slides
 {
-    public class PqSlide : SlideBasedNote
+    public class PqSlide : NormalSlide
     {
         protected override void InitializeSlideDirection()
         {
@@ -20,7 +20,7 @@ namespace Notes.Slides
             else
             {
                 MirrorSlideSensorIds();
-                
+
                 transform.eulerAngles = new Vector3(0, 180, 45 + 45f * fromLaneIndex);
                 star.flipPathY = true;
                 star.pathRotation = -45f * fromLaneIndex - 45;

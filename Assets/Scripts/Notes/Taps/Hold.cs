@@ -108,7 +108,7 @@ namespace Notes.Taps
                 holdSpriteRenderer.size = new Vector2(holdSpriteRenderer.size.x, _initialHoldSize);
                 return;
             }
-            
+
             if (ChartPlayer.Instance.time > timing)
                 TrimHold(_nowEmergingDuration < duration);
 

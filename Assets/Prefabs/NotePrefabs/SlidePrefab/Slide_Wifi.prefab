@@ -601,7 +601,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -789768153
-  m_SortingLayer: 7
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 57e073b06f82de348ab42249bc7d1730, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -629,10 +629,6 @@ MonoBehaviour:
   spriteRenderer: {fileID: 6617244548120875404}
   svgAssetPath: Straight_5
   duration: 5
-  bounceBackOnce: 0
-  pathDirection: 0
-  pathPosition: {x: 0, y: 0}
-  pathScale: {x: 0.01005, y: -0.01005}
   pathRotation: 0
   flipPathY: 0
   objectRotationOffset: -18
@@ -887,7 +883,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -789768153
-  m_SortingLayer: 7
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 57e073b06f82de348ab42249bc7d1730, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -915,10 +911,6 @@ MonoBehaviour:
   spriteRenderer: {fileID: 6650119813564221703}
   svgAssetPath: Straight_4
   duration: 5
-  bounceBackOnce: 0
-  pathDirection: 0
-  pathPosition: {x: 0, y: 0}
-  pathScale: {x: 0.01005, y: -0.01005}
   pathRotation: 0
   flipPathY: 0
   objectRotationOffset: -18
@@ -1181,6 +1173,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slideType: 0
   fromLaneIndex: 0
+  toLaneIndexes: 
   timing: 0
   waitDuration: 0
   slideDuration: 0
@@ -1203,7 +1196,40 @@ MonoBehaviour:
   - {fileID: 251460281263649360}
   - {fileID: 7238551318045615513}
   - {fileID: 5295571688944403275}
-  toLaneIndex: 0
+  segments:
+  - mainSensor: A1
+    slideSpriteRenderers: []
+    sensorsL:
+    - A1
+    sensorsM:
+    - A1
+    sensorsR:
+    - A1
+  - mainSensor: B8
+    slideSpriteRenderers: []
+    sensorsL:
+    - B8
+    sensorsM:
+    - B1
+    sensorsR:
+    - B2
+  - mainSensor: B7
+    slideSpriteRenderers: []
+    sensorsL:
+    - B7
+    sensorsM:
+    - C
+    sensorsR:
+    - B3
+  - mainSensor: A6
+    slideSpriteRenderers: []
+    sensorsL:
+    - A6
+    sensorsM:
+    - B5
+    - A5
+    sensorsR:
+    - A4
 --- !u!1 &7964666901942964958
 GameObject:
   m_ObjectHideFlags: 0
@@ -1367,7 +1393,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -789768153
-  m_SortingLayer: 7
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 57e073b06f82de348ab42249bc7d1730, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -1395,10 +1421,6 @@ MonoBehaviour:
   spriteRenderer: {fileID: 7851780208575611363}
   svgAssetPath: Straight_6
   duration: 5
-  bounceBackOnce: 0
-  pathDirection: 0
-  pathPosition: {x: 0, y: 0}
-  pathScale: {x: 0.01005, y: -0.01005}
   pathRotation: 0
   flipPathY: 0
   objectRotationOffset: -18

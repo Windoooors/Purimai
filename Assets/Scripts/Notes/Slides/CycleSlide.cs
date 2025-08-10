@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Notes.Slides
 {
-    public class CycleSlide : SlideBasedNote
+    public class CycleSlide : NormalSlide
     {
         protected override void InitializeSlideDirection()
         {
@@ -21,7 +21,7 @@ namespace Notes.Slides
             else
             {
                 MirrorSlideSensorIds();
-                
+
                 transform.eulerAngles = new Vector3(0, 180, 45 + 45f * fromLaneIndex);
                 star.flipPathY = false;
                 star.pathRotation = -45f * fromLaneIndex;
@@ -72,7 +72,6 @@ namespace Notes.Slides
                     var counterClockwiseInterval = (fromLane - toLane + 8) % 8;
                     return clockwiseInterval <= counterClockwiseInterval;
                 default:
-                    Debug.Log("Fuck");
                     return true;
             }
         }
