@@ -120,7 +120,7 @@ Shader "TextMeshPro/Mobile/Bitmap"
                 // Clamp _ClipRect to 16bit.
                 const float4 clampedRect = clamp(_ClipRect, -2e10, 2e10);
                 const half2 maskSoftness = half2(max(_UIMaskSoftnessX, _MaskSoftnessX),
-                     max(_UIMaskSoftnessY, _MaskSoftnessY));
+                                                 max(_UIMaskSoftnessY, _MaskSoftnessY));
                 OUT.mask = float4(vert.xy * 2 - clampedRect.xy - clampedRect.zw,
                                   0.25 / (0.25 * maskSoftness + pixelSize.xy));
 

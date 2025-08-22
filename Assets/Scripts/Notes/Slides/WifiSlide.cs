@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using LitMotion;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -44,15 +43,20 @@ namespace Notes.Slides
             }
         }
 
-        protected override void ProcessSlideTouch(SimulatedSensor.TouchEventArgs e,
+        protected override void ProcessSlideTap(SimulatedSensor.TouchEventArgs e,
             bool sensorJumpedForLastSegment = false)
         {
-            ProcessSlideTouchOnSpecificSlidePath(e, 0);
-            ProcessSlideTouchOnSpecificSlidePath(e, 1);
-            ProcessSlideTouchOnSpecificSlidePath(e, 2);
         }
 
-        private void ProcessSlideTouchOnSpecificSlidePath(SimulatedSensor.TouchEventArgs e, int pathIndex,
+        protected override void ProcessSlideHold(SimulatedSensor.TouchEventArgs e,
+            bool sensorJumpedForLastSegment = false)
+        {
+            ProcessSlideHoldOnSpecificSlidePath(e, 0);
+            ProcessSlideHoldOnSpecificSlidePath(e, 1);
+            ProcessSlideHoldOnSpecificSlidePath(e, 2);
+        }
+
+        private void ProcessSlideHoldOnSpecificSlidePath(SimulatedSensor.TouchEventArgs e, int pathIndex,
             bool sensorJumpedForLastSegment = false)
         {
             var touchedSegmentsIndex = pathIndex switch
@@ -97,11 +101,11 @@ namespace Notes.Slides
                 math.min(_touchedLSegmentsIndex, _touchedMSegmentsIndex)) - 1;
 
             if (segmentToBeConcealedIndex != -1)
-                StartCoroutine(ConcealSegment(segmentToBeConcealedIndex, sensorJumpedForLastSegment));
-            
+                ConcealSegment(segmentToBeConcealedIndex, sensorJumpedForLastSegment);
+
 
             if (sensorJumped)
-                ProcessSlideTouchOnSpecificSlidePath(e, pathIndex, true);
+                ProcessSlideHoldOnSpecificSlidePath(e, pathIndex, true);
         }
 
         protected override void InitializeSlideDirection()

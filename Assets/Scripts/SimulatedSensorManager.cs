@@ -1,18 +1,16 @@
+using UnityEngine;
+using UnityEngine.InputSystem.EnhancedTouch;
 
-    using System;
-    using UnityEngine;
-    using UnityEngine.InputSystem.EnhancedTouch;
+public class SimulatedSensorManager : MonoBehaviour
+{
+    public static SimulatedSensorManager Instance;
+    public float globalScale = 1.23f;
+    public Camera mainCamera;
 
-    public class SimulatedSensorManager : MonoBehaviour
+    private void Awake()
     {
-        public static SimulatedSensorManager Instance;
-        public float globalScale = 1.23f;
-        public Camera mainCamera;
-
-        private void Awake()
-        {
-            mainCamera = FindObjectsByType<Camera>(FindObjectsInactive.Include, FindObjectsSortMode.None)[0];
-            Instance = this;
-            EnhancedTouchSupport.Enable();
-        }
+        mainCamera = FindObjectsByType<Camera>(FindObjectsInactive.Include, FindObjectsSortMode.None)[0];
+        Instance = this;
+        EnhancedTouchSupport.Enable();
     }
+}

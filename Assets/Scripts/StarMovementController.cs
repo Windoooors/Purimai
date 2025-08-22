@@ -1,6 +1,3 @@
-using System.IO;
-using System.Linq;
-using Unity.VectorGraphics;
 using UnityEngine;
 
 public class StarMovementController : MonoBehaviour
@@ -19,14 +16,15 @@ public class StarMovementController : MonoBehaviour
 
     private bool _isReturning;
     private bool _moving;
-    
+
     private float _time;
-    
+
     private VectorGraphicsUtility _vectorGraphicsUtility;
 
     public void Start()
     {
-        _vectorGraphicsUtility = new VectorGraphicsUtility(svgAssetPath, pathRotation, flipPathY, transform.position, objectRotationOffset);
+        _vectorGraphicsUtility = new VectorGraphicsUtility(svgAssetPath, pathRotation, flipPathY, transform.position,
+            objectRotationOffset);
     }
 
     private void Update()

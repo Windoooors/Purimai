@@ -8,7 +8,7 @@ public class ChartPlayer : MonoBehaviour
     public int time;
 
     public bool isPlaying;
-    
+
     public float flowSpeed;
     public int starAppearanceDelay;
     public int starAppearanceDuration;

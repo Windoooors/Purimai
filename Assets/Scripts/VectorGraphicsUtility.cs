@@ -5,29 +5,29 @@ using UnityEngine;
 
 public class VectorGraphicsUtility
 {
-    private readonly float _pathRotation;
-
     private readonly bool _flipPathY;
 
     private readonly float _objectRotationOffset;
 
+    private readonly BezierPathSegment[] _path;
+
     private readonly Vector2 _pathPosition = Vector2.zero;
+    private readonly float _pathRotation;
 
     private readonly Vector2 _pathScale = new(0.01005f, -0.01005f);
-
-    private readonly BezierPathSegment[] _path;
-    private Vector2 _presetOffsetPosition;
     private readonly float[] _segmentLengths;
+    private readonly float _totalLength;
+    private Vector2 _presetOffsetPosition;
 
     private Vector3 _startPosition;
-    private readonly float _totalLength;
 
-    public VectorGraphicsUtility(string svgAssetPath, float pathRotation, bool flipPathY, Vector3 startPosition, float objectRotationOffset = 18f)
+    public VectorGraphicsUtility(string svgAssetPath, float pathRotation, bool flipPathY, Vector3 startPosition,
+        float objectRotationOffset = 18f)
     {
         _pathRotation = pathRotation;
         _flipPathY = flipPathY;
         _objectRotationOffset = objectRotationOffset;
-        
+
         var fullPath = Path.Combine(Application.streamingAssetsPath, "StarPath/" + svgAssetPath + ".svg");
         using var reader = new StreamReader(File.OpenRead(fullPath));
 
@@ -77,7 +77,7 @@ public class VectorGraphicsUtility
         Vector2 worldPos = matrix.MultiplyPoint3x4(pos - _presetOffsetPosition);
         Vector2 worldTangent = matrix.MultiplyVector(tangent).normalized;
 
-        
+
         var angle = Mathf.Atan2(worldTangent.y, worldTangent.x) * Mathf.Rad2Deg;
         return (_startPosition + new Vector3(worldPos.x, worldPos.y, 0),
             Quaternion.Euler(0f, 0f, angle + _objectRotationOffset));

@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem.EnhancedTouch;
 using UnityEngine.U2D;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
@@ -13,13 +12,16 @@ public class SimulatedSensor : MonoBehaviour
     public static EventHandler<TouchEventArgs> OnLeave;
 
     public static readonly List<SimulatedSensor> Sensors = new();
-    
+
     public float scale = 1;
 
     public string sensorId;
+    
     private bool _currentFrameHasFinger;
-
     private bool _lastFrameHadFinger;
+
+    private static bool _leaveEventRegistered;
+    
     private Camera _mainCamera;
 
     private SpriteShapeRenderer _spriteShapeRenderer;
@@ -34,12 +36,6 @@ public class SimulatedSensor : MonoBehaviour
         Sensors.Add(this);
 
         StartCoroutine(ChangeSensorScale());
-    }
-
-    private IEnumerator ChangeSensorScale()
-    {
-        yield return null;
-        transform.localScale *= scale * SimulatedSensorManager.Instance.globalScale;
     }
 
     private void Update()
@@ -57,25 +53,52 @@ public class SimulatedSensor : MonoBehaviour
 
         if (_currentFrameHasFinger && !_lastFrameHadFinger)
         {
-            OnTap += OnAnySensorTapped;
+            if (!_leaveEventRegistered)
+            {
+                OnLeave += OnAnySensorLeaved;
+                _leaveEventRegistered = true;
+            }
+            else
+            {
+                StartCoroutine(WaitAndRegisterLeaveEvent());
+            }
+
             OnTap?.Invoke(this, new TouchEventArgs(sensorId));
+            
             _spriteShapeRenderer.color = new Color(1, 1, 1, 0.1f);
         }
 
         if (!_currentFrameHasFinger && _lastFrameHadFinger)
         {
-            OnTap -= OnAnySensorTapped;
             OnLeave?.Invoke(this, new TouchEventArgs(sensorId));
+            OnLeave -= OnAnySensorLeaved;
+            _leaveEventRegistered = false;
+
             _spriteShapeRenderer.color = new Color(1, 1, 1, 0);
         }
 
         _lastFrameHadFinger = _currentFrameHasFinger;
     }
 
-    private void OnAnySensorTapped(object sender, TouchEventArgs e)
+    private IEnumerator WaitAndRegisterLeaveEvent()
     {
-        if (_currentFrameHasFinger)
+        yield return null;
+        OnLeave += OnAnySensorLeaved;
+        _leaveEventRegistered = true;
+    }
+
+    private IEnumerator ChangeSensorScale()
+    {
+        yield return null;
+        transform.localScale *= scale * SimulatedSensorManager.Instance.globalScale;
+    }
+
+    private void OnAnySensorLeaved(object sender, TouchEventArgs e)
+    {
+        if ((_currentFrameHasFinger && _lastFrameHadFinger) || e.SensorId == sensorId)
+        {
             OnHold?.Invoke(this, new TouchEventArgs(sensorId));
+        }
     }
 
     public class TouchEventArgs : EventArgs

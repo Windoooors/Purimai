@@ -12,12 +12,12 @@ namespace ChartManagement
         private static readonly Regex NoteValueRegex = new(@"^\{([^)]*?)\}");
 
         public static ChartLoader Instance;
+        public double firstNoteTime;
         private double _bpm;
 
         private string _chartString;
         private int _noteValue;
         private double _time;
-        public double firstNoteTime;
 
         private void Awake()
         {
@@ -87,7 +87,8 @@ namespace ChartManagement
                 var isNotSoleTimingMark = match.Groups[0].Value != ",";
 
                 if (isNotSoleTimingMark)
-                    noteDataObject = new NoteDataObject(match.Groups[0].Value, (int)((_time + firstNoteTime) * 1000), _bpm);
+                    noteDataObject = new NoteDataObject(match.Groups[0].Value, (int)((_time + firstNoteTime) * 1000),
+                        _bpm);
 
                 _time += 4 * (60f / _bpm / _noteValue);
                 _chartString = NoteRegex.Replace(_chartString, "", 1).Trim();

@@ -101,7 +101,7 @@ Shader "TextMeshPro/Sprite"
                 float4 clampedRect = clamp(_ClipRect, -2e10, 2e10);
                 OUT.texcoord = TRANSFORM_TEX(v.texcoord, _MainTex);
                 OUT.mask = half4(v.vertex.xy * 2 - clampedRect.xy - clampedRect.zw,
-                                   0.25 / (0.25 * half2(_UIMaskSoftnessX, _UIMaskSoftnessY) + abs(pixelSize.xy)));
+                                 0.25 / (0.25 * half2(_UIMaskSoftnessX, _UIMaskSoftnessY) + abs(pixelSize.xy)));
 
                 if (_UIVertexColorAlwaysGammaSpace && !IsGammaSpace())
                 {
