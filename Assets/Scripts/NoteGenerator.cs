@@ -211,7 +211,7 @@ public class NoteGenerator : MonoBehaviour
 
             if (slideBasedNoteObjectInstance)
             {
-                slideBasedNoteObjectInstance.order = order;
+                slideBasedNoteObjectInstance.order = -order;
                 slideBasedNoteObjectInstance.timing = noteDataObject.Timing;
                 slideBasedNoteObjectInstance.slideType = slide.Type;
                 slideBasedNoteObjectInstance.isEach = isSlideEach;

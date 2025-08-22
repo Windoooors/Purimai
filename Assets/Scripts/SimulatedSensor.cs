@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem.EnhancedTouch;
@@ -12,6 +13,8 @@ public class SimulatedSensor : MonoBehaviour
     public static EventHandler<TouchEventArgs> OnLeave;
 
     public static readonly List<SimulatedSensor> Sensors = new();
+    
+    public float scale = 1;
 
     public string sensorId;
     private bool _currentFrameHasFinger;
@@ -23,14 +26,20 @@ public class SimulatedSensor : MonoBehaviour
 
     private void Start()
     {
-        EnhancedTouchSupport.Enable();
-
-        _mainCamera = FindObjectsByType<Camera>(FindObjectsInactive.Include, FindObjectsSortMode.None)[0];
+        _mainCamera = SimulatedSensorManager.Instance.mainCamera;
         gameObject.name = sensorId;
 
         _spriteShapeRenderer = GetComponent<SpriteShapeRenderer>();
 
         Sensors.Add(this);
+
+        StartCoroutine(ChangeSensorScale());
+    }
+
+    private IEnumerator ChangeSensorScale()
+    {
+        yield return null;
+        transform.localScale *= scale * SimulatedSensorManager.Instance.globalScale;
     }
 
     private void Update()

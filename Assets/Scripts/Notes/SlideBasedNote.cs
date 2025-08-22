@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using ChartManagement;
@@ -82,7 +83,7 @@ namespace Notes
             {
                 _waitingStarted = true;
                 foreach (var star in stars)
-                    LMotion.Create(0, 1f, waitDuration / 2000f).WithEase(Ease.Linear).WithDelay(waitDuration / 2000f)
+                    LMotion.Create(0, 1f, waitDuration / 1000f).WithEase(Ease.Linear)
                         .Bind(x =>
                         {
                             star.spriteRenderer.color = new Color(1, 1, 1, 0.5f + 0.5f * x);
@@ -156,6 +157,23 @@ namespace Notes
 
                 slideSpriteRenderer.sortingOrder += order;
             }
+        }
+
+        protected IEnumerator ConcealSegment(int touchedSegmentsIndex, bool sensorJumpedForLastSegment, float delay = 0.075f)
+        {
+            yield return new WaitForSeconds(delay);
+            
+            if (touchedSegmentsIndex - 1 >= 0)
+                UniversalSegments[touchedSegmentsIndex - 1].slideSpriteRenderers[^1].color = new Color(0, 0, 0, 0);
+            
+            var segment = UniversalSegments[touchedSegmentsIndex];
+            
+            foreach (var motionHandle in segment.MotionHandles) motionHandle.TryCancel();
+
+            foreach (var slideSprite in segment.slideSpriteRenderers) slideSprite.color = new Color(0, 0, 0, 0);
+
+            if (touchedSegmentsIndex != UniversalSegments.Count - 2 && sensorJumpedForLastSegment)
+                segment.slideSpriteRenderers[^1].color = new Color(1, 1, 1, 0.5f);
         }
 
         private void InitializeSlideSegments()

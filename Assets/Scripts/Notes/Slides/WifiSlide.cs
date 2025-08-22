@@ -97,19 +97,8 @@ namespace Notes.Slides
                 math.min(_touchedLSegmentsIndex, _touchedMSegmentsIndex)) - 1;
 
             if (segmentToBeConcealedIndex != -1)
-            {
-                if (segmentToBeConcealedIndex - 1 >= 0)
-                    segments[segmentToBeConcealedIndex - 1].slideSpriteRenderers[^1].color = new Color(0, 0, 0, 0);
-
-                var segment = segments[segmentToBeConcealedIndex];
-
-                foreach (var motionHandle in segment.MotionHandles) motionHandle.TryCancel();
-
-                foreach (var slideSprite in segment.slideSpriteRenderers) slideSprite.color = new Color(0, 0, 0, 0);
-
-                if (segmentToBeConcealedIndex != segments.Length - 2 && sensorJumpedForLastSegment)
-                    segment.slideSpriteRenderers[^1].color = new Color(1, 1, 1, 0.5f);
-            }
+                StartCoroutine(ConcealSegment(segmentToBeConcealedIndex, sensorJumpedForLastSegment));
+            
 
             if (sensorJumped)
                 ProcessSlideTouchOnSpecificSlidePath(e, pathIndex, true);

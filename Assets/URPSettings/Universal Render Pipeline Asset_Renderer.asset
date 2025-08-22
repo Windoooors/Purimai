@@ -52,7 +52,7 @@ MonoBehaviour:
   m_CameraSortingLayerDownsamplingMethod: 0
   m_MaxLightRenderTextureCount: 16
   m_MaxShadowRenderTextureCount: 1
-  m_PostProcessData: {fileID: 11400000, guid: 39be3ce1c406848bfbcc4f1f14708e1b, type: 2}
+  m_PostProcessData: {fileID: 0}
   m_DefaultMaterialType: 0
   m_DefaultCustomMaterial: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3,
     type: 2}

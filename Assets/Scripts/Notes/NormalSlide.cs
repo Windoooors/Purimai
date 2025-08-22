@@ -65,9 +65,6 @@ namespace Notes
             if (!activated)
                 return;
 
-            if (_touchedSegmentsIndex - 1 != -1)
-                segments[_touchedSegmentsIndex - 1].slideSpriteRenderers[^1].color = new Color(0, 0, 0, 0);
-
             var interval = 0;
 
             if (slideType is NoteDataObject.SlideDataObject.SlideType.Line)
@@ -81,14 +78,7 @@ namespace Notes
                 interval == 2)
                 return;
 
-            var segment = segments[_touchedSegmentsIndex];
-
-            foreach (var motionHandle in segment.MotionHandles) motionHandle.TryCancel();
-
-            foreach (var slideSprite in segment.slideSpriteRenderers) slideSprite.color = new Color(0, 0, 0, 0);
-
-            if (_touchedSegmentsIndex != segments.Length - 2 && sensorJumpedForLastSegment)
-                segment.slideSpriteRenderers[^1].color = new Color(1, 1, 1, 0.5f);
+            StartCoroutine(ConcealSegment(_touchedSegmentsIndex, sensorJumpedForLastSegment));
 
             _touchedSegmentsIndex++;
             if (sensorJumped)
