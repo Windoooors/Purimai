@@ -13,15 +13,15 @@ public class SimulatedSensor : MonoBehaviour
 
     public static readonly List<SimulatedSensor> Sensors = new();
 
+    private static bool _leaveEventRegistered;
+
     public float scale = 1;
 
     public string sensorId;
-    
+
     private bool _currentFrameHasFinger;
     private bool _lastFrameHadFinger;
 
-    private static bool _leaveEventRegistered;
-    
     private Camera _mainCamera;
 
     private SpriteShapeRenderer _spriteShapeRenderer;
@@ -64,7 +64,7 @@ public class SimulatedSensor : MonoBehaviour
             }
 
             OnTap?.Invoke(this, new TouchEventArgs(sensorId));
-            
+
             _spriteShapeRenderer.color = new Color(1, 1, 1, 0.1f);
         }
 
@@ -96,9 +96,7 @@ public class SimulatedSensor : MonoBehaviour
     private void OnAnySensorLeaved(object sender, TouchEventArgs e)
     {
         if ((_currentFrameHasFinger && _lastFrameHadFinger) || e.SensorId == sensorId)
-        {
             OnHold?.Invoke(this, new TouchEventArgs(sensorId));
-        }
     }
 
     public class TouchEventArgs : EventArgs

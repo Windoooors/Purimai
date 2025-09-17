@@ -59,5 +59,8 @@ TagManager:
   - name: Taps
     uniqueID: 177122611
     locked: 0
+  - name: Judge Display
+    uniqueID: 421743895
+    locked: 0
   m_RenderingLayers:
   - Default

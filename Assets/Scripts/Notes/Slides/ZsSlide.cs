@@ -27,6 +27,21 @@ namespace Notes.Slides
                 star.flipPathY = false;
                 star.pathRotation = -45f * fromLaneIndex;
             }
+            
+            var judgeSpriteNeedsChange =
+                judgeDisplaySpriteRenderer.transform.rotation.eulerAngles.z is > 270 and <= 360 or > 0 and <= 90;
+
+            judgeDisplaySpriteRenderer.sprite = NoteGenerator.Instance.slideJudgeDisplaySprites[0]
+                .normalSlideJudgeSprites[
+                    judgeSpriteNeedsChange
+                        ? isMirror ? 0 : 1
+                        : isMirror
+                            ? 1
+                            : 0];
+                
+            var scale = judgeDisplaySpriteRenderer.gameObject.transform.localScale;
+            scale = new Vector3(scale.x, judgeSpriteNeedsChange ? scale.y : -scale.y, scale.z);
+            judgeDisplaySpriteRenderer.transform.localScale = scale;
         }
     }
 }

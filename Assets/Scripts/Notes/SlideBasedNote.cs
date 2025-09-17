@@ -27,6 +27,8 @@ namespace Notes
         public StarMovementController[] stars;
 
         public SpriteRenderer[] slideSpriteRenderers;
+        
+        public SpriteRenderer judgeDisplaySpriteRenderer;
 
         protected readonly List<Segment> UniversalSegments = new();
         private bool _concealed;
@@ -35,7 +37,7 @@ namespace Notes
         private bool _starMovingStarted;
 
         private bool _waitingStarted;
-
+        
         private void Start()
         {
             InitializeSlideDirection();
@@ -184,8 +186,7 @@ namespace Notes
                 segment.slideSpriteRenderersWithinSensorArea[^1].color = new Color(1, 1, 1, 0.5f);
         }
 
-        protected void ConcealMiddleSegment(int touchedSegmentsIndex
-        )
+        protected void ConcealMiddleSegment(int touchedSegmentsIndex)
         {
             if (touchedSegmentsIndex - 1 >= 0)
                 UniversalSegments[touchedSegmentsIndex - 1].slideSpriteRenderersWithinSensorArea[^1].color =
@@ -267,6 +268,21 @@ namespace Notes
 
             var star = stars[0];
             star.pathRotation = -45f * fromLaneIndex;
+            
+            Debug.Log(judgeDisplaySpriteRenderer.transform.rotation.eulerAngles.z);
+            
+            var judgeSpriteNeedsChange =
+                judgeDisplaySpriteRenderer.transform.rotation.eulerAngles.z is >= 265 and <= 365 or >= -5 and <= 95;
+
+            judgeDisplaySpriteRenderer.sprite = NoteGenerator.Instance.slideJudgeDisplaySprites[0]
+                .normalSlideJudgeSprites[
+                    judgeSpriteNeedsChange
+                        ? 1
+                        : 0];
+                
+            var scale = judgeDisplaySpriteRenderer.gameObject.transform.localScale;
+            scale = new Vector3(scale.x, judgeSpriteNeedsChange ? -scale.y : scale.y, scale.z);
+            judgeDisplaySpriteRenderer.transform.localScale = scale;
         }
 
         protected string GetMirroredSensorId(string sensorId)

@@ -696,6 +696,93 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &2219788766026866594
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3712328467767783584}
+  - component: {fileID: 8560255861800153134}
+  m_Layer: 0
+  m_Name: JudgeDisplay
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3712328467767783584
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2219788766026866594}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: -1, w: 0}
+  m_LocalPosition: {x: -1.65, y: -4.54, z: 0}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5075201865271903236}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -180}
+--- !u!212 &8560255861800153134
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2219788766026866594}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 421743895
+  m_SortingLayer: 7
+  m_SortingOrder: 0
+  m_Sprite: {fileID: -1882703412, guid: 34bb0d53ec9d249e3af1e6f4d5a73871, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 7.02, y: 2.58}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
 --- !u!1 &3065644182986415331
 GameObject:
   m_ObjectHideFlags: 0
@@ -2380,6 +2467,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 3712328467767783584}
   - {fileID: 9019763294593759527}
   - {fileID: 9088512638533277555}
   - {fileID: 4113101506380812910}
@@ -2457,25 +2545,8 @@ MonoBehaviour:
   isEach: 0
   order: 0
   isWifi: 0
-  coverLastSlide: 0
   stars:
   - {fileID: 5907539545815078899}
-  segments:
-  - sensor: A1
-    sensorsNearby: []
-    slideSpriteRenderers: []
-  - sensor: A2
-    sensorsNearby: []
-    slideSpriteRenderers: []
-  - sensor: A3
-    sensorsNearby: []
-    slideSpriteRenderers: []
-  - sensor: A4
-    sensorsNearby: []
-    slideSpriteRenderers: []
-  - sensor: A5
-    sensorsNearby: []
-    slideSpriteRenderers: []
   slideSpriteRenderers:
   - {fileID: 8473193840161903448}
   - {fileID: 839444671862908321}
@@ -2508,6 +2579,33 @@ MonoBehaviour:
   - {fileID: 5212133332621047833}
   - {fileID: 3627739094381802767}
   - {fileID: 1493274307384751344}
+  judgeDisplaySpriteRenderer: {fileID: 8560255861800153134}
+  segments:
+  - mainSensor: A1
+    slideSpriteRenderers: []
+    slideSpriteRenderersWithinSensorArea: []
+    slideSpriteRenderersOutsideSensorArea: []
+    sensorsNearby: []
+  - mainSensor: A2
+    slideSpriteRenderers: []
+    slideSpriteRenderersWithinSensorArea: []
+    slideSpriteRenderersOutsideSensorArea: []
+    sensorsNearby: []
+  - mainSensor: A3
+    slideSpriteRenderers: []
+    slideSpriteRenderersWithinSensorArea: []
+    slideSpriteRenderersOutsideSensorArea: []
+    sensorsNearby: []
+  - mainSensor: A4
+    slideSpriteRenderers: []
+    slideSpriteRenderersWithinSensorArea: []
+    slideSpriteRenderersOutsideSensorArea: []
+    sensorsNearby: []
+  - mainSensor: A5
+    slideSpriteRenderers: []
+    slideSpriteRenderersWithinSensorArea: []
+    slideSpriteRenderersOutsideSensorArea: []
+    sensorsNearby: []
 --- !u!1 &8418846349238727188
 GameObject:
   m_ObjectHideFlags: 0

@@ -24,6 +24,8 @@ public class NoteGenerator : MonoBehaviour
     [FormerlySerializedAs("starSprite")] public Sprite eachStarSprite;
     public Sprite[] wifiSlideEachSprites;
 
+    public SlideJudgeDisplayDataObject[] slideJudgeDisplaySprites;
+
     public float originCircleScale = 0.253f;
 
     public Vector3 outOfScreenPosition = new(10, 10, 10);
@@ -252,5 +254,13 @@ public class NoteGenerator : MonoBehaviour
         public BigPqSlide[] bigPqSlidePrefabs;
         public ZsSlide zsSlidePrefab;
         public WifiSlide wifiSlidePrefab;
+    }
+
+    [Serializable]
+    public class SlideJudgeDisplayDataObject
+    {
+        public Sprite[] normalSlideJudgeSprites;
+        public Sprite[] circleSlideJudgeSprites;
+        public Sprite[] wifiSlideJudgeSprites;
     }
 }
