@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
@@ -103,20 +105,158 @@ namespace ChartManagement
     public class NoteDataObject
     {
         private static readonly Regex HeadRegex = new("^([1-8])");
-
-        private static readonly Regex HoldRegex =
-            new(@"(h\[([0-9]*)\:([0-9]*)\])|(h\[(\d+\.\d+?|\d+)#([0-9]*)\:([0-9]*)\])|(h\[#(\d+\.\d+?|\d+)\])|(h)");
-
-        // I'm sorry for this
-        private static readonly Regex SlideRegex = new(
-            @"([1-8])([1-8]|)((\[([0-9]*?):([0-9]*?)\])|(\[(\d+\.\d+?|\d+)#([0-9]*?):([0-9]*?)\])|(\[(\d+\.\d+?|\d+)#(\d+\.\d+?|\d+)\])|(\[(\d+\.\d+?|\d+)##(\d+\.\d+?|\d+)\])|(\[(\d+\.\d+?|\d+)##([0-9]*?):([0-9]*?)\])|(\[(\d+\.\d+?|\d+)##(\d+\.\d+?|\d+)#([0-9]*?):([0-9]*?)\]))");
-
+        
         public readonly HoldDataObject[] HoldDataObjects;
         public readonly SlideDataObject[] SlideDataObjects;
 
         public readonly TapDataObject[] TapDataObjects;
         public readonly int Timing;
+        
+        private HoldResult ParseHold(string input, double globalBpm)
+        {
+            var result = new HoldResult();
+            var quarter = 60.0 / globalBpm;
 
+            var cases = new (string pattern, Action<Match> action)[]
+            {
+                (@"h\[([0-9]*)\:([0-9]*)\]", m =>
+                {
+                    var start = ParseNum(m.Groups[1].Value);
+                    var end = ParseNum(m.Groups[2].Value);
+                    var noteDuration = (4.0 / start) * quarter;
+                    result.HoldDuration = noteDuration * end;
+                }),
+                (@"h\[(\d+\.\d+?|\d+)#([0-9]*)\:([0-9]*)\]", m =>
+                {
+                    var bpm = ParseNum(m.Groups[1].Value);
+                    var start = ParseNum(m.Groups[2].Value);
+                    var end = ParseNum(m.Groups[3].Value);
+                    var q = 60.0 / bpm;
+                    var noteDuration = 4.0 / start * q;
+                    result.HoldDuration = noteDuration * end;
+                }),
+                (@"h\[#(\d+\.\d+?|\d+)\]", m =>
+                {
+                    result.HoldDuration = ParseNum(m.Groups[1].Value);
+                }),
+                ("h", _ =>
+                {
+                    result.HoldDuration = 0;
+                })
+            };
+
+            foreach (var (pattern, action) in cases)
+            {
+                var m = Regex.Match(input, pattern);
+                if (!m.Success)
+                    continue;
+                
+                action(m);
+                result.Success = true;
+                
+                break;
+            }
+
+            return result;
+        }
+
+        private SlideResult ParseSlide(string input, double globalBpm)
+        {
+            var result = new SlideResult { RemainingInput = input };
+            var quarter = 60.0 / globalBpm;
+            
+            var cases = new (string pattern, Action<Match> action)[]
+            {
+                (@"([1-8]{1,2})\[([0-9]*?):([0-9]*?)\]", m =>
+                {
+                    result.To = m.Groups[1].Value.Select(c => int.Parse(c.ToString())).ToArray();
+                    var start = ParseNum(m.Groups[2].Value);
+                    var end = ParseNum(m.Groups[3].Value);
+                    var noteDuration = (4.0 / start) * quarter;
+                    result.SlideDuration = noteDuration * end;
+                    result.WaitDuration = quarter;
+                }),
+                (@"([1-8]{1,2})\[(\d+\.\d+?|\d+)#([0-9]*?):([0-9]*?)\]", m =>
+                {
+                    result.To = m.Groups[1].Value.Select(c => int.Parse(c.ToString())).ToArray();
+                    var bpm = ParseNum(m.Groups[2].Value);
+                    var start = ParseNum(m.Groups[3].Value);
+                    var end = ParseNum(m.Groups[4].Value);
+                    var q = 60.0 / bpm;
+                    var noteDuration = (4.0 / start) * q;
+                    result.SlideDuration = noteDuration * end;
+                    result.WaitDuration = q;
+                }),
+                (@"([1-8]{1,2})\[(\d+\.\d+?|\d+)#(\d+\.\d+?|\d+)\]", m =>
+                {
+                    result.To = m.Groups[1].Value.Select(c => int.Parse(c.ToString())).ToArray();
+                    var bpm = ParseNum(m.Groups[2].Value);
+                    var slide = ParseNum(m.Groups[3].Value);
+                    result.SlideDuration = slide;
+                    result.WaitDuration = 60.0 / bpm;
+                }),
+                (@"([1-8]{1,2})\[(\d+\.\d+?|\d+)##(\d+\.\d+?|\d+)\]", m =>
+                {
+                    result.To = m.Groups[1].Value.Select(c => int.Parse(c.ToString())).ToArray();
+                    result.WaitDuration = ParseNum(m.Groups[2].Value);
+                    result.SlideDuration = ParseNum(m.Groups[3].Value);
+                }),
+                (@"([1-8]{1,2})\[(\d+\.\d+?|\d+)##([0-9]*?):([0-9]*?)\]", m =>
+                {
+                    result.To = m.Groups[1].Value.Select(c => int.Parse(c.ToString())).ToArray();
+                    result.WaitDuration = ParseNum(m.Groups[2].Value);
+                    var start = ParseNum(m.Groups[3].Value);
+                    var end = ParseNum(m.Groups[4].Value);
+                    var noteDuration = (4.0 / start) * quarter;
+                    result.SlideDuration = noteDuration * end;
+                }),
+                (@"([1-8]{1,2})\[(\d+\.\d+?|\d+)##(\d+\.\d+?|\d+)#([0-9]*?):([0-9]*?)\]", m =>
+                {
+                    result.To = m.Groups[1].Value.Select(c => int.Parse(c.ToString())).ToArray();
+                    result.WaitDuration = ParseNum(m.Groups[2].Value);
+                    var bpm = ParseNum(m.Groups[3].Value);
+                    var start = ParseNum(m.Groups[4].Value);
+                    var end = ParseNum(m.Groups[5].Value);
+                    var q = 60.0 / bpm;
+                    var noteDuration = (4.0 / start) * q;
+                    result.SlideDuration = noteDuration * end;
+                })
+            };
+
+            foreach (var (pattern, action) in cases)
+            {
+                var m = Regex.Match(input, pattern);
+                if (!m.Success)
+                    continue;
+                
+                action(m);
+                result.Success = true;
+                
+                result.RemainingInput = new Regex(pattern).Replace(input, "", 1);
+                break;
+            }
+
+            return result;
+        }
+
+        private double ParseNum(string s) =>
+            double.Parse(s, CultureInfo.InvariantCulture);
+
+        private class SlideResult
+        {
+            public bool Success { get; set; }
+            public int[] To { get; set; } = Array.Empty<int>();
+            public double SlideDuration { get; set; }
+            public double WaitDuration { get; set; }
+            public string RemainingInput { get; set; } = string.Empty;
+        }
+        
+        private class HoldResult
+        {
+            public bool Success { get; set; }
+            public double HoldDuration { get; set; }
+        }
+        
         public NoteDataObject(string noteString, int timing, double bpm)
         {
             Timing = timing;
@@ -160,32 +300,16 @@ namespace ChartManagement
 
                 var holdOrSlideNoteString = HeadRegex.Replace(separatedNoteStringWithNoHeadProperties, "", 1).Trim();
 
-                var holdMatch = HoldRegex.Match(holdOrSlideNoteString);
+                var holdMatch = ParseHold(holdOrSlideNoteString, bpm);
                 if (holdMatch.Success)
                 {
-                    var holdDuration = 0;
-
-                    if (holdMatch.Groups[5].Success)
-                        holdDuration = (int)(4000 * (60f / double.Parse(holdMatch.Groups[5].Value) /
-                                                     int.Parse(holdMatch.Groups[6].Value)) *
-                                             int.Parse(holdMatch.Groups[7].Value));
-
-                    if (holdMatch.Groups[9].Success)
-                        holdDuration = (int)(double.Parse(holdMatch.Groups[9].Value) * 1000);
-
-                    if (holdMatch.Groups[10].Success)
-                        holdDuration = 0;
-
-                    if (holdMatch.Groups[2].Success)
-                        holdDuration = (int)(4000 * (60f / bpm / int.Parse(holdMatch.Groups[2].Value)) *
-                                             int.Parse(holdMatch.Groups[3].Value));
-
                     holds.Add(new HoldDataObject
                     {
-                        HoldDuration = holdDuration,
+                        HoldDuration = (int)(holdMatch.HoldDuration * 1000),
                         Lane = lane
                     });
-                    continue; // Continue when separated note is a hold one.
+                    
+                    continue;
                 }
 
                 // Process slides.
@@ -197,12 +321,12 @@ namespace ChartManagement
 
                 foreach (var separatedSlideString in separatedSlideStrings)
                 {
-                    var slideMatch = SlideRegex.Match(separatedSlideString);
+                    var slideMatch = ParseSlide(separatedSlideString.Trim(), bpm);
 
                     if (!slideMatch.Success)
                         continue;
 
-                    var slideTypeString = SlideRegex.Replace(separatedSlideString, "", 1).Trim();
+                    var slideTypeString = slideMatch.RemainingInput.Trim();
 
                     if (!SlideDataObject.SlideStringToSlideType.TryGetValue(slideTypeString, out var slideType))
                     {
@@ -210,59 +334,13 @@ namespace ChartManagement
                         continue;
                     }
 
-                    var slideDuration = 0;
-                    var waitDuration = 0;
-
-                    if (slideMatch.Groups[8].Success)
-                    {
-                        slideDuration = (int)(4000 * (60f / double.Parse(slideMatch.Groups[8].Value) /
-                                                      int.Parse(slideMatch.Groups[9].Value)) *
-                                              int.Parse(slideMatch.Groups[10].Value));
-                        waitDuration = (int)(1000 * (60f / double.Parse(slideMatch.Groups[8].Value)));
-                    }
-
-                    if (slideMatch.Groups[12].Success)
-                    {
-                        slideDuration = (int)(1000 * double.Parse(slideMatch.Groups[13].Value));
-                        waitDuration = (int)(1000 * (60f / double.Parse(slideMatch.Groups[12].Value)));
-                    }
-
-                    if (slideMatch.Groups[15].Success)
-                    {
-                        slideDuration = (int)(1000 * double.Parse(slideMatch.Groups[16].Value));
-                        waitDuration = (int)(1000 * double.Parse(slideMatch.Groups[15].Value));
-                    }
-
-                    if (slideMatch.Groups[18].Success)
-                    {
-                        slideDuration = (int)(4000 * (60f / bpm /
-                                                      int.Parse(slideMatch.Groups[19].Value)) *
-                                              int.Parse(slideMatch.Groups[20].Value));
-                        waitDuration = (int)(1000 * double.Parse(slideMatch.Groups[18].Value));
-                    }
-
-                    if (slideMatch.Groups[22].Success)
-                    {
-                        slideDuration = (int)(4000 * (60f / double.Parse(slideMatch.Groups[23].Value) /
-                                                      int.Parse(slideMatch.Groups[24].Value)) *
-                                              int.Parse(slideMatch.Groups[25].Value));
-                        waitDuration = (int)(1000 * double.Parse(slideMatch.Groups[22].Value));
-                    }
-
-                    if (slideMatch.Groups[5].Success)
-                    {
-                        slideDuration = (int)(4000 * (60f / bpm /
-                                                      int.Parse(slideMatch.Groups[5].Value)) *
-                                              int.Parse(slideMatch.Groups[6].Value));
-                        waitDuration = (int)(1000 * (60f / bpm));
-                    }
+                    var slideDuration = (int)(slideMatch.SlideDuration * 1000);
+                    var waitDuration = (int)(slideMatch.WaitDuration * 1000);
 
                     slides.Add(new SlideDataObject
                     {
                         From = lane,
-                        To = slideMatch.Groups[2].Value == ""
-                            ? new[] { int.Parse(slideMatch.Groups[1].Value) }
-                            : new[] { int.Parse(slideMatch.Groups[1].Value), int.Parse(slideMatch.Groups[2].Value) },
+                        To = slideMatch.To,
                         SlideDuration = slideDuration,
                         WaitDuration = waitDuration,
                         Type = slideType

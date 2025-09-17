@@ -3732,7 +3732,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0993bf12023442cfad3953cb08eb627, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chartFile: {fileID: 4900000, guid: 0ec7af460f66e4e4b83757c7d86bc282, type: 3}
+  chartFile: {fileID: 4900000, guid: 303f799bd2c2f46959e161652ca098d9, type: 3}
   tapPrefabs:
   - {fileID: 3052495769774026895, guid: 1655ad0a9bd504c22873d326a85b13e7, type: 3}
   - {fileID: 603680196717738998, guid: 6b38635249e5e46abb49978f81dd3cb4, type: 3}
@@ -6306,8 +6306,8 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 0ef189d72128340fa9d08f2de9a3fc02, type: 3}
-  m_Resource: {fileID: 8300000, guid: 0ef189d72128340fa9d08f2de9a3fc02, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 7124966e33a234c96bc4c34b67b94472, type: 3}
+  m_Resource: {fileID: 8300000, guid: 7124966e33a234c96bc4c34b67b94472, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
