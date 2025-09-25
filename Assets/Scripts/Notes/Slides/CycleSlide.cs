@@ -5,14 +5,16 @@ namespace Notes.Slides
 {
     public class CycleSlide : NormalSlide
     {
+        private bool _isClockwise;
+        
         protected override void InitializeSlideDirection()
         {
-            var isClockwise = IsClockwise(fromLaneIndex + 1, toLaneIndexes[0] + 1, slideType);
+            _isClockwise = IsCircleClockwise(fromLaneIndex + 1, toLaneIndexes[0] + 1, slideType);
 
             var star = stars[0];
             star.objectRotationOffset = -18;
 
-            if (isClockwise)
+            if (_isClockwise)
             {
                 transform.eulerAngles = new Vector3(0, 0, -45f * fromLaneIndex);
                 star.flipPathY = true;
@@ -28,6 +30,20 @@ namespace Notes.Slides
             }
         }
 
+        protected override void InitializeJudgeDisplayDirection()
+        {
+            var judgeSpriteNeedsChange =
+                judgeDisplaySpriteRenderer.transform.rotation.eulerAngles.z is >= 265 and <= 365 or >= -5 and <= 95;
+
+            judgeDisplaySpriteRenderer.sprite = NoteGenerator.Instance.slideJudgeDisplaySprites[0]
+                .circleSlideJudgeSprites[
+                    judgeSpriteNeedsChange
+                        ? _isClockwise ? 2 : 0
+                        : _isClockwise
+                            ? 3
+                            : 1];
+        }
+
         private static bool IsUpper(int point)
         {
             return point == 1 || point == 2 || point == 7 || point == 8;
@@ -40,7 +56,7 @@ namespace Notes.Slides
             if (slideType == NoteDataObject.SlideDataObject.SlideType.RotateMinorArc)
                 return GetShortestInterval(fromLane, toLane);
 
-            var isClockwise = IsClockwise(fromLane, toLane, slideType);
+            var isClockwise = IsCircleClockwise(fromLane, toLane, slideType);
 
             var interval = 0;
             var current = fromLane;
@@ -56,7 +72,7 @@ namespace Notes.Slides
             return interval;
         }
 
-        private static bool IsClockwise(int fromLane, int toLane,
+        private static bool IsCircleClockwise(int fromLane, int toLane,
             NoteDataObject.SlideDataObject.SlideType directionType)
         {
             switch (directionType)

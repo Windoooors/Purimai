@@ -63,6 +63,10 @@ namespace Notes
         {
             if (_touchedSegmentsIndex == segments.Length - 1)
             {
+                var state = GetSegmentState(e.SensorId);
+                if (state.activated)
+                    Judge();
+                
                 ConcealMiddleSegment(_touchedSegmentsIndex);
                 return;
             }
@@ -95,7 +99,7 @@ namespace Notes
 
         private (bool sensorJumped, bool activated) GetSegmentState(string sensorId)
         {
-            if (timing - 100 > ChartPlayer.Instance.time)
+            if (timing > ChartPlayer.Instance.time)
                 return (false, false);
 
             if (_touchedSegmentsIndex == segments.Length)

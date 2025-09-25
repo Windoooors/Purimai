@@ -45,10 +45,14 @@ public class SimulatedSensor : MonoBehaviour
         foreach (var finger in Touch.activeFingers)
         {
             var rayPoint = _mainCamera.ScreenToWorldPoint(finger.screenPosition);
-            var hit = Physics2D.Raycast(rayPoint, Vector2.zero);
-
-            if (hit && hit.collider.gameObject.name == sensorId)
-                _currentFrameHasFinger = true;
+            
+            var hits = Physics2D.RaycastAll(rayPoint, Vector2.zero);
+            
+            foreach (var hit in hits)
+            {
+                if (hit && hit.collider.gameObject.name == sensorId)
+                    _currentFrameHasFinger = true;
+            }
         }
 
         if (_currentFrameHasFinger && !_lastFrameHadFinger)
@@ -65,7 +69,7 @@ public class SimulatedSensor : MonoBehaviour
 
             OnTap?.Invoke(this, new TouchEventArgs(sensorId));
 
-            _spriteShapeRenderer.color = new Color(1, 1, 1, 0.1f);
+            //_spriteShapeRenderer.color = new Color(1, 1, 1, 0.1f);
         }
 
         if (!_currentFrameHasFinger && _lastFrameHadFinger)

@@ -8,10 +8,10 @@ namespace Notes.Slides
     public class WifiSlide : SlideBasedNote
     {
         public WifiSegment[] segments;
-        private int _touchedLSegmentsIndex;
-        private int _touchedMSegmentsIndex;
+        public int _touchedLSegmentsIndex;
+        public int _touchedMSegmentsIndex;
 
-        private int _touchedRSegmentsIndex;
+        public int _touchedRSegmentsIndex;
 
         protected override void UpdateUniversalSegments()
         {
@@ -54,11 +54,18 @@ namespace Notes.Slides
             ProcessSlideHoldOnSpecificSlidePath(e, 0);
             ProcessSlideHoldOnSpecificSlidePath(e, 1);
             ProcessSlideHoldOnSpecificSlidePath(e, 2);
+            
+           if (math.min(_touchedRSegmentsIndex,
+                math.min(_touchedLSegmentsIndex, _touchedMSegmentsIndex)) == segments.Length)
+               Judge();
         }
 
         private void ProcessSlideHoldOnSpecificSlidePath(SimulatedSensor.TouchEventArgs e, int pathIndex,
             bool sensorJumpedForLastSegment = false)
         {
+            var lastSegmentToBeConcealedIndex = math.min(_touchedRSegmentsIndex,
+                math.min(_touchedLSegmentsIndex, _touchedMSegmentsIndex)) - 1;
+            
             var touchedSegmentsIndex = pathIndex switch
             {
                 0 => _touchedLSegmentsIndex,
@@ -66,13 +73,13 @@ namespace Notes.Slides
                 2 => _touchedRSegmentsIndex,
                 _ => -1
             };
-
-            if (timing - 100 > ChartPlayer.Instance.time)
+            
+            if (touchedSegmentsIndex == segments.Length)
                 return;
 
-            if (touchedSegmentsIndex == segments.Length - 1 || touchedSegmentsIndex == segments.Length)
+            if (timing > ChartPlayer.Instance.time)
                 return;
-
+            
             var sensorJumped =
                 touchedSegmentsIndex + 1 != segments.Length &&
                 SensorContained(touchedSegmentsIndex + 1, e.SensorId, pathIndex);
@@ -96,13 +103,15 @@ namespace Notes.Slides
                     _touchedRSegmentsIndex++;
                     break;
             }
+            
+            if (touchedSegmentsIndex == segments.Length - 1)
+                return;
 
             var segmentToBeConcealedIndex = math.min(_touchedRSegmentsIndex,
                 math.min(_touchedLSegmentsIndex, _touchedMSegmentsIndex)) - 1;
 
-            if (segmentToBeConcealedIndex != -1)
+            if (segmentToBeConcealedIndex != -1 && segmentToBeConcealedIndex - lastSegmentToBeConcealedIndex > 0)
                 ConcealSegment(segmentToBeConcealedIndex, sensorJumpedForLastSegment);
-
 
             if (sensorJumped)
                 ProcessSlideHoldOnSpecificSlidePath(e, pathIndex, true);
@@ -113,6 +122,18 @@ namespace Notes.Slides
             transform.Rotate(new Vector3(0, 0, -45f * fromLaneIndex));
 
             foreach (var star in stars) star.pathRotation = -45f * fromLaneIndex;
+        }
+
+        protected override void InitializeJudgeDisplayDirection()
+        {
+            var judgeSpriteNeedsChange =
+                judgeDisplaySpriteRenderer.transform.rotation.eulerAngles.z is >= 265 and <= 365 or >= -5 and <= 95;
+
+            judgeDisplaySpriteRenderer.sprite = NoteGenerator.Instance.slideJudgeDisplaySprites[0]
+                .wifiSlideJudgeSprites[
+                    judgeSpriteNeedsChange
+                        ? 0
+                        : 1];
         }
     }
 

@@ -97,7 +97,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3439151639192608952}
   - component: {fileID: 6643373409992967275}
-  - component: {fileID: 7513528305110663433}
+  - component: {fileID: 4605272654165830198}
   m_Layer: 0
   m_Name: Break Star Tap
   m_TagString: Untagged
@@ -175,23 +175,28 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!111 &7513528305110663433
-Animation:
+--- !u!95 &4605272654165830198
+Animator:
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1716355091658589595}
   m_Enabled: 1
-  serializedVersion: 4
-  m_Animation: {fileID: 7400000, guid: 24dba921dddc94c35ba31604aa18d51d, type: 2}
-  m_Animations:
-  - {fileID: 7400000, guid: 24dba921dddc94c35ba31604aa18d51d, type: 2}
-  m_WrapMode: 0
-  m_PlayAutomatically: 1
-  m_AnimatePhysics: 0
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: d91d116c89d554ef0a7602d87c487be2, type: 2}
+  m_CullingMode: 0
   m_UpdateMode: 0
-  m_CullingType: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &3127605140809608179
 GameObject:
   m_ObjectHideFlags: 0

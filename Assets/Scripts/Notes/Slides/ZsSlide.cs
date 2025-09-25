@@ -5,17 +5,19 @@ namespace Notes.Slides
 {
     public class ZsSlide : NormalSlide
     {
+        private bool _isMirror;
+        
         protected override void InitializeSlideDirection()
         {
-            var isMirror = slideType == NoteDataObject.SlideDataObject.SlideType.Z;
+            _isMirror = slideType == NoteDataObject.SlideDataObject.SlideType.Z;
 
             transform.Rotate(
-                isMirror
+                _isMirror
                     ? new Vector3(0, 180, 45 + 45f * fromLaneIndex)
                     : new Vector3(0, 0, -45f * fromLaneIndex));
 
             var star = stars[0];
-            if (isMirror)
+            if (_isMirror)
             {
                 MirrorSlideSensorIds();
 
@@ -27,20 +29,25 @@ namespace Notes.Slides
                 star.flipPathY = false;
                 star.pathRotation = -45f * fromLaneIndex;
             }
-            
+        }
+
+        protected override void InitializeJudgeDisplayDirection()
+        {
             var judgeSpriteNeedsChange =
-                judgeDisplaySpriteRenderer.transform.rotation.eulerAngles.z is > 270 and <= 360 or > 0 and <= 90;
+                judgeDisplaySpriteRenderer.transform.rotation.eulerAngles.z is >= 265 and <= 365 or >= -5 and <= 95;
 
             judgeDisplaySpriteRenderer.sprite = NoteGenerator.Instance.slideJudgeDisplaySprites[0]
                 .normalSlideJudgeSprites[
                     judgeSpriteNeedsChange
-                        ? isMirror ? 0 : 1
-                        : isMirror
+                        ? _isMirror ? 0 : 1
+                        : _isMirror
                             ? 1
                             : 0];
-                
+            
             var scale = judgeDisplaySpriteRenderer.gameObject.transform.localScale;
-            scale = new Vector3(scale.x, judgeSpriteNeedsChange ? scale.y : -scale.y, scale.z);
+            scale = new Vector3(scale.x,
+                judgeSpriteNeedsChange ? 0.5f : -0.5f,
+                scale.z);
             judgeDisplaySpriteRenderer.transform.localScale = scale;
         }
     }

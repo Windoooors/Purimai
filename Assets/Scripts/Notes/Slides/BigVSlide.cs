@@ -6,15 +6,17 @@ namespace Notes.Slides
     {
         protected override void InitializeSlideDirection()
         {
+            slideJudgeDisplaySpriteIndexes = new[] { 1, 0 };
+            
             var star = stars[0];
-            var isClockwise = IsClockWise(fromLaneIndex + 1, toLaneIndexes[0] + 1, toLaneIndexes[1] + 1);
-            transform.Rotate(isClockwise
+            IsClockwise = IsClockWise(fromLaneIndex + 1, toLaneIndexes[0] + 1, toLaneIndexes[1] + 1);
+            transform.Rotate(IsClockwise
                 ? new Vector3(0, 180, 45 * fromLaneIndex + 45f)
                 : new Vector3(0, 0, -45 * fromLaneIndex));
 
             star.objectRotationOffset = -18;
 
-            if (isClockwise)
+            if (IsClockwise)
             {
                 MirrorSlideSensorIds();
 
@@ -26,21 +28,6 @@ namespace Notes.Slides
                 star.flipPathY = false;
                 star.pathRotation = -45f * fromLaneIndex;
             }
-            
-            var judgeSpriteNeedsChange =
-                judgeDisplaySpriteRenderer.transform.rotation.eulerAngles.z is > 270 and <= 360 or > 0 and <= 90;
-
-            judgeDisplaySpriteRenderer.sprite = NoteGenerator.Instance.slideJudgeDisplaySprites[0]
-                .normalSlideJudgeSprites[
-                    judgeSpriteNeedsChange
-                        ? isClockwise ? 1 : 0
-                        : isClockwise
-                            ? 0
-                            : 1];
-                
-            var scale = judgeDisplaySpriteRenderer.gameObject.transform.localScale;
-            scale = new Vector3(scale.x, judgeSpriteNeedsChange ? scale.y : -scale.y, scale.z);
-            judgeDisplaySpriteRenderer.transform.localScale = scale;
         }
 
         private static Vector2 GetPoint(int index)

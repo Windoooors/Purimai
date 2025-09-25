@@ -24,25 +24,39 @@ namespace Notes
 
         public bool isWifi;
 
+        protected bool Slided;
+
         public StarMovementController[] stars;
 
         public SpriteRenderer[] slideSpriteRenderers;
         
         public SpriteRenderer judgeDisplaySpriteRenderer;
 
+        public int[] slideJudgeDisplaySpriteIndexes;
+
         protected readonly List<Segment> UniversalSegments = new();
+
+        protected bool IsClockwise;
+        
         private bool _concealed;
 
         private bool _revealed;
         private bool _starMovingStarted;
 
         private bool _waitingStarted;
+
+        private Animator _judgeDisplayAnimator;
         
         private void Start()
         {
             InitializeSlideDirection();
+            InitializeJudgeDisplayDirection();
             InitializeSlideSensorIds();
             UpdateUniversalSegments();
+            
+            _judgeDisplayAnimator = judgeDisplaySpriteRenderer.GetComponent<Animator>();
+            _judgeDisplayAnimator.enabled = true;
+            judgeDisplaySpriteRenderer.color = new Color(1, 1, 1, 0);
 
             isWifi = slideType == NoteDataObject.SlideDataObject.SlideType.Wifi;
 
@@ -88,7 +102,7 @@ namespace Notes
                     LMotion.Create(0, 1f, waitDuration / 1000f).WithEase(Ease.Linear)
                         .Bind(x =>
                         {
-                            star.spriteRenderer.color = new Color(1, 1, 1, 0.5f + 0.5f * x);
+                            star.spriteRenderer.color = new Color(1, 1, 1, x);
                             star.transform.localScale = Vector3.one + 0.5f * new Vector3(x, x, x);
                         });
             }
@@ -103,16 +117,44 @@ namespace Notes
                 }
             }
 
-            if (ChartPlayer.Instance.time >= timing + waitDuration + slideDuration + 100 && !_concealed)
+            if (ChartPlayer.Instance.time >= timing + waitDuration + slideDuration && !_concealed && Slided)
             {
-                //foreach (var spriteRenderer in slideSpriteRenderers) spriteRenderer.enabled = false;
+                foreach (var spriteRenderer in slideSpriteRenderers) spriteRenderer.enabled = false;
+
+                foreach (var star in stars)
+                {
+                    star.StopMoving();
+                    star.spriteRenderer.enabled = false;
+                }
+
+                //transform.position = NoteGenerator.Instance.outOfScreenPosition;
+                
+                if (Slided && !_concealed)
+                    PlayJudgeAnimation();
+                
+                _concealed = true;
+            }
+            
+            if (ChartPlayer.Instance.time >= timing + waitDuration + slideDuration + 600 && !_concealed && !Slided)
+            {
+                foreach (var spriteRenderer in slideSpriteRenderers) spriteRenderer.enabled = false;
 
                 foreach (var star in stars) star.StopMoving();
 
                 transform.position = NoteGenerator.Instance.outOfScreenPosition;
-
+                
                 _concealed = true;
             }
+        }
+
+        protected void Judge()
+        {
+            Slided = true;
+        }
+
+        protected void PlayJudgeAnimation()
+        {
+            _judgeDisplayAnimator.SetTrigger("ShowJudgeDisplay");
         }
 
         protected string GetUpdatedSensorId(string sensorId)
@@ -172,8 +214,9 @@ namespace Notes
         protected void ConcealSegment(int touchedSegmentsIndex, bool sensorJumpedForLastSegment)
         {
             if (touchedSegmentsIndex - 1 >= 0)
-                UniversalSegments[touchedSegmentsIndex - 1].slideSpriteRenderersWithinSensorArea[^1].color =
-                    new Color(0, 0, 0, 0);
+                if (UniversalSegments[touchedSegmentsIndex - 1].slideSpriteRenderersWithinSensorArea.Length > 0)
+                    UniversalSegments[touchedSegmentsIndex - 1].slideSpriteRenderersWithinSensorArea[^1].color =
+                        new Color(0, 0, 0, 0);
 
             var segment = UniversalSegments[touchedSegmentsIndex];
 
@@ -188,7 +231,7 @@ namespace Notes
 
         protected void ConcealMiddleSegment(int touchedSegmentsIndex)
         {
-            if (touchedSegmentsIndex - 1 >= 0)
+            if (touchedSegmentsIndex - 1 >= 0 && UniversalSegments[touchedSegmentsIndex - 1].slideSpriteRenderersWithinSensorArea.Length > 0)
                 UniversalSegments[touchedSegmentsIndex - 1].slideSpriteRenderersWithinSensorArea[^1].color =
                     new Color(0, 0, 0, 0);
 
@@ -245,12 +288,14 @@ namespace Notes
             if (index == -1)
                 return false;
 
-            if (slideType is not NoteDataObject.SlideDataObject.SlideType.Wifi)
-                return sensorCollider.OverlapPoint(slideSpriteRenderers[index].transform.position);
+            //if (slideType is not NoteDataObject.SlideDataObject.SlideType.Wifi)
+                //return sensorCollider.OverlapPoint(slideSpriteRenderers[index].transform.position);
 
             var colliderAdded = slideSpriteRenderers[index].TryGetComponent<Collider2D>(out var addedCollider);
             if (!colliderAdded)
                 addedCollider = slideSpriteRenderers[index].gameObject.AddComponent<BoxCollider2D>();
+
+            addedCollider.enabled = true;
 
             var overlapResults = new Collider2D[10];
 
@@ -258,30 +303,42 @@ namespace Notes
             filter.SetLayerMask(1 << LayerMask.NameToLayer("Sensors"));
 
             addedCollider.Overlap(filter, overlapResults);
+            
+            addedCollider.enabled = false;
 
             return overlapResults.Contains(sensorCollider);
         }
 
         protected virtual void InitializeSlideDirection()
         {
+            IsClockwise = true;
+
+            slideJudgeDisplaySpriteIndexes = new[] { 0, 1 };
+            
             transform.Rotate(new Vector3(0, 0, -45f * fromLaneIndex));
 
             var star = stars[0];
             star.pathRotation = -45f * fromLaneIndex;
-            
-            Debug.Log(judgeDisplaySpriteRenderer.transform.rotation.eulerAngles.z);
-            
+        }
+
+        protected virtual void InitializeJudgeDisplayDirection()
+        {
             var judgeSpriteNeedsChange =
-                judgeDisplaySpriteRenderer.transform.rotation.eulerAngles.z is >= 265 and <= 365 or >= -5 and <= 95;
+                judgeDisplaySpriteRenderer.transform.rotation.eulerAngles.z is > 265 and <= 365 or > -5 and <= 95;
 
             judgeDisplaySpriteRenderer.sprite = NoteGenerator.Instance.slideJudgeDisplaySprites[0]
                 .normalSlideJudgeSprites[
                     judgeSpriteNeedsChange
-                        ? 1
-                        : 0];
+                        ? IsClockwise ? slideJudgeDisplaySpriteIndexes[1] : slideJudgeDisplaySpriteIndexes[0]
+                        : IsClockwise
+                            ? slideJudgeDisplaySpriteIndexes[0]
+                            : slideJudgeDisplaySpriteIndexes[1]];
                 
+            
             var scale = judgeDisplaySpriteRenderer.gameObject.transform.localScale;
-            scale = new Vector3(scale.x, judgeSpriteNeedsChange ? -scale.y : scale.y, scale.z);
+            scale = new Vector3(scale.x,
+                judgeSpriteNeedsChange ? 0.5f : -0.5f,
+                scale.z);
             judgeDisplaySpriteRenderer.transform.localScale = scale;
         }
 
