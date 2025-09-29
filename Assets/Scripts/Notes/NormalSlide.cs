@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using ChartManagement;
 using Notes.Slides;
+using UnityEngine;
 
 namespace Notes
 {
@@ -37,20 +38,36 @@ namespace Notes
             }
         }
 
-        private bool SensorContained(int segmentIndex, string sensorId)
+        protected override void OnSensorTapDelayed(TouchEventArgs e)
         {
-            return segments[segmentIndex].mainSensor == sensorId ||
-                   segments[segmentIndex].sensorsNearby.Contains(sensorId);
+            if (e.AllowSensorOverlapping)
+                return;
+            
+            if (Slided)
+                return;
+            
+            var segmentState = GetSegmentState(e.SensorId);
+            
+            if (!segmentState.activated)
+                return;
+            
+            if (_touchedSegmentsIndex == segments.Length - 1)
+                Judge();
         }
 
-        protected override void ProcessSlideTap(SimulatedSensor.TouchEventArgs e,
-            bool sensorJumpedForLastSegment = false)
+        protected override void OnSensorTap(TouchEventArgs e)
         {
+            if (e.AllowSensorOverlapping)
+                return;
+            
             var segmentState = GetSegmentState(e.SensorId);
             var sensorJumped = segmentState.sensorJumped;
 
             if (!segmentState.activated)
                 return;
+
+            if (_touchedSegmentsIndex == segments.Length - 1 && !Slided)
+                Judge();
 
             if (sensorJumped)
                 return;
@@ -58,24 +75,30 @@ namespace Notes
             ConcealMiddleSegment(_touchedSegmentsIndex);
         }
 
-        protected override void ProcessSlideHold(SimulatedSensor.TouchEventArgs e,
+        private bool SensorContained(int segmentIndex, string sensorId)
+        {
+            return segments[segmentIndex].mainSensor == sensorId ||
+                   segments[segmentIndex].sensorsNearby.Contains(sensorId);
+        }
+
+        protected override void OnSensorHold(TouchEventArgs e,
             bool sensorJumpedForLastSegment = false)
         {
-            if (_touchedSegmentsIndex == segments.Length - 1)
-            {
-                var state = GetSegmentState(e.SensorId);
-                if (state.activated)
-                    Judge();
-                
-                ConcealMiddleSegment(_touchedSegmentsIndex);
+            if (e.AllowSensorOverlapping)
                 return;
-            }
-
+            
             var segmentState = GetSegmentState(e.SensorId);
             var sensorJumped = segmentState.sensorJumped;
 
             if (!segmentState.activated)
                 return;
+            
+            if (_touchedSegmentsIndex == segments.Length - 1)
+            {
+                if (!Slided)
+                    Judge();
+                return;
+            }
 
             var interval = 0;
 
@@ -93,8 +116,9 @@ namespace Notes
             ConcealSegment(_touchedSegmentsIndex, sensorJumpedForLastSegment);
 
             _touchedSegmentsIndex++;
+            
             if (sensorJumped)
-                ProcessSlideHold(e, true);
+                OnSensorHold(e, true);
         }
 
         private (bool sensorJumped, bool activated) GetSegmentState(string sensorId)

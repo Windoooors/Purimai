@@ -105,13 +105,13 @@ namespace ChartManagement
     public class NoteDataObject
     {
         private static readonly Regex HeadRegex = new("^([1-8])");
-        
+
         public readonly HoldDataObject[] HoldDataObjects;
         public readonly SlideDataObject[] SlideDataObjects;
 
         public readonly TapDataObject[] TapDataObjects;
         public readonly int Timing;
-        
+
         private HoldResult ParseHold(string input, double globalBpm)
         {
             var result = new HoldResult();
@@ -135,14 +135,8 @@ namespace ChartManagement
                     var noteDuration = 4.0 / start * q;
                     result.HoldDuration = noteDuration * end;
                 }),
-                (@"h\[#(\d+\.\d+?|\d+)\]", m =>
-                {
-                    result.HoldDuration = ParseNum(m.Groups[1].Value);
-                }),
-                ("h", _ =>
-                {
-                    result.HoldDuration = 0;
-                })
+                (@"h\[#(\d+\.\d+?|\d+)\]", m => { result.HoldDuration = ParseNum(m.Groups[1].Value); }),
+                ("h", _ => { result.HoldDuration = 0; })
             };
 
             foreach (var (pattern, action) in cases)
@@ -150,10 +144,10 @@ namespace ChartManagement
                 var m = Regex.Match(input, pattern);
                 if (!m.Success)
                     continue;
-                
+
                 action(m);
                 result.Success = true;
-                
+
                 break;
             }
 
@@ -164,7 +158,7 @@ namespace ChartManagement
         {
             var result = new SlideResult { RemainingInput = input };
             var quarter = 60.0 / globalBpm;
-            
+
             var cases = new (string pattern, Action<Match> action)[]
             {
                 (@"([1-8]{1,2})\[([0-9]*?):([0-9]*?)\]", m =>
@@ -228,10 +222,10 @@ namespace ChartManagement
                 var m = Regex.Match(input, pattern);
                 if (!m.Success)
                     continue;
-                
+
                 action(m);
                 result.Success = true;
-                
+
                 result.RemainingInput = new Regex(pattern).Replace(input, "", 1);
                 break;
             }
@@ -250,13 +244,13 @@ namespace ChartManagement
             public double WaitDuration { get; set; }
             public string RemainingInput { get; set; } = string.Empty;
         }
-        
+
         private class HoldResult
         {
             public bool Success { get; set; }
             public double HoldDuration { get; set; }
         }
-        
+
         public NoteDataObject(string noteString, int timing, double bpm)
         {
             Timing = timing;
@@ -308,7 +302,7 @@ namespace ChartManagement
                         HoldDuration = (int)(holdMatch.HoldDuration * 1000),
                         Lane = lane
                     });
-                    
+
                     continue;
                 }
 

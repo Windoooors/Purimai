@@ -43,29 +43,64 @@ namespace Notes.Slides
             }
         }
 
-        protected override void ProcessSlideTap(SimulatedSensor.TouchEventArgs e,
-            bool sensorJumpedForLastSegment = false)
+        protected override void OnSensorTap(TouchEventArgs e)
         {
+            if (!e.AllowSensorOverlapping)
+                return;
+            
+            ProcessSlideTapOnSpecificSlidePath(e, 0);
+            ProcessSlideTapOnSpecificSlidePath(e, 1);
+            ProcessSlideTapOnSpecificSlidePath(e, 2);
+            
+            if (Slided)
+                return;
+            
+            if (!(segments[^1].sensorsL.Contains(e.SensorId) ||
+                  segments[^1].sensorsM.Contains(e.SensorId) ||
+                  segments[^1].sensorsR.Contains(e.SensorId)))
+                return;
+
+            var minimalIndex = math.min(_touchedRSegmentsIndex,
+                math.min(_touchedLSegmentsIndex, _touchedMSegmentsIndex));
+
+            if (minimalIndex == segments.Length) Judge();
         }
 
-        protected override void ProcessSlideHold(SimulatedSensor.TouchEventArgs e,
+        protected override void OnSensorTapDelayed(TouchEventArgs e)
+        {
+            OnSensorTap(e);
+        }
+
+        protected override void OnSensorHold(TouchEventArgs e,
             bool sensorJumpedForLastSegment = false)
         {
+            if (!e.AllowSensorOverlapping)
+                return;
+
             ProcessSlideHoldOnSpecificSlidePath(e, 0);
             ProcessSlideHoldOnSpecificSlidePath(e, 1);
             ProcessSlideHoldOnSpecificSlidePath(e, 2);
-            
-           if (math.min(_touchedRSegmentsIndex,
-                math.min(_touchedLSegmentsIndex, _touchedMSegmentsIndex)) == segments.Length)
-               Judge();
         }
 
-        private void ProcessSlideHoldOnSpecificSlidePath(SimulatedSensor.TouchEventArgs e, int pathIndex,
+        private void ProcessSlideTapOnSpecificSlidePath(TouchEventArgs e, int pathIndex)
+        {
+            var minimalIndex = math.min(_touchedRSegmentsIndex,
+                math.min(_touchedLSegmentsIndex, _touchedMSegmentsIndex));
+
+            if (minimalIndex == segments.Length - 1)
+                ProcessSlideHoldOnSpecificSlidePath(e, pathIndex);
+        }
+
+        private void ProcessSlideHoldOnSpecificSlidePath(TouchEventArgs e, int pathIndex,
             bool sensorJumpedForLastSegment = false)
         {
+            if (math.min(_touchedRSegmentsIndex, math.min(_touchedLSegmentsIndex, _touchedMSegmentsIndex)) ==
+                segments.Length)
+                return;
+
             var lastSegmentToBeConcealedIndex = math.min(_touchedRSegmentsIndex,
                 math.min(_touchedLSegmentsIndex, _touchedMSegmentsIndex)) - 1;
-            
+
             var touchedSegmentsIndex = pathIndex switch
             {
                 0 => _touchedLSegmentsIndex,
@@ -74,12 +109,25 @@ namespace Notes.Slides
                 _ => -1
             };
             
+            if (Slided)
+                return;
+            
+            if (!(segments[^1].sensorsL.Contains(e.SensorId) ||
+                  segments[^1].sensorsM.Contains(e.SensorId) ||
+                  segments[^1].sensorsR.Contains(e.SensorId)))
+                return;
+
+            var minimalIndex = math.min(_touchedRSegmentsIndex,
+                math.min(_touchedLSegmentsIndex, _touchedMSegmentsIndex));
+
+            if (minimalIndex == segments.Length) Judge();
+
             if (touchedSegmentsIndex == segments.Length)
                 return;
 
             if (timing > ChartPlayer.Instance.time)
                 return;
-            
+
             var sensorJumped =
                 touchedSegmentsIndex + 1 != segments.Length &&
                 SensorContained(touchedSegmentsIndex + 1, e.SensorId, pathIndex);
@@ -103,7 +151,7 @@ namespace Notes.Slides
                     _touchedRSegmentsIndex++;
                     break;
             }
-            
+
             if (touchedSegmentsIndex == segments.Length - 1)
                 return;
 

@@ -6,7 +6,7 @@ namespace Notes.Slides
     public class CycleSlide : NormalSlide
     {
         private bool _isClockwise;
-        
+
         protected override void InitializeSlideDirection()
         {
             _isClockwise = IsCircleClockwise(fromLaneIndex + 1, toLaneIndexes[0] + 1, slideType);

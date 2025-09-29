@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem.EnhancedTouch;
 
@@ -12,5 +13,18 @@ public class SimulatedSensorManager : MonoBehaviour
         mainCamera = FindObjectsByType<Camera>(FindObjectsInactive.Include, FindObjectsSortMode.None)[0];
         Instance = this;
         EnhancedTouchSupport.Enable();
+    }
+}
+
+public class TouchEventArgs : EventArgs
+{
+    public readonly string SensorId;
+
+    public readonly bool AllowSensorOverlapping;
+
+    public TouchEventArgs(string sensorId, bool allowSensorOverlapping)
+    {
+        SensorId = sensorId;
+        AllowSensorOverlapping = allowSensorOverlapping;
     }
 }
