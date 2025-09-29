@@ -7,7 +7,7 @@ namespace Notes.Slides
         protected override void InitializeSlideDirection()
         {
             slideJudgeDisplaySpriteIndexes = new[] { 1, 0 };
-            
+
             var star = stars[0];
             IsClockwise = IsClockWise(fromLaneIndex + 1, toLaneIndexes[0] + 1, toLaneIndexes[1] + 1);
             transform.Rotate(IsClockwise

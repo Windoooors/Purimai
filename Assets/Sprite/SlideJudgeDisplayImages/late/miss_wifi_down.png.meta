@@ -160,7 +160,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      miss_wifi_down_0: 9158013642032632833
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

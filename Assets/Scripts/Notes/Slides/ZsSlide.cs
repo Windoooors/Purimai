@@ -6,7 +6,7 @@ namespace Notes.Slides
     public class ZsSlide : NormalSlide
     {
         private bool _isMirror;
-        
+
         protected override void InitializeSlideDirection()
         {
             _isMirror = slideType == NoteDataObject.SlideDataObject.SlideType.Z;
@@ -43,10 +43,10 @@ namespace Notes.Slides
                         : _isMirror
                             ? 1
                             : 0];
-            
+
             var scale = judgeDisplaySpriteRenderer.gameObject.transform.localScale;
             scale = new Vector3(scale.x,
-                judgeSpriteNeedsChange ? 0.5f : -0.5f,
+                judgeSpriteNeedsChange ? Mathf.Abs(scale.y) : -Mathf.Abs(scale.y),
                 scale.z);
             judgeDisplaySpriteRenderer.transform.localScale = scale;
         }

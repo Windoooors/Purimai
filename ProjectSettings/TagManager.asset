@@ -8,10 +8,10 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Sensors
+  - 
   - Water
   - UI
-  - 
+  - Sensors
   - 
   - 
   - 
@@ -61,6 +61,9 @@ TagManager:
     locked: 0
   - name: Judge Display
     uniqueID: 421743895
+    locked: 0
+  - name: Sensors
+    uniqueID: 657196261
     locked: 0
   m_RenderingLayers:
   - Default
