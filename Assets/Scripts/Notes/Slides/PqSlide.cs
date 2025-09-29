@@ -8,7 +8,7 @@ namespace Notes.Slides
         protected override void InitializeSlideDirection()
         {
             slideJudgeDisplaySpriteIndexes = new[] { 0, 1 };
-            
+
             IsClockwise = slideType == NoteDataObject.SlideDataObject.SlideType.P;
 
             var star = stars[0];

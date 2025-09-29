@@ -132,10 +132,10 @@ TextureImporter:
       name: perfect_wifi_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 436
-        width: 1296
-        height: 359
+        x: 2
+        y: 432
+        width: 1408
+        height: 421
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -154,10 +154,10 @@ TextureImporter:
       name: perfect_wifi_1
       rect:
         serializedVersion: 2
-        x: 1
+        x: 0
         y: 0
-        width: 1297
-        height: 360
+        width: 1409
+        height: 420
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -184,7 +184,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       perfect_wifi_0: -598595993
       perfect_wifi_1: 127279891

@@ -440,16 +440,24 @@ MonoBehaviour:
   - {fileID: 6279052657859235608}
   - {fileID: 1195436998858217544}
   judgeDisplaySpriteRenderer: {fileID: 3118371756179004262}
+  slideJudgeDisplaySpriteIndexes: 
   segments:
   - mainSensor: A1
     slideSpriteRenderers: []
-    slideSpriteRenderersWithinSensorArea: []
+    slideSpriteRenderersWithinSensorArea:
+    - {fileID: 4146616728225660203}
+    - {fileID: 8014472292410435396}
+    - {fileID: 3684713454602049274}
     slideSpriteRenderersOutsideSensorArea: []
     sensorsNearby: []
   - mainSensor: A2
     slideSpriteRenderers: []
-    slideSpriteRenderersWithinSensorArea: []
-    slideSpriteRenderersOutsideSensorArea: []
+    slideSpriteRenderersWithinSensorArea:
+    - {fileID: 2160643059627736921}
+    - {fileID: 6279052657859235608}
+    - {fileID: 1195436998858217544}
+    slideSpriteRenderersOutsideSensorArea:
+    - {fileID: 5115443773167525044}
     sensorsNearby: []
 --- !u!1 &7534920180759263321
 GameObject:

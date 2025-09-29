@@ -160,7 +160,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      great_wifi_down_0: 8268099921651196671
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.U2D;
@@ -12,30 +11,31 @@ public class SimulatedSensor : MonoBehaviour
     public static EventHandler<TouchEventArgs> OnLeave;
 
     public static readonly List<SimulatedSensor> Sensors = new();
+    public static readonly List<Collider2D> SimultaneouslyTouchedSensorColliderList = new();
 
-    private static bool _leaveEventRegistered;
-
-    public float scale = 1;
-
-    public string sensorId;
+    [HideInInspector] public SimulatedSensorSettings settings;
 
     private bool _currentFrameHasFinger;
     private bool _lastFrameHadFinger;
 
     private Camera _mainCamera;
 
+    private bool _notFirstFrameToHaveFingerHolding;
+    private Collider2D _sensorCollider;
+
     private SpriteShapeRenderer _spriteShapeRenderer;
 
     private void Start()
     {
+        settings = GetComponent<SimulatedSensorSettings>();
+
         _mainCamera = SimulatedSensorManager.Instance.mainCamera;
-        gameObject.name = sensorId;
 
         _spriteShapeRenderer = GetComponent<SpriteShapeRenderer>();
 
         Sensors.Add(this);
 
-        StartCoroutine(ChangeSensorScale());
+        _sensorCollider = GetComponent<Collider2D>();
     }
 
     private void Update()
@@ -45,71 +45,54 @@ public class SimulatedSensor : MonoBehaviour
         foreach (var finger in Touch.activeFingers)
         {
             var rayPoint = _mainCamera.ScreenToWorldPoint(finger.screenPosition);
-            
+
             var hits = Physics2D.RaycastAll(rayPoint, Vector2.zero);
-            
+
             foreach (var hit in hits)
-            {
-                if (hit && hit.collider.gameObject.name == sensorId)
+                if (hit && hit.collider.gameObject.name == settings.sensorId)
                     _currentFrameHasFinger = true;
-            }
         }
 
         if (_currentFrameHasFinger && !_lastFrameHadFinger)
         {
-            if (!_leaveEventRegistered)
-            {
-                OnLeave += OnAnySensorLeaved;
-                _leaveEventRegistered = true;
-            }
-            else
-            {
-                StartCoroutine(WaitAndRegisterLeaveEvent());
-            }
+            OnTap?.Invoke(this, new TouchEventArgs(settings.sensorId));
+            OnLeave += OnAnySensorLeave;
 
-            OnTap?.Invoke(this, new TouchEventArgs(sensorId));
+            SimultaneouslyTouchedSensorColliderList.Add(_sensorCollider);
 
             //_spriteShapeRenderer.color = new Color(1, 1, 1, 0.1f);
         }
 
         if (!_currentFrameHasFinger && _lastFrameHadFinger)
         {
-            OnLeave?.Invoke(this, new TouchEventArgs(sensorId));
-            OnLeave -= OnAnySensorLeaved;
-            _leaveEventRegistered = false;
+            OnLeave?.Invoke(this, new TouchEventArgs(settings.sensorId));
+            OnLeave -= OnAnySensorLeave;
 
-            _spriteShapeRenderer.color = new Color(1, 1, 1, 0);
+            SimultaneouslyTouchedSensorColliderList.Remove(_sensorCollider);
+
+            _notFirstFrameToHaveFingerHolding = false;
+
+            //_spriteShapeRenderer.color = new Color(1, 1, 1, 0);
         }
+
+        if (_currentFrameHasFinger && _lastFrameHadFinger)
+            _notFirstFrameToHaveFingerHolding = true;
 
         _lastFrameHadFinger = _currentFrameHasFinger;
     }
 
-    private IEnumerator WaitAndRegisterLeaveEvent()
+    private void OnAnySensorLeave(object sender, TouchEventArgs e)
     {
-        yield return null;
-        OnLeave += OnAnySensorLeaved;
-        _leaveEventRegistered = true;
-    }
+        var overlapResults = new List<Collider2D>();
 
-    private IEnumerator ChangeSensorScale()
-    {
-        yield return null;
-        transform.localScale *= scale * SimulatedSensorManager.Instance.globalScale;
-    }
+        _sensorCollider.Overlap(overlapResults);
 
-    private void OnAnySensorLeaved(object sender, TouchEventArgs e)
-    {
-        if ((_currentFrameHasFinger && _lastFrameHadFinger) || e.SensorId == sensorId)
-            OnHold?.Invoke(this, new TouchEventArgs(sensorId));
-    }
+        foreach (var simultaneouslyTouchedSensorCollider in SimultaneouslyTouchedSensorColliderList)
+            if (overlapResults.Contains(simultaneouslyTouchedSensorCollider) && e.SensorId == simultaneouslyTouchedSensorCollider.name)
+                return;
 
-    public class TouchEventArgs : EventArgs
-    {
-        public readonly string SensorId;
-
-        public TouchEventArgs(string sensorId)
-        {
-            SensorId = sensorId;
-        }
+        if ((_currentFrameHasFinger && _lastFrameHadFinger && _notFirstFrameToHaveFingerHolding) ||
+            e.SensorId == settings.sensorId)
+            OnHold?.Invoke(this, new TouchEventArgs(settings.sensorId));
     }
 }

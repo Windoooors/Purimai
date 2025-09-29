@@ -2,13 +2,15 @@ using System;
 using System.Linq;
 using ChartManagement;
 using Notes.Slides;
+using UnityEngine;
 
 namespace Notes
 {
     public class NormalSlide : SlideBasedNote
     {
-        public NormalSegment[] segments;
-        private int _touchedSegmentsIndex;
+        public NormalSegment[] segments; 
+        private int _touchedSegmentIndex;
+        private int _tappedSegmentIndex;
 
         protected override void UpdateUniversalSegments()
         {
@@ -37,46 +39,76 @@ namespace Notes
             }
         }
 
+        protected override void OnSensorTap(TouchEventArgs e)
+        {
+            if (Slided)
+                return;
+            
+            var segmentState = GetSegmentState(e.SensorId, _tappedSegmentIndex);
+
+            if (!segmentState.activated)
+                return;
+
+            if (!IsJumpSensorAllowed() && segmentState.sensorJumped)
+                return;
+            
+            _tappedSegmentIndex += segmentState.sensorJumped ? 2 : 1;
+
+            if (_tappedSegmentIndex == segments.Length && !Slided)
+            {
+                ConcealSegment(_tappedSegmentIndex - 2, false);
+                Judge();
+            }
+
+            if (_tappedSegmentIndex - 1 == _touchedSegmentIndex && _tappedSegmentIndex != segments.Length)
+                ConcealMiddleSegment(_tappedSegmentIndex - 1);
+        }
+
         private bool SensorContained(int segmentIndex, string sensorId)
         {
             return segments[segmentIndex].mainSensor == sensorId ||
                    segments[segmentIndex].sensorsNearby.Contains(sensorId);
         }
 
-        protected override void ProcessSlideTap(SimulatedSensor.TouchEventArgs e,
+        protected override void OnSensorHold(TouchEventArgs e,
             bool sensorJumpedForLastSegment = false)
         {
-            var segmentState = GetSegmentState(e.SensorId);
+            if (Slided)
+                return;
+            
+            var segmentState = GetSegmentState(e.SensorId, _touchedSegmentIndex);
             var sensorJumped = segmentState.sensorJumped;
 
             if (!segmentState.activated)
                 return;
 
-            if (sensorJumped)
+            if (!IsJumpSensorAllowed() && sensorJumped)
                 return;
 
-            ConcealMiddleSegment(_touchedSegmentsIndex);
-        }
-
-        protected override void ProcessSlideHold(SimulatedSensor.TouchEventArgs e,
-            bool sensorJumpedForLastSegment = false)
-        {
-            if (_touchedSegmentsIndex == segments.Length - 1)
+            if (_touchedSegmentIndex == segments.Length - 1)
             {
-                var state = GetSegmentState(e.SensorId);
-                if (state.activated)
+                if (!Slided)
+                {
+                    ConcealSegment(_touchedSegmentIndex - 1, sensorJumpedForLastSegment);
                     Judge();
-                
-                ConcealMiddleSegment(_touchedSegmentsIndex);
+                }
+
                 return;
             }
 
-            var segmentState = GetSegmentState(e.SensorId);
-            var sensorJumped = segmentState.sensorJumped;
+            ConcealSegment(_touchedSegmentIndex, sensorJumpedForLastSegment);
+            
+            _touchedSegmentIndex++;
 
-            if (!segmentState.activated)
-                return;
+            if (_tappedSegmentIndex < _touchedSegmentIndex)
+                _tappedSegmentIndex = _touchedSegmentIndex;
 
+            if (sensorJumped)
+                OnSensorHold(e, true);
+        }
+
+        private bool IsJumpSensorAllowed()
+        {
             var interval = 0;
 
             if (slideType is NoteDataObject.SlideDataObject.SlideType.Line)
@@ -86,32 +118,27 @@ namespace Notes
                      or NoteDataObject.SlideDataObject.SlideType.RotateMinorArc)
                 interval = CycleSlide.GetCycleInterval(fromLaneIndex + 1, toLaneIndexes[0] + 1, slideType);
 
-            if (sensorJumped &&
-                interval == 2)
-                return;
+            if (interval is 2 or 1)
+                return false;
 
-            ConcealSegment(_touchedSegmentsIndex, sensorJumpedForLastSegment);
-
-            _touchedSegmentsIndex++;
-            if (sensorJumped)
-                ProcessSlideHold(e, true);
+            return true;
         }
 
-        private (bool sensorJumped, bool activated) GetSegmentState(string sensorId)
+        private (bool sensorJumped, bool activated) GetSegmentState(string sensorId, int index)
         {
             if (timing > ChartPlayer.Instance.time)
                 return (false, false);
 
-            if (_touchedSegmentsIndex == segments.Length)
+            if (index == segments.Length)
                 return (false, false);
 
             var sensorJumped =
-                _touchedSegmentsIndex + 1 != segments.Length &&
-                SensorContained(_touchedSegmentsIndex + 1, sensorId);
+                index + 1 != segments.Length &&
+                SensorContained(index + 1, sensorId);
 
             var activated =
-                (SensorContained(_touchedSegmentsIndex, sensorId) || sensorJumped) &&
-                _touchedSegmentsIndex < segments.Length;
+                (SensorContained(index, sensorId) || sensorJumped) &&
+                index < segments.Length;
 
             return (sensorJumped, activated);
         }

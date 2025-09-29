@@ -8,10 +8,9 @@ namespace Notes.Slides
     public class WifiSlide : SlideBasedNote
     {
         public WifiSegment[] segments;
-        public int _touchedLSegmentsIndex;
-        public int _touchedMSegmentsIndex;
-
-        public int _touchedRSegmentsIndex;
+        private int _touchedLSegmentIndex;
+        private int _touchedMSegmentIndex;
+        private int _touchedRSegmentIndex;
 
         protected override void UpdateUniversalSegments()
         {
@@ -43,43 +42,49 @@ namespace Notes.Slides
             }
         }
 
-        protected override void ProcessSlideTap(SimulatedSensor.TouchEventArgs e,
-            bool sensorJumpedForLastSegment = false)
+        protected override void OnSensorTap(TouchEventArgs e)
         {
+            CheckAndJudge(e);
         }
 
-        protected override void ProcessSlideHold(SimulatedSensor.TouchEventArgs e,
+        protected override void OnSensorHold(TouchEventArgs e,
             bool sensorJumpedForLastSegment = false)
         {
             ProcessSlideHoldOnSpecificSlidePath(e, 0);
             ProcessSlideHoldOnSpecificSlidePath(e, 1);
             ProcessSlideHoldOnSpecificSlidePath(e, 2);
-            
-           if (math.min(_touchedRSegmentsIndex,
-                math.min(_touchedLSegmentsIndex, _touchedMSegmentsIndex)) == segments.Length)
-               Judge();
         }
 
-        private void ProcessSlideHoldOnSpecificSlidePath(SimulatedSensor.TouchEventArgs e, int pathIndex,
+        private void ProcessSlideHoldOnSpecificSlidePath(TouchEventArgs e, int pathIndex,
             bool sensorJumpedForLastSegment = false)
         {
-            var lastSegmentToBeConcealedIndex = math.min(_touchedRSegmentsIndex,
-                math.min(_touchedLSegmentsIndex, _touchedMSegmentsIndex)) - 1;
-            
+            CheckAndJudge(e);
+
+            if (Slided)
+                return;
+
+            var minimalTouchedSegmentIndex =
+                TernaryMinimal(_touchedRSegmentIndex, _touchedLSegmentIndex, _touchedMSegmentIndex);
+            if (minimalTouchedSegmentIndex ==
+                segments.Length)
+                return;
+
+            var lastSegmentToBeConcealedIndex = minimalTouchedSegmentIndex - 1;
+
             var touchedSegmentsIndex = pathIndex switch
             {
-                0 => _touchedLSegmentsIndex,
-                1 => _touchedMSegmentsIndex,
-                2 => _touchedRSegmentsIndex,
+                0 => _touchedLSegmentIndex,
+                1 => _touchedMSegmentIndex,
+                2 => _touchedRSegmentIndex,
                 _ => -1
             };
-            
+
             if (touchedSegmentsIndex == segments.Length)
                 return;
 
             if (timing > ChartPlayer.Instance.time)
                 return;
-            
+
             var sensorJumped =
                 touchedSegmentsIndex + 1 != segments.Length &&
                 SensorContained(touchedSegmentsIndex + 1, e.SensorId, pathIndex);
@@ -94,21 +99,21 @@ namespace Notes.Slides
             switch (pathIndex)
             {
                 case 0:
-                    _touchedLSegmentsIndex++;
+                    _touchedLSegmentIndex++;
                     break;
                 case 1:
-                    _touchedMSegmentsIndex++;
+                    _touchedMSegmentIndex++;
                     break;
                 case 2:
-                    _touchedRSegmentsIndex++;
+                    _touchedRSegmentIndex++;
                     break;
             }
-            
+
             if (touchedSegmentsIndex == segments.Length - 1)
                 return;
 
-            var segmentToBeConcealedIndex = math.min(_touchedRSegmentsIndex,
-                math.min(_touchedLSegmentsIndex, _touchedMSegmentsIndex)) - 1;
+            var segmentToBeConcealedIndex = math.min(_touchedRSegmentIndex,
+                math.min(_touchedLSegmentIndex, _touchedMSegmentIndex)) - 1;
 
             if (segmentToBeConcealedIndex != -1 && segmentToBeConcealedIndex - lastSegmentToBeConcealedIndex > 0)
                 ConcealSegment(segmentToBeConcealedIndex, sensorJumpedForLastSegment);
@@ -134,6 +139,29 @@ namespace Notes.Slides
                     judgeSpriteNeedsChange
                         ? 0
                         : 1];
+        }
+
+        private void CheckAndJudge(TouchEventArgs e)
+        {
+            if (Slided)
+                return;
+            
+            if (_touchedLSegmentIndex + _touchedMSegmentIndex + _touchedRSegmentIndex != 11)
+                return;
+
+            if ((segments[^1].sensorsL.Contains(e.SensorId) && _touchedLSegmentIndex == 3) ||
+                (segments[^1].sensorsM.Contains(e.SensorId) && _touchedMSegmentIndex == 3) ||
+                (segments[^1].sensorsR.Contains(e.SensorId) && _touchedRSegmentIndex == 3))
+            {
+                ConcealSegment(TernaryMinimal(_touchedLSegmentIndex, _touchedMSegmentIndex, _touchedRSegmentIndex) - 1,
+                    false);
+                Judge();
+            }
+        }
+
+        private int TernaryMinimal(int a, int b, int c)
+        {
+            return Math.Min(Math.Min(a, b), c);
         }
     }
 

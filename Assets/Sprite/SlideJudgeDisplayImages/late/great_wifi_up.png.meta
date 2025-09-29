@@ -160,7 +160,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      great_wifi_up_0: -1869687690998514840
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

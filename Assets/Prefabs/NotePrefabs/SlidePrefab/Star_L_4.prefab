@@ -2135,7 +2135,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: -0.38268343, w: 0.92387956}
   m_LocalPosition: {x: 1.63, y: -4.24, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6995989914360437517}
@@ -2624,6 +2624,7 @@ MonoBehaviour:
   - {fileID: 6461511664574163458}
   - {fileID: 7720908896708397944}
   judgeDisplaySpriteRenderer: {fileID: 8110610608344382442}
+  slideJudgeDisplaySpriteIndexes: 
   segments:
   - mainSensor: A1
     slideSpriteRenderers: []

@@ -24,36 +24,36 @@ namespace Notes
 
         public bool isWifi;
 
-        protected bool Slided;
-
         public StarMovementController[] stars;
 
         public SpriteRenderer[] slideSpriteRenderers;
-        
+
         public SpriteRenderer judgeDisplaySpriteRenderer;
 
         public int[] slideJudgeDisplaySpriteIndexes;
 
         protected readonly List<Segment> UniversalSegments = new();
 
-        protected bool IsClockwise;
-        
         private bool _concealed;
+
+        private Animator _judgeDisplayAnimator;
 
         private bool _revealed;
         private bool _starMovingStarted;
 
         private bool _waitingStarted;
 
-        private Animator _judgeDisplayAnimator;
-        
+        protected bool IsClockwise;
+
+        protected bool Slided;
+
         private void Start()
         {
             InitializeSlideDirection();
             InitializeJudgeDisplayDirection();
             InitializeSlideSensorIds();
             UpdateUniversalSegments();
-            
+
             _judgeDisplayAnimator = judgeDisplaySpriteRenderer.GetComponent<Animator>();
             _judgeDisplayAnimator.enabled = true;
             judgeDisplaySpriteRenderer.color = new Color(1, 1, 1, 0);
@@ -128,13 +128,13 @@ namespace Notes
                 }
 
                 //transform.position = NoteGenerator.Instance.outOfScreenPosition;
-                
+
                 if (Slided && !_concealed)
                     PlayJudgeAnimation();
-                
+
                 _concealed = true;
             }
-            
+
             if (ChartPlayer.Instance.time >= timing + waitDuration + slideDuration + 600 && !_concealed && !Slided)
             {
                 foreach (var spriteRenderer in slideSpriteRenderers) spriteRenderer.enabled = false;
@@ -142,7 +142,7 @@ namespace Notes
                 foreach (var star in stars) star.StopMoving();
 
                 transform.position = NoteGenerator.Instance.outOfScreenPosition;
-                
+
                 _concealed = true;
             }
         }
@@ -173,21 +173,20 @@ namespace Notes
             return sensorName + sensorLane;
         }
 
-        private void OnHoldSlidePath(object sender, SimulatedSensor.TouchEventArgs e)
+        private void OnHoldSlidePath(object sender, TouchEventArgs e)
         {
-            ProcessSlideHold(e);
+            OnSensorHold(e);
         }
 
-        private void OnTapSlidePath(object sender, SimulatedSensor.TouchEventArgs e)
+        private void OnTapSlidePath(object sender, TouchEventArgs e)
         {
-            ProcessSlideTap(e);
+            OnSensorTap(e);
         }
 
-        protected abstract void ProcessSlideHold(SimulatedSensor.TouchEventArgs e,
+        protected abstract void OnSensorHold(TouchEventArgs e,
             bool sensorJumpedForLastSegment = false);
 
-        protected abstract void ProcessSlideTap(SimulatedSensor.TouchEventArgs e,
-            bool sensorJumpedForLastSegment = false);
+        protected abstract void OnSensorTap(TouchEventArgs e);
 
         private void ReplaceEachSlideSprite()
         {
@@ -222,8 +221,7 @@ namespace Notes
 
             foreach (var motionHandle in segment.MotionHandles) motionHandle.TryCancel();
 
-            foreach (var slideSprite in segment.slideSpriteRenderers)
-                slideSprite.color = new Color(0, 0, 0, 0);
+            foreach (var slideSprite in segment.slideSpriteRenderers) slideSprite.color = new Color(0, 0, 0, 0);
 
             if (touchedSegmentsIndex != UniversalSegments.Count - 2 && sensorJumpedForLastSegment)
                 segment.slideSpriteRenderersWithinSensorArea[^1].color = new Color(1, 1, 1, 0.5f);
@@ -231,7 +229,8 @@ namespace Notes
 
         protected void ConcealMiddleSegment(int touchedSegmentsIndex)
         {
-            if (touchedSegmentsIndex - 1 >= 0 && UniversalSegments[touchedSegmentsIndex - 1].slideSpriteRenderersWithinSensorArea.Length > 0)
+            if (touchedSegmentsIndex - 1 >= 0 &&
+                UniversalSegments[touchedSegmentsIndex - 1].slideSpriteRenderersWithinSensorArea.Length > 0)
                 UniversalSegments[touchedSegmentsIndex - 1].slideSpriteRenderersWithinSensorArea[^1].color =
                     new Color(0, 0, 0, 0);
 
@@ -249,7 +248,17 @@ namespace Notes
 
             foreach (var segment in UniversalSegments)
             {
-                var matchedSensor = SimulatedSensor.Sensors.Find(x => x.sensorId == segment.mainSensor);
+                if (segment.slideSpriteRenderersOutsideSensorArea.Length > 0 ||
+                    segment.slideSpriteRenderersWithinSensorArea.Length > 0)
+                {
+                    var slideSpriteRendererList = new List<SpriteRenderer>();
+                    slideSpriteRendererList.AddRange(segment.slideSpriteRenderersOutsideSensorArea);
+                    slideSpriteRendererList.AddRange(segment.slideSpriteRenderersWithinSensorArea);
+                    segment.slideSpriteRenderers = slideSpriteRendererList.ToArray();
+                    return;
+                }
+
+                var matchedSensor = SimulatedSensor.Sensors.Find(x => x.settings.sensorId == segment.mainSensor);
 
                 var spriteWithinAreaList = new List<SpriteRenderer>();
                 var spriteOutsideAreaList = new List<SpriteRenderer>();
@@ -288,25 +297,29 @@ namespace Notes
             if (index == -1)
                 return false;
 
-            //if (slideType is not NoteDataObject.SlideDataObject.SlideType.Wifi)
-                //return sensorCollider.OverlapPoint(slideSpriteRenderers[index].transform.position);
+            if (slideType is NoteDataObject.SlideDataObject.SlideType.RotateLeft
+                or NoteDataObject.SlideDataObject.SlideType.RotateRight
+                or NoteDataObject.SlideDataObject.SlideType.RotateMinorArc)
+                return sensorCollider.OverlapPoint(slideSpriteRenderers[index].transform.position);
 
-            var colliderAdded = slideSpriteRenderers[index].TryGetComponent<Collider2D>(out var addedCollider);
+            var colliderAdded = slideSpriteRenderers[index].TryGetComponent<BoxCollider2D>(out var addedCollider);
             if (!colliderAdded)
                 addedCollider = slideSpriteRenderers[index].gameObject.AddComponent<BoxCollider2D>();
 
             addedCollider.enabled = true;
 
-            var overlapResults = new Collider2D[10];
+            var overlapResults = new List<Collider2D>();
 
             var filter = new ContactFilter2D();
-            filter.SetLayerMask(1 << LayerMask.NameToLayer("Sensors"));
+            filter.SetLayerMask(LayerMask.GetMask("Sensors"));
 
             addedCollider.Overlap(filter, overlapResults);
-            
+
             addedCollider.enabled = false;
 
-            return overlapResults.Contains(sensorCollider);
+            var result = overlapResults.Contains(sensorCollider);
+
+            return result;
         }
 
         protected virtual void InitializeSlideDirection()
@@ -314,7 +327,7 @@ namespace Notes
             IsClockwise = true;
 
             slideJudgeDisplaySpriteIndexes = new[] { 0, 1 };
-            
+
             transform.Rotate(new Vector3(0, 0, -45f * fromLaneIndex));
 
             var star = stars[0];
@@ -333,11 +346,11 @@ namespace Notes
                         : IsClockwise
                             ? slideJudgeDisplaySpriteIndexes[0]
                             : slideJudgeDisplaySpriteIndexes[1]];
-                
-            
+
+
             var scale = judgeDisplaySpriteRenderer.gameObject.transform.localScale;
             scale = new Vector3(scale.x,
-                judgeSpriteNeedsChange ? 0.5f : -0.5f,
+                judgeSpriteNeedsChange ? Mathf.Abs(scale.y) : -Mathf.Abs(scale.y),
                 scale.z);
             judgeDisplaySpriteRenderer.transform.localScale = scale;
         }
@@ -394,8 +407,8 @@ namespace Notes
         [FormerlySerializedAs("sensor")] public string mainSensor;
 
         [HideInInspector] public SpriteRenderer[] slideSpriteRenderers;
-        [HideInInspector] public SpriteRenderer[] slideSpriteRenderersWithinSensorArea;
-        [HideInInspector] public SpriteRenderer[] slideSpriteRenderersOutsideSensorArea;
+        public SpriteRenderer[] slideSpriteRenderersWithinSensorArea;
+        public SpriteRenderer[] slideSpriteRenderersOutsideSensorArea;
 
         public MotionHandle[] MotionHandles;
     }

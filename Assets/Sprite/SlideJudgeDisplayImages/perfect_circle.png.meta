@@ -148,11 +148,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 966
-        width: 700
-        height: 257
+        y: 963
+        width: 858
+        height: 289
       alignment: 9
-      pivot: {x: 0.98259085, y: 0.44058976}
+      pivot: {x: 0.984824, y: 0.5133897}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -169,12 +169,12 @@ TextureImporter:
       name: perfect_circle_2
       rect:
         serializedVersion: 2
-        x: 3
-        y: 292
-        width: 699
-        height: 258
+        x: 0
+        y: 288
+        width: 860
+        height: 294
       alignment: 9
-      pivot: {x: 0.98601174, y: 0.45561513}
+      pivot: {x: 0.9859463, y: 0.5065813}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -192,11 +192,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 660
-        width: 702
-        height: 264
+        y: 661
+        width: 860
+        height: 293
       alignment: 9
-      pivot: {x: 0.9839348, y: 0.4638531}
+      pivot: {x: 0.988196, y: 0.50660366}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -215,10 +215,10 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 702
-        height: 258
+        width: 860
+        height: 288
       alignment: 9
-      pivot: {x: 0.981216, y: 0.4482176}
+      pivot: {x: 0.9859463, y: 0.5067181}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -243,7 +243,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       perfect_circle_0: 1206638491
       perfect_circle_1: 1451168000

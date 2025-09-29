@@ -1,7 +1,20 @@
+using System;
 using UnityEngine;
 
 namespace Notes
 {
+    [Serializable]
+    public class JudgeSettings
+    {
+        public int criticalPerfectTiming;
+        public int semiCriticalPerfectTiming;
+        public int perfectTiming;
+        public int greatTiming;
+        public int semiGreatTiming;
+        public int quarterGreatTiming;
+        public int goodTiming;
+    }
+
     public abstract class TapBasedNote : MonoBehaviour
     {
         protected const float TimeOnScreenWithBasicSpeed = 2.04166667f;
@@ -10,6 +23,9 @@ namespace Notes
         public SpriteRenderer lineSpriteRenderer;
         public Transform lineTransform;
         public int lane;
+
+        public JudgeSettings judgeSettings;
+
         protected int EmergingDuration;
         protected float LineExpansionSpeed;
 

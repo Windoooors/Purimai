@@ -105,158 +105,13 @@ namespace ChartManagement
     public class NoteDataObject
     {
         private static readonly Regex HeadRegex = new("^([1-8])");
-        
+
         public readonly HoldDataObject[] HoldDataObjects;
         public readonly SlideDataObject[] SlideDataObjects;
 
         public readonly TapDataObject[] TapDataObjects;
         public readonly int Timing;
-        
-        private HoldResult ParseHold(string input, double globalBpm)
-        {
-            var result = new HoldResult();
-            var quarter = 60.0 / globalBpm;
 
-            var cases = new (string pattern, Action<Match> action)[]
-            {
-                (@"h\[([0-9]*)\:([0-9]*)\]", m =>
-                {
-                    var start = ParseNum(m.Groups[1].Value);
-                    var end = ParseNum(m.Groups[2].Value);
-                    var noteDuration = (4.0 / start) * quarter;
-                    result.HoldDuration = noteDuration * end;
-                }),
-                (@"h\[(\d+\.\d+?|\d+)#([0-9]*)\:([0-9]*)\]", m =>
-                {
-                    var bpm = ParseNum(m.Groups[1].Value);
-                    var start = ParseNum(m.Groups[2].Value);
-                    var end = ParseNum(m.Groups[3].Value);
-                    var q = 60.0 / bpm;
-                    var noteDuration = 4.0 / start * q;
-                    result.HoldDuration = noteDuration * end;
-                }),
-                (@"h\[#(\d+\.\d+?|\d+)\]", m =>
-                {
-                    result.HoldDuration = ParseNum(m.Groups[1].Value);
-                }),
-                ("h", _ =>
-                {
-                    result.HoldDuration = 0;
-                })
-            };
-
-            foreach (var (pattern, action) in cases)
-            {
-                var m = Regex.Match(input, pattern);
-                if (!m.Success)
-                    continue;
-                
-                action(m);
-                result.Success = true;
-                
-                break;
-            }
-
-            return result;
-        }
-
-        private SlideResult ParseSlide(string input, double globalBpm)
-        {
-            var result = new SlideResult { RemainingInput = input };
-            var quarter = 60.0 / globalBpm;
-            
-            var cases = new (string pattern, Action<Match> action)[]
-            {
-                (@"([1-8]{1,2})\[([0-9]*?):([0-9]*?)\]", m =>
-                {
-                    result.To = m.Groups[1].Value.Select(c => int.Parse(c.ToString())).ToArray();
-                    var start = ParseNum(m.Groups[2].Value);
-                    var end = ParseNum(m.Groups[3].Value);
-                    var noteDuration = (4.0 / start) * quarter;
-                    result.SlideDuration = noteDuration * end;
-                    result.WaitDuration = quarter;
-                }),
-                (@"([1-8]{1,2})\[(\d+\.\d+?|\d+)#([0-9]*?):([0-9]*?)\]", m =>
-                {
-                    result.To = m.Groups[1].Value.Select(c => int.Parse(c.ToString())).ToArray();
-                    var bpm = ParseNum(m.Groups[2].Value);
-                    var start = ParseNum(m.Groups[3].Value);
-                    var end = ParseNum(m.Groups[4].Value);
-                    var q = 60.0 / bpm;
-                    var noteDuration = (4.0 / start) * q;
-                    result.SlideDuration = noteDuration * end;
-                    result.WaitDuration = q;
-                }),
-                (@"([1-8]{1,2})\[(\d+\.\d+?|\d+)#(\d+\.\d+?|\d+)\]", m =>
-                {
-                    result.To = m.Groups[1].Value.Select(c => int.Parse(c.ToString())).ToArray();
-                    var bpm = ParseNum(m.Groups[2].Value);
-                    var slide = ParseNum(m.Groups[3].Value);
-                    result.SlideDuration = slide;
-                    result.WaitDuration = 60.0 / bpm;
-                }),
-                (@"([1-8]{1,2})\[(\d+\.\d+?|\d+)##(\d+\.\d+?|\d+)\]", m =>
-                {
-                    result.To = m.Groups[1].Value.Select(c => int.Parse(c.ToString())).ToArray();
-                    result.WaitDuration = ParseNum(m.Groups[2].Value);
-                    result.SlideDuration = ParseNum(m.Groups[3].Value);
-                }),
-                (@"([1-8]{1,2})\[(\d+\.\d+?|\d+)##([0-9]*?):([0-9]*?)\]", m =>
-                {
-                    result.To = m.Groups[1].Value.Select(c => int.Parse(c.ToString())).ToArray();
-                    result.WaitDuration = ParseNum(m.Groups[2].Value);
-                    var start = ParseNum(m.Groups[3].Value);
-                    var end = ParseNum(m.Groups[4].Value);
-                    var noteDuration = (4.0 / start) * quarter;
-                    result.SlideDuration = noteDuration * end;
-                }),
-                (@"([1-8]{1,2})\[(\d+\.\d+?|\d+)##(\d+\.\d+?|\d+)#([0-9]*?):([0-9]*?)\]", m =>
-                {
-                    result.To = m.Groups[1].Value.Select(c => int.Parse(c.ToString())).ToArray();
-                    result.WaitDuration = ParseNum(m.Groups[2].Value);
-                    var bpm = ParseNum(m.Groups[3].Value);
-                    var start = ParseNum(m.Groups[4].Value);
-                    var end = ParseNum(m.Groups[5].Value);
-                    var q = 60.0 / bpm;
-                    var noteDuration = (4.0 / start) * q;
-                    result.SlideDuration = noteDuration * end;
-                })
-            };
-
-            foreach (var (pattern, action) in cases)
-            {
-                var m = Regex.Match(input, pattern);
-                if (!m.Success)
-                    continue;
-                
-                action(m);
-                result.Success = true;
-                
-                result.RemainingInput = new Regex(pattern).Replace(input, "", 1);
-                break;
-            }
-
-            return result;
-        }
-
-        private double ParseNum(string s) =>
-            double.Parse(s, CultureInfo.InvariantCulture);
-
-        private class SlideResult
-        {
-            public bool Success { get; set; }
-            public int[] To { get; set; } = Array.Empty<int>();
-            public double SlideDuration { get; set; }
-            public double WaitDuration { get; set; }
-            public string RemainingInput { get; set; } = string.Empty;
-        }
-        
-        private class HoldResult
-        {
-            public bool Success { get; set; }
-            public double HoldDuration { get; set; }
-        }
-        
         public NoteDataObject(string noteString, int timing, double bpm)
         {
             Timing = timing;
@@ -308,7 +163,7 @@ namespace ChartManagement
                         HoldDuration = (int)(holdMatch.HoldDuration * 1000),
                         Lane = lane
                     });
-                    
+
                     continue;
                 }
 
@@ -363,6 +218,147 @@ namespace ChartManagement
             TapDataObjects = taps.ToArray();
             SlideDataObjects = slides.ToArray();
             HoldDataObjects = holds.ToArray();
+        }
+
+        private HoldResult ParseHold(string input, double globalBpm)
+        {
+            var result = new HoldResult();
+            var quarter = 60.0 / globalBpm;
+
+            var cases = new (string pattern, Action<Match> action)[]
+            {
+                (@"h\[([0-9]*)\:([0-9]*)\]", m =>
+                {
+                    var start = ParseNum(m.Groups[1].Value);
+                    var end = ParseNum(m.Groups[2].Value);
+                    var noteDuration = 4.0 / start * quarter;
+                    result.HoldDuration = noteDuration * end;
+                }),
+                (@"h\[(\d+\.\d+?|\d+)#([0-9]*)\:([0-9]*)\]", m =>
+                {
+                    var bpm = ParseNum(m.Groups[1].Value);
+                    var start = ParseNum(m.Groups[2].Value);
+                    var end = ParseNum(m.Groups[3].Value);
+                    var q = 60.0 / bpm;
+                    var noteDuration = 4.0 / start * q;
+                    result.HoldDuration = noteDuration * end;
+                }),
+                (@"h\[#(\d+\.\d+?|\d+)\]", m => { result.HoldDuration = ParseNum(m.Groups[1].Value); }),
+                ("h", _ => { result.HoldDuration = 0; })
+            };
+
+            foreach (var (pattern, action) in cases)
+            {
+                var m = Regex.Match(input, pattern);
+                if (!m.Success)
+                    continue;
+
+                action(m);
+                result.Success = true;
+
+                break;
+            }
+
+            return result;
+        }
+
+        private SlideResult ParseSlide(string input, double globalBpm)
+        {
+            var result = new SlideResult { RemainingInput = input };
+            var quarter = 60.0 / globalBpm;
+
+            var cases = new (string pattern, Action<Match> action)[]
+            {
+                (@"([1-8]{1,2})\[([0-9]*?):([0-9]*?)\]", m =>
+                {
+                    result.To = m.Groups[1].Value.Select(c => int.Parse(c.ToString())).ToArray();
+                    var start = ParseNum(m.Groups[2].Value);
+                    var end = ParseNum(m.Groups[3].Value);
+                    var noteDuration = 4.0 / start * quarter;
+                    result.SlideDuration = noteDuration * end;
+                    result.WaitDuration = quarter;
+                }),
+                (@"([1-8]{1,2})\[(\d+\.\d+?|\d+)#([0-9]*?):([0-9]*?)\]", m =>
+                {
+                    result.To = m.Groups[1].Value.Select(c => int.Parse(c.ToString())).ToArray();
+                    var bpm = ParseNum(m.Groups[2].Value);
+                    var start = ParseNum(m.Groups[3].Value);
+                    var end = ParseNum(m.Groups[4].Value);
+                    var q = 60.0 / bpm;
+                    var noteDuration = 4.0 / start * q;
+                    result.SlideDuration = noteDuration * end;
+                    result.WaitDuration = q;
+                }),
+                (@"([1-8]{1,2})\[(\d+\.\d+?|\d+)#(\d+\.\d+?|\d+)\]", m =>
+                {
+                    result.To = m.Groups[1].Value.Select(c => int.Parse(c.ToString())).ToArray();
+                    var bpm = ParseNum(m.Groups[2].Value);
+                    var slide = ParseNum(m.Groups[3].Value);
+                    result.SlideDuration = slide;
+                    result.WaitDuration = 60.0 / bpm;
+                }),
+                (@"([1-8]{1,2})\[(\d+\.\d+?|\d+)##(\d+\.\d+?|\d+)\]", m =>
+                {
+                    result.To = m.Groups[1].Value.Select(c => int.Parse(c.ToString())).ToArray();
+                    result.WaitDuration = ParseNum(m.Groups[2].Value);
+                    result.SlideDuration = ParseNum(m.Groups[3].Value);
+                }),
+                (@"([1-8]{1,2})\[(\d+\.\d+?|\d+)##([0-9]*?):([0-9]*?)\]", m =>
+                {
+                    result.To = m.Groups[1].Value.Select(c => int.Parse(c.ToString())).ToArray();
+                    result.WaitDuration = ParseNum(m.Groups[2].Value);
+                    var start = ParseNum(m.Groups[3].Value);
+                    var end = ParseNum(m.Groups[4].Value);
+                    var noteDuration = 4.0 / start * quarter;
+                    result.SlideDuration = noteDuration * end;
+                }),
+                (@"([1-8]{1,2})\[(\d+\.\d+?|\d+)##(\d+\.\d+?|\d+)#([0-9]*?):([0-9]*?)\]", m =>
+                {
+                    result.To = m.Groups[1].Value.Select(c => int.Parse(c.ToString())).ToArray();
+                    result.WaitDuration = ParseNum(m.Groups[2].Value);
+                    var bpm = ParseNum(m.Groups[3].Value);
+                    var start = ParseNum(m.Groups[4].Value);
+                    var end = ParseNum(m.Groups[5].Value);
+                    var q = 60.0 / bpm;
+                    var noteDuration = 4.0 / start * q;
+                    result.SlideDuration = noteDuration * end;
+                })
+            };
+
+            foreach (var (pattern, action) in cases)
+            {
+                var m = Regex.Match(input, pattern);
+                if (!m.Success)
+                    continue;
+
+                action(m);
+                result.Success = true;
+
+                result.RemainingInput = new Regex(pattern).Replace(input, "", 1);
+                break;
+            }
+
+            return result;
+        }
+
+        private double ParseNum(string s)
+        {
+            return double.Parse(s, CultureInfo.InvariantCulture);
+        }
+
+        private class SlideResult
+        {
+            public bool Success { get; set; }
+            public int[] To { get; set; } = Array.Empty<int>();
+            public double SlideDuration { get; set; }
+            public double WaitDuration { get; set; }
+            public string RemainingInput { get; set; } = string.Empty;
+        }
+
+        private class HoldResult
+        {
+            public bool Success { get; set; }
+            public double HoldDuration { get; set; }
         }
 
         public class TapDataObjectBase
