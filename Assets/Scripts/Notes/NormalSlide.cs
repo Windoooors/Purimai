@@ -2,15 +2,14 @@ using System;
 using System.Linq;
 using ChartManagement;
 using Notes.Slides;
-using UnityEngine;
 
 namespace Notes
 {
     public class NormalSlide : SlideBasedNote
     {
-        public NormalSegment[] segments; 
-        private int _touchedSegmentIndex;
+        public NormalSegment[] segments;
         private int _tappedSegmentIndex;
+        private int _touchedSegmentIndex;
 
         protected override void UpdateUniversalSegments()
         {
@@ -43,7 +42,7 @@ namespace Notes
         {
             if (Slided)
                 return;
-            
+
             var segmentState = GetSegmentState(e.SensorId, _tappedSegmentIndex);
 
             if (!segmentState.activated)
@@ -51,7 +50,7 @@ namespace Notes
 
             if (!IsJumpSensorAllowed() && segmentState.sensorJumped)
                 return;
-            
+
             _tappedSegmentIndex += segmentState.sensorJumped ? 2 : 1;
 
             if (_tappedSegmentIndex == segments.Length && !Slided)
@@ -75,7 +74,7 @@ namespace Notes
         {
             if (Slided)
                 return;
-            
+
             var segmentState = GetSegmentState(e.SensorId, _touchedSegmentIndex);
             var sensorJumped = segmentState.sensorJumped;
 
@@ -97,7 +96,7 @@ namespace Notes
             }
 
             ConcealSegment(_touchedSegmentIndex, sensorJumpedForLastSegment);
-            
+
             _touchedSegmentIndex++;
 
             if (_tappedSegmentIndex < _touchedSegmentIndex)

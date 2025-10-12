@@ -145,7 +145,7 @@ namespace Notes.Slides
         {
             if (Slided)
                 return;
-            
+
             if (_touchedLSegmentIndex + _touchedMSegmentIndex + _touchedRSegmentIndex != 11)
                 return;
 

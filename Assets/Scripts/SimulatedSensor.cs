@@ -88,7 +88,8 @@ public class SimulatedSensor : MonoBehaviour
         _sensorCollider.Overlap(overlapResults);
 
         foreach (var simultaneouslyTouchedSensorCollider in SimultaneouslyTouchedSensorColliderList)
-            if (overlapResults.Contains(simultaneouslyTouchedSensorCollider) && e.SensorId == simultaneouslyTouchedSensorCollider.name)
+            if (overlapResults.Contains(simultaneouslyTouchedSensorCollider) &&
+                e.SensorId == simultaneouslyTouchedSensorCollider.name)
                 return;
 
         if ((_currentFrameHasFinger && _lastFrameHadFinger && _notFirstFrameToHaveFingerHolding) ||
