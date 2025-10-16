@@ -2,14 +2,20 @@ using System;
 using System.Linq;
 using ChartManagement;
 using Notes.Slides;
+using UnityEngine;
 
 namespace Notes
 {
     public class NormalSlide : SlideBasedNote
     {
         public NormalSegment[] segments;
-        private int _tappedSegmentIndex;
+
+        private bool _sensorJumped;
         private int _touchedSegmentIndex;
+
+        private string _lastHeldSensorId = "";
+
+        private bool _isLastSegmentTouchedByHolding;
 
         protected override void UpdateUniversalSegments()
         {
@@ -38,12 +44,12 @@ namespace Notes
             }
         }
 
-        protected override void OnSensorTap(TouchEventArgs e)
+        protected override void OnSensorHold(TouchEventArgs e)
         {
             if (Slided)
                 return;
 
-            var segmentState = GetSegmentState(e.SensorId, _tappedSegmentIndex);
+            var segmentState = GetSegmentState(e.SensorId, _touchedSegmentIndex);
 
             if (!segmentState.activated)
                 return;
@@ -51,16 +57,31 @@ namespace Notes
             if (!IsJumpSensorAllowed() && segmentState.sensorJumped)
                 return;
 
-            _tappedSegmentIndex += segmentState.sensorJumped ? 2 : 1;
-
-            if (_tappedSegmentIndex == segments.Length && !Slided)
+            if (segmentState.sensorJumped)
             {
-                ConcealSegment(_tappedSegmentIndex - 2, false);
+                _sensorJumped = true;
+                _touchedSegmentIndex++;
+                ConcealSegment(_touchedSegmentIndex - 1, false);
+            }
+            
+            if (_lastHeldSensorId != e.SensorId)
+            {
+                if (_isLastSegmentTouchedByHolding && _sensorJumped)
+                    _sensorJumped = false;
+                
+                _isLastSegmentTouchedByHolding = true;
+            }
+            
+            _lastHeldSensorId = e.SensorId;
+
+            if (_touchedSegmentIndex == segments.Length - 1 && !Slided)
+            {
+                ConcealSegment(_touchedSegmentIndex - 1, false);
                 Judge();
             }
 
-            if (_tappedSegmentIndex - 1 == _touchedSegmentIndex && _tappedSegmentIndex != segments.Length)
-                ConcealMiddleSegment(_tappedSegmentIndex - 1);
+            if (_touchedSegmentIndex != segments.Length - 1)
+                ConcealMiddleSegment(_touchedSegmentIndex);
         }
 
         private bool SensorContained(int segmentIndex, string sensorId)
@@ -69,8 +90,7 @@ namespace Notes
                    segments[segmentIndex].sensorsNearby.Contains(sensorId);
         }
 
-        protected override void OnSensorHold(TouchEventArgs e,
-            bool sensorJumpedForLastSegment = false)
+        protected override void OnSensorLeave(TouchEventArgs e)
         {
             if (Slided)
                 return;
@@ -81,29 +101,16 @@ namespace Notes
             if (!segmentState.activated)
                 return;
 
-            if (!IsJumpSensorAllowed() && sensorJumped)
+            if (sensorJumped)
                 return;
 
-            if (_touchedSegmentIndex == segments.Length - 1)
-            {
-                if (!Slided)
-                {
-                    ConcealSegment(_touchedSegmentIndex - 1, sensorJumpedForLastSegment);
-                    Judge();
-                }
+            ConcealSegment(_touchedSegmentIndex, _sensorJumped);
 
-                return;
-            }
-
-            ConcealSegment(_touchedSegmentIndex, sensorJumpedForLastSegment);
+            _sensorJumped = false;
+            
+            _isLastSegmentTouchedByHolding = false;
 
             _touchedSegmentIndex++;
-
-            if (_tappedSegmentIndex < _touchedSegmentIndex)
-                _tappedSegmentIndex = _touchedSegmentIndex;
-
-            if (sensorJumped)
-                OnSensorHold(e, true);
         }
 
         private bool IsJumpSensorAllowed()

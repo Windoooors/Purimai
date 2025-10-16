@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.U2D;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
@@ -56,44 +57,31 @@ public class SimulatedSensor : MonoBehaviour
         if (_currentFrameHasFinger && !_lastFrameHadFinger)
         {
             OnTap?.Invoke(this, new TouchEventArgs(settings.sensorId));
-            OnLeave += OnAnySensorLeave;
 
+            OnHold.Invoke(this, new TouchEventArgs(settings.sensorId));
+            
             SimultaneouslyTouchedSensorColliderList.Add(_sensorCollider);
 
-            //_spriteShapeRenderer.color = new Color(1, 1, 1, 0.1f);
+            _spriteShapeRenderer.color = new Color(1, 1, 1, 0.1f);
         }
 
         if (!_currentFrameHasFinger && _lastFrameHadFinger)
         {
             OnLeave?.Invoke(this, new TouchEventArgs(settings.sensorId));
-            OnLeave -= OnAnySensorLeave;
 
             SimultaneouslyTouchedSensorColliderList.Remove(_sensorCollider);
 
-            _notFirstFrameToHaveFingerHolding = false;
+            //_notFirstFrameToHaveFingerHolding = false;
 
-            //_spriteShapeRenderer.color = new Color(1, 1, 1, 0);
+            _spriteShapeRenderer.color = new Color(1, 1, 1, 0);
         }
 
         if (_currentFrameHasFinger && _lastFrameHadFinger)
-            _notFirstFrameToHaveFingerHolding = true;
+        {
+            //_notFirstFrameToHaveFingerHolding = true;
+            OnHold.Invoke(this, new TouchEventArgs(settings.sensorId));
+        }
 
         _lastFrameHadFinger = _currentFrameHasFinger;
-    }
-
-    private void OnAnySensorLeave(object sender, TouchEventArgs e)
-    {
-        var overlapResults = new List<Collider2D>();
-
-        _sensorCollider.Overlap(overlapResults);
-
-        foreach (var simultaneouslyTouchedSensorCollider in SimultaneouslyTouchedSensorColliderList)
-            if (overlapResults.Contains(simultaneouslyTouchedSensorCollider) &&
-                e.SensorId == simultaneouslyTouchedSensorCollider.name)
-                return;
-
-        if ((_currentFrameHasFinger && _lastFrameHadFinger && _notFirstFrameToHaveFingerHolding) ||
-            e.SensorId == settings.sensorId)
-            OnHold?.Invoke(this, new TouchEventArgs(settings.sensorId));
     }
 }

@@ -1,4 +1,5 @@
 using LitMotion;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Notes.Taps
@@ -15,10 +16,23 @@ namespace Notes.Taps
         private bool _emerging;
         private bool _moving;
 
-        public void Update()
+        private void Update()
         {
             if (!ChartPlayer.Instance.isPlaying)
                 return;
+
+            if (judged)
+                return;
+
+            if (!judged && ChartPlayer.Instance.time > timing + ChartPlayer.Instance.tapJudgeSettings.lateGoodTiming)
+            {
+                judged = true;
+                judgeState = JudgeState.Miss;
+
+                PlayJudgeAnimation();
+
+                SimulatedSensor.OnTap -= Judge;
+            }
 
             if (ChartPlayer.Instance.time > timing - 2 * EmergingDuration &&
                 ChartPlayer.Instance.time < timing - 1 * EmergingDuration && !_emerging)
@@ -65,6 +79,62 @@ namespace Notes.Taps
             tapTransform.position *= NoteGenerator.Instance.originCircleScale;
             tapSpriteRenderer.color = new Color(1, 1, 1, 0);
             transform.position = NoteGenerator.Instance.outOfScreenPosition;
+            SimulatedSensor.OnTap += Judge;
+        }
+
+        private void Judge(object sender, TouchEventArgs e)
+        {
+            var parsed = int.TryParse(e.SensorId.Replace("A", ""), out var touchedLane);
+            if (!parsed)
+                return;
+
+            if (touchedLane != lane)
+                return;
+
+            var noteGenerator = NoteGenerator.Instance;
+
+            if (indexInLane != 0 && !noteGenerator.LaneList[lane - 1][indexInLane - 1].judged)
+                return;
+
+            var deltaTiming = timing - ChartPlayer.Instance.time;
+
+            var absDeltaTiming = math.abs(deltaTiming);
+
+            var judgeSettings = ChartPlayer.Instance.tapJudgeSettings;
+
+            if (deltaTiming > judgeSettings.fastGoodTiming)
+                return;
+
+            if (deltaTiming < -judgeSettings.lateGoodTiming)
+                return;
+
+            isFast = deltaTiming > 0;
+
+            if ((absDeltaTiming < judgeSettings.fastGoodTiming && absDeltaTiming > judgeSettings.quarterGreatTiming &&
+                 isFast)
+                || (absDeltaTiming < judgeSettings.lateGoodTiming &&
+                    absDeltaTiming > judgeSettings.quarterGreatTiming && !isFast))
+                judgeState = JudgeState.Good;
+            if (absDeltaTiming < judgeSettings.quarterGreatTiming && absDeltaTiming > judgeSettings.semiGreatTiming)
+                judgeState = JudgeState.QuarterGreat;
+            if (absDeltaTiming < judgeSettings.semiGreatTiming && absDeltaTiming > judgeSettings.greatTiming)
+                judgeState = JudgeState.SemiGreat;
+            if (absDeltaTiming < judgeSettings.greatTiming && absDeltaTiming > judgeSettings.perfectTiming)
+                judgeState = JudgeState.Great;
+            if (absDeltaTiming < judgeSettings.perfectTiming &&
+                absDeltaTiming > judgeSettings.semiCriticalPerfectTiming)
+                judgeState = JudgeState.Perfect;
+            if (absDeltaTiming < judgeSettings.semiCriticalPerfectTiming &&
+                absDeltaTiming > judgeSettings.criticalPerfectTiming)
+                judgeState = JudgeState.SemiCriticalPerfect;
+            if (absDeltaTiming < judgeSettings.criticalPerfectTiming)
+                judgeState = JudgeState.CriticalPerfect;
+
+            judged = true;
+
+            PlayJudgeAnimation();
+
+            SimulatedSensor.OnTap -= Judge;
         }
     }
 }

@@ -74,8 +74,8 @@ namespace Notes
             InitializeSlideSegments();
 
             transform.position = NoteGenerator.Instance.outOfScreenPosition;
-            SimulatedSensor.OnTap += OnTapSlidePath;
             SimulatedSensor.OnHold += OnHoldSlidePath;
+            SimulatedSensor.OnLeave += OnLeaveSlidePath;
         }
 
         private void Update()
@@ -173,20 +173,19 @@ namespace Notes
             return sensorName + sensorLane;
         }
 
+        private void OnLeaveSlidePath(object sender, TouchEventArgs e)
+        {
+            OnSensorLeave(e);
+        }
+
         private void OnHoldSlidePath(object sender, TouchEventArgs e)
         {
             OnSensorHold(e);
         }
 
-        private void OnTapSlidePath(object sender, TouchEventArgs e)
-        {
-            OnSensorTap(e);
-        }
+        protected abstract void OnSensorLeave(TouchEventArgs e);
 
-        protected abstract void OnSensorHold(TouchEventArgs e,
-            bool sensorJumpedForLastSegment = false);
-
-        protected abstract void OnSensorTap(TouchEventArgs e);
+        protected abstract void OnSensorHold(TouchEventArgs e);
 
         private void ReplaceEachSlideSprite()
         {

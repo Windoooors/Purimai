@@ -1,3 +1,4 @@
+using Notes;
 using UnityEngine;
 
 public class ChartPlayer : MonoBehaviour
@@ -12,6 +13,8 @@ public class ChartPlayer : MonoBehaviour
     public float flowSpeed;
     public int starAppearanceDelay;
     public int starAppearanceDuration;
+
+    public JudgeSettings tapJudgeSettings;
 
     public void Awake()
     {

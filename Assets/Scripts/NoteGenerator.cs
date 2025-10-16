@@ -114,6 +114,8 @@ public class NoteGenerator : MonoBehaviour
 
             LaneList[laneIndex].Add(tapObjectInstance);
 
+            tapObjectInstance.indexInLane = LaneList[laneIndex].Count - 1;
+
             tapObjectInstance.transform.parent = _noteParent.transform;
         }
     }

@@ -12,7 +12,20 @@ namespace Notes
         public int greatTiming;
         public int semiGreatTiming;
         public int quarterGreatTiming;
-        public int goodTiming;
+        public int lateGoodTiming;
+        public int fastGoodTiming;
+    }
+
+    public enum JudgeState
+    {
+        CriticalPerfect,
+        SemiCriticalPerfect,
+        Perfect,
+        Great,
+        SemiGreat,
+        QuarterGreat,
+        Good,
+        Miss
     }
 
     public abstract class TapBasedNote : MonoBehaviour
@@ -23,8 +36,14 @@ namespace Notes
         public SpriteRenderer lineSpriteRenderer;
         public Transform lineTransform;
         public int lane;
+        public int indexInLane;
 
-        public JudgeSettings judgeSettings;
+        public JudgeState judgeState;
+        public bool isFast;
+
+        public bool judged;
+
+        private Animator _judgeDisplayAnimator;
 
         protected int EmergingDuration;
         protected float LineExpansionSpeed;
@@ -54,7 +73,16 @@ namespace Notes
             lineSpriteRenderer.color = new Color(1, 1, 1, 0);
             lineTransform.localScale = NoteGenerator.Instance.originCircleScale * Vector3.one;
 
+            _judgeDisplayAnimator = TapJudgeDisplayManager.Instance.judgeDisplayAnimators[laneIndex];
+
             LateStart();
+        }
+
+        protected void PlayJudgeAnimation()
+        {
+            transform.position = NoteGenerator.Instance.outOfScreenPosition;
+
+            _judgeDisplayAnimator.SetTrigger("ShowJudgeDisplay");
         }
 
         protected virtual void LateStart()
