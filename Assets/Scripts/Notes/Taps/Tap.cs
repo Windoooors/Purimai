@@ -10,6 +10,8 @@ namespace Notes.Taps
         public bool isNoSpinningStarHead;
         public bool isBreak;
 
+        public float rotateSpeed;
+
         public SpriteRenderer tapSpriteRenderer;
         public Transform tapTransform;
 
@@ -21,12 +23,12 @@ namespace Notes.Taps
             if (!ChartPlayer.Instance.isPlaying)
                 return;
 
-            if (judged)
+            if (headJudged)
                 return;
 
-            if (!judged && ChartPlayer.Instance.time > timing + ChartPlayer.Instance.tapJudgeSettings.lateGoodTiming)
+            if (!headJudged && ChartPlayer.Instance.time > timing + ChartPlayer.Instance.tapJudgeSettings.lateGoodTiming)
             {
-                judged = true;
+                headJudged = true;
                 judgeState = JudgeState.Miss;
 
                 PlayJudgeAnimation();
@@ -66,10 +68,14 @@ namespace Notes.Taps
             if (_moving)
             {
                 tapTransform.localScale = Vector3.one;
-                tapTransform.Translate(Speed * Time.deltaTime * Vector3.up);
-
+                tapTransform.position += Speed * Time.deltaTime * transform.up;
+                
                 lineTransform.localScale += LineExpansionSpeed * Time.deltaTime * Vector3.one;
             }
+
+            if (!isNoSpinningStarHead && (isStarHead || isBreak))
+                tapTransform.Rotate(new Vector3(0, 0,
+                    isStarHead ? -180 * Time.deltaTime * rotateSpeed : 400 * Time.deltaTime));
         }
 
         protected override void LateStart()
@@ -79,6 +85,10 @@ namespace Notes.Taps
             tapTransform.position *= NoteGenerator.Instance.originCircleScale;
             tapSpriteRenderer.color = new Color(1, 1, 1, 0);
             transform.position = NoteGenerator.Instance.outOfScreenPosition;
+        }
+
+        public override void RegisterTapEvent()
+        {
             SimulatedSensor.OnTap += Judge;
         }
 
@@ -93,44 +103,23 @@ namespace Notes.Taps
 
             var noteGenerator = NoteGenerator.Instance;
 
-            if (indexInLane != 0 && !noteGenerator.LaneList[lane - 1][indexInLane - 1].judged)
+            if (indexInLane != 0 && !noteGenerator.LaneList[lane - 1][indexInLane - 1].headJudged)
                 return;
 
             var deltaTiming = timing - ChartPlayer.Instance.time;
 
-            var absDeltaTiming = math.abs(deltaTiming);
-
             var judgeSettings = ChartPlayer.Instance.tapJudgeSettings;
 
-            if (deltaTiming > judgeSettings.fastGoodTiming)
+            var state = GetJudgeState(deltaTiming, judgeSettings);
+
+            headJudged = state.judged;
+
+            if (!headJudged)
                 return;
 
-            if (deltaTiming < -judgeSettings.lateGoodTiming)
-                return;
-
-            isFast = deltaTiming > 0;
-
-            if ((absDeltaTiming < judgeSettings.fastGoodTiming && absDeltaTiming > judgeSettings.quarterGreatTiming &&
-                 isFast)
-                || (absDeltaTiming < judgeSettings.lateGoodTiming &&
-                    absDeltaTiming > judgeSettings.quarterGreatTiming && !isFast))
-                judgeState = JudgeState.Good;
-            if (absDeltaTiming < judgeSettings.quarterGreatTiming && absDeltaTiming > judgeSettings.semiGreatTiming)
-                judgeState = JudgeState.QuarterGreat;
-            if (absDeltaTiming < judgeSettings.semiGreatTiming && absDeltaTiming > judgeSettings.greatTiming)
-                judgeState = JudgeState.SemiGreat;
-            if (absDeltaTiming < judgeSettings.greatTiming && absDeltaTiming > judgeSettings.perfectTiming)
-                judgeState = JudgeState.Great;
-            if (absDeltaTiming < judgeSettings.perfectTiming &&
-                absDeltaTiming > judgeSettings.semiCriticalPerfectTiming)
-                judgeState = JudgeState.Perfect;
-            if (absDeltaTiming < judgeSettings.semiCriticalPerfectTiming &&
-                absDeltaTiming > judgeSettings.criticalPerfectTiming)
-                judgeState = JudgeState.SemiCriticalPerfect;
-            if (absDeltaTiming < judgeSettings.criticalPerfectTiming)
-                judgeState = JudgeState.CriticalPerfect;
-
-            judged = true;
+            judgeState = state.Item1;
+            
+            isFast = state.isFast;
 
             PlayJudgeAnimation();
 

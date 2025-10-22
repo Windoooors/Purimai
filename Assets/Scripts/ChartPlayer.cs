@@ -13,12 +13,22 @@ public class ChartPlayer : MonoBehaviour
     public float flowSpeed;
     public int starAppearanceDelay;
     public int starAppearanceDuration;
+    public int slideJudgeDisplayAnimationDuration = 600;
+    
+    public Animator[] holdRippleAnimators;
+    public Animator[] aAreaRippleAnimators;
+
+    public AnimationClip judgeDisplayAnimationClip;
 
     public JudgeSettings tapJudgeSettings;
+    public JudgeSettings slideJudgeSettings;
+    public JudgeSettings holdTailJudgeSettings;
 
     public void Awake()
     {
         Instance = this;
+
+        slideJudgeDisplayAnimationDuration = (int)(judgeDisplayAnimationClip.length * 1000);
 
         SimulatedSensor.OnTap += (sender, args) =>
         {

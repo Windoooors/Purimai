@@ -37,8 +37,11 @@ namespace Notes
         private bool _concealed;
 
         private Animator _judgeDisplayAnimator;
+        private JudgeState _judgeState;
 
         private bool _revealed;
+
+        private int _slideJudgeTiming;
         private bool _starMovingStarted;
 
         private bool _waitingStarted;
@@ -50,7 +53,6 @@ namespace Notes
         private void Start()
         {
             InitializeSlideDirection();
-            InitializeJudgeDisplayDirection();
             InitializeSlideSensorIds();
             UpdateUniversalSegments();
 
@@ -135,24 +137,74 @@ namespace Notes
                 _concealed = true;
             }
 
-            if (ChartPlayer.Instance.time >= timing + waitDuration + slideDuration + 600 && !_concealed && !Slided)
+            if (ChartPlayer.Instance.time >=
+                timing + waitDuration + slideDuration +
+                ChartPlayer.Instance.slideJudgeSettings.fastGoodTiming
+                && !_concealed && !Slided)
             {
                 foreach (var spriteRenderer in slideSpriteRenderers) spriteRenderer.enabled = false;
 
-                foreach (var star in stars) star.StopMoving();
+                foreach (var star in stars)
+                {
+                    star.StopMoving();
+                    star.spriteRenderer.enabled = false;
+                }
 
-                transform.position = NoteGenerator.Instance.outOfScreenPosition;
+                UpdateJudgeDisplayDirection(5);
+
+                Slided = true;
+                if (!_concealed)
+                    PlayJudgeAnimation();
 
                 _concealed = true;
             }
+
+            if (ChartPlayer.Instance.time >=
+                timing + waitDuration + slideDuration +
+                ChartPlayer.Instance.slideJudgeSettings.fastGoodTiming +
+                ChartPlayer.Instance.slideJudgeDisplayAnimationDuration
+                && !_concealed && !Slided)
+                transform.position = NoteGenerator.Instance.outOfScreenPosition;
         }
 
         protected void Judge()
         {
+            if (Slided)
+                return;
+
+            var deltaTiming = _slideJudgeTiming - ChartPlayer.Instance.time;
+
+            var absDeltaTiming = math.abs(deltaTiming);
+
+            var judgeSettings = ChartPlayer.Instance.slideJudgeSettings;
+
+            if (deltaTiming < -judgeSettings.lateGoodTiming)
+                return;
+
+            var isFast = deltaTiming > 0;
+
+            if (absDeltaTiming > judgeSettings.greatTiming)
+                _judgeState = JudgeState.Good;
+            if (absDeltaTiming <= judgeSettings.greatTiming && absDeltaTiming > judgeSettings.perfectTiming)
+                _judgeState = JudgeState.Great;
+            if (absDeltaTiming <= judgeSettings.perfectTiming)
+                _judgeState = JudgeState.Perfect;
+
+            var index = (_judgeState, isFast) switch
+            {
+                (JudgeState.Perfect, _) => 0,
+                (JudgeState.Great, true) => 1,
+                (JudgeState.Good, true) => 2,
+                (JudgeState.Great, false) => 3,
+                (JudgeState.Good, false) => 4,
+                _ => 5
+            };
+
+            UpdateJudgeDisplayDirection(index);
             Slided = true;
         }
 
-        protected void PlayJudgeAnimation()
+        private void PlayJudgeAnimation()
         {
             _judgeDisplayAnimator.SetTrigger("ShowJudgeDisplay");
         }
@@ -289,6 +341,11 @@ namespace Notes
 
                 segment.slideSpriteRenderers = slideSpriteRenderersList.ToArray();
             }
+
+            var lastSegmentArrowCount = UniversalSegments[^1].slideSpriteRenderersWithinSensorArea.Length;
+            _slideJudgeTiming = (int)((float)(slideSpriteRenderers.Length - lastSegmentArrowCount) /
+                                      slideSpriteRenderers.Length * slideDuration
+                                      + timing + waitDuration);
         }
 
         private bool ArrowOverlapsOnSensor(int index, Collider2D sensorCollider)
@@ -333,12 +390,12 @@ namespace Notes
             star.pathRotation = -45f * fromLaneIndex;
         }
 
-        protected virtual void InitializeJudgeDisplayDirection()
+        protected virtual void UpdateJudgeDisplayDirection(int judgeSpriteGroupIndex)
         {
             var judgeSpriteNeedsChange =
                 judgeDisplaySpriteRenderer.transform.rotation.eulerAngles.z is > 265 and <= 365 or > -5 and <= 95;
 
-            judgeDisplaySpriteRenderer.sprite = NoteGenerator.Instance.slideJudgeDisplaySprites[0]
+            judgeDisplaySpriteRenderer.sprite = NoteGenerator.Instance.slideJudgeDisplaySprites[judgeSpriteGroupIndex]
                 .normalSlideJudgeSprites[
                     judgeSpriteNeedsChange
                         ? IsClockwise ? slideJudgeDisplaySpriteIndexes[1] : slideJudgeDisplaySpriteIndexes[0]

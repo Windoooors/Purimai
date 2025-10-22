@@ -80,6 +80,10 @@ public class NoteGenerator : MonoBehaviour
 
             if (isEach) GenerateEachLines(noteDataObject);
         }
+
+        foreach (var lane in LaneList)
+            for (var i = lane.Count - 1; i >= 0; i--)
+                lane[i].RegisterTapEvent();
     }
 
     private void GenerateTaps(NoteDataObject noteDataObject, bool isEach, int order)
@@ -107,6 +111,7 @@ public class NoteGenerator : MonoBehaviour
             tapObjectInstance.isNoSpinningStarHead = tap.IsNoSpinningStarHead;
             tapObjectInstance.isStarHead = tap.IsStarHead;
             tapObjectInstance.isBreak = tap.IsBreak;
+            tapObjectInstance.rotateSpeed = tap.RotateSpeed;
 
             tapObjectInstance.tapSpriteRenderer.sortingOrder = order;
 
@@ -174,6 +179,8 @@ public class NoteGenerator : MonoBehaviour
             order--;
 
             LaneList[laneIndex].Add(holdObjectInstance);
+            
+            holdObjectInstance.indexInLane = LaneList[laneIndex].Count - 1;
 
             holdObjectInstance.transform.parent = _noteParent.transform;
         }

@@ -31,12 +31,13 @@ namespace Notes.Slides
             }
         }
 
-        protected override void InitializeJudgeDisplayDirection()
+        protected override void UpdateJudgeDisplayDirection(int judgeDisplaySpriteGroupIndex)
         {
             var judgeSpriteNeedsChange =
                 judgeDisplaySpriteRenderer.transform.rotation.eulerAngles.z is >= 265 and <= 365 or >= -5 and <= 95;
 
-            judgeDisplaySpriteRenderer.sprite = NoteGenerator.Instance.slideJudgeDisplaySprites[0]
+            judgeDisplaySpriteRenderer.sprite = NoteGenerator.Instance
+                .slideJudgeDisplaySprites[judgeDisplaySpriteGroupIndex]
                 .normalSlideJudgeSprites[
                     judgeSpriteNeedsChange
                         ? _isMirror ? 0 : 1

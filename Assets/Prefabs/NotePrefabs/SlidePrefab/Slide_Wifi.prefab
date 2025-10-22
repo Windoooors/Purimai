@@ -1308,6 +1308,7 @@ MonoBehaviour:
   - {fileID: 7238551318045615513}
   - {fileID: 5295571688944403275}
   judgeDisplaySpriteRenderer: {fileID: 8644270734557044439}
+  slideJudgeDisplaySpriteIndexes: 
   segments:
   - mainSensor: A1
     slideSpriteRenderers: []

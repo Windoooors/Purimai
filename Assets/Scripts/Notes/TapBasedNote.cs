@@ -1,5 +1,7 @@
 using System;
+using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Notes
 {
@@ -41,7 +43,7 @@ namespace Notes
         public JudgeState judgeState;
         public bool isFast;
 
-        public bool judged;
+        [FormerlySerializedAs("judged")] public bool headJudged;
 
         private Animator _judgeDisplayAnimator;
 
@@ -78,15 +80,66 @@ namespace Notes
             LateStart();
         }
 
+        public virtual void RegisterTapEvent()
+        {
+        }
+
         protected void PlayJudgeAnimation()
         {
             transform.position = NoteGenerator.Instance.outOfScreenPosition;
 
-            _judgeDisplayAnimator.SetTrigger("ShowJudgeDisplay");
+            switch (judgeState)
+            {
+                case JudgeState.Perfect or JudgeState.CriticalPerfect or JudgeState.SemiCriticalPerfect:
+                    _judgeDisplayAnimator.SetTrigger("ShowPerfect"); break;
+                case JudgeState.Great or JudgeState.SemiGreat or JudgeState.QuarterGreat:
+                    _judgeDisplayAnimator.SetTrigger("ShowGreat"); break;
+                case JudgeState.Good:
+                    _judgeDisplayAnimator.SetTrigger("ShowGood"); break;
+                case JudgeState.Miss:
+                    _judgeDisplayAnimator.SetTrigger("ShowMiss"); break;
+            }
         }
 
         protected virtual void LateStart()
         {
+        }
+
+        protected (JudgeState, bool isFast, bool judged) GetJudgeState(int deltaTiming, JudgeSettings judgeSettings)
+        {
+            var absDeltaTiming = math.abs(deltaTiming);
+            
+            if (deltaTiming > judgeSettings.fastGoodTiming)
+                return (JudgeState.Miss, false, false);
+
+            if (deltaTiming < -judgeSettings.lateGoodTiming)
+                return (JudgeState.Miss, false, false);
+
+            var fast = deltaTiming > 0;
+
+            var state = JudgeState.Miss;
+            
+            if ((absDeltaTiming <= judgeSettings.fastGoodTiming && absDeltaTiming > judgeSettings.quarterGreatTiming &&
+                 fast)
+                || (absDeltaTiming <= judgeSettings.lateGoodTiming &&
+                    absDeltaTiming > judgeSettings.quarterGreatTiming && !fast))
+                state = JudgeState.Good;
+            if (absDeltaTiming <= judgeSettings.quarterGreatTiming && absDeltaTiming > judgeSettings.semiGreatTiming)
+                state = JudgeState.QuarterGreat;
+            if (absDeltaTiming <= judgeSettings.semiGreatTiming && absDeltaTiming > judgeSettings.greatTiming)
+                state = JudgeState.SemiGreat;
+            if (absDeltaTiming <= judgeSettings.greatTiming && absDeltaTiming > judgeSettings.perfectTiming)
+                state = JudgeState.Great;
+            if (absDeltaTiming <= judgeSettings.perfectTiming &&
+                absDeltaTiming > judgeSettings.semiCriticalPerfectTiming)
+                state = JudgeState.Perfect;
+            if (absDeltaTiming <= judgeSettings.semiCriticalPerfectTiming &&
+                absDeltaTiming > judgeSettings.criticalPerfectTiming)
+                state = JudgeState.SemiCriticalPerfect;
+            if (absDeltaTiming <= judgeSettings.criticalPerfectTiming)
+                state = JudgeState.CriticalPerfect;
+            
+            return (state, fast, true);
         }
     }
 }

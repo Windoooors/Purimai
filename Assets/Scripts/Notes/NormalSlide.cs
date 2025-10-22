@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using ChartManagement;
 using Notes.Slides;
-using UnityEngine;
 
 namespace Notes
 {
@@ -10,12 +9,12 @@ namespace Notes
     {
         public NormalSegment[] segments;
 
-        private bool _sensorJumped;
-        private int _touchedSegmentIndex;
+        private bool _isLastSegmentTouchedByHolding;
 
         private string _lastHeldSensorId = "";
 
-        private bool _isLastSegmentTouchedByHolding;
+        private bool _sensorJumped;
+        private int _touchedSegmentIndex;
 
         protected override void UpdateUniversalSegments()
         {
@@ -63,16 +62,17 @@ namespace Notes
                 _touchedSegmentIndex++;
                 ConcealSegment(_touchedSegmentIndex - 1, false);
             }
-            
+
             if (_lastHeldSensorId != e.SensorId)
             {
                 if (_isLastSegmentTouchedByHolding && _sensorJumped)
                     _sensorJumped = false;
-                
-                _isLastSegmentTouchedByHolding = true;
+
+                if (segmentState.sensorJumped || _touchedSegmentIndex == 0)
+                    _isLastSegmentTouchedByHolding = true;
+
+                _lastHeldSensorId = e.SensorId;
             }
-            
-            _lastHeldSensorId = e.SensorId;
 
             if (_touchedSegmentIndex == segments.Length - 1 && !Slided)
             {
@@ -107,7 +107,7 @@ namespace Notes
             ConcealSegment(_touchedSegmentIndex, _sensorJumped);
 
             _sensorJumped = false;
-            
+
             _isLastSegmentTouchedByHolding = false;
 
             _touchedSegmentIndex++;

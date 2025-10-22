@@ -7,19 +7,19 @@ namespace Notes.Slides
     public class WifiSlide : SlideBasedNote
     {
         public WifiSegment[] segments;
-        private int _touchedLSegmentIndex;
-        private int _touchedMSegmentIndex;
-        private int _touchedRSegmentIndex;
 
         private string _lastHeldLSensorId = "";
         private string _lastHeldMSensorId = "";
         private string _lastHeldRSensorId = "";
-        
+
         private bool _lastLSegmentTouchedByHolding;
         private bool _lastMSegmentTouchedByHolding;
         private bool _lastRSegmentTouchedByHolding;
-        
+
         private bool _sensorJumped;
+        private int _touchedLSegmentIndex;
+        private int _touchedMSegmentIndex;
+        private int _touchedRSegmentIndex;
 
         protected override void UpdateUniversalSegments()
         {
@@ -102,7 +102,7 @@ namespace Notes.Slides
                 2 => _touchedRSegmentIndex,
                 _ => -1
             };
-            
+
             var lastSegmentTouchedByHolding = pathIndex switch
             {
                 0 => _lastLSegmentTouchedByHolding,
@@ -129,24 +129,21 @@ namespace Notes.Slides
                 return;
 
             if (isOnHold)
-            {
                 if (lastHeldSensorId != e.SensorId)
                 {
                     if (sensorJumped)
                         _sensorJumped = true;
-                    
-                    if (_sensorJumped && lastSegmentTouchedByHolding)
-                    {
-                        _sensorJumped = false;
-                    }
 
-                    switch (pathIndex)
-                    {
-                        case 0: _lastLSegmentTouchedByHolding = true; break;
-                        case 1: _lastMSegmentTouchedByHolding = true; break;
-                        case 2: _lastRSegmentTouchedByHolding = true; break;
-                    }
-                    
+                    if (_sensorJumped && lastSegmentTouchedByHolding) _sensorJumped = false;
+
+                    if (sensorJumped || touchedSegmentsIndex == 0)
+                        switch (pathIndex)
+                        {
+                            case 0: _lastLSegmentTouchedByHolding = true; break;
+                            case 1: _lastMSegmentTouchedByHolding = true; break;
+                            case 2: _lastRSegmentTouchedByHolding = true; break;
+                        }
+
                     switch (pathIndex)
                     {
                         case 0: _lastHeldLSensorId = e.SensorId; break;
@@ -154,18 +151,15 @@ namespace Notes.Slides
                         case 2: _lastHeldRSensorId = e.SensorId; break;
                     }
                 }
-            }
 
             if (!isOnHold)
-            {
                 switch (pathIndex)
                 {
                     case 0: _lastLSegmentTouchedByHolding = false; break;
                     case 1: _lastMSegmentTouchedByHolding = false; break;
                     case 2: _lastRSegmentTouchedByHolding = false; break;
                 }
-            }
-            
+
             if (sensorJumped && !isOnHold)
                 return;
 
@@ -207,12 +201,13 @@ namespace Notes.Slides
             foreach (var star in stars) star.pathRotation = -45f * fromLaneIndex;
         }
 
-        protected override void InitializeJudgeDisplayDirection()
+        protected override void UpdateJudgeDisplayDirection(int judgeDisplaySpriteGroupIndex)
         {
             var judgeSpriteNeedsChange =
                 judgeDisplaySpriteRenderer.transform.rotation.eulerAngles.z is >= 265 and <= 365 or >= -5 and <= 95;
 
-            judgeDisplaySpriteRenderer.sprite = NoteGenerator.Instance.slideJudgeDisplaySprites[0]
+            judgeDisplaySpriteRenderer.sprite = NoteGenerator.Instance
+                .slideJudgeDisplaySprites[judgeDisplaySpriteGroupIndex]
                 .wifiSlideJudgeSprites[
                     judgeSpriteNeedsChange
                         ? 0

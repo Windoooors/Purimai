@@ -143,7 +143,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 213a3707378434ec896e9fdf60419147, type: 2}
+  - {fileID: 2100000, guid: 6382b59cea78a4a58a51785573e03b11, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -247,8 +247,13 @@ MonoBehaviour:
   lineSpriteRenderer: {fileID: 3962344005866337569}
   lineTransform: {fileID: 4414120062930069471}
   lane: 0
+  indexInLane: 0
+  judgeState: 0
+  isFast: 0
+  headJudged: 0
   isStarHead: 1
   isNoSpinningStarHead: 0
   isBreak: 1
+  rotateSpeed: 0
   tapSpriteRenderer: {fileID: 6643373409992967275}
   tapTransform: {fileID: 3439151639192608952}

@@ -174,6 +174,8 @@ namespace ChartManagement
                     ? slideStringSplitResult
                     : new[] { holdOrSlideNoteString };
 
+                SlideDataObject slideAssociatedWithTap = null;
+
                 foreach (var separatedSlideString in separatedSlideStrings)
                 {
                     var slideMatch = ParseSlide(separatedSlideString.Trim(), bpm);
@@ -192,14 +194,18 @@ namespace ChartManagement
                     var slideDuration = (int)(slideMatch.SlideDuration * 1000);
                     var waitDuration = (int)(slideMatch.WaitDuration * 1000);
 
-                    slides.Add(new SlideDataObject
+                    var slideDataObject = new SlideDataObject
                     {
                         From = lane,
                         To = slideMatch.To,
                         SlideDuration = slideDuration,
                         WaitDuration = waitDuration,
                         Type = slideType
-                    });
+                    };
+                    
+                    slides.Add(slideDataObject);
+                    
+                    slideAssociatedWithTap = slideDataObject;
                 }
 
                 if (!isNoHeadSlide)
@@ -211,7 +217,8 @@ namespace ChartManagement
                                                              slides.Exists(x => x.From == lane)),
                         IsNoSpinningStarHead = !isTapStyleStarHead && isNoSpinningStarHead,
                         IsDoubleStarHead = !isTapStyleStarHead &&
-                                           slides.Where(x => x.From == lane).Select(x => x).ToArray().Length > 1
+                                           slides.Where(x => x.From == lane).Select(x => x).ToArray().Length > 1,
+                        RotateSpeed = (float)bpm / slideAssociatedWithTap?.SlideDuration ?? 0f
                     });
             }
 
@@ -372,6 +379,8 @@ namespace ChartManagement
             public bool IsDoubleStarHead;
             public bool IsNoSpinningStarHead;
             public bool IsStarHead;
+            
+            public float RotateSpeed;
         }
 
         public class HoldDataObject : TapDataObjectBase

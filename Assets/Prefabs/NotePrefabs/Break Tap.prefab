@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4842480887954264715}
   - component: {fileID: 919953459778743248}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Break_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -137,9 +137,14 @@ MonoBehaviour:
   lineSpriteRenderer: {fileID: 919953459778743248}
   lineTransform: {fileID: 4842480887954264715}
   lane: 0
+  indexInLane: 0
+  judgeState: 0
+  isFast: 0
+  headJudged: 0
   isStarHead: 0
   isNoSpinningStarHead: 0
   isBreak: 1
+  rotateSpeed: 0
   tapSpriteRenderer: {fileID: 8122789154762157759}
   tapTransform: {fileID: 4790555675654702074}
 --- !u!1 &7232512128882385927
@@ -153,7 +158,7 @@ GameObject:
   - component: {fileID: 4790555675654702074}
   - component: {fileID: 8122789154762157759}
   - component: {fileID: 667098131790443260}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Break Tap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -198,7 +203,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 213a3707378434ec896e9fdf60419147, type: 2}
+  - {fileID: 2100000, guid: becac55cfb0944f96ae6c5818a9741f9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

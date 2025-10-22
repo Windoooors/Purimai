@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7156236925385065974}
   - component: {fileID: 5361547356219200710}
   m_Layer: 0
-  m_Name: Normal Hold
+  m_Name: Hold
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -55,7 +55,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 213a3707378434ec896e9fdf60419147, type: 2}
+  - {fileID: 2100000, guid: 9366df779f2e34f4693551293765ccd3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -82,7 +82,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 1
-  m_Size: {x: 1.18, y: 1.3459675}
+  m_Size: {x: 1.18, y: 1.345968}
   m_AdaptiveModeThreshold: 1
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -185,6 +185,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4509658060785986338}
   - component: {fileID: 7557519446658508436}
+  - component: {fileID: 9031460039452764356}
   m_Layer: 0
   m_Name: Normal Hold
   m_TagString: Untagged
@@ -225,6 +226,33 @@ MonoBehaviour:
   lineSpriteRenderer: {fileID: 1745482705623708558}
   lineTransform: {fileID: 3749276297048441278}
   lane: 0
+  indexInLane: 0
+  judgeState: 0
+  isFast: 0
+  headJudged: 0
   holdSpriteRenderer: {fileID: 5361547356219200710}
   holdTransform: {fileID: 7156236925385065974}
+  holdJudged: 0
   duration: 0
+--- !u!95 &9031460039452764356
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8285819498606026658}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 10b0d56081bc74b7ab9792aeac0840d6, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

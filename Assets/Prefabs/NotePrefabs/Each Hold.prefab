@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 167840904135251836}
   - component: {fileID: 2538663322317006087}
+  - component: {fileID: 462139323104315951}
   m_Layer: 0
   m_Name: Each Hold
   m_TagString: Untagged
@@ -50,9 +51,36 @@ MonoBehaviour:
   lineSpriteRenderer: {fileID: 4383902258557369002}
   lineTransform: {fileID: 2637334185132102782}
   lane: 0
+  indexInLane: 0
+  judgeState: 0
+  isFast: 0
+  headJudged: 0
   holdSpriteRenderer: {fileID: 4641981725421132556}
   holdTransform: {fileID: 8208154636116742362}
+  holdJudged: 0
   duration: 0
+--- !u!95 &462139323104315951
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2067234492536355557}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 10b0d56081bc74b7ab9792aeac0840d6, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &8800934994270330977
 GameObject:
   m_ObjectHideFlags: 0
@@ -64,7 +92,7 @@ GameObject:
   - component: {fileID: 8208154636116742362}
   - component: {fileID: 4641981725421132556}
   m_Layer: 0
-  m_Name: Each Hold
+  m_Name: Hold
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -108,7 +136,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 213a3707378434ec896e9fdf60419147, type: 2}
+  - {fileID: 2100000, guid: d231bfb71983547e5a871ce2cef44e1a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
