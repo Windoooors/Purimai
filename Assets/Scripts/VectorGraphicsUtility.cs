@@ -1,7 +1,13 @@
+using System.Buffers;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Unity.VectorGraphics;
 using UnityEngine;
+using UnityEngine.Networking;
+using StringReader = System.IO.StringReader;
 
 public class VectorGraphicsUtility
 {
@@ -27,9 +33,10 @@ public class VectorGraphicsUtility
         _pathRotation = pathRotation;
         _flipPathY = flipPathY;
         _objectRotationOffset = objectRotationOffset;
-
+        
         var fullPath = Path.Combine(Application.streamingAssetsPath, "StarPath/" + svgAssetPath + ".svg");
-        using var reader = new StreamReader(File.OpenRead(fullPath));
+
+        using var reader = new StringReader(GetSvgText(fullPath));
 
         var sceneInfo = SVGParser.ImportSVG(reader, ViewportOptions.DontPreserve);
         var shape = sceneInfo.NodeIDs.ToArray()[1].Value.Shapes[0];
@@ -145,5 +152,27 @@ public class VectorGraphicsUtility
         }
 
         return length;
+    }
+
+    private string GetSvgText(string path)
+    {
+#if UNITY_ANDROID
+        UnityWebRequest request = UnityWebRequest.Get(new System.Uri(path));
+        request.SendWebRequest();
+
+        string text;
+        
+        while (true)
+        {
+            if (!request.isDone)
+                continue;
+            text= request.downloadHandler.text;
+            request.Dispose();
+            break;
+        }
+        return text;
+#else
+        return File.ReadAllText(path);
+#endif
     }
 }

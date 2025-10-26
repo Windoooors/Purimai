@@ -1,5 +1,6 @@
 using Notes;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class ChartPlayer : MonoBehaviour
 {
@@ -11,13 +12,17 @@ public class ChartPlayer : MonoBehaviour
     public bool isPlaying;
 
     public float flowSpeed;
-    public int starAppearanceDelay;
-    public int starAppearanceDuration;
+    public float slideAppearanceDelay = 0;
+    
     public int slideJudgeDisplayAnimationDuration = 600;
+    public int slideConcealDelay = 33;
+
+    [HideInInspector] public int slideAppearanceDeltaTime;
+    [HideInInspector] public int slideFadeInDuration;
     
     public Animator[] holdRippleAnimators;
-    public Animator[] aAreaRippleAnimators;
-
+    public Animator judgeCircleGlowAnimator;
+    
     public AnimationClip judgeDisplayAnimationClip;
 
     public JudgeSettings tapJudgeSettings;
@@ -26,15 +31,20 @@ public class ChartPlayer : MonoBehaviour
 
     public void Awake()
     {
+        Application.targetFrameRate = 120;
+        
         Instance = this;
 
         slideJudgeDisplayAnimationDuration = (int)(judgeDisplayAnimationClip.length * 1000);
 
-        SimulatedSensor.OnTap += (sender, args) =>
+        SimulatedSensor.OnTap += (_, _) =>
         {
             if (!isPlaying)
                 Play();
         };
+
+        slideAppearanceDeltaTime = -(int)(2400 / flowSpeed * (1 - slideAppearanceDelay));
+        slideFadeInDuration = -slideAppearanceDeltaTime > 200 ? 200 : -slideAppearanceDeltaTime;
     }
 
     private void Update()

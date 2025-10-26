@@ -139,6 +139,7 @@ namespace ChartManagement
                 var isNoSpinningStarHead = separatedNoteString.Contains("$") && !isSpinningStarHead;
                 var isTapStyleStarHead = separatedNoteString.Contains("@");
                 var isNoHeadSlide = separatedNoteString.Contains("?") || separatedNoteString.Contains("!");
+                var isSuddenAppearingSlide = separatedNoteString.Contains("!");
 
                 var separatedNoteStringWithNoHeadProperties =
                     separatedNoteString.Replace("$", "").Replace("b", "").Replace("?", "").Replace("!", "");
@@ -200,11 +201,12 @@ namespace ChartManagement
                         To = slideMatch.To,
                         SlideDuration = slideDuration,
                         WaitDuration = waitDuration,
-                        Type = slideType
+                        Type = slideType,
+                        SuddenlyAppears = isSuddenAppearingSlide
                     };
-                    
+
                     slides.Add(slideDataObject);
-                    
+
                     slideAssociatedWithTap = slideDataObject;
                 }
 
@@ -218,7 +220,7 @@ namespace ChartManagement
                         IsNoSpinningStarHead = !isTapStyleStarHead && isNoSpinningStarHead,
                         IsDoubleStarHead = !isTapStyleStarHead &&
                                            slides.Where(x => x.From == lane).Select(x => x).ToArray().Length > 1,
-                        RotateSpeed = (float)bpm / slideAssociatedWithTap?.SlideDuration ?? 0f
+                        RotateSpeed = 1000 / slideAssociatedWithTap?.SlideDuration ?? 0f
                     });
             }
 
@@ -291,10 +293,10 @@ namespace ChartManagement
                     var bpm = ParseNum(m.Groups[2].Value);
                     var start = ParseNum(m.Groups[3].Value);
                     var end = ParseNum(m.Groups[4].Value);
-                    var q = 60.0 / bpm;
-                    var noteDuration = 4.0 / start * q;
+                    var customizedQuarter = 60.0 / bpm;
+                    var noteDuration = 4.0 / start * customizedQuarter;
                     result.SlideDuration = noteDuration * end;
-                    result.WaitDuration = q;
+                    result.WaitDuration = customizedQuarter;
                 }),
                 (@"([1-8]{1,2})\[(\d+\.\d+?|\d+)#(\d+\.\d+?|\d+)\]", m =>
                 {
@@ -326,8 +328,8 @@ namespace ChartManagement
                     var bpm = ParseNum(m.Groups[3].Value);
                     var start = ParseNum(m.Groups[4].Value);
                     var end = ParseNum(m.Groups[5].Value);
-                    var q = 60.0 / bpm;
-                    var noteDuration = 4.0 / start * q;
+                    var customizedQuarter = 60.0 / bpm;
+                    var noteDuration = 4.0 / start * customizedQuarter;
                     result.SlideDuration = noteDuration * end;
                 })
             };
@@ -379,7 +381,7 @@ namespace ChartManagement
             public bool IsDoubleStarHead;
             public bool IsNoSpinningStarHead;
             public bool IsStarHead;
-            
+
             public float RotateSpeed;
         }
 
@@ -428,6 +430,8 @@ namespace ChartManagement
             public int From;
             public int SlideDuration;
             public int[] To;
+
+            public bool SuddenlyAppears;
 
             public SlideType Type;
             public int WaitDuration;

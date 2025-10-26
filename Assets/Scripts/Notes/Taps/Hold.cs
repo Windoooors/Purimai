@@ -9,27 +9,30 @@ namespace Notes.Taps
     {
         public SpriteRenderer holdSpriteRenderer;
         public Transform holdTransform;
+        public SpriteRenderer holdEndSpriteRenderer;
+        public Transform holdEnd;
 
         public bool holdJudged;
-        
+
         public int duration;
+
         private bool _compensationApplied;
         private int _disappearTime;
         private float _distance;
 
         private bool _emerging;
+
+        private Animator _glowAnimator;
         private float _grossHoldSize;
+        private JudgeState _headJudgeState;
         private bool _holdDone;
+
+        private JudgeState _holdTailJudgeState;
         private float _initialHoldSize;
         private bool _lineMoving;
         private bool _moving;
 
         private int _nowEmergingDuration;
-        
-        private JudgeState _holdTailJudgeState;
-        private JudgeState _headJudgeState;
-        
-        private Animator _glowAnimator;
 
         public void Update()
         {
@@ -52,11 +55,10 @@ namespace Notes.Taps
             if (ChartPlayer.Instance.time >
                 timing + duration &&
                 headJudged && !holdJudged)
-            {
                 ChartPlayer.Instance.holdRippleAnimators[lane - 1].SetTrigger("Reset");
-            }
-            
-            if (ChartPlayer.Instance.time > timing + duration + ChartPlayer.Instance.holdTailJudgeSettings.greatTiming &&
+
+            if (ChartPlayer.Instance.time >
+                timing + duration + ChartPlayer.Instance.holdTailJudgeSettings.greatTiming &&
                 headJudged && !holdJudged)
             {
                 holdJudged = true;
@@ -64,7 +66,7 @@ namespace Notes.Taps
                 judgeState = JudgeState.Good;
 
                 PlayJudgeAnimation();
-                
+
                 _glowAnimator.SetTrigger("Reset");
 
                 SimulatedSensor.OnLeave -= OnLeave;
@@ -131,10 +133,16 @@ namespace Notes.Taps
                     holdTransform.Translate(0.5f * Speed * Time.deltaTime * Vector3.up);
                 }
                 else if (_nowEmergingDuration > duration)
+                {
+                    holdEndSpriteRenderer.color = Color.white;
+                    holdEnd.Translate(Speed * Time.deltaTime * Vector3.up);
                     holdTransform.Translate(Speed * Time.deltaTime * Vector3.up);
+                }
             }
             else
             {
+                holdEndSpriteRenderer.color = Color.white;
+                holdEnd.Translate(Speed * Time.deltaTime * Vector3.up);
                 _grossHoldSize -= Speed * Time.deltaTime;
                 holdTransform.Translate(0.5f * Speed * Time.deltaTime * Vector3.up);
             }
@@ -176,7 +184,7 @@ namespace Notes.Taps
                 return;
 
             var deltaTiming = timing - ChartPlayer.Instance.time;
-            
+
             var judgeSettings = ChartPlayer.Instance.tapJudgeSettings;
 
             var state = GetJudgeState(deltaTiming, judgeSettings);
@@ -202,9 +210,11 @@ namespace Notes.Taps
                     JudgeState.Great => "HoldGreat",
                     _ => "HoldPerfect"
                 });
-            
+
+            AreaARipple.AreaARipples.Find(x => x.sensorId == "A" + lane).CancelAnimation();
+
             _glowAnimator.SetTrigger("Glow");
-            
+
             SimulatedSensor.OnTap -= JudgeHead;
         }
 
@@ -220,16 +230,16 @@ namespace Notes.Taps
             if (!headJudged)
                 return;
 
-            if (ChartPlayer.Instance.time < timing || ChartPlayer.Instance.time > timing + duration + 
+            if (ChartPlayer.Instance.time < timing || ChartPlayer.Instance.time > timing + duration +
                 ChartPlayer.Instance.holdTailJudgeSettings.greatTiming)
                 return;
-            
+
             ChartPlayer.Instance.holdRippleAnimators[lane - 1].SetTrigger("Reset");
 
             _glowAnimator.SetTrigger("Reset");
-            
+
             var deltaTime = timing + duration - ChartPlayer.Instance.time;
-            
+
             var absDeltaTiming = math.abs(deltaTime);
 
             var judgeSettings = ChartPlayer.Instance.holdTailJudgeSettings;
@@ -246,16 +256,11 @@ namespace Notes.Taps
             if (_holdTailJudgeState == JudgeState.Perfect)
                 judgeState = _headJudgeState;
             else if (_holdTailJudgeState == JudgeState.Great)
-            {
                 judgeState = _headJudgeState == JudgeState.Good ? JudgeState.Good : JudgeState.Great;
-            }
-            else if (_holdTailJudgeState == JudgeState.Good)
-            {
-                judgeState = JudgeState.Good;
-            }
-            
+            else if (_holdTailJudgeState == JudgeState.Good) judgeState = JudgeState.Good;
+
             PlayJudgeAnimation();
-            
+
             SimulatedSensor.OnLeave -= OnLeave;
 
             holdJudged = true;

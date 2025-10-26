@@ -42,10 +42,6 @@ public class NoteGenerator : MonoBehaviour
 
     private void Awake()
     {
-#if UNITY_IOS
-        Application.targetFrameRate = 120;
-#endif
-
         var mainCamera = FindAnyObjectByType<Camera>();
 
         if (mainCamera)
@@ -70,11 +66,11 @@ public class NoteGenerator : MonoBehaviour
         foreach (var noteDataObject in noteDataObjects)
         {
             var isEach = noteDataObject.TapDataObjects.Length + noteDataObject.HoldDataObjects.Length > 1;
-            var isSlideEach = noteDataObject.SlideDataObjects.Length > 1;
+            //var isSlideEach = noteDataObject.SlideDataObjects.Length > 1;
 
             GenerateTaps(noteDataObject, isEach, order);
             GenerateHolds(noteDataObject, isEach, order);
-            GenerateSlides(noteDataObject, isSlideEach, order);
+            GenerateSlides(noteDataObject, order);
 
             order--;
 
@@ -131,22 +127,20 @@ public class NoteGenerator : MonoBehaviour
         eachNoteList.AddRange(noteDataObject.TapDataObjects);
         eachNoteList.AddRange(noteDataObject.HoldDataObjects);
 
-        var lanes = eachNoteList.Select(x => x.Lane).ToArray();
+        var lanes = eachNoteList.Select(x => x.Lane).ToList();
+        
+        lanes.Sort();
+        var biggestLane = lanes[^1];
+        var smallestLane = lanes[0];
 
-        var biggerLane = math.max(lanes[0], lanes[1]);
-        var smallerLane = math.min(lanes[0], lanes[1]);
-
-        var interval = biggerLane - smallerLane;
+        var interval = biggestLane - smallestLane;
 
         if (interval > 4)
         {
-            (smallerLane, biggerLane) = (biggerLane, smallerLane);
-            interval = biggerLane - smallerLane + 8;
+            (smallestLane, biggestLane) = (biggestLane, smallestLane);
+            interval = biggestLane - smallestLane + 8;
         }
-
-        if (lanes.Length > 2)
-            interval = 4;
-
+        
         var eachLine = interval switch
         {
             1 => Instantiate(eachLinePrefabs[0]),
@@ -157,7 +151,7 @@ public class NoteGenerator : MonoBehaviour
         };
 
         eachLine.timing = noteDataObject.Timing;
-        eachLine.lane = smallerLane;
+        eachLine.lane = smallestLane;
 
         eachLine.transform.parent = _noteParent.transform;
     }
@@ -179,15 +173,34 @@ public class NoteGenerator : MonoBehaviour
             order--;
 
             LaneList[laneIndex].Add(holdObjectInstance);
-            
+
             holdObjectInstance.indexInLane = LaneList[laneIndex].Count - 1;
 
             holdObjectInstance.transform.parent = _noteParent.transform;
         }
     }
 
-    private void GenerateSlides(NoteDataObject noteDataObject, bool isSlideEach, int order)
+    private void GenerateSlides(NoteDataObject noteDataObject, int order)
     {
+        var slidesGroupedByWaitDuration = new List<(int waitDuration, List<NoteDataObject.SlideDataObject>)>();
+
+        foreach (var slide in noteDataObject.SlideDataObjects)
+        {
+            var findResult = slidesGroupedByWaitDuration.Find(x => x.waitDuration == slide.WaitDuration);
+
+            if (findResult.Item2?.Count is 0 or null)
+            {
+                slidesGroupedByWaitDuration.Add((slide.WaitDuration, new List<NoteDataObject.SlideDataObject>
+                {
+                    slide
+                }));
+
+                continue;
+            }
+
+            findResult.Item2.Add(slide);
+        }
+
         foreach (var slide in noteDataObject.SlideDataObjects)
         {
             var slideBasedNoteObjectInstance = slide.Type switch
@@ -225,24 +238,10 @@ public class NoteGenerator : MonoBehaviour
                 slideBasedNoteObjectInstance.order = -order;
                 slideBasedNoteObjectInstance.timing = noteDataObject.Timing;
                 slideBasedNoteObjectInstance.slideType = slide.Type;
-                slideBasedNoteObjectInstance.isEach = isSlideEach;
-
-                if (SlideList.Count > 0)
-                {
-                    var ordersOfSlidesToBeCovered = SlideList.Where(slideToBeCovered =>
-                        slideToBeCovered.timing + slideToBeCovered.waitDuration >=
-                        slideBasedNoteObjectInstance.timing &&
-                        slideToBeCovered.fromLaneIndex ==
-                        slideBasedNoteObjectInstance.fromLaneIndex &&
-                        slideToBeCovered.toLaneIndexes.SequenceEqual(
-                            slideBasedNoteObjectInstance.toLaneIndexes) &&
-                        slideToBeCovered.slideType ==
-                        slideBasedNoteObjectInstance.slideType).Select(x => x.order).ToArray();
-
-                    if (ordersOfSlidesToBeCovered.Length > 0)
-                        slideBasedNoteObjectInstance.order = ordersOfSlidesToBeCovered.Max() + 1;
-                }
-
+                slideBasedNoteObjectInstance.isEach = (slidesGroupedByWaitDuration
+                    .Find(x => x.waitDuration == slide.WaitDuration).Item2?.Count ?? 1) > 1;
+                slideBasedNoteObjectInstance.suddenlyAppears = slide.SuddenlyAppears;
+                
                 order--;
 
                 SlideList.Add(slideBasedNoteObjectInstance);

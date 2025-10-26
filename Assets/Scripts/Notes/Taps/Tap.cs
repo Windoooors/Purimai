@@ -1,5 +1,4 @@
 using LitMotion;
-using Unity.Mathematics;
 using UnityEngine;
 
 namespace Notes.Taps
@@ -26,7 +25,8 @@ namespace Notes.Taps
             if (headJudged)
                 return;
 
-            if (!headJudged && ChartPlayer.Instance.time > timing + ChartPlayer.Instance.tapJudgeSettings.lateGoodTiming)
+            if (!headJudged && ChartPlayer.Instance.time >
+                timing + ChartPlayer.Instance.tapJudgeSettings.lateGoodTiming)
             {
                 headJudged = true;
                 judgeState = JudgeState.Miss;
@@ -69,7 +69,7 @@ namespace Notes.Taps
             {
                 tapTransform.localScale = Vector3.one;
                 tapTransform.position += Speed * Time.deltaTime * transform.up;
-                
+
                 lineTransform.localScale += LineExpansionSpeed * Time.deltaTime * Vector3.one;
             }
 
@@ -118,7 +118,7 @@ namespace Notes.Taps
                 return;
 
             judgeState = state.Item1;
-            
+
             isFast = state.isFast;
 
             PlayJudgeAnimation();

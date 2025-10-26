@@ -50,6 +50,9 @@ TagManager:
   - name: Stars
     uniqueID: 3505199143
     locked: 0
+  - name: Slide Judge Display
+    uniqueID: 421743895
+    locked: 0
   - name: Lines
     uniqueID: 999475227
     locked: 0
@@ -59,8 +62,11 @@ TagManager:
   - name: Taps
     uniqueID: 177122611
     locked: 0
-  - name: Judge Display
-    uniqueID: 421743895
+  - name: Hold Ripples
+    uniqueID: 3444545479
+    locked: 0
+  - name: Tap Judge Display
+    uniqueID: 3960506293
     locked: 0
   - name: Sensors
     uniqueID: 657196261

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using ChartManagement;
@@ -23,6 +24,8 @@ namespace Notes
         public int order;
 
         public bool isWifi;
+        
+        public bool suddenlyAppears;
 
         public StarMovementController[] stars;
 
@@ -82,13 +85,14 @@ namespace Notes
 
         private void Update()
         {
-            if (ChartPlayer.Instance.time >= timing + ChartPlayer.Instance.starAppearanceDelay && !_revealed)
+            if (ChartPlayer.Instance.time >=
+                timing + (suddenlyAppears ? 0 : ChartPlayer.Instance.slideAppearanceDeltaTime) && !_revealed)
             {
                 transform.position = Vector3.zero;
 
                 foreach (var segment in UniversalSegments)
                     segment.MotionHandles = segment.slideSpriteRenderers.Select(spriteRenderer =>
-                        LMotion.Create(0, 1f, ChartPlayer.Instance.starAppearanceDuration / 1000f)
+                        LMotion.Create(0, 1f, suddenlyAppears ? 0 : ChartPlayer.Instance.slideFadeInDuration / 1000f)
                             .WithEase(Ease.Linear)
                             .Bind(x => { spriteRenderer.color = new Color(1, 1, 1, x); })).ToArray();
 
@@ -263,34 +267,47 @@ namespace Notes
 
         protected void ConcealSegment(int touchedSegmentsIndex, bool sensorJumpedForLastSegment)
         {
-            if (touchedSegmentsIndex - 1 >= 0)
-                if (UniversalSegments[touchedSegmentsIndex - 1].slideSpriteRenderersWithinSensorArea.Length > 0)
-                    UniversalSegments[touchedSegmentsIndex - 1].slideSpriteRenderersWithinSensorArea[^1].color =
-                        new Color(0, 0, 0, 0);
+            StartCoroutine(DelayedTrigger(() =>
+            {
+                if (touchedSegmentsIndex - 1 >= 0)
+                    if (UniversalSegments[touchedSegmentsIndex - 1].slideSpriteRenderersWithinSensorArea.Length > 0)
+                        UniversalSegments[touchedSegmentsIndex - 1].slideSpriteRenderersWithinSensorArea[^1].color =
+                            new Color(0, 0, 0, 0);
 
-            var segment = UniversalSegments[touchedSegmentsIndex];
+                var segment = UniversalSegments[touchedSegmentsIndex];
 
-            foreach (var motionHandle in segment.MotionHandles) motionHandle.TryCancel();
+                foreach (var motionHandle in segment.MotionHandles) motionHandle.TryCancel();
 
-            foreach (var slideSprite in segment.slideSpriteRenderers) slideSprite.color = new Color(0, 0, 0, 0);
+                foreach (var slideSprite in segment.slideSpriteRenderers) slideSprite.color = new Color(0, 0, 0, 0);
 
-            if (touchedSegmentsIndex != UniversalSegments.Count - 2 && sensorJumpedForLastSegment)
-                segment.slideSpriteRenderersWithinSensorArea[^1].color = new Color(1, 1, 1, 0.5f);
+                if (touchedSegmentsIndex != UniversalSegments.Count - 2 && sensorJumpedForLastSegment)
+                    segment.slideSpriteRenderersWithinSensorArea[^1].color = new Color(1, 1, 1, 0.5f);
+            }));
+        }
+
+        private IEnumerator DelayedTrigger(Action callback)
+        {
+            yield return new WaitForSeconds(ChartPlayer.Instance.slideConcealDelay / 1000f);
+
+            callback?.Invoke();
         }
 
         protected void ConcealMiddleSegment(int touchedSegmentsIndex)
         {
-            if (touchedSegmentsIndex - 1 >= 0 &&
-                UniversalSegments[touchedSegmentsIndex - 1].slideSpriteRenderersWithinSensorArea.Length > 0)
-                UniversalSegments[touchedSegmentsIndex - 1].slideSpriteRenderersWithinSensorArea[^1].color =
-                    new Color(0, 0, 0, 0);
+            StartCoroutine(DelayedTrigger(() =>
+            {
+                if (touchedSegmentsIndex - 1 >= 0 &&
+                    UniversalSegments[touchedSegmentsIndex - 1].slideSpriteRenderersWithinSensorArea.Length > 0)
+                    UniversalSegments[touchedSegmentsIndex - 1].slideSpriteRenderersWithinSensorArea[^1].color =
+                        new Color(0, 0, 0, 0);
 
-            var segment = UniversalSegments[touchedSegmentsIndex];
+                var segment = UniversalSegments[touchedSegmentsIndex];
 
-            foreach (var motionHandle in segment.MotionHandles) motionHandle.TryCancel();
+                foreach (var motionHandle in segment.MotionHandles) motionHandle.TryCancel();
 
-            foreach (var slideSprite in segment.slideSpriteRenderersOutsideSensorArea)
-                slideSprite.color = new Color(0, 0, 0, 0);
+                foreach (var slideSprite in segment.slideSpriteRenderersOutsideSensorArea)
+                    slideSprite.color = new Color(0, 0, 0, 0);
+            }));
         }
 
         private void InitializeSlideSegments()
@@ -306,7 +323,7 @@ namespace Notes
                     slideSpriteRendererList.AddRange(segment.slideSpriteRenderersOutsideSensorArea);
                     slideSpriteRendererList.AddRange(segment.slideSpriteRenderersWithinSensorArea);
                     segment.slideSpriteRenderers = slideSpriteRendererList.ToArray();
-                    return;
+                    continue;
                 }
 
                 var matchedSensor = SimulatedSensor.Sensors.Find(x => x.settings.sensorId == segment.mainSensor);

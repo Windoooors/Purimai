@@ -6,11 +6,10 @@ public class SimulatedSensorManager : MonoBehaviour
 {
     public static SimulatedSensorManager Instance;
     public float globalScale = 1.23f;
-    public Camera mainCamera;
+    public float offset;
 
     private void Awake()
     {
-        mainCamera = FindObjectsByType<Camera>(FindObjectsInactive.Include, FindObjectsSortMode.None)[0];
         Instance = this;
         EnhancedTouchSupport.Enable();
     }

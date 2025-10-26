@@ -1,4 +1,5 @@
 using System;
+using Notes.Taps;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -88,17 +89,42 @@ namespace Notes
         {
             transform.position = NoteGenerator.Instance.outOfScreenPosition;
 
-            switch (judgeState)
-            {
-                case JudgeState.Perfect or JudgeState.CriticalPerfect or JudgeState.SemiCriticalPerfect:
-                    _judgeDisplayAnimator.SetTrigger("ShowPerfect"); break;
-                case JudgeState.Great or JudgeState.SemiGreat or JudgeState.QuarterGreat:
-                    _judgeDisplayAnimator.SetTrigger("ShowGreat"); break;
-                case JudgeState.Good:
-                    _judgeDisplayAnimator.SetTrigger("ShowGood"); break;
-                case JudgeState.Miss:
-                    _judgeDisplayAnimator.SetTrigger("ShowMiss"); break;
-            }
+            if (this is Tap tap && tap.isBreak)
+                switch (judgeState)
+                {
+                    case JudgeState.CriticalPerfect:
+                        _judgeDisplayAnimator.SetTrigger("Show2600"); break;
+                    case JudgeState.SemiCriticalPerfect:
+                        _judgeDisplayAnimator.SetTrigger("Show2550"); break;
+                    case JudgeState.Perfect:
+                        _judgeDisplayAnimator.SetTrigger("Show2500"); break;
+                    case JudgeState.Great:
+                        _judgeDisplayAnimator.SetTrigger("Show2000"); break;
+                    case JudgeState.SemiGreat:
+                        _judgeDisplayAnimator.SetTrigger("Show1500"); break;
+                    case JudgeState.QuarterGreat:
+                        _judgeDisplayAnimator.SetTrigger("Show1250"); break;
+                    case JudgeState.Good:
+                        _judgeDisplayAnimator.SetTrigger("Show1000"); break;
+                    case JudgeState.Miss:
+                        _judgeDisplayAnimator.SetTrigger("ShowMiss"); break;
+                }
+            else
+                switch (judgeState)
+                {
+                    case JudgeState.Perfect or JudgeState.CriticalPerfect or JudgeState.SemiCriticalPerfect:
+                        _judgeDisplayAnimator.SetTrigger("ShowPerfect"); break;
+                    case JudgeState.Great or JudgeState.SemiGreat or JudgeState.QuarterGreat:
+                        _judgeDisplayAnimator.SetTrigger("ShowGreat"); break;
+                    case JudgeState.Good:
+                        _judgeDisplayAnimator.SetTrigger("ShowGood"); break;
+                    case JudgeState.Miss:
+                        _judgeDisplayAnimator.SetTrigger("ShowMiss"); break;
+                }
+
+            if (judgeState == JudgeState.Miss) return;
+            AreaARipple.AreaARipples.Find(x=>x.sensorId == "A" + lane).CancelAnimation();
+            ChartPlayer.Instance.judgeCircleGlowAnimator.SetTrigger("ShowGlow");
         }
 
         protected virtual void LateStart()
@@ -108,7 +134,7 @@ namespace Notes
         protected (JudgeState, bool isFast, bool judged) GetJudgeState(int deltaTiming, JudgeSettings judgeSettings)
         {
             var absDeltaTiming = math.abs(deltaTiming);
-            
+
             if (deltaTiming > judgeSettings.fastGoodTiming)
                 return (JudgeState.Miss, false, false);
 
@@ -118,7 +144,7 @@ namespace Notes
             var fast = deltaTiming > 0;
 
             var state = JudgeState.Miss;
-            
+
             if ((absDeltaTiming <= judgeSettings.fastGoodTiming && absDeltaTiming > judgeSettings.quarterGreatTiming &&
                  fast)
                 || (absDeltaTiming <= judgeSettings.lateGoodTiming &&
@@ -138,7 +164,7 @@ namespace Notes
                 state = JudgeState.SemiCriticalPerfect;
             if (absDeltaTiming <= judgeSettings.criticalPerfectTiming)
                 state = JudgeState.CriticalPerfect;
-            
+
             return (state, fast, true);
         }
     }

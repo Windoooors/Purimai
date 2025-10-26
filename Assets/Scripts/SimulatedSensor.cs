@@ -1,7 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.U2D;
+using UnityEngine.InputSystem.EnhancedTouch;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
 public class SimulatedSensor : MonoBehaviour
@@ -13,77 +14,75 @@ public class SimulatedSensor : MonoBehaviour
     public static readonly List<SimulatedSensor> Sensors = new();
 
     [HideInInspector] public SimulatedSensorSettings settings;
+    private readonly List<Finger> _activeFingers = new();
 
-    private bool _currentFrameHasFinger;
-
-    private int _fingerCount;
-
-    private int _lastFrameFingerCount;
-    private bool _lastFrameHadFinger;
-
+    private Collider2D _collider;
+    private Finger _currentFinger;
     private Camera _mainCamera;
-
-    private bool _notFirstFrameToHaveFingerHolding;
-    private Collider2D _sensorCollider;
-
-    private SpriteShapeRenderer _spriteShapeRenderer;
 
     private void Start()
     {
+        Touch.onFingerDown += OnFingerDown;
+        Touch.onFingerMove += OnFingerMove;
+        Touch.onFingerUp += OnFingerUp;
+
+        _collider = GetComponent<Collider2D>();
         settings = GetComponent<SimulatedSensorSettings>();
-
-        _mainCamera = SimulatedSensorManager.Instance.mainCamera;
-
-        _spriteShapeRenderer = GetComponent<SpriteShapeRenderer>();
+        _mainCamera = Camera.main;
 
         Sensors.Add(this);
-
-        _sensorCollider = GetComponent<Collider2D>();
     }
 
     private void Update()
     {
-        _currentFrameHasFinger = false;
+        if (_activeFingers.Count > 0)
+            StartCoroutine(TriggerEvent(() => { OnHold?.Invoke(this, new TouchEventArgs(settings.sensorId)); }));
+    }
 
-        _fingerCount = 0;
 
-        foreach (var finger in Touch.activeFingers)
+    private void OnFingerDown(Finger finger)
+    {
+        Vector2 worldPos = _mainCamera.ScreenToWorldPoint(finger.screenPosition);
+        if (!_collider.OverlapPoint(worldPos) || _activeFingers.Contains(finger))
+            return;
+
+        _activeFingers.Add(finger);
+        StartCoroutine(TriggerEvent(() => { OnTap?.Invoke(this, new TouchEventArgs(settings.sensorId)); }));
+    }
+
+    private void OnFingerUp(Finger finger)
+    {
+        if (!_activeFingers.Contains(finger)) return;
+
+        _activeFingers.Remove(finger);
+
+        if (_activeFingers.Count == 0)
+            StartCoroutine(TriggerEvent(() => { OnLeave?.Invoke(this, new TouchEventArgs(settings.sensorId)); }));
+    }
+
+    private void OnFingerMove(Finger finger)
+    {
+        Vector2 worldPos = _mainCamera.ScreenToWorldPoint(finger.screenPosition);
+        var isInside = _collider.OverlapPoint(worldPos);
+        var isTracked = _activeFingers.Contains(finger);
+
+        if (isInside && !isTracked)
         {
-            var rayPoint = _mainCamera.ScreenToWorldPoint(finger.screenPosition);
-
-            var hits = Physics2D.RaycastAll(rayPoint, Vector2.zero);
-
-            foreach (var hit in hits)
-                if (hit && hit.collider.gameObject.name == settings.sensorId)
-                {
-                    _currentFrameHasFinger = true;
-                    _fingerCount++;
-                }
+            _activeFingers.Add(finger);
+            StartCoroutine(TriggerEvent(() => { OnTap?.Invoke(this, new TouchEventArgs(settings.sensorId)); }));
         }
-
-        if (_currentFrameHasFinger && !_lastFrameHadFinger)
+        else if (!isInside && isTracked)
         {
-            if (_lastFrameFingerCount - _fingerCount < 0)
-                for (var i = 0; i < _fingerCount - _lastFrameFingerCount; i++)
-                    OnTap?.Invoke(this, new TouchEventArgs(settings.sensorId));
-
-            OnHold?.Invoke(this, new TouchEventArgs(settings.sensorId));
-
-            //_spriteShapeRenderer.color = new Color(1, 1, 1, 0.1f);
+            _activeFingers.Remove(finger);
+            if (_activeFingers.Count == 0)
+                StartCoroutine(TriggerEvent(() => { OnLeave?.Invoke(this, new TouchEventArgs(settings.sensorId)); }));
         }
+    }
 
-        if (!_currentFrameHasFinger && _lastFrameHadFinger)
-        {
-            OnLeave?.Invoke(this, new TouchEventArgs(settings.sensorId));
-            //_notFirstFrameToHaveFingerHolding = false;
-            //_spriteShapeRenderer.color = new Color(1, 1, 1, 0);
-        }
+    private IEnumerator TriggerEvent(Action callback)
+    {
+        yield return new WaitForSeconds(SimulatedSensorManager.Instance.offset);
 
-        if (_currentFrameHasFinger && _lastFrameHadFinger)
-            //_notFirstFrameToHaveFingerHolding = true;
-            OnHold?.Invoke(this, new TouchEventArgs(settings.sensorId));
-
-        _lastFrameHadFinger = _currentFrameHasFinger;
-        _lastFrameFingerCount = _fingerCount;
+        callback?.Invoke();
     }
 }
