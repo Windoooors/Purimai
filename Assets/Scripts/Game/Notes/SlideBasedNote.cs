@@ -198,18 +198,28 @@ namespace Game.Notes
 
             var slideArrowOrder = 0;
 
-            for (var i = 1; i <= slideArrowCount + 1; i++)
+            for (var i = 1; i <= slideArrowCount; i++)
             {
-                var progress = (float)i / (slideArrowCount + 1);
+                var division = slideArrowCount + 0.9f;
+
+                var currentProgress = (float)i;
+
+                if (slideType is NoteDataObject.SlideDataObject.SlideType.Line)
+                {
+                    currentProgress += 0.15f;
+                    division += 0.55f;
+                }
+                
+                if (slideType is NoteDataObject.SlideDataObject.SlideType.P or NoteDataObject.SlideDataObject.SlideType.Q)
+                    division += 0.5f;
+
+                var progress = currentProgress / division;
 
                 if (isWifi)
-                    progress += (float)(i - 2) / 30
-                                - (i - 1) * 0.48f / (slideArrowCount + 1);
+                    progress += (float)(currentProgress - 2) / 30
+                                - (currentProgress - 1) * 0.48f / division;
 
                 var pair = VectorGraphicsUtility.GetPositionRotationPair(progress);
-
-                if (i == slideArrowCount + 1)
-                    continue;
 
                 var arrowObject = Instantiate(NoteGenerator.Instance.slideArrowPrefab, transform);
 

@@ -17,7 +17,7 @@ namespace Game
         private readonly float _pathRotation;
 
         private readonly Vector2 _pathScale = new(0.01005f, -0.01005f);
-        private readonly int _samplesPerSegment = 50; // 可调，越大越精确但内存/计算更多
+        private readonly int _samplesPerSegment = 10;
         private readonly float[][] _segmentCumLengths;
         private readonly float[] _segmentLengths;
 
@@ -62,9 +62,9 @@ namespace Game
 
                 var n = _samplesPerSegment;
                 var sampleTs = new float[n + 1];
-                var cumLengths = new float[n + 1];
+                var cumulativeLengths = new float[n + 1];
                 sampleTs[0] = 0f;
-                cumLengths[0] = 0f;
+                cumulativeLengths[0] = 0f;
 
                 var prev = EvaluateCubic(p0, p1, p2, p3, 0f);
                 var acc = 0f;
@@ -75,13 +75,13 @@ namespace Game
                     sampleTs[s] = t;
                     var pt = EvaluateCubic(p0, p1, p2, p3, t);
                     acc += Vector2.Distance(prev, pt);
-                    cumLengths[s] = acc;
+                    cumulativeLengths[s] = acc;
                     prev = pt;
                 }
 
                 _segmentSampleTs[i] = sampleTs;
-                _segmentCumLengths[i] = cumLengths;
-                _segmentLengths[i] = cumLengths[n]; // total length of this segment
+                _segmentCumLengths[i] = cumulativeLengths;
+                _segmentLengths[i] = cumulativeLengths[n]; // total length of this segment
                 _totalLength += _segmentLengths[i];
             }
         }
