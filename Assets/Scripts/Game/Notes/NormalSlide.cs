@@ -1,10 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using ChartManagement;
 using Game.Notes.Slides;
-using NUnit.Framework;
-using UnityEngine;
 
 namespace Game.Notes
 {

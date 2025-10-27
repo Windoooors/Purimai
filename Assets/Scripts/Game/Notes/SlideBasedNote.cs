@@ -15,9 +15,9 @@ namespace Game.Notes
         public StarMovementController[] stars;
         public SpriteRenderer judgeDisplaySpriteRenderer;
         public string svgAssetPath;
-        
+
         public int slideArrowCount;
-        
+
         [HideInInspector] public NoteDataObject.SlideDataObject.SlideType slideType;
 
         [HideInInspector] public int fromLaneIndex;
@@ -37,21 +37,19 @@ namespace Game.Notes
 
         [HideInInspector] public bool flipPathY;
 
-        [FormerlySerializedAs("objectRotationOffset")] [HideInInspector] public float starObjectRotationOffset = -18;
-        
-        [HideInInspector] public VectorGraphicsUtility VectorGraphicsUtility;
+        [FormerlySerializedAs("objectRotationOffset")] [HideInInspector]
+        public float starObjectRotationOffset = -18;
 
         protected readonly List<Segment> UniversalSegments = new();
-        protected int[] SlideJudgeDisplaySpriteIndexes;
 
         private bool _concealed;
 
         private Animator _judgeDisplayAnimator;
         private JudgeState _judgeState;
-        
-        private SpriteRenderer[] _slideArrowSpriteRenderers;
 
         private bool _revealed;
+
+        private SpriteRenderer[] _slideArrowSpriteRenderers;
 
         private int _slideJudgeTiming;
         private bool _starMovingStarted;
@@ -61,6 +59,9 @@ namespace Game.Notes
         protected bool IsClockwise;
 
         protected bool Slided;
+        protected int[] SlideJudgeDisplaySpriteIndexes;
+
+        [HideInInspector] public VectorGraphicsUtility VectorGraphicsUtility;
 
         private void Start()
         {
@@ -70,11 +71,11 @@ namespace Game.Notes
             VectorGraphicsUtility = new VectorGraphicsUtility(svgAssetPath, pathRotation, flipPathY,
                 Lanes.Instance.endPoints[fromLaneIndex].position,
                 180);
-            
+
             GenerateSlideArrowSpriteRenderers();
             InitializeSlideSensorIds();
             UpdateUniversalSegments();
-            
+
             VectorGraphicsUtility.ObjectRotationOffset = starObjectRotationOffset;
 
             _judgeDisplayAnimator = judgeDisplaySpriteRenderer.GetComponent<Animator>();
@@ -99,43 +100,6 @@ namespace Game.Notes
             transform.position = NoteGenerator.Instance.outOfScreenPosition;
             SimulatedSensor.OnHold += OnHoldSlidePath;
             SimulatedSensor.OnLeave += OnLeaveSlidePath;
-        }
-
-        private void GenerateSlideArrowSpriteRenderers()
-        {
-            var slideArrowList = new List<GameObject>();
-            
-            VectorGraphicsUtility.SetStartPosition(Lanes.Instance.endPoints[fromLaneIndex].position);
-            
-            for (int i = 1; i <= slideArrowCount + 1; i++)
-            {
-                var progress = (float)i / (slideArrowCount + 1);
-
-                Debug.Log(isWifi);
-                
-                if (isWifi)
-                    progress += (float)(i - 2) / 30
-                                - (i - 1) * 0.48f / (slideArrowCount + 1);
-                
-                var pair = VectorGraphicsUtility.GetPositionRotationPair(progress);
-
-                if (i == slideArrowCount + 1)
-                    continue;
-                
-                var arrowObject = Instantiate(NoteGenerator.Instance.slideArrowPrefab, transform);
-                
-                arrowObject.transform.position = pair.Item1;
-                arrowObject.transform.rotation = pair.Item2;
-
-                if (isWifi)
-                    arrowObject.transform.eulerAngles = new Vector3(0, 0, 315) +
-                                                        arrowObject.transform
-                                                            .parent.eulerAngles;
-                
-                slideArrowList.Add(arrowObject);
-            }
-
-            _slideArrowSpriteRenderers = slideArrowList.Select(x => x.GetComponent<SpriteRenderer>()).ToArray();
         }
 
         private void Update()
@@ -226,6 +190,45 @@ namespace Game.Notes
                 transform.position = NoteGenerator.Instance.outOfScreenPosition;
         }
 
+        private void GenerateSlideArrowSpriteRenderers()
+        {
+            var slideArrowList = new List<GameObject>();
+
+            VectorGraphicsUtility.SetStartPosition(Lanes.Instance.endPoints[fromLaneIndex].position);
+
+            var slideArrowOrder = 0;
+
+            for (var i = 1; i <= slideArrowCount + 1; i++)
+            {
+                var progress = (float)i / (slideArrowCount + 1);
+
+                if (isWifi)
+                    progress += (float)(i - 2) / 30
+                                - (i - 1) * 0.48f / (slideArrowCount + 1);
+
+                var pair = VectorGraphicsUtility.GetPositionRotationPair(progress);
+
+                if (i == slideArrowCount + 1)
+                    continue;
+
+                var arrowObject = Instantiate(NoteGenerator.Instance.slideArrowPrefab, transform);
+
+                arrowObject.GetComponent<SpriteRenderer>().sortingOrder = slideArrowOrder--;
+
+                arrowObject.transform.position = pair.Item1;
+                arrowObject.transform.rotation = pair.Item2;
+
+                if (isWifi)
+                    arrowObject.transform.eulerAngles = new Vector3(0, 0, 315) +
+                                                        arrowObject.transform
+                                                            .parent.eulerAngles;
+
+                slideArrowList.Add(arrowObject);
+            }
+
+            _slideArrowSpriteRenderers = slideArrowList.Select(x => x.GetComponent<SpriteRenderer>()).ToArray();
+        }
+
         protected void Judge()
         {
             if (Slided)
@@ -304,17 +307,15 @@ namespace Game.Notes
             foreach (var slideSpriteRenderer in _slideArrowSpriteRenderers)
             {
                 if (isWifi)
-                {
                     slideSpriteRenderer.sprite = isEach
                         ? NoteGenerator.Instance.wifiSlideEachSprites[i]
                         : NoteGenerator.Instance.wifiSlideSprites[i];
-                }
                 else
                     slideSpriteRenderer.sprite =
                         isEach ? NoteGenerator.Instance.slideEachSprite : NoteGenerator.Instance.slideSprite;
-                
+
                 i++;
-                
+
                 slideSpriteRenderer.sortingOrder += order;
             }
         }
@@ -435,7 +436,7 @@ namespace Game.Notes
             var colliderAdded = _slideArrowSpriteRenderers[index].TryGetComponent<BoxCollider2D>(out var addedCollider);
             if (!colliderAdded)
                 addedCollider = _slideArrowSpriteRenderers[index].gameObject.AddComponent<BoxCollider2D>();
-            
+
             addedCollider.enabled = true;
 
             var overlapResults = new List<Collider2D>();
@@ -459,7 +460,7 @@ namespace Game.Notes
             SlideJudgeDisplaySpriteIndexes = new[] { 0, 1 };
 
             transform.Rotate(new Vector3(0, 0, -45f * fromLaneIndex));
-            
+
             pathRotation = -45f * fromLaneIndex;
         }
 

@@ -10,7 +10,7 @@ namespace Game.Notes.Slides
         protected override void InitializeSlideDirection()
         {
             _isClockwise = IsCircleClockwise(fromLaneIndex + 1, toLaneIndexes[0] + 1, slideType);
-            
+
             starObjectRotationOffset = -18;
 
             if (_isClockwise)

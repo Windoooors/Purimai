@@ -1,18 +1,17 @@
 using Game.Notes;
 using Game.Notes.Slides;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Game
 {
     public class StarMovementController : MonoBehaviour
     {
         public SpriteRenderer spriteRenderer;
-        
+
         public SlideBasedNote slideBasedNote;
-        
+
         public string wifiSvgAssetNameOverride;
-        
+
         [HideInInspector] public float duration = 5f;
 
         private bool _isReturning;
@@ -27,12 +26,10 @@ namespace Game
             if (slideBasedNote is not WifiSlide)
                 _vectorGraphicsUtility = slideBasedNote.VectorGraphicsUtility;
             else
-            {
                 _vectorGraphicsUtility = new VectorGraphicsUtility(wifiSvgAssetNameOverride,
                     slideBasedNote.pathRotation, slideBasedNote.flipPathY,
                     Lanes.Instance.endPoints[slideBasedNote.fromLaneIndex].position,
                     slideBasedNote.starObjectRotationOffset);
-            }
         }
 
         private void Update()

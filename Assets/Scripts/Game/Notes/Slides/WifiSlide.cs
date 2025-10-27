@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -8,7 +7,7 @@ namespace Game.Notes.Slides
     public class WifiSlide : SlideBasedNote
     {
         public WifiSegment[] segments;
-        
+
         private string _lastHeldLSensorId = "";
         private string _lastHeldMSensorId = "";
         private string _lastHeldRSensorId = "";

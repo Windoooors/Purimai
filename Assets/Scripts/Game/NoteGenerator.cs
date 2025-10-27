@@ -20,7 +20,7 @@ namespace Game
         public Hold[] holdPrefabs;
         public EachLine[] eachLinePrefabs;
         public SlidePrefabDataObject slidePrefabs;
-        
+
         public GameObject slideArrowPrefab;
 
         [FormerlySerializedAs("starSprite")] public Sprite eachStarSprite;

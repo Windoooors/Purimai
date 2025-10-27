@@ -15,7 +15,7 @@ namespace Game.Notes.Slides
                 _isMirror
                     ? new Vector3(0, 180, 45 + 45f * fromLaneIndex)
                     : new Vector3(0, 0, -45f * fromLaneIndex));
-            
+
             if (_isMirror)
             {
                 MirrorSlideSensorIds();

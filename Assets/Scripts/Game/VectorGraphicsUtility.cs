@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using Unity.VectorGraphics;
@@ -8,11 +9,7 @@ namespace Game
 {
     public class VectorGraphicsUtility
     {
-        private readonly float _totalLength;
-        
         private readonly bool _flipPathY;
-
-        public float ObjectRotationOffset;
 
         private readonly BezierPathSegment[] _path;
 
@@ -20,10 +17,19 @@ namespace Game
         private readonly float _pathRotation;
 
         private readonly Vector2 _pathScale = new(0.01005f, -0.01005f);
+        private readonly int _samplesPerSegment = 50; // 可调，越大越精确但内存/计算更多
+        private readonly float[][] _segmentCumLengths;
         private readonly float[] _segmentLengths;
+
+        // per-segment arc length tables
+        private readonly float[][] _segmentSampleTs;
+        private readonly float _totalLength;
         private Vector2 _presetOffsetPosition;
 
         private Vector3 _startPosition;
+
+        public float ObjectRotationOffset;
+
 
         public VectorGraphicsUtility(string svgAssetPath, float pathRotation, bool flipPathY, Vector3 startPosition,
             float objectRotationOffset = 18f)
@@ -41,7 +47,10 @@ namespace Game
             _path = shape.Contours[0].Segments.ToArray();
 
             var segmentCount = _path.Length - 1;
+            _segmentSampleTs = new float[segmentCount][];
+            _segmentCumLengths = new float[segmentCount][];
             _segmentLengths = new float[segmentCount];
+
             _totalLength = 0f;
 
             for (var i = 0; i < segmentCount; i++)
@@ -50,9 +59,30 @@ namespace Game
                 var p1 = _path[i].P1;
                 var p2 = _path[i].P2;
                 var p3 = _path[i + 1].P0;
-                var length = EstimateCubicLength(p0, p1, p2, p3, 10);
-                _segmentLengths[i] = length;
-                _totalLength += length;
+
+                var n = _samplesPerSegment;
+                var sampleTs = new float[n + 1];
+                var cumLengths = new float[n + 1];
+                sampleTs[0] = 0f;
+                cumLengths[0] = 0f;
+
+                var prev = EvaluateCubic(p0, p1, p2, p3, 0f);
+                var acc = 0f;
+
+                for (var s = 1; s <= n; s++)
+                {
+                    var t = s / (float)n;
+                    sampleTs[s] = t;
+                    var pt = EvaluateCubic(p0, p1, p2, p3, t);
+                    acc += Vector2.Distance(prev, pt);
+                    cumLengths[s] = acc;
+                    prev = pt;
+                }
+
+                _segmentSampleTs[i] = sampleTs;
+                _segmentCumLengths[i] = cumLengths;
+                _segmentLengths[i] = cumLengths[n]; // total length of this segment
+                _totalLength += _segmentLengths[i];
             }
         }
 
@@ -90,34 +120,85 @@ namespace Game
 
         private void SamplePointAtDistance(float dist, out Vector2 position, out Vector2 tangent)
         {
-            var accumulated = 0f;
+            // clamp
+            if (dist <= 0f)
+            {
+                var lp0 = _path[0].P0;
+                var lp1 = _path[0].P1;
+                var lp2 = _path[0].P2;
+                var lp3 = _path[1].P0;
+                position = EvaluateCubic(lp0, lp1, lp2, lp3, 0f);
+                tangent = EvaluateCubicTangent(lp0, lp1, lp2, lp3, 0f).normalized;
+                return;
+            }
 
+            if (dist >= _totalLength)
+            {
+                var lp0 = _path[^2].P0;
+                var lp1 = _path[^2].P1;
+                var lp2 = _path[^2].P2;
+                var lp3 = _path[^1].P0;
+                position = EvaluateCubic(lp0, lp1, lp2, lp3, 1f);
+                tangent = EvaluateCubicTangent(lp0, lp1, lp2, lp3, 1f).normalized;
+                return;
+            }
+
+            var accumulated = 0f;
             for (var i = 0; i < _segmentLengths.Length; i++)
             {
-                if (accumulated + _segmentLengths[i] >= dist)
+                var segLen = _segmentLengths[i];
+                if (accumulated + segLen >= dist)
                 {
-                    var localT = (dist - accumulated) / _segmentLengths[i];
+                    var localDist = dist - accumulated;
+                    // find t inside this segment using its cumLengths table
+                    var cum = _segmentCumLengths[i];
+                    var ts = _segmentSampleTs[i];
+                    var idx = Array.BinarySearch(cum, localDist);
+                    float t;
+                    if (idx >= 0)
+                    {
+                        t = ts[idx];
+                    }
+                    else
+                    {
+                        var insert = ~idx;
+                        // localDist is between cum[insert-1] and cum[insert]
+                        var a = Mathf.Clamp(insert - 1, 0, cum.Length - 1);
+                        var b = Mathf.Clamp(insert, 0, cum.Length - 1);
+                        if (a == b)
+                        {
+                            t = ts[a];
+                        }
+                        else
+                        {
+                            var la = cum[a];
+                            var lb = cum[b];
+                            var fa = (localDist - la) / (lb - la);
+                            t = Mathf.Lerp(ts[a], ts[b], fa);
+                        }
+                    }
+
                     var p0 = _path[i].P0;
                     var p1 = _path[i].P1;
                     var p2 = _path[i].P2;
                     var p3 = _path[i + 1].P0;
-
-                    position = EvaluateCubic(p0, p1, p2, p3, localT);
-                    tangent = EvaluateCubicTangent(p0, p1, p2, p3, localT).normalized;
+                    position = EvaluateCubic(p0, p1, p2, p3, t);
+                    tangent = EvaluateCubicTangent(p0, p1, p2, p3, t).normalized;
                     return;
                 }
 
-                accumulated += _segmentLengths[i];
+                accumulated += segLen;
             }
 
-            var lp0 = _path[^2].P0;
-            var lp1 = _path[^2].P1;
-            var lp2 = _path[^2].P2;
-            var lp3 = _path[^1].P0;
-
-            position = lp3;
-            tangent = EvaluateCubicTangent(lp0, lp1, lp2, lp3, 1f).normalized;
+            // fallback (shouldn't reach)
+            var last0 = _path[^2].P0;
+            var last1 = _path[^2].P1;
+            var last2 = _path[^2].P2;
+            var last3 = _path[^1].P0;
+            position = EvaluateCubic(last0, last1, last2, last3, 1f);
+            tangent = EvaluateCubicTangent(last0, last1, last2, last3, 1f).normalized;
         }
+
 
         private Vector2 EvaluateCubic(Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float t)
         {
