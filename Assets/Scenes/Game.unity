@@ -6136,7 +6136,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -4364034832326165938, guid: 74b51b45397f14ef3bfb048860708dce,
+  m_Sprite: {fileID: -4364034832326165938, guid: 16694100ed7444a9db2ab5cdc19b0ef2,
     type: 3}
   m_Type: 0
   m_PreserveAspect: 0
@@ -7114,7 +7114,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0993bf12023442cfad3953cb08eb627, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chartFile: {fileID: 4900000, guid: 102bae5d5bff24307a030b0b340678a5, type: 3}
+  chartFile: {fileID: 4900000, guid: 57c55d384f5e4b5bb6c172465a799763, type: 3}
   tapPrefabs:
   - {fileID: 3052495769774026895, guid: 1655ad0a9bd504c22873d326a85b13e7, type: 3}
   - {fileID: 603680196717738998, guid: 6b38635249e5e46abb49978f81dd3cb4, type: 3}
@@ -7185,8 +7185,11 @@ MonoBehaviour:
       type: 3}
     wifiSlidePrefab: {fileID: 2592134520801541204, guid: 460cd376e52d5fb40824e1ee8ccade3c,
       type: 3}
-  slideEachSprite: {fileID: 21300000, guid: 689d5b8e699a64ec191273871af1cd10, type: 3}
+  slideArrowPrefab: {fileID: 1741564000237911972, guid: 5d52db2aba4e64ea79b0e6247f24af6d,
+    type: 3}
   eachStarSprite: {fileID: 21300000, guid: 55421a5b4520b4c05a4d44b15a41641b, type: 3}
+  slideEachSprite: {fileID: 21300000, guid: 689d5b8e699a64ec191273871af1cd10, type: 3}
+  slideSprite: {fileID: 21300000, guid: 3030b339c8cedc34bbbaf6fd2c4500e6, type: 3}
   wifiSlideEachSprites:
   - {fileID: -2104979366251557822, guid: 50d6d666b978c944cb65ebdf8366b7bc, type: 3}
   - {fileID: -5508730858329978074, guid: 50d6d666b978c944cb65ebdf8366b7bc, type: 3}
@@ -7199,6 +7202,18 @@ MonoBehaviour:
   - {fileID: -3300150129828961110, guid: 50d6d666b978c944cb65ebdf8366b7bc, type: 3}
   - {fileID: 5821571336286938200, guid: 50d6d666b978c944cb65ebdf8366b7bc, type: 3}
   - {fileID: 4201695303700987197, guid: 50d6d666b978c944cb65ebdf8366b7bc, type: 3}
+  wifiSlideSprites:
+  - {fileID: 3685890569525003487, guid: 6957da2c263275c4fb9bf416a25d654a, type: 3}
+  - {fileID: 384146834060908940, guid: 6957da2c263275c4fb9bf416a25d654a, type: 3}
+  - {fileID: 6219522102249543970, guid: 6957da2c263275c4fb9bf416a25d654a, type: 3}
+  - {fileID: 6010608223010618213, guid: 6957da2c263275c4fb9bf416a25d654a, type: 3}
+  - {fileID: 5897176228441901949, guid: 6957da2c263275c4fb9bf416a25d654a, type: 3}
+  - {fileID: -6459911850397066103, guid: 6957da2c263275c4fb9bf416a25d654a, type: 3}
+  - {fileID: -2158619858076186491, guid: 6957da2c263275c4fb9bf416a25d654a, type: 3}
+  - {fileID: 5323578071713263555, guid: 6957da2c263275c4fb9bf416a25d654a, type: 3}
+  - {fileID: -7039851822894693920, guid: 6957da2c263275c4fb9bf416a25d654a, type: 3}
+  - {fileID: 107041130348426547, guid: 6957da2c263275c4fb9bf416a25d654a, type: 3}
+  - {fileID: -282332362840517431, guid: 6957da2c263275c4fb9bf416a25d654a, type: 3}
   slideJudgeDisplaySprites:
   - normalSlideJudgeSprites:
     - {fileID: 854056916, guid: 7fec6c5136d80491e848e9050a56cfe2, type: 3}
@@ -13206,7 +13221,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: b7f5c67a73fc84874ad249d1c32427e3, type: 3}
+  m_Resource: {fileID: 8300000, guid: 7124966e33a234c96bc4c34b67b94472, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
