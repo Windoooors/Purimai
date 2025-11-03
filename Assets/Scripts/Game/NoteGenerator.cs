@@ -31,7 +31,7 @@ namespace Game
 
         public SlideJudgeDisplayDataObject[] slideJudgeDisplaySprites;
 
-        public float originCircleScale = 0.253f;
+        public float originCircleScale = 0.250f;
 
         public Vector3 outOfScreenPosition = new(10, 10, 10);
 

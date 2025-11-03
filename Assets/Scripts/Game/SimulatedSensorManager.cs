@@ -14,6 +14,12 @@ namespace Game
         {
             Instance = this;
             EnhancedTouchSupport.Enable();
+
+            DontDestroyOnLoad(this);
+
+            if (FindObjectsByType<SimulatedSensorManager>(FindObjectsInactive.Exclude, FindObjectsSortMode.None)
+                    .Length != 1)
+                gameObject.SetActive(false);
         }
     }
 

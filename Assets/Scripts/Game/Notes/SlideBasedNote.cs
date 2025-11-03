@@ -209,14 +209,15 @@ namespace Game.Notes
                     currentProgress += 0.15f;
                     division += 0.55f;
                 }
-                
-                if (slideType is NoteDataObject.SlideDataObject.SlideType.P or NoteDataObject.SlideDataObject.SlideType.Q)
+
+                if (slideType is NoteDataObject.SlideDataObject.SlideType.P
+                    or NoteDataObject.SlideDataObject.SlideType.Q)
                     division += 0.5f;
 
                 var progress = currentProgress / division;
 
                 if (isWifi)
-                    progress += (float)(currentProgress - 2) / 30
+                    progress += (currentProgress - 2) / 30
                                 - (currentProgress - 1) * 0.48f / division;
 
                 var pair = VectorGraphicsUtility.GetPositionRotationPair(progress);

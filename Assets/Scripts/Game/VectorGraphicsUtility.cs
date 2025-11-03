@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using Unity.VectorGraphics;
 using UnityEngine;
+using UnityEngine.Networking;
 using StringReader = System.IO.StringReader;
 
 namespace Game
@@ -236,20 +237,21 @@ namespace Game
         private string GetSvgText(string path)
         {
 #if UNITY_ANDROID
-        UnityWebRequest request = UnityWebRequest.Get(new System.Uri(path));
-        request.SendWebRequest();
+            var request = UnityWebRequest.Get(new Uri(path));
+            request.SendWebRequest();
 
-        string text;
-        
-        while (true)
-        {
-            if (!request.isDone)
-                continue;
-            text = request.downloadHandler.text;
-            request.Dispose();
-            break;
-        }
-        return text;
+            string text;
+
+            while (true)
+            {
+                if (!request.isDone)
+                    continue;
+                text = request.downloadHandler.text;
+                request.Dispose();
+                break;
+            }
+
+            return text;
 #else
             return File.ReadAllText(path);
 #endif

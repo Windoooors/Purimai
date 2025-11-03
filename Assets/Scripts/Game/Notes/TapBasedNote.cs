@@ -33,7 +33,6 @@ namespace Game.Notes
 
     public abstract class TapBasedNote : MonoBehaviour
     {
-        protected const float TimeOnScreenWithBasicSpeed = 2.04166667f;
         public int timing;
 
         public SpriteRenderer lineSpriteRenderer;
@@ -52,9 +51,11 @@ namespace Game.Notes
         protected float LineExpansionSpeed;
 
         protected float Speed;
+        protected float TimeOnScreenWithBasicSpeed = 1.5961f;
 
         private void Start()
         {
+            TimeOnScreenWithBasicSpeed += (ChartPlayer.Instance.flowSpeed - 1) * 0.0705f;
             var laneIndex = lane - 1;
             var endPoint = Lanes.Instance.endPoints[laneIndex];
             var startPoint = Lanes.Instance.startPoints[laneIndex];

@@ -6361,7 +6361,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -4364034832326165938, guid: 16694100ed7444a9db2ab5cdc19b0ef2,
+  m_Sprite: {fileID: -4364034832326165938, guid: ac60efff78c6c494197ba2e732702018,
     type: 3}
   m_Type: 0
   m_PreserveAspect: 0
@@ -7370,7 +7370,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0993bf12023442cfad3953cb08eb627, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chartFile: {fileID: 4900000, guid: 303f799bd2c2f46959e161652ca098d9, type: 3}
+  chartFile: {fileID: 4900000, guid: 17347e90428554a11bd2faa46a451f31, type: 3}
   tapPrefabs:
   - {fileID: 3052495769774026895, guid: 1655ad0a9bd504c22873d326a85b13e7, type: 3}
   - {fileID: 603680196717738998, guid: 6b38635249e5e46abb49978f81dd3cb4, type: 3}
@@ -13221,7 +13221,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 7124966e33a234c96bc4c34b67b94472, type: 3}
+  m_Resource: {fileID: 8300000, guid: 4a06eae26a02f46ae88aab9575c1b98b, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
