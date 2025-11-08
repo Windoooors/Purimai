@@ -34,8 +34,15 @@ namespace Game
             _mainCamera = Camera.main;
 
             Sensors.Add(this);
+        }
 
-            SceneManager.sceneLoaded += (_, _) => { Start(); };
+        private void OnDestroy()
+        {
+            Touch.onFingerDown -= OnFingerDown;
+            Touch.onFingerMove -= OnFingerMove;
+            Touch.onFingerUp -= OnFingerUp;
+            
+            Sensors.Clear();
         }
 
         private void Update()

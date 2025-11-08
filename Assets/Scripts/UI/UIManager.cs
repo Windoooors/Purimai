@@ -10,6 +10,8 @@ namespace UI
         private void Awake()
         {
             Instance = this;
+
+            Application.targetFrameRate = 120;
         }
         
         private void Start()

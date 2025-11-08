@@ -46,6 +46,8 @@ namespace UI.LevelSelection
         private void EnterLevel()
         {
             SimulatedSensor.OnTap = null;
+            SimulatedSensor.OnHold = null;
+            SimulatedSensor.OnLeave = null;
             
             var levelListController = LevelListController.Instance;
 

@@ -16,6 +16,9 @@ namespace Game.Notes
         public SpriteRenderer judgeDisplaySpriteRenderer;
         public string svgAssetPath;
 
+        //public float slideArrowGenerationProgressOffset;
+        //public float slideArrowGenerationDivisionOffset;
+
         public int slideArrowCount;
 
         [HideInInspector] public NoteDataObject.SlideDataObject.SlideType slideType;
@@ -200,9 +203,15 @@ namespace Game.Notes
 
             for (var i = 1; i <= slideArrowCount; i++)
             {
-                var division = slideArrowCount;
+                var division = slideArrowCount + 1.35;
+                
 
                 var currentProgress = (float)i;
+                if (slideType is NoteDataObject.SlideDataObject.SlideType.Line)
+                {
+                    division -= 0.45f;
+                    currentProgress -= 0.25f;
+                }
 
                 var progress = currentProgress / division;
 
@@ -210,7 +219,7 @@ namespace Game.Notes
                     progress += (currentProgress - 2) / 30
                                 - (currentProgress - 1) * 0.48f / division;
 
-                var pair = VectorGraphicsUtility.GetPositionRotationPair(progress);
+                var pair = VectorGraphicsUtility.GetPositionRotationPair((float)progress);
 
                 var arrowObject = Instantiate(NoteGenerator.Instance.slideArrowPrefab, transform);
 

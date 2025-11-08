@@ -287,7 +287,7 @@ MonoBehaviour:
   - {fileID: 1402388157161536456}
   judgeDisplaySpriteRenderer: {fileID: 1044063576592009503}
   svgAssetPath: Straight_4
-  slideArrowCount: 17
+  slideArrowCount: 18
   slideType: 0
   fromLaneIndex: 0
   toLaneIndexes: 

@@ -69,6 +69,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98cba834b9bf4ac28c25c9a51c35c622, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stars:
+  - {fileID: 4131365514578174639}
+  judgeDisplaySpriteRenderer: {fileID: 3007433877629184003}
+  svgAssetPath: Straight_5
+  slideArrowCount: 20
   slideType: 0
   fromLaneIndex: 0
   toLaneIndexes: 
@@ -79,15 +84,9 @@ MonoBehaviour:
   order: 0
   isWifi: 0
   suddenlyAppears: 0
-  stars:
-  - {fileID: 4131365514578174639}
-  slideArrowSpriteRenderers: []
-  judgeDisplaySpriteRenderer: {fileID: 3007433877629184003}
-  slideJudgeDisplaySpriteIndexes: 
-  svgAssetPath: Straight_5
   pathRotation: 0
   flipPathY: 0
-  objectRotationOffset: -18
+  starObjectRotationOffset: -18
   segments:
   - mainSensor: A1
     slideSpriteRenderers: []
@@ -114,7 +113,6 @@ MonoBehaviour:
     slideSpriteRenderersWithinSensorArea: []
     slideSpriteRenderersOutsideSensorArea: []
     sensorsNearby: []
-  slideArrowCount: 19
 --- !u!1 &3454808495245340177
 GameObject:
   m_ObjectHideFlags: 0
@@ -217,7 +215,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 540396457052438638}
   slideBasedNote: {fileID: 6982077603083318612}
-  svgAssetPath: Straight_5
+  wifiSvgAssetNameOverride: 
   duration: 5
 --- !u!1 &4589914769743340629
 GameObject:
