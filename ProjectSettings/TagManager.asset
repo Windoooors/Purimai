@@ -71,5 +71,8 @@ TagManager:
   - name: Sensors
     uniqueID: 657196261
     locked: 0
+  - name: UI
+    uniqueID: 2530841741
+    locked: 0
   m_RenderingLayers:
   - Default

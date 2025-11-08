@@ -14,7 +14,7 @@ namespace ChartManagement
         private static readonly Regex NoteValueRegex = new(@"^\{([^)]*?)\}");
 
         public static ChartLoader Instance;
-        public double firstNoteTime;
+        private double _firstNoteTime;
         private double _bpm;
 
         private string _chartString;
@@ -26,10 +26,12 @@ namespace ChartManagement
             Instance = this;
         }
 
-        public NoteDataObject[] Parse(string chartString)
+        public NoteDataObject[] Parse(string chartString, float firstNoteTime)
         {
             _chartString = chartString.Trim().Replace("\n", "").Replace(" ", "");
 
+            _firstNoteTime = firstNoteTime;
+            
             var noteList = new List<NoteDataObject>();
 
             while (true)
@@ -89,7 +91,7 @@ namespace ChartManagement
                 var isNotSoleTimingMark = match.Groups[0].Value != ",";
 
                 if (isNotSoleTimingMark)
-                    noteDataObject = new NoteDataObject(match.Groups[0].Value, (int)((_time + firstNoteTime) * 1000),
+                    noteDataObject = new NoteDataObject(match.Groups[0].Value, (int)((_time + _firstNoteTime) * 1000),
                         _bpm);
 
                 _time += 4 * (60f / _bpm / _noteValue);

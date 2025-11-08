@@ -1,9 +1,11 @@
+#if UNITY_ANDROID
+using UnityEngine.Networking;
+#endif
 using System;
 using System.IO;
 using System.Linq;
 using Unity.VectorGraphics;
 using UnityEngine;
-using UnityEngine.Networking;
 using StringReader = System.IO.StringReader;
 
 namespace Game

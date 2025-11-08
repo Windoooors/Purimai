@@ -200,19 +200,9 @@ namespace Game.Notes
 
             for (var i = 1; i <= slideArrowCount; i++)
             {
-                var division = slideArrowCount + 0.9f;
+                var division = slideArrowCount;
 
                 var currentProgress = (float)i;
-
-                if (slideType is NoteDataObject.SlideDataObject.SlideType.Line)
-                {
-                    currentProgress += 0.15f;
-                    division += 0.55f;
-                }
-
-                if (slideType is NoteDataObject.SlideDataObject.SlideType.P
-                    or NoteDataObject.SlideDataObject.SlideType.Q)
-                    division += 0.5f;
 
                 var progress = currentProgress / division;
 

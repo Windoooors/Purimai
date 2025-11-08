@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>GihanSoft.String.NaturalComparer</id>
+    <version>3.5.0</version>
+    <title>GihanSoft Natural String Comparer</title>
+    <authors>Muhammad Babayi</authors>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <icon>GihanSoft-logo.png</icon>
+    <readme>README.md</readme>
+    <projectUrl>https://github.com/GihanSoft/NaturalStringComparer</projectUrl>
+    <description>Comparer for strings to sort by number in it (as windows explorer do)</description>
+    <releaseNotes>3.5.0:
+      - enhanced by removing allocations</releaseNotes>
+    <copyright>Copyright (c) 2022 Mohammad Babayi</copyright>
+    <tags>string, comparer, IComparer, NaturalComparer, NaturalStringComparer, Natural-Sort, NaturalSort, String-Comparison, StringComparer, Sorting, Sort, Natural, csharp, c-sharp, C#,</tags>
+    <repository type="git" url="https://github.com/GihanSoft/NaturalStringComparer" commit="db26c9492431a6e71755945a7d6e05a678cf8046" />
+    <dependencies>
+      <group targetFramework=".NETStandard1.1">
+        <dependency id="NETStandard.Library" version="1.6.1" exclude="Build,Analyzers" />
+        <dependency id="System.Memory" version="4.5.5" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net8.0" />
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="System.Memory" version="4.5.5" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard2.1">
+        <dependency id="System.Memory" version="4.5.5" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

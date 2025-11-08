@@ -38,12 +38,6 @@ namespace Game
 
             slideJudgeDisplayAnimationDuration = (int)(judgeDisplayAnimationClip.length * 1000);
 
-            SimulatedSensor.OnTap += (_, _) =>
-            {
-                if (!isPlaying)
-                    Play();
-            };
-
             slideAppearanceDeltaTime = -(int)(2400 / flowSpeed * (1 - slideAppearanceDelay));
             slideFadeInDuration = -slideAppearanceDeltaTime > 200 ? 200 : -slideAppearanceDeltaTime;
         }

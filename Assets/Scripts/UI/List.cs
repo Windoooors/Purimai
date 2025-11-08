@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Game;
 using LitMotion;
@@ -6,6 +7,19 @@ using UnityEngine.Serialization;
 
 namespace UI
 {
+    public class ListEventArgs : EventArgs
+    {
+        public readonly int Index;
+
+        public bool IndexChangeIsAnimated;
+
+        public ListEventArgs(int index, bool indexChangeIsAnimated)
+        {
+            Index = index;
+            IndexChangeIsAnimated = indexChangeIsAnimated;
+        }
+    }
+    
     public class List : MonoBehaviour
     {
         [FormerlySerializedAs("titleListItemPrefab")]
@@ -14,10 +28,14 @@ namespace UI
         public float spacingBetweenListItems = 30;
         public int index;
 
-        public ListItemBase itemObject;
+        public string indexPreferenceName;
 
-        private readonly List<ListItemBase> _itemObjectList = new();
+        public readonly List<ListItemBase> ItemObjectList = new();
+        
         private RectTransform _contentRoot;
+        private Vector2 _contentRootPosition;
+        
+        private MotionHandle _currentMotion;
 
         private ListItemBase _firstItem;
         private ListItemBase _lastItem;
@@ -26,19 +44,11 @@ namespace UI
         private float _titleItemHeight;
 
         private int _viewIndex;
-
+        
+        public EventHandler<ListEventArgs> OnItemSelected;
+        
         private void Start()
         {
-            var data = new ListItemBase.ItemDataBase[]
-            {
-                new TitleListItem.TitleData { CategoryName = "Chapter 1" },
-                new LevelListItem.LevelListItemData { LevelName = "Item A" },
-                new LevelListItem.LevelListItemData { LevelName = "Item B" },
-                new TitleListItem.TitleData { CategoryName = "Chapter 2" },
-                new LevelListItem.LevelListItemData { LevelName = "Item C" },
-                new LevelListItem.LevelListItemData { LevelName = "Item D" }
-            };
-
             SimulatedSensor.OnTap += (_, args) =>
             {
                 if (args.SensorId == "A1")
@@ -46,10 +56,21 @@ namespace UI
                 else if (args.SensorId == "A4") MoveSelection(1);
             };
 
-            Initialize(data, itemObject);
+            if (ItemObjectList.Count > 0)
+                MoveTo(PlayerPrefs.GetInt(indexPreferenceName, 1), false);
         }
 
-        public void Initialize(ListItemBase.ItemDataBase[] allData, ListItemBase normalItemPrefab)
+        public void MoveTo(int targetIndex, bool animated = true)
+        {
+            var delta = targetIndex - index;
+            var down = delta > 0;
+            for (int i = 0; i < Math.Abs(delta); i++)
+            {
+                MoveSelection(down ? 1 : -1, animated, false);
+            }
+        }
+
+        public void Initialize(ItemDataBase[] allData, ListItemBase normalItemPrefab)
         {
             var top = 0f;
 
@@ -58,13 +79,13 @@ namespace UI
             _normalItemHeight = normalItemPrefab.GetComponent<RectTransform>().sizeDelta.y;
             _titleItemHeight = titleItemPrefab.GetComponent<RectTransform>().sizeDelta.y;
 
-            for (var i = 0; i < (allData.Length < 9 ? 9 : 1); i++)
+            for (var i = 0; i < (allData.Length < 8 ? 8 : 1); i++)
                 foreach (var data in allData)
                 {
                     var isTitle = data is TitleListItem.TitleData;
 
                     var generatedItemObject = Instantiate(isTitle ? titleItemPrefab : normalItemPrefab, transform);
-                    
+
                     generatedItemObject.Bind(data);
 
                     var rectTransform = generatedItemObject.GetComponent<RectTransform>();
@@ -74,14 +95,14 @@ namespace UI
 
                     top -= (isTitle ? _titleItemHeight : _normalItemHeight) + spacingBetweenListItems;
 
-                    _itemObjectList.Add(generatedItemObject);
+                    ItemObjectList.Add(generatedItemObject);
                 }
 
             top = spacingBetweenListItems;
             // Flip the last four items onto the above of the first item.
             for (var i = 1; i <= 4; i++)
             {
-                var generatedItemObject = _itemObjectList[^i];
+                var generatedItemObject = ItemObjectList[^i];
                 var isTitle = generatedItemObject is TitleListItem;
                 var rectTransform = generatedItemObject.GetComponent<RectTransform>();
 
@@ -90,40 +111,52 @@ namespace UI
                 top += (isTitle ? _titleItemHeight : _normalItemHeight) + spacingBetweenListItems;
             }
 
-            _firstItem = _itemObjectList[^4];
-            _lastItem = _itemObjectList[^5];
+            _firstItem = ItemObjectList[^4];
+            _lastItem = ItemObjectList[^5];
         }
 
-
-        private MotionHandle _currentMotion;
-        private Vector2 _contentRootPosition;
-        private void MoveSelection(int direction, bool animated = true)
+        private void MoveSelection(int direction, bool animated = true, bool ignoreTitleItem = true)
         {
             _contentRootPosition = Move(_contentRootPosition);
 
-            if (_itemObjectList[index] is TitleListItem)
+            if (ItemObjectList[index] is TitleListItem && ignoreTitleItem)
                 _contentRootPosition = Move(_contentRootPosition);
 
-            _currentMotion.TryCancel();
+            if (animated)
+            {
+                _currentMotion.TryCancel();
 
-            _currentMotion = LMotion
-                .Create(_contentRoot.anchoredPosition, _contentRootPosition, animated ? 0.5f : 0).WithEase(Ease.OutExpo).Bind(x =>
-                    {
-                        _contentRoot.anchoredPosition = x;
-                    }
-                );
+                _currentMotion = LMotion
+                    .Create(_contentRoot.anchoredPosition, _contentRootPosition, 0.5f)
+                    .WithEase(Ease.OutExpo)
+                    .Bind(x => { _contentRoot.anchoredPosition = x; }
+                    );
+            }
+            else
+            {
+                _contentRoot.anchoredPosition = _contentRootPosition;
+            }
 
             return;
 
             Vector2 Move(Vector2 contentRootPosition)
             {
                 var lastIndex = index;
+                
                 _viewIndex += direction;
-                index = Mod(_viewIndex, _itemObjectList.Count);
+                index = Mod(_viewIndex, ItemObjectList.Count);
+                
+                PlayerPrefs.SetInt(indexPreferenceName, index);
+                
                 var result = contentRootPosition + direction * new Vector2(0,
-                    30 + (_itemObjectList[direction == 1 ? lastIndex : index] is TitleListItem
+                    30 + (ItemObjectList[direction == 1 ? lastIndex : index] is TitleListItem
                         ? _titleItemHeight
                         : _normalItemHeight));
+                
+                OnItemSelected?.Invoke(this, new ListEventArgs(index, animated));
+                
+                ItemObjectList[index].Select();
+                ItemObjectList[lastIndex].Deselect();
 
                 switch (direction)
                 {
@@ -131,7 +164,7 @@ namespace UI
                         var temporaryLastItem = _lastItem;
                         _lastItem = _firstItem;
                         _firstItem =
-                            _itemObjectList[Mod(_itemObjectList.IndexOf(_firstItem) + 1, _itemObjectList.Count)];
+                            ItemObjectList[Mod(ItemObjectList.IndexOf(_firstItem) + 1, ItemObjectList.Count)];
 
                         _lastItem.rectTransform.anchoredPosition = temporaryLastItem.rectTransform.anchoredPosition -
                                                                    new Vector2(0,
@@ -142,7 +175,7 @@ namespace UI
                     case -1:
                         var temporaryFirstItem = _firstItem;
                         _firstItem = _lastItem;
-                        _lastItem = _itemObjectList[Mod(_itemObjectList.IndexOf(_lastItem) - 1, _itemObjectList.Count)];
+                        _lastItem = ItemObjectList[Mod(ItemObjectList.IndexOf(_lastItem) - 1, ItemObjectList.Count)];
 
                         _firstItem.rectTransform.anchoredPosition = temporaryFirstItem.rectTransform.anchoredPosition +
                                                                     new Vector2(0,

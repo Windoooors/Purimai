@@ -243,6 +243,7 @@ MonoBehaviour:
   m_FallbackFontAssetTable:
   - {fileID: 11400000, guid: a342764d96cec4e62b3b0e40a76decab, type: 2}
   - {fileID: 11400000, guid: 083909bda622f4b5faf2d810b49dc421, type: 2}
+  - {fileID: 11400000, guid: 30cdfeb5b10b94cd5bee785ec4d6cf67, type: 2}
   m_FontWeightTable:
   - regularTypeface: {fileID: 0}
     italicTypeface: {fileID: 0}

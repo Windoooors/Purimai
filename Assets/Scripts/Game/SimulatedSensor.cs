@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem.EnhancedTouch;
+using UnityEngine.SceneManagement;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
 namespace Game
@@ -33,6 +34,8 @@ namespace Game
             _mainCamera = Camera.main;
 
             Sensors.Add(this);
+
+            SceneManager.sceneLoaded += (_, _) => { Start(); };
         }
 
         private void Update()

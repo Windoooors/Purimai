@@ -13,9 +13,7 @@ namespace Game
     public class NoteGenerator : MonoBehaviour
     {
         public static NoteGenerator Instance;
-
-        public TextAsset chartFile;
-
+        
         public Tap[] tapPrefabs;
         public Hold[] holdPrefabs;
         public EachLine[] eachLinePrefabs;
@@ -47,6 +45,8 @@ namespace Game
 
         private void Awake()
         {
+            _noteParent = new GameObject("Notes");
+            
             var mainCamera = FindAnyObjectByType<Camera>();
 
             if (mainCamera)
@@ -55,16 +55,9 @@ namespace Game
             Instance = this;
         }
 
-
-        private void Start()
+        public void GenerateNotes(string chartString, float firstNoteTime)
         {
-            _noteParent = new GameObject("Notes");
-            GenerateNotes();
-        }
-
-        private void GenerateNotes()
-        {
-            var noteDataObjects = ChartLoader.Instance.Parse(chartFile.text);
+            var noteDataObjects = ChartLoader.Instance.Parse(chartString, firstNoteTime);
 
             var order = 0;
 
