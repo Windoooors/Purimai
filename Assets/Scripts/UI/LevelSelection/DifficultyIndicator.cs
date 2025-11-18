@@ -1,11 +1,11 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
-using ChartManagement;
 using Game;
 using LitMotion;
 using TMPro;
+using UI.GameSettings;
+using UI.Result;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
@@ -13,26 +13,32 @@ using UnityEngine.UI;
 
 namespace UI.LevelSelection
 {
-    public class DifficultyIndicator : MonoBehaviour
+    public class DifficultyIndicator : UIScriptWithAnimation
     {
-        public Sprite[] backgroundSprites;
+        public Color[] backgroundColors;
         public Color[] textColors;
+
+        public VertexGradient[] textGradientColors;
 
         public Image backgroundImage;
 
         public TextMeshProUGUI difficultyText;
-
+        public TextMeshProUGUI charterNameText;
         public TextMeshProUGUI difficultyNameText;
 
         public CanvasGroup canvasGroup;
 
-        public int difficultyIndexWhenUseAlphabetGroups;
+        public RectTransform mask;
 
-        private void Start()
+        private int _selectedDifficulty;
+        
+        public static DifficultyIndicator Instance;
+
+        private void OnEnable()
         {
-            LevelListController.Instance.levelList.OnItemSelected += OnLevelSelected;
+            LevelListController.GetInstance().levelList.OnItemSelected += OnLevelSelected;
 
-            SimulatedSensor.OnTap += (sender, args) =>
+            SimulatedSensor.OnTap += (_, args) =>
             {
                 if (args.SensorId == "A2")
                     ChangeDifficulty(-1);
@@ -41,6 +47,8 @@ namespace UI.LevelSelection
                 if (args.SensorId == "A5")
                     EnterLevel();
             };
+
+            Instance = this;
         }
 
         private void EnterLevel()
@@ -48,36 +56,46 @@ namespace UI.LevelSelection
             SimulatedSensor.OnTap = null;
             SimulatedSensor.OnHold = null;
             SimulatedSensor.OnLeave = null;
-            
-            var levelListController = LevelListController.Instance;
 
-            var difficultyIndex = levelListController.groupByRule == LevelListController.SortingRules.Difficulty
-                ? ((LevelListItem)levelListController.levelList.ItemObjectList[levelListController.levelList.index])
-                .difficultyIndex
-                : difficultyIndexWhenUseAlphabetGroups;
+            var levelListController = LevelListController.GetInstance();
+
+            var difficultyIndex =
+                ((LevelListItem)levelListController.levelList.ItemObjectList[levelListController.levelList.index])
+                .difficultyIndex;
 
             var maidata =
                 ((LevelListItem)levelListController.levelList.ItemObjectList[levelListController.levelList.index])
                 .chartData;
 
-            var firstNoteTime = maidata.FirstNoteTime;
-            var chart = maidata.Charts[difficultyIndex];
-
-            StartCoroutine(LoadChart(LoadScene, maidata.SongPath, firstNoteTime, chart));
+            StartCoroutine(LoadChart(LoadScene, maidata.SongPath, maidata, difficultyIndex));
         }
 
-        private void LoadScene(AudioClip audioClip, float firstNoteTime, string chart)
+        private void LoadScene(AudioClip audioClip, LevelListController.Maidata maidata, int difficultyIndex)
         {
             SceneManager.LoadScene("Game");
-            
+
             SceneManager.sceneLoaded += (_, _) =>
             {
                 var noteGenerator =
                     FindAnyObjectByType<NoteGenerator>(FindObjectsInactive.Include);
-                noteGenerator.GenerateNotes(chart, firstNoteTime );
+                noteGenerator.GenerateNotes(maidata.Charts[difficultyIndex], maidata.FirstNoteTime);
 
                 var chartPlayer = FindAnyObjectByType<ChartPlayer>(FindObjectsInactive.Include);
+
                 chartPlayer.audioSource.clip = audioClip;
+
+                chartPlayer.backgroundImage.sprite = SettingsPool.GetValue("game.blurred_cover") == 1
+                    ? maidata.SongCoverBlurredAsBackground
+                    : maidata.SongCover;
+
+                chartPlayer.backgroundImage.transform.localScale *=
+                    SettingsPool.GetValue("game.blurred_cover") == 1
+                        ? 1.1f
+                        : 1;
+
+                var resultController = ResultController.GetInstance();
+
+                resultController.Initialize(maidata, difficultyIndex);
 
                 StartCoroutine(PlayChart(chartPlayer));
             };
@@ -85,19 +103,21 @@ namespace UI.LevelSelection
 
         private IEnumerator PlayChart(ChartPlayer chartPlayer)
         {
-            for (int i = 0; i < 4; i++)
-            {
-                yield return new WaitForEndOfFrame();
-            }
-            
+            for (var i = 0; i < 4; i++) yield return new WaitForEndOfFrame();
+
+            while (true)
+                if (chartPlayer.audioSource.clip.loadState == AudioDataLoadState.Loaded)
+                    break;
+
             UIManager.Instance.canvas.enabled = false;
-            
-            yield return new WaitForSeconds(3);
-            
+
+            yield return new WaitForSeconds(1);
+
             chartPlayer.Play();
         }
 
-        private IEnumerator LoadChart(Action<AudioClip, float, string> onComplete, string path, float firstNoteTime, string chart)
+        private IEnumerator LoadChart(Action<AudioClip, LevelListController.Maidata, int> onComplete, string path,
+            LevelListController.Maidata maidata, int chartIndex)
         {
             var audioType = Path.GetExtension(path).ToLower() switch
             {
@@ -106,57 +126,76 @@ namespace UI.LevelSelection
                 ".mp2" or ".mp3" => AudioType.MPEG,
                 _ => AudioType.UNKNOWN
             };
-            
+
             if (audioType == AudioType.UNKNOWN)
                 throw new Exception("Unknown audio type: " + path);
 
             var request = UnityWebRequestMultimedia.GetAudioClip(new Uri(path), audioType);
-            request.SendWebRequest();
+            yield return request.SendWebRequest();
 
-            AudioClip clip;
+            if (request.result != UnityWebRequest.Result.Success)
+                throw new Exception("Failed to load audio: " + request.error);
 
-            while (true)
-            {
-                if (!request.isDone)
-                    continue;
-                clip = DownloadHandlerAudioClip.GetContent(request);
-                request.Dispose();
-                
-                break;
-            }
-            
-            onComplete(clip, firstNoteTime, chart);
+            var clip = DownloadHandlerAudioClip.GetContent(request);
+            request.Dispose();
+
+            yield return maidata.GenerateBlurredCover();
+
+            onComplete(clip, maidata, chartIndex);
             yield return null;
         }
-        
+
         private void ChangeDifficulty(int direction)
         {
-            if (LevelListController.Instance.groupByRule != LevelListController.SortingRules.Difficulty)
-                return;
-
-            var list = LevelListController.Instance.levelList;
-
-            if (list.ItemObjectList[list.index] is not LevelListItem currentLevelListItem)
-                return;
-
-            var currentDifficultyIndex = currentLevelListItem.difficultyIndex;
-
-            var targetIndex = list.index;
-            for (int i = 0; i < list.ItemObjectList.Count; i++)
+            if (LevelListController.GetInstance().groupByRule == LevelListController.SortingRules.Difficulty)
             {
-                var listItem = list.ItemObjectList[i];
-                if (listItem is not LevelListItem levelListItem)
-                    continue;
+                var list = LevelListController.GetInstance().levelList;
 
-                if (levelListItem.chartData == currentLevelListItem.chartData &&
-                    levelListItem.difficultyIndex == currentDifficultyIndex + direction)
+                if (list.ItemObjectList[list.index] is not LevelListItem currentLevelListItem)
+                    return;
+
+                var currentDifficultyIndex = currentLevelListItem.difficultyIndex;
+
+                var targetIndex = list.index;
+                for (var i = 0; i < list.ItemObjectList.Count; i++)
                 {
-                    targetIndex = i;
-                    break;
+                    var listItem = list.ItemObjectList[i];
+                    if (listItem is not LevelListItem levelListItem)
+                        continue;
+
+                    if (levelListItem.chartData == currentLevelListItem.chartData &&
+                        levelListItem.difficultyIndex == currentDifficultyIndex + direction)
+                    {
+                        targetIndex = i;
+                        break;
+                    }
                 }
+
+                list.MoveTo(targetIndex);
             }
-            
-            list.MoveTo(targetIndex);
+            else if (LevelListController.GetInstance().groupByRule == LevelListController.SortingRules.Alphabet)
+            {
+                var list = LevelListController.GetInstance().levelList;
+
+                if (list.ItemObjectList[list.index] is not LevelListItem currentLevelListItem)
+                    return;
+
+                var lastSelectedDifficulty = currentLevelListItem.difficultyIndex;
+
+                if (!((_selectedDifficulty == 5 && direction == 1) || (_selectedDifficulty == 0 && direction == -1)))
+                    _selectedDifficulty += direction;
+
+                if (currentLevelListItem.chartData.Difficulties[_selectedDifficulty] == string.Empty &&
+                    currentLevelListItem.chartData.Designers[_selectedDifficulty] == string.Empty &&
+                    currentLevelListItem.chartData.Charts[_selectedDifficulty] == string.Empty)
+                    _selectedDifficulty -= direction;
+
+                currentLevelListItem.difficultyIndex = _selectedDifficulty;
+
+                if (lastSelectedDifficulty != _selectedDifficulty)
+                    OnLevelSelected(LevelListController.GetInstance().levelList,
+                        new ListEventArgs(LevelListController.GetInstance().levelList.index, true));
+            }
         }
 
         private void OnLevelSelected(object sender, ListEventArgs e)
@@ -169,30 +208,56 @@ namespace UI.LevelSelection
             if (selectedItem is not LevelListItem levelListItem)
                 return;
 
-            LMotion.Create(1f, 0, e.IndexChangeIsAnimated ? 0.1f : 0).WithOnComplete(() =>
+            if (LevelListController.GetInstance().groupByRule == LevelListController.SortingRules.Alphabet)
             {
-                backgroundImage.sprite = backgroundSprites[levelListItem.difficultyIndex];
-
-                difficultyText.text = levelListItem.chartData.DifficultyNames[levelListItem.difficultyIndex];
-
-                difficultyNameText.text = levelListItem.difficultyIndex switch
+                while (levelListItem.chartData.Difficulties[_selectedDifficulty] == string.Empty &&
+                       levelListItem.chartData.Designers[_selectedDifficulty] == string.Empty &&
+                       levelListItem.chartData.Charts[_selectedDifficulty] == string.Empty)
                 {
-                    0 => "Ez",
-                    1 => "Bas",
-                    2 => "Adv",
-                    3 => "Exp",
-                    4 => "Mas",
-                    5 => "Re",
-                    _ => ""
-                };
+                    if (_selectedDifficulty < 1)
+                        _selectedDifficulty = 6;
+                    _selectedDifficulty -= 1;
+                }
 
-                var textColor = textColors[levelListItem.difficultyIndex];
+                levelListItem.difficultyIndex = _selectedDifficulty;
+            }
 
-                difficultyText.color = textColor;
-                difficultyNameText.color = new Color(textColor.r, textColor.g, textColor.b, difficultyNameText.color.a);
+            backgroundImage.color = backgroundColors[levelListItem.difficultyIndex];
 
-                LMotion.Create(0, 1f, e.IndexChangeIsAnimated ? 0.1f : 0).Bind(x => canvasGroup.alpha = x);
-            }).Bind(x => canvasGroup.alpha = x);
+            difficultyText.text = levelListItem.chartData.Difficulties[levelListItem.difficultyIndex];
+
+            var designerName = levelListItem.chartData.Designers[levelListItem.difficultyIndex];
+
+            designerName = designerName == "\r" ? levelListItem.chartData.MainChartDesigner : designerName;
+            designerName = designerName == "\r" ? "Unknown Designer" : designerName;
+
+            charterNameText.text = designerName;
+
+            difficultyNameText.text = levelListItem.difficultyIndex switch
+            {
+                0 => "EZ",
+                1 => "BAS",
+                2 => "ADV",
+                3 => "EXP",
+                4 => "MAS",
+                5 => "RE",
+                _ => ""
+            };
+
+            var textColor = textColors[levelListItem.difficultyIndex];
+
+            difficultyText.color = new Color(textColor.r, textColor.g, textColor.b, difficultyText.color.a);
+            charterNameText.color = new Color(textColor.r, textColor.g, textColor.b, charterNameText.color.a);
+            difficultyNameText.color = new Color(textColor.r, textColor.g, textColor.b, difficultyNameText.color.a);
+            difficultyNameText.colorGradient = textGradientColors[levelListItem.difficultyIndex];
+
+            AddMotionHandle(LMotion.Create(0, 1f, e.IndexChangeIsAnimated ? 0.5f : 0).WithEase(Ease.OutExpo).Bind(x =>
+            {
+                canvasGroup.alpha = x;
+                mask.position = new Vector3(mask.position.x,
+                    LevelListController.GetInstance().levelList.ItemObjectList[e.Index]
+                        .transform.position.y, mask.position.z);
+            }));
         }
     }
 }

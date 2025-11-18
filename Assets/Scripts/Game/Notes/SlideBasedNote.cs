@@ -2,8 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using ChartManagement;
+using Game.ChartManagement;
 using LitMotion;
+using UI.Result;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -55,9 +56,12 @@ namespace Game.Notes
         private SpriteRenderer[] _slideArrowSpriteRenderers;
 
         private int _slideJudgeTiming;
+        private int _starInLastSegmentDuration;
         private bool _starMovingStarted;
 
         private bool _waitingStarted;
+        
+        private bool _slidedHalf;
 
         protected bool IsClockwise;
 
@@ -100,9 +104,24 @@ namespace Game.Notes
 
             InitializeSlideSegments();
 
-            transform.position = NoteGenerator.Instance.outOfScreenPosition;
+            foreach (var arrowSpriteRenderer in _slideArrowSpriteRenderers)
+            {
+                arrowSpriteRenderer.enabled = false;
+            }
+
+            foreach (var star in stars)
+            {
+                star.spriteRenderer.enabled = false;
+            }
+
+            judgeDisplaySpriteRenderer.enabled = false;
+
             SimulatedSensor.OnHold += OnHoldSlidePath;
             SimulatedSensor.OnLeave += OnLeaveSlidePath;
+
+            Scoreboard.TotalScore += 1500;
+            Scoreboard.TotalScoreWithExtraScore += 1500;
+            Scoreboard.SlideCount.TotalCount++;
         }
 
         private void Update()
@@ -111,6 +130,14 @@ namespace Game.Notes
                 timing + (suddenlyAppears ? 0 : ChartPlayer.Instance.slideAppearanceDeltaTime) && !_revealed)
             {
                 transform.position = Vector3.zero;
+
+                foreach (var arrowSpriteRenderer in _slideArrowSpriteRenderers)
+                {
+                    arrowSpriteRenderer.enabled = true;
+                }
+
+                foreach (var star in stars)
+                    star.spriteRenderer.enabled = true;
 
                 foreach (var segment in UniversalSegments)
                     segment.MotionHandles = segment.slideSpriteRenderers.Select(spriteRenderer =>
@@ -165,7 +192,7 @@ namespace Game.Notes
 
             if (ChartPlayer.Instance.time >=
                 timing + waitDuration + slideDuration +
-                ChartPlayer.Instance.slideJudgeSettings.fastGoodTiming
+                ChartPlayer.Instance.slideJudgeSettings.fastGoodTiming + ChartPlayer.Instance.judgeDelay
                 && !_concealed && !Slided)
             {
                 foreach (var spriteRenderer in _slideArrowSpriteRenderers) spriteRenderer.enabled = false;
@@ -176,7 +203,31 @@ namespace Game.Notes
                     star.spriteRenderer.enabled = false;
                 }
 
-                UpdateJudgeDisplayDirection(5);
+                if (slideType is not NoteDataObject.SlideDataObject.SlideType.Wifi)
+                {
+                    var pair = VectorGraphicsUtility.GetPositionRotationPair(1f - 0.6f / slideArrowCount);
+                    judgeDisplaySpriteRenderer.transform.position = pair.position;
+                }
+
+                if (!_slidedHalf)
+                {
+                    UpdateJudgeDisplayDirection(5);
+                    _judgeState = JudgeState.Miss;
+                    
+                    Scoreboard.DeductedScore -= 1500;
+                    Scoreboard.SlideCount.Count(JudgeState.Miss);
+                    Scoreboard.ResetCombo();
+                }
+                else
+                {
+                    UpdateJudgeDisplayDirection(4);
+                    _judgeState = JudgeState.Good;
+                    
+                    Scoreboard.DeductedScore -= 750;
+                    Scoreboard.SlideCount.Count(JudgeState.Great);
+                }
+
+
 
                 Slided = true;
                 if (!_concealed)
@@ -188,9 +239,21 @@ namespace Game.Notes
             if (ChartPlayer.Instance.time >=
                 timing + waitDuration + slideDuration +
                 ChartPlayer.Instance.slideJudgeSettings.fastGoodTiming +
-                ChartPlayer.Instance.slideJudgeDisplayAnimationDuration
+                ChartPlayer.Instance.slideJudgeDisplayAnimationDuration + ChartPlayer.Instance.judgeDelay
                 && !_concealed && !Slided)
-                transform.position = NoteGenerator.Instance.outOfScreenPosition;
+            {
+                foreach (var arrowSpriteRenderer in _slideArrowSpriteRenderers)
+                {
+                    arrowSpriteRenderer.enabled = false;
+                }
+
+                foreach (var star in stars)
+                {
+                    star.spriteRenderer.enabled = false;
+                }
+
+                judgeDisplaySpriteRenderer.enabled = false;
+            }
         }
 
         private void GenerateSlideArrowSpriteRenderers()
@@ -204,14 +267,15 @@ namespace Game.Notes
             for (var i = 1; i <= slideArrowCount; i++)
             {
                 var division = slideArrowCount + 1.35;
-                
 
                 var currentProgress = (float)i;
                 if (slideType is NoteDataObject.SlideDataObject.SlideType.Line)
                 {
                     division -= 0.45f;
-                    currentProgress -= 0.25f;
+                    currentProgress -= 0.65f;
                 }
+
+                if ((int)slideType is 0 or 1 or 2) division -= 0.35f;
 
                 var progress = currentProgress / division;
 
@@ -244,7 +308,7 @@ namespace Game.Notes
             if (Slided)
                 return;
 
-            var deltaTiming = _slideJudgeTiming - ChartPlayer.Instance.time;
+            var deltaTiming = _slideJudgeTiming - ChartPlayer.Instance.time + ChartPlayer.Instance.judgeDelay;
 
             var absDeltaTiming = math.abs(deltaTiming);
 
@@ -255,16 +319,21 @@ namespace Game.Notes
 
             var isFast = deltaTiming > 0;
 
-            if (absDeltaTiming > judgeSettings.greatTiming)
-                _judgeState = JudgeState.Good;
-            if (absDeltaTiming <= judgeSettings.greatTiming && absDeltaTiming > judgeSettings.perfectTiming)
-                _judgeState = JudgeState.Great;
-            if (absDeltaTiming <= judgeSettings.perfectTiming)
-                _judgeState = JudgeState.Perfect;
+            var compensatedPerfectTiming = judgeSettings.perfectTiming; //+ _starInLastSegmentDuration / 8;
 
+            if (absDeltaTiming <=
+                (compensatedPerfectTiming < judgeSettings.fastGoodTiming
+                    ? compensatedPerfectTiming
+                    : judgeSettings.fastGoodTiming))
+                _judgeState = JudgeState.CriticalPerfect;
+            else if (absDeltaTiming <= judgeSettings.greatTiming && absDeltaTiming > judgeSettings.perfectTiming)
+                _judgeState = JudgeState.Great;
+            else if (absDeltaTiming > judgeSettings.greatTiming)
+                _judgeState = JudgeState.Good;
+            
             var index = (_judgeState, isFast) switch
             {
-                (JudgeState.Perfect, _) => 0,
+                (JudgeState.CriticalPerfect, _) => 0,
                 (JudgeState.Great, true) => 1,
                 (JudgeState.Good, true) => 2,
                 (JudgeState.Great, false) => 3,
@@ -272,12 +341,35 @@ namespace Game.Notes
                 _ => 5
             };
 
+            if (slideType is not NoteDataObject.SlideDataObject.SlideType.Wifi)
+            {
+                var pair = VectorGraphicsUtility.GetPositionRotationPair(1f - 0.6f / slideArrowCount);
+                judgeDisplaySpriteRenderer.transform.position = pair.position;
+            }
+
+            var score = _judgeState switch
+            {
+                JudgeState.CriticalPerfect or JudgeState.SemiCriticalPerfect or JudgeState.Perfect => 1500,
+                JudgeState.Great or JudgeState.SemiGreat or JudgeState.QuarterGreat => 1200,
+                JudgeState.Good => 750,
+                _ => 0
+            };
+
+            Scoreboard.Score += score;
+
+            Scoreboard.SlideCount.Count(_judgeState);
+
+            Scoreboard.DeductedScore += score - 1500;
+
+            Scoreboard.Combo++;
+
             UpdateJudgeDisplayDirection(index);
             Slided = true;
         }
 
         private void PlayJudgeAnimation()
         {
+            judgeDisplaySpriteRenderer.enabled = true;
             _judgeDisplayAnimator.SetTrigger("ShowJudgeDisplay");
         }
 
@@ -332,6 +424,9 @@ namespace Game.Notes
 
         protected void ConcealSegment(int touchedSegmentsIndex, bool sensorJumpedForLastSegment)
         {
+            if (touchedSegmentsIndex >= UniversalSegments.Count / 2)
+                _slidedHalf = true;
+            
             StartCoroutine(DelayedTrigger(() =>
             {
                 if (touchedSegmentsIndex - 1 >= 0)
@@ -428,6 +523,8 @@ namespace Game.Notes
             _slideJudgeTiming = (int)((float)(_slideArrowSpriteRenderers.Length - lastSegmentArrowCount) /
                                       _slideArrowSpriteRenderers.Length * slideDuration
                                       + timing + waitDuration);
+            _starInLastSegmentDuration = (int)((float)(_slideArrowSpriteRenderers.Length - lastSegmentArrowCount) /
+                _slideArrowSpriteRenderers.Length * slideDuration);
         }
 
         private bool ArrowOverlapsOnSensor(int index, Collider2D sensorCollider)
@@ -486,7 +583,6 @@ namespace Game.Notes
                         : IsClockwise
                             ? SlideJudgeDisplaySpriteIndexes[0]
                             : SlideJudgeDisplaySpriteIndexes[1]];
-
 
             var scale = judgeDisplaySpriteRenderer.gameObject.transform.localScale;
             scale = new Vector3(scale.x,

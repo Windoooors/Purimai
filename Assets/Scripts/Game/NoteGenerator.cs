@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ChartManagement;
+using Game.ChartManagement;
 using Game.Notes;
 using Game.Notes.Slides;
 using Game.Notes.Taps;
@@ -13,7 +13,7 @@ namespace Game
     public class NoteGenerator : MonoBehaviour
     {
         public static NoteGenerator Instance;
-        
+
         public Tap[] tapPrefabs;
         public Hold[] holdPrefabs;
         public EachLine[] eachLinePrefabs;
@@ -31,8 +31,6 @@ namespace Game
 
         public float originCircleScale = 0.250f;
 
-        public Vector3 outOfScreenPosition = new(10, 10, 10);
-
         public readonly List<TapBasedNote>[] LaneList =
         {
             new(), new(), new(), new(),
@@ -47,11 +45,6 @@ namespace Game
         {
             _noteParent = new GameObject("Notes");
             
-            var mainCamera = FindAnyObjectByType<Camera>();
-
-            if (mainCamera)
-                outOfScreenPosition = mainCamera.ScreenToWorldPoint(new Vector3(0, 0, 0)) - new Vector3(0, 10, 0);
-
             Instance = this;
         }
 

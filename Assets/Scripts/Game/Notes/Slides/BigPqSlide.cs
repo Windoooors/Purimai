@@ -1,4 +1,4 @@
-using ChartManagement;
+using Game.ChartManagement;
 using UnityEngine;
 
 namespace Game.Notes.Slides

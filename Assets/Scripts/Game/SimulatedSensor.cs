@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem.EnhancedTouch;
-using UnityEngine.SceneManagement;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
 namespace Game
@@ -13,6 +12,8 @@ namespace Game
         public static EventHandler<TouchEventArgs> OnTap;
         public static EventHandler<TouchEventArgs> OnHold;
         public static EventHandler<TouchEventArgs> OnLeave;
+
+        public static bool Enabled;
 
         public static readonly List<SimulatedSensor> Sensors = new();
 
@@ -36,19 +37,22 @@ namespace Game
             Sensors.Add(this);
         }
 
+        private void Update()
+        {
+            if (_activeFingers.Count > 0)
+                StartCoroutine(TriggerEvent(() =>
+                {
+                    if (Enabled) OnHold?.Invoke(this, new TouchEventArgs(settings.sensorId));
+                }));
+        }
+
         private void OnDestroy()
         {
             Touch.onFingerDown -= OnFingerDown;
             Touch.onFingerMove -= OnFingerMove;
             Touch.onFingerUp -= OnFingerUp;
-            
-            Sensors.Clear();
-        }
 
-        private void Update()
-        {
-            if (_activeFingers.Count > 0)
-                StartCoroutine(TriggerEvent(() => { OnHold?.Invoke(this, new TouchEventArgs(settings.sensorId)); }));
+            Sensors.Clear();
         }
 
 
@@ -59,7 +63,10 @@ namespace Game
                 return;
 
             _activeFingers.Add(finger);
-            StartCoroutine(TriggerEvent(() => { OnTap?.Invoke(this, new TouchEventArgs(settings.sensorId)); }));
+            StartCoroutine(TriggerEvent(() =>
+            {
+                if (Enabled) OnTap?.Invoke(this, new TouchEventArgs(settings.sensorId));
+            }));
         }
 
         private void OnFingerUp(Finger finger)
@@ -69,7 +76,10 @@ namespace Game
             _activeFingers.Remove(finger);
 
             if (_activeFingers.Count == 0)
-                StartCoroutine(TriggerEvent(() => { OnLeave?.Invoke(this, new TouchEventArgs(settings.sensorId)); }));
+                StartCoroutine(TriggerEvent(() =>
+                {
+                    if (Enabled) OnLeave?.Invoke(this, new TouchEventArgs(settings.sensorId));
+                }));
         }
 
         private void OnFingerMove(Finger finger)
@@ -81,14 +91,20 @@ namespace Game
             if (isInside && !isTracked)
             {
                 _activeFingers.Add(finger);
-                StartCoroutine(TriggerEvent(() => { OnTap?.Invoke(this, new TouchEventArgs(settings.sensorId)); }));
+                StartCoroutine(TriggerEvent(() =>
+                {
+                    if (Enabled) OnTap?.Invoke(this, new TouchEventArgs(settings.sensorId));
+                }));
             }
             else if (!isInside && isTracked)
             {
                 _activeFingers.Remove(finger);
                 if (_activeFingers.Count == 0)
                     StartCoroutine(
-                        TriggerEvent(() => { OnLeave?.Invoke(this, new TouchEventArgs(settings.sensorId)); }));
+                        TriggerEvent(() =>
+                        {
+                            if (Enabled) OnLeave?.Invoke(this, new TouchEventArgs(settings.sensorId));
+                        }));
             }
         }
 

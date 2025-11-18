@@ -1,5 +1,5 @@
 using System.Linq;
-using ChartManagement;
+using Game.ChartManagement;
 using Game.Notes;
 using Game.Notes.Slides;
 using UnityEngine;

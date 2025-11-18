@@ -12,7 +12,7 @@ namespace Game.Notes.Taps
             if (!ChartPlayer.Instance.isPlaying)
                 return;
 
-            if (ChartPlayer.Instance.time > timing - 2 * EmergingDuration &&
+            if (ChartPlayer.Instance.time > timing - (IsAdxFlowSpeedStyle ? 1.5f : 2f) * EmergingDuration &&
                 ChartPlayer.Instance.time < timing - 1 * EmergingDuration && !_emerging)
             {
                 _emerging = true;
@@ -28,7 +28,7 @@ namespace Game.Notes.Taps
             if (ChartPlayer.Instance.time > timing + 100)
             {
                 _moving = false;
-                transform.position = NoteGenerator.Instance.outOfScreenPosition;
+                lineSpriteRenderer.enabled = false;
             }
 
             if (_moving) lineTransform.localScale += LineExpansionSpeed * Time.deltaTime * Vector3.one;

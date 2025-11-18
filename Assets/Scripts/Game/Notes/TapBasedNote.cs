@@ -1,5 +1,6 @@
 using System;
 using Game.Notes.Taps;
+using UI.GameSettings;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -46,27 +47,35 @@ namespace Game.Notes
         [FormerlySerializedAs("judged")] public bool headJudged;
 
         private Animator _judgeDisplayAnimator;
+        private float _timeOnScreenWithBasicSpeed = 2.8f;
 
         protected int EmergingDuration;
+
+        protected bool IsAdxFlowSpeedStyle;
         protected float LineExpansionSpeed;
 
         protected float Speed;
-        protected float TimeOnScreenWithBasicSpeed = 1.5961f;
 
         private void Start()
         {
-            TimeOnScreenWithBasicSpeed += (ChartPlayer.Instance.flowSpeed - 1) * 0.0705f;
+            IsAdxFlowSpeedStyle = SettingsPool.GetValue("game.flow_speed_type") == 0;
+
+            if (IsAdxFlowSpeedStyle)
+                _timeOnScreenWithBasicSpeed = 2.8f;
+            else
+                _timeOnScreenWithBasicSpeed = 1.5961f + (ChartPlayer.Instance.flowSpeed - 1) * 0.0705f;
+
             var laneIndex = lane - 1;
             var endPoint = Lanes.Instance.endPoints[laneIndex];
             var startPoint = Lanes.Instance.startPoints[laneIndex];
 
             var distance = (endPoint.position - startPoint.position).magnitude;
-            var speed = distance / TimeOnScreenWithBasicSpeed * ChartPlayer.Instance.flowSpeed;
+            var speed = distance / _timeOnScreenWithBasicSpeed * ChartPlayer.Instance.flowSpeed;
 
-            LineExpansionSpeed = (1 - NoteGenerator.Instance.originCircleScale) / TimeOnScreenWithBasicSpeed *
+            LineExpansionSpeed = (1 - NoteGenerator.Instance.originCircleScale) / _timeOnScreenWithBasicSpeed *
                                  ChartPlayer.Instance.flowSpeed;
 
-            var emergingDuration = TimeOnScreenWithBasicSpeed / ChartPlayer.Instance.flowSpeed;
+            var emergingDuration = _timeOnScreenWithBasicSpeed / ChartPlayer.Instance.flowSpeed;
 
             Speed = speed;
             EmergingDuration = (int)(emergingDuration * 1000);
@@ -88,7 +97,7 @@ namespace Game.Notes
 
         protected void PlayJudgeAnimation()
         {
-            transform.position = NoteGenerator.Instance.outOfScreenPosition;
+            lineSpriteRenderer.enabled = false;
 
             if (this is Tap tap && tap.isBreak)
                 switch (judgeState)

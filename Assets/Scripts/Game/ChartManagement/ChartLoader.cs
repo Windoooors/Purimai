@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using UI.GameSettings;
 using UnityEngine;
 
-namespace ChartManagement
+namespace Game.ChartManagement
 {
     public class ChartLoader : MonoBehaviour
     {
@@ -14,10 +15,10 @@ namespace ChartManagement
         private static readonly Regex NoteValueRegex = new(@"^\{([^)]*?)\}");
 
         public static ChartLoader Instance;
-        private double _firstNoteTime;
         private double _bpm;
 
         private string _chartString;
+        private double _firstNoteTime;
         private int _noteValue;
         private double _time;
 
@@ -30,8 +31,8 @@ namespace ChartManagement
         {
             _chartString = chartString.Trim().Replace("\n", "").Replace(" ", "");
 
-            _firstNoteTime = firstNoteTime;
-            
+            _firstNoteTime = firstNoteTime + SettingsPool.GetValue("game.delay") / 1000f;
+
             var noteList = new List<NoteDataObject>();
 
             while (true)

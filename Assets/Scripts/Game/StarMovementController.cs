@@ -42,7 +42,11 @@ namespace Game
 
             var t = Mathf.Clamp01(_time / duration);
 
-            if (t >= 1f) _moving = false;
+            if (t >= 1f)
+            {
+                _moving = false;
+                t = 0.999f;
+            }
 
             Move(t);
         }

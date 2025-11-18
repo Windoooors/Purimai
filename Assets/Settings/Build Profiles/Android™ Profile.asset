@@ -93,6 +93,7 @@ MonoBehaviour:
     - line: '|   androidStartInFullscreen: 1'
     - line: '|   androidRenderOutsideSafeArea: 1'
     - line: '|   androidUseSwappy: 0'
+    - line: '|   androidDisplayOptions: 1'
     - line: '|   androidBlitType: 0'
     - line: '|   androidResizeableActivity: 0'
     - line: '|   androidDefaultWindowWidth: 1920'
@@ -109,6 +110,7 @@ MonoBehaviour:
     - line: '|   muteOtherAudioSources: 0'
     - line: '|   Prepare IOS For Recording: 0'
     - line: '|   Force IOS Speakers When Recording: 0'
+    - line: '|   audioSpatialExperience: 0'
     - line: '|   deferSystemGesturesMode: 0'
     - line: '|   hideHomeButton: 0'
     - line: '|   submitAnalytics: 1'
@@ -155,6 +157,7 @@ MonoBehaviour:
     - line: '|   switchNVNMaxPublicSamplerIDCount: 0'
     - line: '|   switchMaxWorkerMultiple: 8'
     - line: '|   switchNVNGraphicsFirmwareMemory: 32'
+    - line: '|   switchGraphicsJobsSyncAfterKick: 1'
     - line: '|   vulkanNumSwapchainBuffers: 3'
     - line: '|   vulkanEnableSetSRGBWrite: 0'
     - line: '|   vulkanEnablePreTransform: 0'
@@ -163,11 +166,13 @@ MonoBehaviour:
     - line: '|   loadStoreDebugModeEnabled: 0'
     - line: '|   visionOSBundleVersion: 1.0'
     - line: '|   tvOSBundleVersion: 1.0'
-    - line: '|   bundleVersion: 0.1'
+    - line: '|   bundleVersion: 0.0.2'
     - line: '|   preloadedAssets:'
-    - line: '|   - {fileID: 11400000, guid: bd5979bb97c7944ecbf1f58ae706d923, type:
+    - line: '|   - {fileID: 11400000, guid: 8ce1ed979496a47569009d9be3466404, type:
         2}'
-    - line: '|   - {fileID: 11400000, guid: b70bba345576a47d1a0bcd7535ddf73d, type:
+    - line: '|   - {fileID: 11400000, guid: 78c1c9a29e6ac4493925207e25b86b0d, type:
+        2}'
+    - line: '|   - {fileID: 11400000, guid: 9cbc8a2eb3fca4b41bf73a59da0fe242, type:
         2}'
     - line: '|   metroInputSource: 0'
     - line: '|   wsaTransparentSwapchain: 0'
@@ -198,9 +203,9 @@ MonoBehaviour:
     - line: '|     iPhone: 0'
     - line: '|     tvOS: 0'
     - line: '|   overrideDefaultApplicationIdentifier: 0'
-    - line: '|   AndroidBundleVersionCode: 1'
-    - line: '|   AndroidMinSdkVersion: 28'
-    - line: '|   AndroidTargetSdkVersion: 0'
+    - line: '|   AndroidBundleVersionCode: 4'
+    - line: '|   AndroidMinSdkVersion: 25'
+    - line: '|   AndroidTargetSdkVersion: 36'
     - line: '|   AndroidPreferredInstallLocation: 1'
     - line: '|   aotOptions: '
     - line: '|   stripEngineCode: 1'
@@ -296,7 +301,7 @@ MonoBehaviour:
     - line: '|   AndroidKeyaliasName: '
     - line: '|   AndroidEnableArmv9SecurityFeatures: 1'
     - line: '|   AndroidEnableArm64MTE: 0'
-    - line: '|   AndroidBuildApkPerCpuArchitecture: 0'
+    - line: '|   AndroidBuildApkPerCpuArchitecture: 1'
     - line: '|   AndroidTVCompatibility: 0'
     - line: '|   AndroidIsGame: 1'
     - line: '|   androidAppCategory: 3'
@@ -989,6 +994,7 @@ MonoBehaviour:
     - line: '|   androidVulkanDenyFilterList: []'
     - line: '|   androidVulkanAllowFilterList: []'
     - line: '|   androidVulkanDeviceFilterListAsset: {instanceID: 0}'
+    - line: '|   d3d12DeviceFilterListAsset: {instanceID: 0}'
     - line: '| '
   references:
     version: 2
@@ -1007,6 +1013,8 @@ MonoBehaviour:
         m_ExplicitArrayBoundsChecks: 0
         m_CompressionType: 2
         m_InstallInBuildFolder: 0
+        m_InsightsSettingsContainer:
+          m_BuildProfileEngineDiagnosticsState: 2
         m_BuildSubtarget: 0
         m_BuildSystem: 1
         m_ExportAsGoogleAndroidProject: 0
@@ -1014,6 +1022,7 @@ MonoBehaviour:
         m_DebugSymbolFormat: 5
         m_CurrentDeploymentTargetId: __builtin__target_default
         m_BuildType: 2
+        m_LinkTimeOptimization: 0
         m_BuildAppBundle: 0
         m_IPAddressToConnect: 
         m_SymlinkSources: 0

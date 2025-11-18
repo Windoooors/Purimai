@@ -1,5 +1,6 @@
 using System;
 using LitMotion;
+using UI.Result;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -39,14 +40,24 @@ namespace Game.Notes.Taps
             if (!ChartPlayer.Instance.isPlaying || holdJudged)
                 return;
 
-            if (ChartPlayer.Instance.time > timing + ChartPlayer.Instance.tapJudgeSettings.lateGoodTiming &&
+            if (ChartPlayer.Instance.time > timing + ChartPlayer.Instance.tapJudgeSettings.lateGoodTiming +
+                ChartPlayer.Instance.judgeDelay &&
                 !headJudged)
             {
                 headJudged = true;
                 holdJudged = true;
                 judgeState = JudgeState.Miss;
 
+                Scoreboard.DeductedScore -= 1000;
+                
+                Scoreboard.HoldCount.Count(JudgeState.Miss);
+
+                Scoreboard.ResetCombo();
+
                 PlayJudgeAnimation();
+                
+                holdSpriteRenderer.enabled = false;
+                holdEndSpriteRenderer.enabled = false;
 
                 SimulatedSensor.OnTap -= JudgeHead;
                 SimulatedSensor.OnLeave -= OnLeave;
@@ -58,7 +69,8 @@ namespace Game.Notes.Taps
                 ChartPlayer.Instance.holdRippleAnimators[lane - 1].SetTrigger("Reset");
 
             if (ChartPlayer.Instance.time >
-                timing + duration + ChartPlayer.Instance.holdTailJudgeSettings.greatTiming &&
+                timing + duration + ChartPlayer.Instance.holdTailJudgeSettings.greatTiming +
+                ChartPlayer.Instance.judgeDelay &&
                 headJudged && !holdJudged)
             {
                 holdJudged = true;
@@ -66,6 +78,9 @@ namespace Game.Notes.Taps
                 judgeState = JudgeState.Good;
 
                 PlayJudgeAnimation();
+                
+                holdSpriteRenderer.enabled = false;
+                holdEndSpriteRenderer.enabled = false;
 
                 _glowAnimator.SetTrigger("Reset");
 
@@ -77,15 +92,22 @@ namespace Game.Notes.Taps
             {
                 _emerging = true;
 
+                lineSpriteRenderer.enabled = true;
+                holdSpriteRenderer.enabled = true;
+
                 transform.position = Vector3.zero;
 
-                LMotion.Create(0, 1f, EmergingDuration / 1000f).WithEase(Ease.OutSine)
+                LMotion.Create(0, 1f, EmergingDuration / 1000f / (IsAdxFlowSpeedStyle ? 2 : 1))
+                    .WithDelay(IsAdxFlowSpeedStyle ? EmergingDuration / 1000f / 2 : 0)
+                    .WithEase(Ease.OutSine)
                     .Bind(x =>
                     {
                         holdSpriteRenderer.color = new Color(1, 1, 1, x);
                         lineSpriteRenderer.color = new Color(1, 1, 1, x);
                     });
-                LMotion.Create(0, 1f, EmergingDuration / 1000f).WithEase(Ease.Linear)
+                LMotion.Create(0, 1f, EmergingDuration / 1000f / (IsAdxFlowSpeedStyle ? 2 : 1))
+                    .WithDelay(IsAdxFlowSpeedStyle ? EmergingDuration / 1000f / 2 : 0)
+                    .WithEase(Ease.Linear)
                     .Bind(x => holdTransform.localScale = x * Vector3.one);
             }
 
@@ -108,7 +130,9 @@ namespace Game.Notes.Taps
             {
                 if (ChartPlayer.Instance.time > _disappearTime)
                 {
-                    transform.position = NoteGenerator.Instance.outOfScreenPosition;
+                    lineSpriteRenderer.enabled = false;
+                    holdSpriteRenderer.enabled = false;
+                    holdEndSpriteRenderer.enabled = false;
                     _moving = false;
                     _holdDone = false;
                 }
@@ -183,7 +207,7 @@ namespace Game.Notes.Taps
             if (indexInLane != 0 && !noteGenerator.LaneList[lane - 1][indexInLane - 1].headJudged)
                 return;
 
-            var deltaTiming = timing - ChartPlayer.Instance.time;
+            var deltaTiming = timing - ChartPlayer.Instance.time + ChartPlayer.Instance.judgeDelay;
 
             var judgeSettings = ChartPlayer.Instance.tapJudgeSettings;
 
@@ -231,20 +255,20 @@ namespace Game.Notes.Taps
                 return;
 
             if (ChartPlayer.Instance.time < timing || ChartPlayer.Instance.time > timing + duration +
-                ChartPlayer.Instance.holdTailJudgeSettings.greatTiming)
+                ChartPlayer.Instance.holdTailJudgeSettings.greatTiming + ChartPlayer.Instance.judgeDelay)
                 return;
 
             ChartPlayer.Instance.holdRippleAnimators[lane - 1].SetTrigger("Reset");
 
             _glowAnimator.SetTrigger("Reset");
 
-            var deltaTime = timing + duration - ChartPlayer.Instance.time;
+            var deltaTiming = timing + duration - ChartPlayer.Instance.time + ChartPlayer.Instance.judgeDelay;
 
-            var absDeltaTiming = math.abs(deltaTime);
+            var absDeltaTiming = math.abs(deltaTiming);
 
             var judgeSettings = ChartPlayer.Instance.holdTailJudgeSettings;
 
-            isFast = deltaTime > 0;
+            isFast = deltaTiming > 0;
 
             if (absDeltaTiming > judgeSettings.greatTiming)
                 _holdTailJudgeState = JudgeState.Good;
@@ -259,7 +283,26 @@ namespace Game.Notes.Taps
                 judgeState = _headJudgeState == JudgeState.Good ? JudgeState.Good : JudgeState.Great;
             else if (_holdTailJudgeState == JudgeState.Good) judgeState = JudgeState.Good;
 
+            var score = judgeState switch
+            {
+                JudgeState.CriticalPerfect or JudgeState.SemiCriticalPerfect or JudgeState.Perfect => 1000,
+                JudgeState.Great or JudgeState.SemiGreat or JudgeState.QuarterGreat => 800,
+                JudgeState.Good => 500,
+                _ => 0
+            };
+
+            Scoreboard.Score += score;
+            
+            Scoreboard.DeductedScore += score - 1000;
+            
+            Scoreboard.HoldCount.Count(judgeState);
+
+            Scoreboard.Combo++;
+
             PlayJudgeAnimation();
+            
+            holdSpriteRenderer.enabled = false;
+            holdEndSpriteRenderer.enabled = false;
 
             SimulatedSensor.OnLeave -= OnLeave;
 
@@ -272,7 +315,9 @@ namespace Game.Notes.Taps
             holdTransform.localScale = Vector3.zero;
             holdTransform.position *= NoteGenerator.Instance.originCircleScale;
             holdSpriteRenderer.color = new Color(1, 1, 1, 0);
-            transform.position = NoteGenerator.Instance.outOfScreenPosition;
+            holdEndSpriteRenderer.enabled = false;
+            holdSpriteRenderer.enabled = false;
+            lineSpriteRenderer.enabled = false;
             _initialHoldSize = holdSpriteRenderer.size.y;
 
             var laneIndex = lane - 1;
@@ -281,6 +326,10 @@ namespace Game.Notes.Taps
             _distance = (endPoint.position - startPoint.position).magnitude;
 
             _glowAnimator = GetComponent<Animator>();
+
+            Scoreboard.TotalScore += 1000;
+            Scoreboard.TotalScoreWithExtraScore += 1000;
+            Scoreboard.HoldCount.TotalCount++;
         }
 
         private void TrimHold(bool forceLong = false)

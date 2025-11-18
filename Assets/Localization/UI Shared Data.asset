@@ -1,0 +1,137 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: UI Shared Data
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.SharedTableData
+  m_TableCollectionName: UI
+  m_TableCollectionNameGuidString: c0eaca1764ba046fe82091c205c793a3
+  m_Entries:
+  - m_Id: 93041188864
+    m_Key: settings.song_list
+    m_Metadata:
+      m_Items: []
+  - m_Id: 203246526464
+    m_Key: settings.song_list.group_rule
+    m_Metadata:
+      m_Items: []
+  - m_Id: 246800179200
+    m_Key: settings.song_list.sort_rule
+    m_Metadata:
+      m_Items: []
+  - m_Id: 314827595776
+    m_Key: settings.game
+    m_Metadata:
+      m_Items: []
+  - m_Id: 328744296448
+    m_Key: settings.game.flow_speed_type
+    m_Metadata:
+      m_Items: []
+  - m_Id: 361648611328
+    m_Key: settings.game.flow_speed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 410050879488
+    m_Key: settings.game.slide_delay
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17816471199744
+    m_Key: settings.game.flow_speed_type.astro_dx
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17930619183104
+    m_Key: settings.game.flow_speed_type.maimai
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18156478259200
+    m_Key: settings.song_list.sort_rule.achievement
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17963485749248
+    m_Key: settings.song_list.sort_rule.alphabet
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18336023830528
+    m_Key: settings.general.language
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18374384934912
+    m_Key: settings.general
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18624642277376
+    m_Key: settings.general.language.en
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18661703147520
+    m_Key: settings.general.language.zh_cn
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18914502238208
+    m_Key: settings.song_list.group_rule.difficulty
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19025345110016
+    m_Key: settings.song_list.group_rule.alphabet
+    m_Metadata:
+      m_Items: []
+  - m_Id: 32093550665728
+    m_Key: settings.game.delay
+    m_Metadata:
+      m_Items: []
+  - m_Id: 280253732741120
+    m_Key: settings.game.judge_delay
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2200956375654400
+    m_Key: settings.game.blurred_cover
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2201042975449088
+    m_Key: settings.game.blurred_cover.enabled
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2201060729937920
+    m_Key: settings.game.blurred_cover.disabled
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2491667327213568
+    m_Key: settings.game.score_indicator_content
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2492051517071360
+    m_Key: settings.game.score_indicator_content.none
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2492085209915392
+    m_Key: settings.game.score_indicator_content.combo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2492269549576192
+    m_Key: settings.game.score_indicator_content.achievement
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2506586365878272
+    m_Key: settings.game.score_indicator_content.deducted_achievement
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 8744421711494775003
+  references:
+    version: 2
+    RefIds:
+    - rid: 8744421711494775003
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables,
+        asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1762777699648

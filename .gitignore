@@ -129,3 +129,11 @@ apdisk
 # TextMesh Pro
 /[Aa]ssets/[Tt]ext[Mm]esh Pro/
 /[Aa]ssets/[Tt]ext[Mm]esh Pro.meta
+
+# Native Audio
+/[Aa]ssets/[Nn]ative [Aa]udio/
+/[Aa]ssets/[Nn]ative [Aa]udio.meta
+
+# Nuget Packages
+/[Aa]ssets/[Pp]ackages/
+/[Aa]ssets/[Pp]ackages.meta

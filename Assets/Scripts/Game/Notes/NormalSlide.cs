@@ -1,7 +1,8 @@
 using System;
 using System.Linq;
-using ChartManagement;
+using Game.ChartManagement;
 using Game.Notes.Slides;
+using UnityEngine;
 
 namespace Game.Notes
 {
@@ -9,12 +10,13 @@ namespace Game.Notes
     {
         public NormalSegment[] segments;
 
+        [SerializeField] private int _touchedSegmentIndex;
+
         private bool _isLastSegmentTouchedByHolding;
 
         private string _lastHeldSensorId = "";
 
         private bool _sensorJumped;
-        private int _touchedSegmentIndex;
 
         protected override void UpdateUniversalSegments()
         {
