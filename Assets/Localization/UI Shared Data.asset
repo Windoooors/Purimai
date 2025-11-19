@@ -123,6 +123,30 @@ MonoBehaviour:
     m_Key: settings.game.score_indicator_content.deducted_achievement
     m_Metadata:
       m_Items: []
+  - m_Id: 3121485303504896
+    m_Key: settings.general.framerate_limiter
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3121574143057920
+    m_Key: settings.general.framerate_limiter.disabled
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3121657974611968
+    m_Key: settings.general.framerate_limiter.enabled
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3151728697401344
+    m_Key: settings.general.vsync
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3151731000074240
+    m_Key: settings.general.vsync.disabled
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3151733160140800
+    m_Key: settings.general.vsync.enabled
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

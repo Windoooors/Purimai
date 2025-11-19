@@ -296,7 +296,7 @@ namespace UI.LevelSelection
                     difficultyNameList.Add(levelMatch);
                     designerList.Add(designerMatch);
 
-                    var chartRegex = new Regex($@"&inote_{i}=((?s).*?)(?=E|&inote_{i + 1}|\z)");
+                    var chartRegex = new Regex($@"&inote_{i}=((?s).*?)(?=E$|&inote_{i + 1}|\z)");
 
                     if (!chartRegex.IsMatch(maidata))
                     {

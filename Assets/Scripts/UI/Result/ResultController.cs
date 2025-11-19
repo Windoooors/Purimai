@@ -21,6 +21,11 @@ namespace UI.Result
         public TextMeshProUGUI charterNameText;
         public Image difficultyIndicatorBackgroundImage;
 
+        private void Awake()
+        {
+            _instance = this;
+        }
+
         public void Initialize(LevelListController.Maidata maidata, int difficultyIndex)
         {
             backgroundImage.sprite = maidata.SongCoverBlurredAsBackground;
@@ -32,12 +37,12 @@ namespace UI.Result
             songTitleText.text = maidata.Title;
 
             difficultyText.text = maidata.Difficulties[difficultyIndex];
-            
+
             var designerName = maidata.Designers[difficultyIndex];
 
             designerName = designerName == "\r" ? maidata.MainChartDesigner : designerName;
             designerName = designerName == "\r" ? "Unknown Designer" : designerName;
-            
+
             charterNameText.text = designerName;
 
             difficultyNameText.text = difficultyIndex switch
@@ -66,17 +71,12 @@ namespace UI.Result
             rankText.text = GetRankName(Scoreboard.GetAchievement(), Scoreboard.Score,
                 Scoreboard.TotalScoreWithExtraScore);
         }
-        
-        private void Awake()
-        {
-            _instance = this;
-        }
 
         public static ResultController GetInstance()
         {
             return _instance == null ? FindAnyObjectByType<ResultController>() : _instance;
         }
-        
+
         private static string GetRankName(float achievement, int score, int totalScoreWithExtraScore)
         {
             if (score == totalScoreWithExtraScore)

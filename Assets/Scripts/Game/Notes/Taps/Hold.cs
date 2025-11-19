@@ -49,18 +49,20 @@ namespace Game.Notes.Taps
                 judgeState = JudgeState.Miss;
 
                 Scoreboard.DeductedScore -= 1000;
-                
+
                 Scoreboard.HoldCount.Count(JudgeState.Miss);
 
                 Scoreboard.ResetCombo();
 
                 PlayJudgeAnimation();
-                
+
                 holdSpriteRenderer.enabled = false;
                 holdEndSpriteRenderer.enabled = false;
 
                 SimulatedSensor.OnTap -= JudgeHead;
                 SimulatedSensor.OnLeave -= OnLeave;
+
+                NoteContentRoot.SetActive(false);
             }
 
             if (ChartPlayer.Instance.time >
@@ -78,7 +80,7 @@ namespace Game.Notes.Taps
                 judgeState = JudgeState.Good;
 
                 PlayJudgeAnimation();
-                
+
                 holdSpriteRenderer.enabled = false;
                 holdEndSpriteRenderer.enabled = false;
 
@@ -91,6 +93,8 @@ namespace Game.Notes.Taps
                 ChartPlayer.Instance.time < timing - 1 * EmergingDuration && !_emerging)
             {
                 _emerging = true;
+
+                NoteContentRoot.SetActive(true);
 
                 lineSpriteRenderer.enabled = true;
                 holdSpriteRenderer.enabled = true;
@@ -292,21 +296,23 @@ namespace Game.Notes.Taps
             };
 
             Scoreboard.Score += score;
-            
+
             Scoreboard.DeductedScore += score - 1000;
-            
+
             Scoreboard.HoldCount.Count(judgeState);
 
             Scoreboard.Combo++;
 
             PlayJudgeAnimation();
-            
+
             holdSpriteRenderer.enabled = false;
             holdEndSpriteRenderer.enabled = false;
 
             SimulatedSensor.OnLeave -= OnLeave;
 
             holdJudged = true;
+
+            NoteContentRoot.SetActive(false);
         }
 
         protected override void LateStart()

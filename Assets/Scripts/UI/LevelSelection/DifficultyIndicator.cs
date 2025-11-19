@@ -15,6 +15,7 @@ namespace UI.LevelSelection
 {
     public class DifficultyIndicator : UIScriptWithAnimation
     {
+        public static DifficultyIndicator Instance;
         public Color[] backgroundColors;
         public Color[] textColors;
 
@@ -31,8 +32,6 @@ namespace UI.LevelSelection
         public RectTransform mask;
 
         private int _selectedDifficulty;
-        
-        public static DifficultyIndicator Instance;
 
         private void OnEnable()
         {

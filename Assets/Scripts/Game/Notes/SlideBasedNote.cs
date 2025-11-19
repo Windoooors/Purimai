@@ -55,13 +55,15 @@ namespace Game.Notes
 
         private SpriteRenderer[] _slideArrowSpriteRenderers;
 
+        private GameObject _slideContentRoot;
+
+        private bool _slidedHalf;
+
         private int _slideJudgeTiming;
         private int _starInLastSegmentDuration;
         private bool _starMovingStarted;
 
         private bool _waitingStarted;
-        
-        private bool _slidedHalf;
 
         protected bool IsClockwise;
 
@@ -104,13 +106,11 @@ namespace Game.Notes
 
             InitializeSlideSegments();
 
-            foreach (var arrowSpriteRenderer in _slideArrowSpriteRenderers)
-            {
-                arrowSpriteRenderer.enabled = false;
-            }
+            foreach (var arrowSpriteRenderer in _slideArrowSpriteRenderers) arrowSpriteRenderer.enabled = false;
 
             foreach (var star in stars)
             {
+                star.Initialize();
                 star.spriteRenderer.enabled = false;
             }
 
@@ -122,6 +122,15 @@ namespace Game.Notes
             Scoreboard.TotalScore += 1500;
             Scoreboard.TotalScoreWithExtraScore += 1500;
             Scoreboard.SlideCount.TotalCount++;
+
+            _slideContentRoot = new GameObject("SlideContent");
+            _slideContentRoot.transform.SetParent(transform);
+
+            var children = transform.GetComponentsInChildren<Transform>();
+
+            foreach (var child in children) child.parent = _slideContentRoot.transform;
+
+            _slideContentRoot.SetActive(false);
         }
 
         private void Update()
@@ -129,12 +138,11 @@ namespace Game.Notes
             if (ChartPlayer.Instance.time >=
                 timing + (suddenlyAppears ? 0 : ChartPlayer.Instance.slideAppearanceDeltaTime) && !_revealed)
             {
+                _slideContentRoot.SetActive(true);
+
                 transform.position = Vector3.zero;
 
-                foreach (var arrowSpriteRenderer in _slideArrowSpriteRenderers)
-                {
-                    arrowSpriteRenderer.enabled = true;
-                }
+                foreach (var arrowSpriteRenderer in _slideArrowSpriteRenderers) arrowSpriteRenderer.enabled = true;
 
                 foreach (var star in stars)
                     star.spriteRenderer.enabled = true;
@@ -213,7 +221,7 @@ namespace Game.Notes
                 {
                     UpdateJudgeDisplayDirection(5);
                     _judgeState = JudgeState.Miss;
-                    
+
                     Scoreboard.DeductedScore -= 1500;
                     Scoreboard.SlideCount.Count(JudgeState.Miss);
                     Scoreboard.ResetCombo();
@@ -222,12 +230,10 @@ namespace Game.Notes
                 {
                     UpdateJudgeDisplayDirection(4);
                     _judgeState = JudgeState.Good;
-                    
+
                     Scoreboard.DeductedScore -= 750;
                     Scoreboard.SlideCount.Count(JudgeState.Great);
                 }
-
-
 
                 Slided = true;
                 if (!_concealed)
@@ -240,19 +246,10 @@ namespace Game.Notes
                 timing + waitDuration + slideDuration +
                 ChartPlayer.Instance.slideJudgeSettings.fastGoodTiming +
                 ChartPlayer.Instance.slideJudgeDisplayAnimationDuration + ChartPlayer.Instance.judgeDelay
-                && !_concealed && !Slided)
+                && judgeDisplaySpriteRenderer.enabled)
             {
-                foreach (var arrowSpriteRenderer in _slideArrowSpriteRenderers)
-                {
-                    arrowSpriteRenderer.enabled = false;
-                }
-
-                foreach (var star in stars)
-                {
-                    star.spriteRenderer.enabled = false;
-                }
-
                 judgeDisplaySpriteRenderer.enabled = false;
+                _slideContentRoot.SetActive(false);
             }
         }
 
@@ -330,7 +327,7 @@ namespace Game.Notes
                 _judgeState = JudgeState.Great;
             else if (absDeltaTiming > judgeSettings.greatTiming)
                 _judgeState = JudgeState.Good;
-            
+
             var index = (_judgeState, isFast) switch
             {
                 (JudgeState.CriticalPerfect, _) => 0,
@@ -426,7 +423,7 @@ namespace Game.Notes
         {
             if (touchedSegmentsIndex >= UniversalSegments.Count / 2)
                 _slidedHalf = true;
-            
+
             StartCoroutine(DelayedTrigger(() =>
             {
                 if (touchedSegmentsIndex - 1 >= 0)

@@ -107,7 +107,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 2491667327213568
-    m_Localized: Content Shown on the Screen Center
+    m_Localized: Display on Center
     m_Metadata:
       m_Items: []
   - m_Id: 2492051517071360
@@ -124,6 +124,30 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 2506586365878272
     m_Localized: Achievement (100.00%+)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3121485303504896
+    m_Localized: Framerate Limiter
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3121574143057920
+    m_Localized: Off
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3121657974611968
+    m_Localized: On
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3151728697401344
+    m_Localized: V-Sync
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3151731000074240
+    m_Localized: Off
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3151733160140800
+    m_Localized: On
     m_Metadata:
       m_Items: []
   references:

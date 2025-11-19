@@ -1,5 +1,4 @@
 using Game.Notes;
-using UnityEngine;
 
 namespace UI.Result
 {
@@ -42,10 +41,10 @@ namespace UI.Result
 
         public static int HighestCombo;
 
-        public static SpecifiedNoteScoreboard SlideCount = new SpecifiedNoteScoreboard();
-        public static SpecifiedNoteScoreboard HoldCount = new SpecifiedNoteScoreboard();
-        public static SpecifiedNoteScoreboard TapCount = new SpecifiedNoteScoreboard();
-        public static SpecifiedNoteScoreboard BreakCount = new SpecifiedNoteScoreboard();
+        public static SpecifiedNoteScoreboard SlideCount = new();
+        public static SpecifiedNoteScoreboard HoldCount = new();
+        public static SpecifiedNoteScoreboard TapCount = new();
+        public static SpecifiedNoteScoreboard BreakCount = new();
 
         public static void Reset()
         {

@@ -44,7 +44,7 @@ namespace Game
         private void Awake()
         {
             _noteParent = new GameObject("Notes");
-            
+
             Instance = this;
         }
 

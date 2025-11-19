@@ -15,6 +15,7 @@ namespace Game.Notes.Taps
             if (ChartPlayer.Instance.time > timing - (IsAdxFlowSpeedStyle ? 1.5f : 2f) * EmergingDuration &&
                 ChartPlayer.Instance.time < timing - 1 * EmergingDuration && !_emerging)
             {
+                NoteContentRoot.SetActive(true);
                 _emerging = true;
                 lineSpriteRenderer.color = Color.white;
             }
@@ -29,6 +30,8 @@ namespace Game.Notes.Taps
             {
                 _moving = false;
                 lineSpriteRenderer.enabled = false;
+
+                NoteContentRoot.SetActive(false);
             }
 
             if (_moving) lineTransform.localScale += LineExpansionSpeed * Time.deltaTime * Vector3.one;

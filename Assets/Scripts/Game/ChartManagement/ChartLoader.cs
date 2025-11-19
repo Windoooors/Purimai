@@ -31,6 +31,8 @@ namespace Game.ChartManagement
         {
             _chartString = chartString.Trim().Replace("\n", "").Replace(" ", "");
 
+            _chartString = new Regex(@"\|\|.*").Replace(_chartString, string.Empty);
+
             _firstNoteTime = firstNoteTime + SettingsPool.GetValue("game.delay") / 1000f;
 
             var noteList = new List<NoteDataObject>();
@@ -107,7 +109,7 @@ namespace Game.ChartManagement
 
     public class NoteDataObject
     {
-        private static readonly Regex HeadRegex = new("^([1-8])");
+        private static readonly Regex HeadRegex = new("^[A-Z]?([1-8])"); // Touch will fall back to tap
 
         public readonly HoldDataObject[] HoldDataObjects;
         public readonly SlideDataObject[] SlideDataObjects;
@@ -153,7 +155,7 @@ namespace Game.ChartManagement
                     continue;
 
                 if (!int.TryParse(headMatch.Groups[1].Value, out _))
-                    Debug.Log(headMatch.Groups[1].Value);
+                    continue;
 
                 var lane = int.Parse(headMatch.Groups[1].Value);
 

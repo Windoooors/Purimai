@@ -1,4 +1,3 @@
-using System;
 using TMPro;
 using UI.GameSettings;
 using UI.Result;
@@ -13,11 +12,6 @@ namespace UI.ScoreIndicator
 
         public int settingsIndex;
 
-        private void OnEnable()
-        {
-            settingsIndex = SettingsPool.GetValue("game.score_indicator_content");
-        }
-        
         private void Update()
         {
             titleText.text = settingsIndex switch
@@ -36,6 +30,17 @@ namespace UI.ScoreIndicator
                 3 => (Scoreboard.GetDeductedAchievement() + 100).ToString("0.00") + "%",
                 _ => ""
             };
+
+            if (settingsIndex == 1 && Scoreboard.Combo < 2)
+            {
+                titleText.text = "";
+                scoreText.text = "";
+            }
+        }
+
+        private void OnEnable()
+        {
+            settingsIndex = SettingsPool.GetValue("game.score_indicator_content");
         }
     }
 }

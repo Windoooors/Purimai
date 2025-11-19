@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Game;
 using LitMotion;
@@ -9,6 +10,8 @@ namespace UI.GameSettings
     public class SettingsController : UIScriptWithAnimation
     {
         public static SettingsController Instance;
+
+        public static EventHandler OnSettingsChanged;
 
         public List settingsList;
 
@@ -79,6 +82,8 @@ namespace UI.GameSettings
 
             if (initializeHide)
                 LevelListController.GetInstance().Reinitialize();
+
+            OnSettingsChanged?.Invoke(this, EventArgs.Empty);
 
             AddMotionHandle(LMotion.Create(1f, 0f, initializeHide ? 0.2f : 0)
                 .WithOnComplete(() =>

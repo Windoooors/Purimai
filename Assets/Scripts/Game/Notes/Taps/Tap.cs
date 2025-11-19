@@ -45,13 +45,17 @@ namespace Game.Notes.Taps
                 PlayJudgeAnimation();
 
                 SimulatedSensor.OnTap -= Judge;
+
+                NoteContentRoot.SetActive(false);
             }
 
             if (ChartPlayer.Instance.time > timing - 2 * EmergingDuration &&
                 ChartPlayer.Instance.time < timing - 1 * EmergingDuration && !_emerging)
             {
+                NoteContentRoot.SetActive(true);
+
                 _emerging = true;
-                
+
                 lineSpriteRenderer.enabled = true;
                 tapSpriteRenderer.enabled = true;
 
@@ -171,7 +175,7 @@ namespace Game.Notes.Taps
             Scoreboard.Score += score;
 
             Scoreboard.DeductedScore += isBreak ? score - 2500 : score - 500;
-            
+
             if (isBreak)
                 Scoreboard.BreakCount.Count(judgeState);
             else
@@ -184,6 +188,8 @@ namespace Game.Notes.Taps
             tapSpriteRenderer.enabled = false;
 
             SimulatedSensor.OnTap -= Judge;
+
+            NoteContentRoot.SetActive(false);
         }
     }
 }

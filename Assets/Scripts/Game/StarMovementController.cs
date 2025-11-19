@@ -21,17 +21,6 @@ namespace Game
 
         private VectorGraphicsUtility _vectorGraphicsUtility;
 
-        public void Start()
-        {
-            if (slideBasedNote is not WifiSlide)
-                _vectorGraphicsUtility = slideBasedNote.VectorGraphicsUtility;
-            else
-                _vectorGraphicsUtility = new VectorGraphicsUtility(wifiSvgAssetNameOverride,
-                    slideBasedNote.pathRotation, slideBasedNote.flipPathY,
-                    Lanes.Instance.endPoints[slideBasedNote.fromLaneIndex].position,
-                    slideBasedNote.starObjectRotationOffset);
-        }
-
         private void Update()
         {
             if (!_moving)
@@ -40,7 +29,7 @@ namespace Game
             var deltaTime = Time.deltaTime;
             _time += (_isReturning ? -1 : 1) * deltaTime;
 
-            var t = Mathf.Clamp01(_time / duration);
+            var t = _time / duration;
 
             if (t >= 1f)
             {
@@ -49,6 +38,17 @@ namespace Game
             }
 
             Move(t);
+        }
+
+        public void Initialize()
+        {
+            if (slideBasedNote is not WifiSlide)
+                _vectorGraphicsUtility = slideBasedNote.VectorGraphicsUtility;
+            else
+                _vectorGraphicsUtility = new VectorGraphicsUtility(wifiSvgAssetNameOverride,
+                    slideBasedNote.pathRotation, slideBasedNote.flipPathY,
+                    Lanes.Instance.endPoints[slideBasedNote.fromLaneIndex].position,
+                    slideBasedNote.starObjectRotationOffset);
         }
 
         private void Move(float progress)

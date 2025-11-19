@@ -54,6 +54,8 @@ namespace Game.Notes
         protected bool IsAdxFlowSpeedStyle;
         protected float LineExpansionSpeed;
 
+        protected GameObject NoteContentRoot;
+
         protected float Speed;
 
         private void Start()
@@ -89,6 +91,15 @@ namespace Game.Notes
             _judgeDisplayAnimator = TapJudgeDisplayManager.Instance.judgeDisplayAnimators[laneIndex];
 
             LateStart();
+
+            NoteContentRoot = new GameObject("NoteContent");
+            NoteContentRoot.transform.SetParent(transform);
+
+            var children = transform.GetComponentsInChildren<Transform>();
+
+            foreach (var child in children) child.parent = NoteContentRoot.transform;
+
+            NoteContentRoot.SetActive(false);
         }
 
         public virtual void RegisterTapEvent()

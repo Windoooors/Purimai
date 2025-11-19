@@ -11,7 +11,8 @@ namespace UI.GameSettings
                 Identifier = "general",
                 Items = new List<SettingsItem>
                 {
-                    new("general.language", 0, new[] { "en", "zh_cn" })
+                    new("general.framerate_limiter", 0, new[] { "disabled", "enabled" })
+                    //new("general.vsync", 0, new[] { "disabled", "enabled" })
                 }
             },
             new()

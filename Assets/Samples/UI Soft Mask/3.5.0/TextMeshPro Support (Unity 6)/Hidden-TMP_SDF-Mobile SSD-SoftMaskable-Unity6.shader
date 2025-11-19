@@ -248,9 +248,9 @@ Shader "Hidden/TextMeshPro/Mobile/Distance Field SSD (SoftMaskable)"
 
                 #if OUTLINE_ON
                 float4 outlineColor = lerp(input.faceColor, input.outlineColor,
-                          sqrt(min(1.0, input.param.z * scale * 2)));
+                                           sqrt(min(1.0, input.param.z * scale * 2)));
                 faceColor = lerp(outlineColor, input.faceColor,
-                                                     saturate((d - input.param.x - input.param.z) * scale + 0.5));
+                                 saturate((d - input.param.x - input.param.z) * scale + 0.5));
                 faceColor *= saturate((d - input.param.x + input.param.z) * scale + 0.5);
                 #endif
 
@@ -279,7 +279,7 @@ Shader "Hidden/TextMeshPro/Mobile/Distance Field SSD (SoftMaskable)"
                 // Alternative implementation to UnityGet2DClipping with support for softness
                 #if UNITY_UI_CLIP_RECT
                 half2 maskSoftness = half2(max(_UIMaskSoftnessX, _MaskSoftnessX),
-                                           max(_UIMaskSoftnessY, _MaskSoftnessY));
+                          max(_UIMaskSoftnessY, _MaskSoftnessY));
                 float2 maskZW = 0.25 / (0.25 * maskSoftness + 1 / scale);
                 float2 m = saturate((_ClipRect.zw - _ClipRect.xy - abs(input.mask.xy)) * maskZW);
                 faceColor *= m.x * m.y;
