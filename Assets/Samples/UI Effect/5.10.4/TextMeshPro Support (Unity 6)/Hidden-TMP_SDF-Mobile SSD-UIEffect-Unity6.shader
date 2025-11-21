@@ -212,7 +212,7 @@ Shader "Hidden/TextMeshPro/Mobile/Distance Field SSD (UIEffect)"
                 output.outlineColor = outlineColor;
                 output.texcoord0 = float4(input.texcoord0.xy, maskUV.xy);
                 output.param = float4(0.5 - weight, 1.3333 * _GradientScale * (_Sharpness + 1) / _TextureWidth,
-                                  _OutlineWidth * _ScaleRatioA * 0.5, 0);
+                                      _OutlineWidth * _ScaleRatioA * 0.5, 0);
 
                 float2 mask = float2(0, 0);
                 #if UNITY_UI_CLIP_RECT
@@ -264,9 +264,9 @@ Shader "Hidden/TextMeshPro/Mobile/Distance Field SSD (UIEffect)"
 
                 #ifdef OUTLINE_ON
                 float4 outlineColor = lerp(input.faceColor, input.outlineColor,
-                                                         sqrt(min(1.0, input.param.z * scale * 2)));
+                                           sqrt(min(1.0, input.param.z * scale * 2)));
                 faceColor = lerp(outlineColor, input.faceColor,
-                       saturate((d - input.param.x - input.param.z) * scale + 0.5));
+                             saturate((d - input.param.x - input.param.z) * scale + 0.5));
                 faceColor *= saturate((d - input.param.x + input.param.z) * scale + 0.5);
                 #endif
 

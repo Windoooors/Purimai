@@ -59,11 +59,11 @@ namespace UI.LevelSelection
 
         public override void ProcessDeselect()
         {
-            AddMotionHandle(LMotion.Create(Color.white, new Color(255, 255, 255, 0), 0.5f).WithEase(Ease.OutExpo)
+            AddMotionHandle(LMotion.Create(Color.white, new Color(1, 1, 1, 0), 0.5f).WithEase(Ease.OutExpo)
                 .Bind(x =>
                 {
                     songTitleTextBackground.color = new Color(songTitleTextBackground.color.r,
-                        songTitleTextBackground.color.g, songTitleTextBackground.color.b, 255 * 0.1f * x.a);
+                        songTitleTextBackground.color.g, songTitleTextBackground.color.b, 1 * 0.1f * x.a);
                     background.color = x;
                 }));
         }

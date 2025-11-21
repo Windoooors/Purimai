@@ -300,7 +300,7 @@ Shader "Hidden/TextMeshPro/Distance Field SSD (UIEffect)"
 
                 faceColor *= tex2D(_FaceTex, input.textures.xy + float2(_FaceUVSpeedX, _FaceUVSpeedY) * _Time.y);
                 outlineColor *= tex2D(_OutlineTex,
-                                              input.textures.zw + float2(_OutlineUVSpeedX, _OutlineUVSpeedY) * _Time.y);
+                                      input.textures.zw + float2(_OutlineUVSpeedX, _OutlineUVSpeedY) * _Time.y);
 
                 faceColor = GetColor(sd, faceColor, outlineColor, outline, softness);
 
@@ -322,7 +322,7 @@ Shader "Hidden/TextMeshPro/Distance Field SSD (UIEffect)"
 
                 fixed4 reflcol = texCUBE(_Cube, reflect(input.viewDir, -n));
                 faceColor.rgb += reflcol.rgb * lerp(_ReflectFaceColor.rgb, _ReflectOutlineColor.rgb,
-                    saturate(sd + outline * 0.5)) * faceColor.a;
+                                                    saturate(sd + outline * 0.5)) * faceColor.a;
                 #endif
 
                 #if (UNDERLAY_ON || UNDERLAY_INNER)
@@ -367,7 +367,7 @@ Shader "Hidden/TextMeshPro/Distance Field SSD (UIEffect)"
                 pixelSize *= _TextureHeight * 0.75;
                 float scale = 1 / pixelSize * _GradientScale * (_Sharpness + 1);
                 half2 maskSoftness = half2(max(_UIMaskSoftnessX, _MaskSoftnessX),
-                                   max(_UIMaskSoftnessY, _MaskSoftnessY));
+                                                   max(_UIMaskSoftnessY, _MaskSoftnessY));
                 float2 maskZW = 0.25 / (0.25 * maskSoftness + 1 / scale);
                 half2 m = saturate((_ClipRect.zw - _ClipRect.xy - abs(input.mask.xy)) * maskZW);
                 faceColor *= m.x * m.y;

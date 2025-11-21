@@ -141,7 +141,7 @@ Shader "Hidden/TextMeshPro/Bitmap (SoftMaskable)"
                 const half2 maskSoftness = half2(max(_UIMaskSoftnessX, _MaskSoftnessX),
                                                  max(_UIMaskSoftnessY, _MaskSoftnessY));
                 OUT.mask = float4(vert.xy * 2 - clampedRect.xy - clampedRect.zw,
-                                          0.25 / (0.25 * maskSoftness + pixelSize.xy));
+                                  0.25 / (0.25 * maskSoftness + pixelSize.xy));
 
                 // ==== SOFTMASKABLE START ====
                 #if SOFTMASK_EDITOR

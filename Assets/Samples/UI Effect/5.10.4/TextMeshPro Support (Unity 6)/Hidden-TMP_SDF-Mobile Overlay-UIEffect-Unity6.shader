@@ -181,10 +181,10 @@ Shader "Hidden/TextMeshPro/Mobile/Distance Field Overlay (UIEffect)"
                 scale *= abs(input.texcoord0.w) * _GradientScale * (_Sharpness + 1);
                 if (UNITY_MATRIX_P[3][3] == 0)
                     scale = lerp(abs(scale) * (1 - _PerspectiveFilter), scale,
-                                                                            abs(dot(
-                                                                                UnityObjectToWorldNormal(
-                                                                                    input.normal.xyz),
-                                                                                normalize(WorldSpaceViewDir(vert)))));
+                                 abs(dot(
+                                     UnityObjectToWorldNormal(
+                                         input.normal.xyz),
+                                     normalize(WorldSpaceViewDir(vert)))));
 
                 float weight = lerp(_WeightNormal, _WeightBold, bold) / 4.0;
                 weight = (weight + _FaceDilate) * _ScaleRatioA * 0.5;
@@ -233,9 +233,9 @@ Shader "Hidden/TextMeshPro/Mobile/Distance Field Overlay (UIEffect)"
                 output.texcoord0 = float4(input.texcoord0.x, input.texcoord0.y, maskUV.x, maskUV.y);
                 output.param = half4(scale, bias - outline, bias + outline, bias);
                 const half2 maskSoftness = half2(max(_UIMaskSoftnessX, _MaskSoftnessX),
-                                        max(_UIMaskSoftnessY, _MaskSoftnessY));
+                                                 max(_UIMaskSoftnessY, _MaskSoftnessY));
                 output.mask = half4(vert.xy * 2 - clampedRect.xy - clampedRect.zw,
-                                                               0.25 / (0.25 * maskSoftness + pixelSize.xy));
+                        0.25 / (0.25 * maskSoftness + pixelSize.xy));
                 #if (UNDERLAY_ON || UNDERLAY_INNER)
                 output.texcoord1 = float4(input.texcoord0 + layerOffset, 1, 0);
                 output.underlayParam = half2(layerScale, layerBias);

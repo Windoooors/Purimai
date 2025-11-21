@@ -6,6 +6,7 @@ namespace UI
     public class UIManager : MonoBehaviour
     {
         public static UIManager Instance;
+        public CanvasGroup maskCanvasGroup;
         public Canvas canvas;
 
         private void Awake()
@@ -20,6 +21,18 @@ namespace UI
         private void Start()
         {
             DontDestroyOnLoad(gameObject);
+        }
+
+        public void EnableUI()
+        {
+            canvas.gameObject.SetActive(true);
+            maskCanvasGroup.alpha = 1;
+        }
+
+        public void DisableUI()
+        {
+            canvas.gameObject.SetActive(false);
+            maskCanvasGroup.alpha = 0;
         }
 
         private void ApplyResolution()

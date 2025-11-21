@@ -12,6 +12,8 @@ using TinyPinyin;
 using UI.GameSettings;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.Serialization;
+using Image = UnityEngine.UI.Image;
 
 namespace UI.LevelSelection
 {
@@ -30,6 +32,11 @@ namespace UI.LevelSelection
         public SortingRules groupByRule;
 
         public CanvasGroup levelSelectionUiLayer;
+
+        [FormerlySerializedAs("songCoverBackground")]
+        public Image songCoverBackgroundImage;
+
+        public Image backgroundImage;
 
         private readonly List<Maidata> _maidataList = new();
 
@@ -248,6 +255,8 @@ namespace UI.LevelSelection
 
             public readonly float FirstNoteTime;
             public readonly string Genre;
+
+            public readonly bool IsUtage;
             public readonly string MainChartDesigner;
             public readonly string PvPath;
             public readonly string SongPath;
@@ -312,6 +321,20 @@ namespace UI.LevelSelection
                 Difficulties = difficultyNameList.ToArray();
                 Charts = chartList.ToArray();
                 Designers = designerList.ToArray();
+
+                var utageRegex = new Regex(@"([0-9]+\+?\?|[\u4E00-\u9FFF]\s?[0-9]+\+?\??|utage\s?[0-9]+\+?\??)");
+
+                IsUtage = true;
+
+                var index = -1;
+                foreach (var difficulty in Difficulties)
+                {
+                    index++;
+                    if (difficulty == string.Empty && Designers[index] == string.Empty)
+                        continue;
+                    if (!utageRegex.IsMatch(difficulty.ToLower()))
+                        IsUtage = false;
+                }
             }
 
             public IEnumerator LoadSprite()
@@ -336,7 +359,7 @@ namespace UI.LevelSelection
 
             public IEnumerator GenerateBlurredCover()
             {
-                using var image = Image.Load<Rgba32>(_songCoverPath);
+                using var image = SixLabors.ImageSharp.Image.Load<Rgba32>(_songCoverPath);
                 using var transparentImage = new Image<Rgba32>(75, 75,
                     new Rgba32(0, 0, 0, 0));
 

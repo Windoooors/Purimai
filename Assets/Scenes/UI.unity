@@ -1555,6 +1555,7 @@ GameObject:
   - component: {fileID: 798423648}
   - component: {fileID: 798423647}
   - component: {fileID: 798423646}
+  - component: {fileID: 798423649}
   m_Layer: 5
   m_Name: Mask
   m_TagString: Untagged
@@ -1596,7 +1597,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 385b7d1277b6c4007a84c065696e0f8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Mask
-  m_ShowMaskGraphic: 1
+  m_ShowMaskGraphic: 0
   m_MaskingMode: 2
   m_AlphaHitTest: 0
   m_SoftnessRange:
@@ -1646,6 +1647,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 798423644}
   m_CullTransparentMesh: 1
+--- !u!225 &798423649
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 798423644}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &809582393
 GameObject:
   m_ObjectHideFlags: 0
@@ -1951,6 +1964,8 @@ MonoBehaviour:
     type: 3}
   groupByRule: 1
   levelSelectionUiLayer: {fileID: 1925491292}
+  songCoverBackgroundImage: {fileID: 1201772364}
+  backgroundImage: {fileID: 845977065}
 --- !u!1 &910460187
 GameObject:
   m_ObjectHideFlags: 0
@@ -2077,7 +2092,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.11764706}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.5019608}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2791,8 +2806,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 129.7, y: -261.09}
-  m_SizeDelta: {x: 436.21, y: 138.3}
+  m_AnchoredPosition: {x: 463, y: -261.09}
+  m_SizeDelta: {x: 896.85, y: 138.3}
   m_Pivot: {x: 0.5000002, y: 0.49999985}
 --- !u!114 &1184403371
 MonoBehaviour:
@@ -2849,7 +2864,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 1
-  m_HorizontalAlignment: 4
+  m_HorizontalAlignment: 1
   m_VerticalAlignment: 1024
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -2893,6 +2908,81 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1184403369}
+  m_CullTransparentMesh: 1
+--- !u!1 &1201772362
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1201772363}
+  - component: {fileID: 1201772365}
+  - component: {fileID: 1201772364}
+  m_Layer: 5
+  m_Name: SongCoverBackground
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1201772363
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1201772362}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1925491287}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1201772364
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1201772362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.5647059, g: 0.5647059, b: 0.5647059, a: 0}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1201772365
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1201772362}
   m_CullTransparentMesh: 1
 --- !u!1 &1215887825
 GameObject:
@@ -3290,8 +3380,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 129.7, y: -261.09}
-  m_SizeDelta: {x: 436.21, y: 138.3}
+  m_AnchoredPosition: {x: 463, y: -261.09}
+  m_SizeDelta: {x: 832.66, y: 138.3}
   m_Pivot: {x: 0.5000002, y: 0.49999985}
 --- !u!114 &1290081380
 MonoBehaviour:
@@ -3348,7 +3438,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 1
-  m_HorizontalAlignment: 4
+  m_HorizontalAlignment: 1
   m_VerticalAlignment: 1024
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -8242,6 +8332,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 845977064}
+  - {fileID: 1201772363}
   - {fileID: 1417805568}
   - {fileID: 809582394}
   m_Father: {fileID: 899778723}
@@ -8402,14 +8493,18 @@ MonoBehaviour:
   - {fileID: 798358830}
   - {fileID: 1983148036}
   - {fileID: 1510227197}
+  resultDifficultyIndicatorCanvasGroup: {fileID: 1990203304}
   artistText: {fileID: 522832604}
   songTitleText: {fileID: 1849618139}
+  achievementTitleText: {fileID: 1981889859}
   achievementText: {fileID: 206048484}
-  rankText: {fileID: 1760183195}
+  rankText: {fileID: 2143010706}
+  rankTitleText: {fileID: 1760183195}
   difficultyText: {fileID: 9395733}
   difficultyNameText: {fileID: 1290081380}
   charterNameText: {fileID: 1154935515}
   difficultyIndicatorBackgroundImage: {fileID: 977478418}
+  canvasGroup: {fileID: 1215887828}
 --- !u!1 &1933561838
 GameObject:
   m_ObjectHideFlags: 0
@@ -8770,7 +8865,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1990203303}
   - component: {fileID: 1990203306}
-  - component: {fileID: 1990203305}
   - component: {fileID: 1990203304}
   m_Layer: 5
   m_Name: DifficultyIndicator
@@ -8818,63 +8912,6 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!114 &1990203305
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1990203302}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f2d505d760cb428eaaefddd874fab03, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  backgroundColors:
-  - {r: 0.6273585, g: 0.89789385, b: 1, a: 1}
-  - {r: 0.8062957, g: 1, b: 0.6, a: 1}
-  - {r: 1, g: 0.9546642, b: 0.48584908, a: 1}
-  - {r: 0.5660378, g: 0, b: 0, a: 1}
-  - {r: 0.5882353, g: 0.41960785, b: 0.7058824, a: 1}
-  - {r: 0.96415097, g: 0.9103774, b: 1, a: 1}
-  textColors:
-  - {r: 0, g: 0, b: 0, a: 1}
-  - {r: 0, g: 0, b: 0, a: 1}
-  - {r: 0, g: 0, b: 0, a: 1}
-  - {r: 1, g: 1, b: 1, a: 1}
-  - {r: 1, g: 1, b: 1, a: 1}
-  - {r: 0, g: 0, b: 0, a: 1}
-  textGradientColors:
-  - topLeft: {r: 1, g: 1, b: 1, a: 0}
-    topRight: {r: 1, g: 1, b: 1, a: 0}
-    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
-    bottomRight: {r: 1, g: 1, b: 1, a: 1}
-  - topLeft: {r: 1, g: 1, b: 1, a: 0}
-    topRight: {r: 1, g: 1, b: 1, a: 0}
-    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
-    bottomRight: {r: 1, g: 1, b: 1, a: 1}
-  - topLeft: {r: 1, g: 1, b: 1, a: 0}
-    topRight: {r: 1, g: 1, b: 1, a: 0}
-    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
-    bottomRight: {r: 1, g: 1, b: 1, a: 1}
-  - topLeft: {r: 1, g: 1, b: 1, a: 1}
-    topRight: {r: 1, g: 1, b: 1, a: 1}
-    bottomLeft: {r: 1, g: 1, b: 1, a: 0}
-    bottomRight: {r: 1, g: 1, b: 1, a: 0}
-  - topLeft: {r: 1, g: 1, b: 1, a: 1}
-    topRight: {r: 1, g: 1, b: 1, a: 1}
-    bottomLeft: {r: 1, g: 1, b: 1, a: 0}
-    bottomRight: {r: 1, g: 1, b: 1, a: 0}
-  - topLeft: {r: 1, g: 1, b: 1, a: 0}
-    topRight: {r: 1, g: 1, b: 1, a: 0}
-    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
-    bottomRight: {r: 1, g: 1, b: 1, a: 1}
-  backgroundImage: {fileID: 977478418}
-  difficultyText: {fileID: 9395733}
-  charterNameText: {fileID: 1154935515}
-  difficultyNameText: {fileID: 1290081380}
-  canvasGroup: {fileID: 1990203304}
-  mask: {fileID: 1990203303}
 --- !u!222 &1990203306
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -8967,6 +9004,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae5735a9c58e4eccb2cbafb0d90545f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maskCanvasGroup: {fileID: 798423649}
   canvas: {fileID: 1327503736}
 --- !u!1 &2039448112
 GameObject:
@@ -9307,8 +9345,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 532.42004, y: -313}
-  m_SizeDelta: {x: 1138.54, y: 1138.6}
+  m_AnchoredPosition: {x: 434, y: -247}
+  m_SizeDelta: {x: 1417.28, y: 1417.38}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2079231108
 MonoBehaviour:

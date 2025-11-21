@@ -1,3 +1,5 @@
+using Game;
+using LitMotion;
 using TMPro;
 using UI.LevelSelection;
 using UnityEngine;
@@ -12,22 +14,32 @@ namespace UI.Result
         public Image blurredSongCoverImage;
         public Image[] songCoverImage;
 
+        public CanvasGroup resultDifficultyIndicatorCanvasGroup;
+
         public TextMeshProUGUI artistText;
         public TextMeshProUGUI songTitleText;
+        public TextMeshProUGUI achievementTitleText;
         public TextMeshProUGUI achievementText;
         public TextMeshProUGUI rankText;
+        public TextMeshProUGUI rankTitleText;
         public TextMeshProUGUI difficultyText;
         public TextMeshProUGUI difficultyNameText;
         public TextMeshProUGUI charterNameText;
         public Image difficultyIndicatorBackgroundImage;
 
+        public CanvasGroup canvasGroup;
+
         private void Awake()
         {
             _instance = this;
+            canvasGroup.gameObject.SetActive(false);
         }
 
         public void Initialize(LevelListController.Maidata maidata, int difficultyIndex)
         {
+            canvasGroup.gameObject.SetActive(true);
+            canvasGroup.alpha = 0;
+
             backgroundImage.sprite = maidata.SongCoverBlurredAsBackground;
             blurredSongCoverImage.sprite = maidata.SongCoverBlurred;
 
@@ -45,7 +57,7 @@ namespace UI.Result
 
             charterNameText.text = designerName;
 
-            difficultyNameText.text = difficultyIndex switch
+            difficultyNameText.text = (maidata.IsUtage ? 6 : difficultyIndex) switch
             {
                 0 => "EZ",
                 1 => "BAS",
@@ -53,28 +65,57 @@ namespace UI.Result
                 3 => "EXP",
                 4 => "MAS",
                 5 => "RE",
+                6 => "UTAGE",
                 _ => ""
             };
 
-            var textColor = DifficultyIndicator.Instance.textColors[difficultyIndex];
+            var textColor = DifficultyIndicator.Instance.textColors[maidata.IsUtage ? 5 : difficultyIndex];
 
             difficultyText.color = new Color(textColor.r, textColor.g, textColor.b, difficultyText.color.a);
             charterNameText.color = new Color(textColor.r, textColor.g, textColor.b, charterNameText.color.a);
             difficultyNameText.color = new Color(textColor.r, textColor.g, textColor.b, difficultyNameText.color.a);
-            difficultyNameText.colorGradient = DifficultyIndicator.Instance.textGradientColors[difficultyIndex];
-            difficultyIndicatorBackgroundImage.color = DifficultyIndicator.Instance.backgroundColors[difficultyIndex];
+
+            achievementTitleText.color = new Color(textColor.r, textColor.g, textColor.b, achievementTitleText.color.a);
+            achievementText.color = new Color(textColor.r, textColor.g, textColor.b, achievementText.color.a);
+            rankText.color = new Color(textColor.r, textColor.g, textColor.b, rankText.color.a);
+            rankTitleText.color = new Color(textColor.r, textColor.g, textColor.b, rankTitleText.color.a);
+
+            difficultyNameText.colorGradient =
+                DifficultyIndicator.Instance.textGradientColors[maidata.IsUtage ? 5 : difficultyIndex];
+            difficultyIndicatorBackgroundImage.color =
+                DifficultyIndicator.Instance.backgroundColors[maidata.IsUtage ? 5 : difficultyIndex];
+
+            canvasGroup.gameObject.SetActive(false);
         }
 
         public void ShowResult()
         {
+            SimulatedSensor.OnTap = null;
+            SimulatedSensor.OnHold = null;
+            SimulatedSensor.OnLeave = null;
+
+            canvasGroup.gameObject.SetActive(true);
+            canvasGroup.alpha = 1;
+
             achievementText.text = Scoreboard.GetAchievement().ToString("0.00") + "%";
             rankText.text = GetRankName(Scoreboard.GetAchievement(), Scoreboard.Score,
                 Scoreboard.TotalScoreWithExtraScore);
+
+            var originalPosition = resultDifficultyIndicatorCanvasGroup.transform.position;
+
+            resultDifficultyIndicatorCanvasGroup.transform.position = originalPosition + new Vector3(2, 0, 0);
+
+            AddMotionHandle(LMotion.Create(0, 1f, 1f).WithEase(Ease.OutExpo).Bind(x =>
+            {
+                UIManager.Instance.maskCanvasGroup.alpha = x;
+                resultDifficultyIndicatorCanvasGroup.transform.position =
+                    originalPosition + new Vector3(2 - x * 2, 0, 0);
+            }));
         }
 
         public static ResultController GetInstance()
         {
-            return _instance == null ? FindAnyObjectByType<ResultController>() : _instance;
+            return !_instance ? FindAnyObjectByType<ResultController>() : _instance;
         }
 
         private static string GetRankName(float achievement, int score, int totalScoreWithExtraScore)

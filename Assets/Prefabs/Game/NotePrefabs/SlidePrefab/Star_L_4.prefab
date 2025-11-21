@@ -53,6 +53,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -74,6 +76,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -789768153
   m_SortingLayer: 3
   m_SortingOrder: 0
@@ -157,6 +160,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -178,6 +183,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 421743895
   m_SortingLayer: 4
   m_SortingOrder: 0
@@ -287,8 +293,6 @@ MonoBehaviour:
   - {fileID: 1775353465747690920}
   judgeDisplaySpriteRenderer: {fileID: 8110610608344382442}
   svgAssetPath: L_4
-  slideArrowGenerationProgressOffset: 0
-  slideArrowGenerationDivisionOffset: 0.3
   slideArrowCount: 32
   slideType: 0
   fromLaneIndex: 0
@@ -309,29 +313,35 @@ MonoBehaviour:
     slideSpriteRenderersWithinSensorArea: []
     slideSpriteRenderersOutsideSensorArea: []
     sensorsNearby: []
+    touched: 0
   - mainSensor: A8
     slideSpriteRenderers: []
     slideSpriteRenderersWithinSensorArea: []
     slideSpriteRenderersOutsideSensorArea: []
     sensorsNearby:
     - B8
+    touched: 0
   - mainSensor: A7
     slideSpriteRenderers: []
     slideSpriteRenderersWithinSensorArea: []
     slideSpriteRenderersOutsideSensorArea: []
     sensorsNearby: []
+    touched: 0
   - mainSensor: B6
     slideSpriteRenderers: []
     slideSpriteRenderersWithinSensorArea: []
     slideSpriteRenderersOutsideSensorArea: []
     sensorsNearby: []
+    touched: 0
   - mainSensor: B5
     slideSpriteRenderers: []
     slideSpriteRenderersWithinSensorArea: []
     slideSpriteRenderersOutsideSensorArea: []
     sensorsNearby: []
+    touched: 0
   - mainSensor: A4
     slideSpriteRenderers: []
     slideSpriteRenderersWithinSensorArea: []
     slideSpriteRenderersOutsideSensorArea: []
     sensorsNearby: []
+    touched: 0

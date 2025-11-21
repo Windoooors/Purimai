@@ -48,11 +48,11 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 0
+  spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
-  spriteBorder: {x: 0, y: 64, z: 0, w: 64}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
@@ -129,13 +129,13 @@ TextureImporter:
       name: hold_glowing_0
       rect:
         serializedVersion: 2
-        x: 2
-        y: 5
-        width: 118
-        height: 192
+        x: 0
+        y: 0
+        width: 122
+        height: 200
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 64, z: 0, w: 64}
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
@@ -151,8 +151,8 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: baaacf8c380394c56a72cac5df88fca7
-    internalID: 608736943
+    spriteID: 
+    internalID: 0
     vertices: []
     indices: 
     edges: []

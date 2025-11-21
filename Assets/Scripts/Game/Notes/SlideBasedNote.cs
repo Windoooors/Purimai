@@ -55,7 +55,7 @@ namespace Game.Notes
 
         private SpriteRenderer[] _slideArrowSpriteRenderers;
 
-        private GameObject _slideContentRoot;
+        protected GameObject SlideContentRoot;
 
         private bool _slidedHalf;
 
@@ -123,14 +123,14 @@ namespace Game.Notes
             Scoreboard.TotalScoreWithExtraScore += 1500;
             Scoreboard.SlideCount.TotalCount++;
 
-            _slideContentRoot = new GameObject("SlideContent");
-            _slideContentRoot.transform.SetParent(transform);
+            SlideContentRoot = new GameObject("SlideContent");
+            SlideContentRoot.transform.SetParent(transform);
 
             var children = transform.GetComponentsInChildren<Transform>();
 
-            foreach (var child in children) child.parent = _slideContentRoot.transform;
+            foreach (var child in children) child.parent = SlideContentRoot.transform;
 
-            _slideContentRoot.SetActive(false);
+            SlideContentRoot.SetActive(false);
         }
 
         private void Update()
@@ -138,7 +138,7 @@ namespace Game.Notes
             if (ChartPlayer.Instance.time >=
                 timing + (suddenlyAppears ? 0 : ChartPlayer.Instance.slideAppearanceDeltaTime) && !_revealed)
             {
-                _slideContentRoot.SetActive(true);
+                SlideContentRoot.SetActive(true);
 
                 transform.position = Vector3.zero;
 
@@ -192,8 +192,23 @@ namespace Game.Notes
 
                 //transform.position = NoteGenerator.Instance.outOfScreenPosition;
 
-                if (Slided && !_concealed)
-                    PlayJudgeAnimation();
+                var score = _judgeState switch
+                {
+                    JudgeState.CriticalPerfect or JudgeState.SemiCriticalPerfect or JudgeState.Perfect => 1500,
+                    JudgeState.Great or JudgeState.SemiGreat or JudgeState.QuarterGreat => 1200,
+                    JudgeState.Good => 750,
+                    _ => 0
+                };
+
+                Scoreboard.Score += score;
+
+                Scoreboard.SlideCount.Count(_judgeState);
+
+                Scoreboard.DeductedScore += score - 1500;
+
+                Scoreboard.Combo++;
+
+                PlayJudgeAnimation();
 
                 _concealed = true;
             }
@@ -232,7 +247,9 @@ namespace Game.Notes
                     _judgeState = JudgeState.Good;
 
                     Scoreboard.DeductedScore -= 750;
-                    Scoreboard.SlideCount.Count(JudgeState.Great);
+                    Scoreboard.Score += 750;
+                    Scoreboard.SlideCount.Count(JudgeState.Good);
+                    Scoreboard.Combo++;
                 }
 
                 Slided = true;
@@ -249,7 +266,7 @@ namespace Game.Notes
                 && judgeDisplaySpriteRenderer.enabled)
             {
                 judgeDisplaySpriteRenderer.enabled = false;
-                _slideContentRoot.SetActive(false);
+                SlideContentRoot.SetActive(false);
             }
         }
 
@@ -344,22 +361,6 @@ namespace Game.Notes
                 judgeDisplaySpriteRenderer.transform.position = pair.position;
             }
 
-            var score = _judgeState switch
-            {
-                JudgeState.CriticalPerfect or JudgeState.SemiCriticalPerfect or JudgeState.Perfect => 1500,
-                JudgeState.Great or JudgeState.SemiGreat or JudgeState.QuarterGreat => 1200,
-                JudgeState.Good => 750,
-                _ => 0
-            };
-
-            Scoreboard.Score += score;
-
-            Scoreboard.SlideCount.Count(_judgeState);
-
-            Scoreboard.DeductedScore += score - 1500;
-
-            Scoreboard.Combo++;
-
             UpdateJudgeDisplayDirection(index);
             Slided = true;
         }
@@ -432,7 +433,6 @@ namespace Game.Notes
                             new Color(0, 0, 0, 0);
 
                 var segment = UniversalSegments[touchedSegmentsIndex];
-
                 foreach (var motionHandle in segment.MotionHandles) motionHandle.TryCancel();
 
                 foreach (var slideSprite in segment.slideSpriteRenderers) slideSprite.color = new Color(0, 0, 0, 0);
@@ -453,12 +453,11 @@ namespace Game.Notes
         {
             StartCoroutine(DelayedTrigger(() =>
             {
+                var segment = UniversalSegments[touchedSegmentsIndex];
                 if (touchedSegmentsIndex - 1 >= 0 &&
                     UniversalSegments[touchedSegmentsIndex - 1].slideSpriteRenderersWithinSensorArea.Length > 0)
                     UniversalSegments[touchedSegmentsIndex - 1].slideSpriteRenderersWithinSensorArea[^1].color =
                         new Color(0, 0, 0, 0);
-
-                var segment = UniversalSegments[touchedSegmentsIndex];
 
                 foreach (var motionHandle in segment.MotionHandles) motionHandle.TryCancel();
 

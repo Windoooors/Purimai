@@ -9,13 +9,8 @@ namespace Game.Notes
     {
         public NormalSegment[] segments;
 
-        private bool _isLastSegmentTouchedByHolding;
-
-        private string _lastHeldSensorId = "";
-
-        private bool _sensorJumped;
-
-        private int _touchedSegmentIndex;
+        private int _lastSegmentTouchedOnLeaveIndex = -1;
+        private int _lastTouchedSegmentIndex = -1;
 
         protected override void UpdateUniversalSegments()
         {
@@ -46,75 +41,77 @@ namespace Game.Notes
 
         protected override void OnSensorHold(TouchEventArgs e)
         {
-            if (Slided)
-                return;
-
-            var segmentState = GetSegmentState(e.SensorId, _touchedSegmentIndex);
-
-            if (!segmentState.activated)
-                return;
-
-            if (!IsJumpSensorAllowed() && segmentState.sensorJumped)
-                return;
-
-            if (segmentState.sensorJumped)
-            {
-                _sensorJumped = true;
-                _touchedSegmentIndex++;
-                ConcealSegment(_touchedSegmentIndex - 1, false);
-            }
-
-            if (_lastHeldSensorId != e.SensorId)
-            {
-                if (_isLastSegmentTouchedByHolding && _sensorJumped)
-                    _sensorJumped = false;
-
-                if (segmentState.sensorJumped || _touchedSegmentIndex == 0)
-                    _isLastSegmentTouchedByHolding = true;
-
-                _lastHeldSensorId = e.SensorId;
-            }
-
-            if (_touchedSegmentIndex == segments.Length - 1 && !Slided)
-            {
-                ConcealSegment(_touchedSegmentIndex - 1, false);
-                Judge();
-            }
-
-            if (_touchedSegmentIndex != segments.Length - 1)
-                ConcealMiddleSegment(_touchedSegmentIndex);
-        }
-
-        private bool SensorContained(int segmentIndex, string sensorId)
-        {
-            return segments[segmentIndex].mainSensor == sensorId ||
-                   segments[segmentIndex].sensorsNearby.Contains(sensorId);
+            JudgeSegment(e.SensorId, true);
         }
 
         protected override void OnSensorLeave(TouchEventArgs e)
         {
-            if (Slided)
-                return;
-
-            var segmentState = GetSegmentState(e.SensorId, _touchedSegmentIndex);
-            var sensorJumped = segmentState.sensorJumped;
-
-            if (!segmentState.activated)
-                return;
-
-            if (sensorJumped)
-                return;
-
-            ConcealSegment(_touchedSegmentIndex, _sensorJumped);
-
-            _sensorJumped = false;
-
-            _isLastSegmentTouchedByHolding = false;
-
-            _touchedSegmentIndex++;
+            JudgeSegment(e.SensorId, false);
         }
 
-        private bool IsJumpSensorAllowed()
+        private void JudgeSegment(string sensorId, bool isFromHold)
+        {
+            if (ChartPlayer.Instance.time < timing || !SlideContentRoot.activeSelf)
+                return;
+            
+            for (var i = _lastTouchedSegmentIndex + 1; i < segments.Length; i++)
+            {
+                var segment = segments[i];
+
+                if (!SensorContained(segment, sensorId) || !(i is 0 or 1 || segments[i - 2].touched))
+                    continue;
+
+                var jumpAllowed = IsJumpedTouchingSequenceAllowed();
+
+                if (isFromHold)
+                {
+                    if (i - 1 >= 0 && (jumpAllowed || segments[i - 1].touched))
+                    {
+                        segments[i - 1].touched = true;
+                        ConcealSegment(i - 1, false);
+                        _lastTouchedSegmentIndex = i - 1;
+
+                        if (i == segments.Length - 1)
+                            Judge();
+
+                        ConcealMiddleSegment(i);
+
+                        break;
+                    }
+                }
+                else
+                {
+                    if (i == segments.Length - 1)
+                        break;
+
+                    var touchingSequenceJumped = false;
+                    if (i != _lastSegmentTouchedOnLeaveIndex)
+                    {
+                        touchingSequenceJumped = i - _lastSegmentTouchedOnLeaveIndex == 2;
+
+                        _lastSegmentTouchedOnLeaveIndex = i;
+                    }
+
+                    if (!jumpAllowed && touchingSequenceJumped)
+                        break;
+
+                    if (i != 0 && !segments[i - 1].touched)
+                        break;
+
+                    segments[i].touched = true;
+                    ConcealSegment(i, touchingSequenceJumped);
+                    _lastTouchedSegmentIndex = i;
+                }
+            }
+        }
+
+        private bool SensorContained(NormalSegment segment, string sensorId)
+        {
+            return segment.mainSensor == sensorId ||
+                   segment.sensorsNearby.Contains(sensorId);
+        }
+
+        private bool IsJumpedTouchingSequenceAllowed()
         {
             var interval = 0;
 
@@ -124,30 +121,13 @@ namespace Game.Notes
                      or NoteDataObject.SlideDataObject.SlideType.RotateRight
                      or NoteDataObject.SlideDataObject.SlideType.RotateMinorArc)
                 interval = CycleSlide.GetCycleInterval(fromLaneIndex + 1, toLaneIndexes[0] + 1, slideType);
+            else if (slideType is NoteDataObject.SlideDataObject.SlideType.BigV)
+                interval = GetShortestInterval(toLaneIndexes[0] + 1, toLaneIndexes[1] + 1);
 
             if (interval is 2 or 1)
                 return false;
 
             return true;
-        }
-
-        private (bool sensorJumped, bool activated) GetSegmentState(string sensorId, int index)
-        {
-            if (timing > ChartPlayer.Instance.time)
-                return (false, false);
-
-            if (index == segments.Length)
-                return (false, false);
-
-            var sensorJumped =
-                index + 1 != segments.Length &&
-                SensorContained(index + 1, sensorId);
-
-            var activated =
-                (SensorContained(index, sensorId) || sensorJumped) &&
-                index < segments.Length;
-
-            return (sensorJumped, activated);
         }
     }
 
@@ -155,5 +135,6 @@ namespace Game.Notes
     public class NormalSegment : Segment
     {
         public string[] sensorsNearby;
+        public bool touched;
     }
 }

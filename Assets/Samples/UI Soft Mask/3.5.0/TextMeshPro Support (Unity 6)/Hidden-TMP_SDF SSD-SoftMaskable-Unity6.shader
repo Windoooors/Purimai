@@ -305,7 +305,7 @@
 
                 fixed4 reflcol = texCUBE(_Cube, reflect(input.viewDir, -n));
                 faceColor.rgb += reflcol.rgb * lerp(_ReflectFaceColor.rgb, _ReflectOutlineColor.rgb,
-             saturate(sd + outline * 0.5)) * faceColor.a;
+                                                    saturate(sd + outline * 0.5)) * faceColor.a;
                 #endif
 
                 #if (UNDERLAY_ON || UNDERLAY_INNER)
@@ -332,7 +332,7 @@
                 // Alternative implementation to UnityGet2DClipping with support for softness.
                 #if UNITY_UI_CLIP_RECT
                 half2 maskSoftness = half2(max(_UIMaskSoftnessX, _MaskSoftnessX),
-     max(_UIMaskSoftnessY, _MaskSoftnessY));
+                                           max(_UIMaskSoftnessY, _MaskSoftnessY));
                 float2 maskZW = 0.25 / (0.25 * maskSoftness + 1 / scale);
                 half2 m = saturate((_ClipRect.zw - _ClipRect.xy - abs(input.mask.xy)) * maskZW);
                 faceColor *= m.x * m.y;

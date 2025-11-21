@@ -8073,6 +8073,15 @@ MonoBehaviour:
   slideJudgeDisplayAnimationDuration: 600
   slideConcealDelay: 50
   judgeDelay: 0
+  judgeCircleSpriteRenderer: {fileID: 2027022756}
+  judgeCircleGlowSpriteRenderer: {fileID: 1729037829}
+  judgeCircleColors:
+  - {r: 0.3254717, g: 0.8696793, b: 1, a: 1}
+  - {r: 0.33910358, g: 1, b: 0, a: 1}
+  - {r: 1, g: 0.96607786, b: 0.0141509175, a: 1}
+  - {r: 0.87058824, g: 0.38431373, b: 0.34117648, a: 1}
+  - {r: 0.5921569, g: 0.31764707, b: 0.827451, a: 1}
+  - {r: 0.9607843, g: 0.74509805, b: 0.8862745, a: 1}
   slideAppearanceDeltaTime: 0
   slideFadeInDuration: 200
   holdRippleAnimators:
@@ -11090,7 +11099,7 @@ SpriteRenderer:
   m_SortingOrder: 1
   m_Sprite: {fileID: 1374275759961779986, guid: dbd47b5bf7922484fbbb7fbf01e6ad8e,
     type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Color: {r: 0.6223404, g: 0.3798505, b: 0.8301887, a: 0}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

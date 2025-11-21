@@ -1,5 +1,7 @@
 using Game.Notes;
+using UI;
 using UI.GameSettings;
+using UI.Result;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,6 +26,11 @@ namespace Game
 
         public int judgeDelay;
 
+        public SpriteRenderer judgeCircleSpriteRenderer;
+        public SpriteRenderer judgeCircleGlowSpriteRenderer;
+
+        public Color[] judgeCircleColors;
+
         [HideInInspector] public int slideAppearanceDeltaTime;
         [HideInInspector] public int slideFadeInDuration;
 
@@ -35,6 +42,8 @@ namespace Game
         public JudgeSettings tapJudgeSettings;
         public JudgeSettings slideJudgeSettings;
         public JudgeSettings holdTailJudgeSettings;
+
+        private bool _isPlayingOnLastFrame;
 
         public void Awake()
         {
@@ -54,8 +63,29 @@ namespace Game
         {
             isPlaying = audioSource.isPlaying;
 
+            if (!isPlaying && _isPlayingOnLastFrame)
+            {
+                OnPlayCompleted();
+                _isPlayingOnLastFrame = false;
+            }
+
             if (isPlaying)
+            {
                 time = (int)(audioSource.time * 1000);
+                _isPlayingOnLastFrame = true;
+            }
+        }
+
+        public void InitializeCircleColor(int index, bool isUtage)
+        {
+            judgeCircleSpriteRenderer.color = judgeCircleColors[isUtage ? 5 : index == 5 ? 4 : index];
+            judgeCircleGlowSpriteRenderer.color = judgeCircleColors[isUtage ? 5 : index == 5 ? 4 : index];
+        }
+
+        private void OnPlayCompleted()
+        {
+            UIManager.Instance.EnableUI();
+            ResultController.GetInstance().ShowResult();
         }
 
         public void Play()

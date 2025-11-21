@@ -66,7 +66,30 @@ namespace UI.LevelSelection
                 ((LevelListItem)levelListController.levelList.ItemObjectList[levelListController.levelList.index])
                 .chartData;
 
-            StartCoroutine(LoadChart(LoadScene, maidata.SongPath, maidata, difficultyIndex));
+            var originalListPosition = levelListController.levelList.transform.position;
+            var originalPosition = transform.position;
+
+            levelListController.songCoverBackgroundImage.sprite = maidata.SongCover;
+
+            levelListController.songCoverBackgroundImage.transform.localScale *=
+                SettingsPool.GetValue("game.blurred_cover") == 1
+                    ? 1.1f
+                    : 1;
+
+            AddMotionHandle(LMotion.Create(
+                    0, 15f, 0.5f).WithEase(Ease.InExpo).WithOnComplete(() =>
+                {
+                    StartCoroutine(LoadChart(LoadScene, maidata.SongPath, maidata, difficultyIndex));
+                    levelListController.backgroundImage.enabled = false;
+                })
+                .Bind(x =>
+                {
+                    levelListController.levelList.transform.position = originalListPosition + new Vector3(-x, 0, 0);
+                    levelListController.songCoverBackgroundImage.color =
+                        new Color(144 / 255f, 144 / 255f, 144 / 255f, x / 15f);
+                    transform.position = originalPosition + new Vector3(x * 0.3f, 0, 0);
+                })
+            );
         }
 
         private void LoadScene(AudioClip audioClip, LevelListController.Maidata maidata, int difficultyIndex)
@@ -92,6 +115,8 @@ namespace UI.LevelSelection
                         ? 1.1f
                         : 1;
 
+                chartPlayer.InitializeCircleColor(difficultyIndex, maidata.IsUtage);
+
                 var resultController = ResultController.GetInstance();
 
                 resultController.Initialize(maidata, difficultyIndex);
@@ -108,11 +133,24 @@ namespace UI.LevelSelection
                 if (chartPlayer.audioSource.clip.loadState == AudioDataLoadState.Loaded)
                     break;
 
-            UIManager.Instance.canvas.enabled = false;
+            AddMotionHandle(LMotion.Create(1, 0f, 0.5f).WithEase(Ease.OutExpo).WithOnComplete(() =>
+                {
+                    LevelListController.GetInstance().levelList.transform.position += new Vector3(15, 0, 0);
+                    transform.position += new Vector3(-5, 0, 0);
+                    StartCoroutine(WaitAndPlay());
+                    LevelListController.GetInstance().backgroundImage.enabled = true;
+                })
+                .Bind(x => { UIManager.Instance.maskCanvasGroup.alpha = x; }));
 
-            yield return new WaitForSeconds(1);
+            yield break;
 
-            chartPlayer.Play();
+            IEnumerator WaitAndPlay()
+            {
+                yield return new WaitForSeconds(1);
+
+                chartPlayer.Play();
+                UIManager.Instance.DisableUI();
+            }
         }
 
         private IEnumerator LoadChart(Action<AudioClip, LevelListController.Maidata, int> onComplete, string path,
@@ -141,6 +179,7 @@ namespace UI.LevelSelection
             yield return maidata.GenerateBlurredCover();
 
             onComplete(clip, maidata, chartIndex);
+
             yield return null;
         }
 
@@ -221,7 +260,8 @@ namespace UI.LevelSelection
                 levelListItem.difficultyIndex = _selectedDifficulty;
             }
 
-            backgroundImage.color = backgroundColors[levelListItem.difficultyIndex];
+            backgroundImage.color =
+                backgroundColors[levelListItem.chartData.IsUtage ? 5 : levelListItem.difficultyIndex];
 
             difficultyText.text = levelListItem.chartData.Difficulties[levelListItem.difficultyIndex];
 
@@ -232,7 +272,7 @@ namespace UI.LevelSelection
 
             charterNameText.text = designerName;
 
-            difficultyNameText.text = levelListItem.difficultyIndex switch
+            difficultyNameText.text = (levelListItem.chartData.IsUtage ? 6 : levelListItem.difficultyIndex) switch
             {
                 0 => "EZ",
                 1 => "BAS",
@@ -240,15 +280,17 @@ namespace UI.LevelSelection
                 3 => "EXP",
                 4 => "MAS",
                 5 => "RE",
+                6 => "UTAGE",
                 _ => ""
             };
 
-            var textColor = textColors[levelListItem.difficultyIndex];
+            var textColor = textColors[levelListItem.chartData.IsUtage ? 5 : levelListItem.difficultyIndex];
 
             difficultyText.color = new Color(textColor.r, textColor.g, textColor.b, difficultyText.color.a);
             charterNameText.color = new Color(textColor.r, textColor.g, textColor.b, charterNameText.color.a);
             difficultyNameText.color = new Color(textColor.r, textColor.g, textColor.b, difficultyNameText.color.a);
-            difficultyNameText.colorGradient = textGradientColors[levelListItem.difficultyIndex];
+            difficultyNameText.colorGradient =
+                textGradientColors[levelListItem.chartData.IsUtage ? 5 : levelListItem.difficultyIndex];
 
             AddMotionHandle(LMotion.Create(0, 1f, e.IndexChangeIsAnimated ? 0.5f : 0).WithEase(Ease.OutExpo).Bind(x =>
             {
