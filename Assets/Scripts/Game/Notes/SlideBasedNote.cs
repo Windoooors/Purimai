@@ -86,6 +86,28 @@ namespace Game.Notes
             UpdateUniversalSegments();
 
             VectorGraphicsUtility.ObjectRotationOffset = starObjectRotationOffset;
+            
+            if (slideType is not NoteDataObject.SlideDataObject.SlideType.Wifi)
+            {
+                var pair = VectorGraphicsUtility.GetPositionRotationPair(1f - 0.6f / slideArrowCount);
+                judgeDisplaySpriteRenderer.transform.position = pair.position;
+                if ((int)slideType is not 0 and not 1 and not 2)
+                    judgeDisplaySpriteRenderer.transform.eulerAngles =
+                        pair.rotation.eulerAngles + new Vector3(0, 0, 18);
+                else
+                {
+                    if (IsClockwise)
+                        judgeDisplaySpriteRenderer.transform.eulerAngles =
+                            pair.rotation.eulerAngles + new Vector3(0, 0, 37.5f);
+                    else
+                    {
+                        judgeDisplaySpriteRenderer.transform.eulerAngles =
+                            pair.rotation.eulerAngles + new Vector3(0,0,-1.5f);
+                        judgeDisplaySpriteRenderer.transform.Rotate(180, 0, 0, Space.Self);
+                        //judgeDisplaySpriteRenderer.flipY = true;
+                    }
+                }
+            }
 
             _judgeDisplayAnimator = judgeDisplaySpriteRenderer.GetComponent<Animator>();
             _judgeDisplayAnimator.enabled = true;
@@ -226,12 +248,6 @@ namespace Game.Notes
                     star.spriteRenderer.enabled = false;
                 }
 
-                if (slideType is not NoteDataObject.SlideDataObject.SlideType.Wifi)
-                {
-                    var pair = VectorGraphicsUtility.GetPositionRotationPair(1f - 0.6f / slideArrowCount);
-                    judgeDisplaySpriteRenderer.transform.position = pair.position;
-                }
-
                 if (!_slidedHalf)
                 {
                     UpdateJudgeDisplayDirection(5);
@@ -355,12 +371,6 @@ namespace Game.Notes
                 _ => 5
             };
 
-            if (slideType is not NoteDataObject.SlideDataObject.SlideType.Wifi)
-            {
-                var pair = VectorGraphicsUtility.GetPositionRotationPair(1f - 0.6f / slideArrowCount);
-                judgeDisplaySpriteRenderer.transform.position = pair.position;
-            }
-
             UpdateJudgeDisplayDirection(index);
             Slided = true;
         }
@@ -396,7 +406,7 @@ namespace Game.Notes
         {
             OnSensorHold(e);
         }
-
+        
         protected abstract void OnSensorLeave(TouchEventArgs e);
 
         protected abstract void OnSensorHold(TouchEventArgs e);
@@ -575,10 +585,8 @@ namespace Game.Notes
             judgeDisplaySpriteRenderer.sprite = NoteGenerator.Instance.slideJudgeDisplaySprites[judgeSpriteGroupIndex]
                 .normalSlideJudgeSprites[
                     judgeSpriteNeedsChange
-                        ? IsClockwise ? SlideJudgeDisplaySpriteIndexes[1] : SlideJudgeDisplaySpriteIndexes[0]
-                        : IsClockwise
-                            ? SlideJudgeDisplaySpriteIndexes[0]
-                            : SlideJudgeDisplaySpriteIndexes[1]];
+                        ? SlideJudgeDisplaySpriteIndexes[1]
+                        : SlideJudgeDisplaySpriteIndexes[0]];
 
             var scale = judgeDisplaySpriteRenderer.gameObject.transform.localScale;
             scale = new Vector3(scale.x,

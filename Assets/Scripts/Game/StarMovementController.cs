@@ -61,7 +61,7 @@ namespace Game
 
         public void MoveToStart()
         {
-            _vectorGraphicsUtility.SetStartPosition(transform.position);
+            _vectorGraphicsUtility.SetStartPosition(Lanes.Instance.endPoints[slideBasedNote.fromLaneIndex].position);
             Move(0.001f); // 0.001f is for fixing some bizarre start point rotation issues.
             _time = duration * 0.001f;
         }

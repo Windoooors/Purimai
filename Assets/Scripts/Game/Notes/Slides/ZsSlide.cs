@@ -10,11 +10,8 @@ namespace Game.Notes.Slides
         protected override void InitializeSlideDirection()
         {
             _isMirror = slideType == NoteDataObject.SlideDataObject.SlideType.Z;
-
-            transform.Rotate(
-                _isMirror
-                    ? new Vector3(0, 180, 45 + 45f * fromLaneIndex)
-                    : new Vector3(0, 0, -45f * fromLaneIndex));
+            
+            SlideJudgeDisplaySpriteIndexes = new[] { 0, 1 };
 
             if (_isMirror)
             {
@@ -28,27 +25,6 @@ namespace Game.Notes.Slides
                 flipPathY = false;
                 pathRotation = -45f * fromLaneIndex;
             }
-        }
-
-        protected override void UpdateJudgeDisplayDirection(int judgeDisplaySpriteGroupIndex)
-        {
-            var judgeSpriteNeedsChange =
-                judgeDisplaySpriteRenderer.transform.rotation.eulerAngles.z is >= 265 and <= 365 or >= -5 and <= 95;
-
-            judgeDisplaySpriteRenderer.sprite = NoteGenerator.Instance
-                .slideJudgeDisplaySprites[judgeDisplaySpriteGroupIndex]
-                .normalSlideJudgeSprites[
-                    judgeSpriteNeedsChange
-                        ? _isMirror ? 0 : 1
-                        : _isMirror
-                            ? 1
-                            : 0];
-
-            var scale = judgeDisplaySpriteRenderer.gameObject.transform.localScale;
-            scale = new Vector3(scale.x,
-                judgeSpriteNeedsChange ? Mathf.Abs(scale.y) : -Mathf.Abs(scale.y),
-                scale.z);
-            judgeDisplaySpriteRenderer.transform.localScale = scale;
         }
     }
 }

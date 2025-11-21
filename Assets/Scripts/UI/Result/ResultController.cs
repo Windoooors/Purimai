@@ -35,7 +35,7 @@ namespace UI.Result
             canvasGroup.gameObject.SetActive(false);
         }
 
-        public void Initialize(LevelListController.Maidata maidata, int difficultyIndex)
+        public void Initialize(Maidata maidata, int difficultyIndex)
         {
             canvasGroup.gameObject.SetActive(true);
             canvasGroup.alpha = 0;

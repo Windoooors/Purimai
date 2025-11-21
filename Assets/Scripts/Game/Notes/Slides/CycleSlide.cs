@@ -5,25 +5,19 @@ namespace Game.Notes.Slides
 {
     public class CycleSlide : NormalSlide
     {
-        private bool _isClockwise;
-
         protected override void InitializeSlideDirection()
         {
-            _isClockwise = IsCircleClockwise(fromLaneIndex + 1, toLaneIndexes[0] + 1, slideType);
-
-            starObjectRotationOffset = -18;
-
-            if (_isClockwise)
+            IsClockwise = IsCircleClockwise(fromLaneIndex + 1, toLaneIndexes[0] + 1, slideType);
+            
+            if (IsClockwise)
             {
-                transform.eulerAngles = new Vector3(0, 0, -45f * fromLaneIndex);
                 flipPathY = true;
                 pathRotation = -45f * fromLaneIndex - 45;
             }
             else
             {
                 MirrorSlideSensorIds();
-
-                transform.eulerAngles = new Vector3(0, 180, 45 + 45f * fromLaneIndex);
+                
                 flipPathY = false;
                 pathRotation = -45f * fromLaneIndex;
             }
@@ -38,8 +32,8 @@ namespace Game.Notes.Slides
                 .slideJudgeDisplaySprites[judgeDisplaySpriteGroupIndex]
                 .circleSlideJudgeSprites[
                     judgeSpriteNeedsChange
-                        ? _isClockwise ? 2 : 0
-                        : _isClockwise
+                        ? IsClockwise ? 2 : 0
+                        : IsClockwise
                             ? 3
                             : 1];
         }

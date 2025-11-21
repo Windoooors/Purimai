@@ -147,6 +147,10 @@ MonoBehaviour:
     m_Key: settings.general.vsync.enabled
     m_Metadata:
       m_Items: []
+  - m_Id: 4009813037015040
+    m_Key: settings.game.sensor_radius
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

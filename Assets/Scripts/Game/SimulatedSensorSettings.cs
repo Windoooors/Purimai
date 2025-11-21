@@ -1,4 +1,5 @@
 using System.Collections;
+using UI.GameSettings;
 using UnityEngine;
 
 namespace Game
@@ -19,7 +20,10 @@ namespace Game
         private IEnumerator ChangeSensorScale()
         {
             yield return null;
-            transform.localScale *= scale * SimulatedSensorManager.Instance.globalScale;
+
+           var settingsValue =  SettingsPool.GetValue("game.sensor_radius");
+
+           transform.localScale *= scale * (settingsValue / 10f + 1f);
         }
     }
 }

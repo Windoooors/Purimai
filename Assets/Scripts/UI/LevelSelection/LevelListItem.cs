@@ -20,13 +20,13 @@ namespace UI.LevelSelection
         public int difficultyIndex;
 
         private bool _coverLoaded;
-        public LevelListController.Maidata chartData;
+        public Maidata maidata;
 
         private void Update()
         {
-            if (chartData.SongCover && !_coverLoaded)
+            if (maidata.SongCover && !_coverLoaded)
             {
-                songCover.sprite = chartData.SongCover;
+                songCover.sprite = maidata.SongCover;
                 _coverLoaded = true;
             }
         }
@@ -41,7 +41,7 @@ namespace UI.LevelSelection
             songBpmText.text = levelListItemData.Maidata.Bpm.ToString("0");
             songArtistText.text = levelListItemData.Maidata.Artist;
             difficultyIndex = levelListItemData.DefaultDifficultyIndex;
-            chartData = levelListItemData.Maidata;
+            maidata = levelListItemData.Maidata;
         }
 
         public override void ProcessSelect()
@@ -72,6 +72,6 @@ namespace UI.LevelSelection
     public class LevelListItemData : ItemDataBase
     {
         public int DefaultDifficultyIndex;
-        public LevelListController.Maidata Maidata;
+        public Maidata Maidata;
     }
 }

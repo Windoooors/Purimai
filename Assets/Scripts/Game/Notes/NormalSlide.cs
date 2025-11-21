@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Game.ChartManagement;
 using Game.Notes.Slides;
+using UnityEngine;
 
 namespace Game.Notes
 {
@@ -11,6 +13,8 @@ namespace Game.Notes
 
         private int _lastSegmentTouchedOnLeaveIndex = -1;
         private int _lastTouchedSegmentIndex = -1;
+        
+        private HashSet<string> _tappedSegmentSensorIds = new HashSet<string>();
 
         protected override void UpdateUniversalSegments()
         {
@@ -48,7 +52,7 @@ namespace Game.Notes
         {
             JudgeSegment(e.SensorId, false);
         }
-
+        
         private void JudgeSegment(string sensorId, bool isFromHold)
         {
             if (ChartPlayer.Instance.time < timing || !SlideContentRoot.activeSelf)

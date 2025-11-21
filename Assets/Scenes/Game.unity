@@ -941,7 +941,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bca17333aab34af78f0c5a07f2a304fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  globalScale: 1.6
+  globalScale: 1.3
   offset: 0
 --- !u!1001 &149001640
 PrefabInstance:

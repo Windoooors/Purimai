@@ -150,6 +150,10 @@ MonoBehaviour:
     m_Localized: On
     m_Metadata:
       m_Items: []
+  - m_Id: 4009813037015040
+    m_Localized: Size of Simulated Touch Sensors
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

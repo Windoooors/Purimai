@@ -6,16 +6,10 @@ namespace Game.Notes.Slides
     {
         protected override void InitializeSlideDirection()
         {
-            SlideJudgeDisplaySpriteIndexes = new[] { 1, 0 };
-
-            var star = stars[0];
+            SlideJudgeDisplaySpriteIndexes = new[] { 0, 1 };
+            
             IsClockwise = IsClockWise(fromLaneIndex + 1, toLaneIndexes[0] + 1, toLaneIndexes[1] + 1);
-            transform.Rotate(IsClockwise
-                ? new Vector3(0, 180, 45 * fromLaneIndex + 45f)
-                : new Vector3(0, 0, -45 * fromLaneIndex));
-
-            starObjectRotationOffset = -18;
-
+            
             if (IsClockwise)
             {
                 MirrorSlideSensorIds();
