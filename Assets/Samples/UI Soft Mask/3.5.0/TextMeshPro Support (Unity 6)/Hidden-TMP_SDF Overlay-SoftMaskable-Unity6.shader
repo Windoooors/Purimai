@@ -260,8 +260,8 @@ Shader "Hidden/TextMeshPro/Distance Field Overlay (SoftMaskable)"
                 output.mask = half4(vert.xy * 2 - clampedRect.xy - clampedRect.zw,
                                     0.25 / (0.25 * maskSoftness + pixelSize.xy));
                 output.viewDir = mul((float3x3)_EnvMatrix,
-                            _WorldSpaceCameraPos.xyz - mul(
-                                unity_ObjectToWorld, vert).xyz);
+                                     _WorldSpaceCameraPos.xyz - mul(
+                                         unity_ObjectToWorld, vert).xyz);
                 #if (UNDERLAY_ON || UNDERLAY_INNER)
                 output.texcoord2 = float4(input.texcoord0 + bOffset, bScale, bBias);
                 output.underlayColor = underlayColor;
@@ -302,8 +302,8 @@ Shader "Hidden/TextMeshPro/Distance Field Overlay (SoftMaskable)"
 
                 faceColor *= tex2D(_FaceTex, input.textures.xy + float2(_FaceUVSpeedX, _FaceUVSpeedY) * _Time.y);
                 outlineColor *= tex2D(_OutlineTex,
-                                  input.textures.zw + float2(
-                                      _OutlineUVSpeedX, _OutlineUVSpeedY) * _Time.y);
+                                      input.textures.zw + float2(
+                                          _OutlineUVSpeedX, _OutlineUVSpeedY) * _Time.y);
 
                 faceColor = GetColor(sd, faceColor, outlineColor, outline, softness);
 
@@ -325,7 +325,7 @@ Shader "Hidden/TextMeshPro/Distance Field Overlay (SoftMaskable)"
 
                 fixed4 reflcol = texCUBE(_Cube, reflect(input.viewDir, -n));
                 faceColor.rgb += reflcol.rgb * lerp(_ReflectFaceColor.rgb, _ReflectOutlineColor.rgb,
-                  saturate(sd + outline * 0.5)) * faceColor.a;
+                                                    saturate(sd + outline * 0.5)) * faceColor.a;
                 #endif
 
                 #if UNDERLAY_ON

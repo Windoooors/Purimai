@@ -1,3 +1,4 @@
+using TMPro;
 using UI.GameSettings;
 using UnityEngine;
 
@@ -5,13 +6,16 @@ namespace UI
 {
     public class UIManager : MonoBehaviour
     {
-        public static UIManager Instance;
+        private static UIManager _instance;
+
         public CanvasGroup maskCanvasGroup;
         public Canvas canvas;
 
+        public TMP_FontAsset mainFontAsset;
+
         private void Awake()
         {
-            Instance = this;
+            _instance = this;
 
             ApplyResolution();
 
@@ -21,6 +25,19 @@ namespace UI
         private void Start()
         {
             DontDestroyOnLoad(gameObject);
+        }
+
+        public static UIManager GetInstance()
+        {
+            if (_instance == null)
+                _instance = FindAnyObjectByType<UIManager>();
+            return _instance;
+        }
+
+        public void UpdateTMPAtlas(char[] characters)
+        {
+            var characterString = new string(characters);
+            mainFontAsset.TryAddCharacters(characterString);
         }
 
         public void EnableUI()

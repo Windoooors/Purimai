@@ -10,6 +10,8 @@ namespace Game
 
         public string sensorId;
 
+        public string scaleSettingsIdentifier;
+
         private void Start()
         {
             gameObject.name = sensorId;
@@ -21,9 +23,10 @@ namespace Game
         {
             yield return null;
 
-           var settingsValue =  SettingsPool.GetValue("game.sensor_radius");
+            var globalSettingsValue = SettingsPool.GetValue("game.sensor_radius");
+            var settingsValue = SettingsPool.GetValue(scaleSettingsIdentifier);
 
-           transform.localScale *= scale * (settingsValue / 10f + 1f);
+            transform.localScale *= scale * (globalSettingsValue / 10f + 1f) * (settingsValue / 10f + 1f);
         }
     }
 }

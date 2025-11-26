@@ -1,5 +1,4 @@
 using Game.ChartManagement;
-using UnityEngine;
 
 namespace Game.Notes.Slides
 {
@@ -10,7 +9,7 @@ namespace Game.Notes.Slides
             SlideJudgeDisplaySpriteIndexes = new[] { 0, 1 };
 
             IsClockwise = slideType == NoteDataObject.SlideDataObject.SlideType.BigP;
-            
+
             if (IsClockwise)
             {
                 flipPathY = false;
@@ -19,7 +18,7 @@ namespace Game.Notes.Slides
             else
             {
                 MirrorSlideSensorIds();
-                
+
                 flipPathY = true;
                 pathRotation = -45f * fromLaneIndex - 45;
             }

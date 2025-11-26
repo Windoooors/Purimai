@@ -7,7 +7,6 @@ namespace Game
     public class SimulatedSensorManager : MonoBehaviour
     {
         public static SimulatedSensorManager Instance;
-        public float globalScale = 1.23f;
         public float offset;
 
         private void Awake()

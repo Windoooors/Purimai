@@ -367,7 +367,7 @@ Shader "Hidden/TextMeshPro/Distance Field SSD (UIEffect)"
                 pixelSize *= _TextureHeight * 0.75;
                 float scale = 1 / pixelSize * _GradientScale * (_Sharpness + 1);
                 half2 maskSoftness = half2(max(_UIMaskSoftnessX, _MaskSoftnessX),
-                                                   max(_UIMaskSoftnessY, _MaskSoftnessY));
+                                           max(_UIMaskSoftnessY, _MaskSoftnessY));
                 float2 maskZW = 0.25 / (0.25 * maskSoftness + 1 / scale);
                 half2 m = saturate((_ClipRect.zw - _ClipRect.xy - abs(input.mask.xy)) * maskZW);
                 faceColor *= m.x * m.y;

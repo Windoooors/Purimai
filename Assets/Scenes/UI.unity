@@ -266,8 +266,8 @@ GameObject:
   m_Component:
   - component: {fileID: 42258396}
   - component: {fileID: 42258395}
-  - component: {fileID: 42258394}
   - component: {fileID: 42258397}
+  - component: {fileID: 42258398}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -275,14 +275,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &42258394
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 42258393}
-  m_Enabled: 1
 --- !u!20 &42258395
 Camera:
   m_ObjectHideFlags: 0
@@ -393,6 +385,20 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!114 &42258398
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 42258393}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioListener
+  nonRigidbodyVelocity: 0
+  attenuationObject: {fileID: 0}
 --- !u!1 &49688145
 GameObject:
   m_ObjectHideFlags: 0
@@ -443,6 +449,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   sensorId: A7
+  scaleSettingsIdentifier: game.sensor_radius.area.a
 --- !u!114 &49688148
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1575,6 +1582,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1131169113}
+  - {fileID: 2060916827}
   - {fileID: 899778723}
   - {fileID: 2088418888}
   - {fileID: 1931863216}
@@ -1781,7 +1790,6 @@ MonoBehaviour:
   charterNameText: {fileID: 1708849176}
   difficultyNameText: {fileID: 1184403371}
   canvasGroup: {fileID: 809582399}
-  mask: {fileID: 809582394}
 --- !u!1 &831876705
 GameObject:
   m_ObjectHideFlags: 0
@@ -1833,8 +1841,9 @@ MonoBehaviour:
   titleItemPrefab: {fileID: 6447910633047073058, guid: 8cd823ed8eb7c41328b6ba2d5ba4e9b2,
     type: 3}
   spacingBetweenListItems: 30
-  index: 0
+  dataIndex: 0
   indexPreferenceName: game_settings_list_index
+  visibleItemCount: 12
 --- !u!1 &845977063
 GameObject:
   m_ObjectHideFlags: 0
@@ -2380,6 +2389,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   sensorId: B6
+  scaleSettingsIdentifier: game.sensor_radius.area.b
 --- !u!114 &990909361
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2635,6 +2645,41 @@ SpriteShapeRenderer:
     m_Center: {x: -0.030864596, y: 0.056227148, z: 0}
     m_Extent: {x: 0.8788104, y: 0.7971746, z: 0}
   m_SpriteSortPoint: 0
+--- !u!1 &1131169112
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1131169113}
+  m_Layer: 5
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1131169113
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1131169112}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 798423645}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -19, y: 886}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1154935513
 GameObject:
   m_ObjectHideFlags: 0
@@ -3091,6 +3136,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   sensorId: B3
+  scaleSettingsIdentifier: game.sensor_radius.area.b
 --- !u!114 &1249160443
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3736,6 +3782,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   sensorId: B4
+  scaleSettingsIdentifier: game.sensor_radius.area.b
 --- !u!114 &1332689194
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4041,6 +4088,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   sensorId: B5
+  scaleSettingsIdentifier: game.sensor_radius.area.b
 --- !u!114 &1368358840
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4422,6 +4470,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   sensorId: A1
+  scaleSettingsIdentifier: game.sensor_radius.area.a
 --- !u!114 &1378199771
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4699,6 +4748,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   sensorId: A4
+  scaleSettingsIdentifier: game.sensor_radius.area.a
 --- !u!114 &1380799415
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4975,8 +5025,9 @@ MonoBehaviour:
   titleItemPrefab: {fileID: 6447910633047073058, guid: 712096c19cf4641369b7867017fc7976,
     type: 3}
   spacingBetweenListItems: 30
-  index: 0
+  dataIndex: 0
   indexPreferenceName: level_selection_list_index
+  visibleItemCount: 12
 --- !u!1 &1418592193
 GameObject:
   m_ObjectHideFlags: 0
@@ -5340,6 +5391,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   sensorId: B1
+  scaleSettingsIdentifier: game.sensor_radius.area.b
 --- !u!114 &1528492084
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5645,6 +5697,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   sensorId: A6
+  scaleSettingsIdentifier: game.sensor_radius.area.a
 --- !u!114 &1628189946
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5922,6 +5975,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   sensorId: A3
+  scaleSettingsIdentifier: game.sensor_radius.area.a
 --- !u!114 &1635412749
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6199,6 +6253,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   sensorId: A2
+  scaleSettingsIdentifier: game.sensor_radius.area.a
 --- !u!114 &1641103457
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7002,6 +7057,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   sensorId: A5
+  scaleSettingsIdentifier: game.sensor_radius.area.a
 --- !u!114 &1830542242
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7279,6 +7335,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   sensorId: A8
+  scaleSettingsIdentifier: game.sensor_radius.area.a
 --- !u!114 &1837784183
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7741,6 +7798,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   sensorId: B8
+  scaleSettingsIdentifier: game.sensor_radius.area.b
 --- !u!114 &1865300500
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8046,6 +8104,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   sensorId: B2
+  scaleSettingsIdentifier: game.sensor_radius.area.b
 --- !u!114 &1900174206
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9006,6 +9065,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maskCanvasGroup: {fileID: 798423649}
   canvas: {fileID: 1327503736}
+  mainFontAsset: {fileID: 11400000, guid: 23db56e3884aa4cf5b4b3a62012a8232, type: 2}
 --- !u!1 &2039448112
 GameObject:
   m_ObjectHideFlags: 0
@@ -9056,6 +9116,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   sensorId: B7
+  scaleSettingsIdentifier: game.sensor_radius.area.b
 --- !u!114 &2039448115
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9311,6 +9372,41 @@ SpriteShapeRenderer:
     m_Center: {x: -0.030864596, y: 0.056227148, z: 0}
     m_Extent: {x: 0.8788104, y: 0.7971746, z: 0}
   m_SpriteSortPoint: 0
+--- !u!1 &2060916826
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2060916827}
+  m_Layer: 5
+  m_Name: GameObject (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2060916827
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2060916826}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 798423645}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -1, y: -880}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2079231106
 GameObject:
   m_ObjectHideFlags: 0
@@ -9626,6 +9722,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   sensorId: C
+  scaleSettingsIdentifier: game.sensor_radius.area.c
 --- !u!114 &2143463146
 MonoBehaviour:
   m_ObjectHideFlags: 0

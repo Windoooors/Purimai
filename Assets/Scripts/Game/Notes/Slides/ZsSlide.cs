@@ -1,5 +1,4 @@
 using Game.ChartManagement;
-using UnityEngine;
 
 namespace Game.Notes.Slides
 {
@@ -10,7 +9,7 @@ namespace Game.Notes.Slides
         protected override void InitializeSlideDirection()
         {
             _isMirror = slideType == NoteDataObject.SlideDataObject.SlideType.Z;
-            
+
             SlideJudgeDisplaySpriteIndexes = new[] { 0, 1 };
 
             if (_isMirror)

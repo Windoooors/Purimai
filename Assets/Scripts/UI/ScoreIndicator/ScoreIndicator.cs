@@ -20,6 +20,8 @@ namespace UI.ScoreIndicator
                 1 => "COMBO",
                 2 => "ACHIEVEMENT",
                 3 => "ACHIEVEMENT",
+                4 => "SCORE",
+                5 => "SCORE",
                 _ => ""
             };
             scoreText.text = settingsIndex switch
@@ -28,6 +30,8 @@ namespace UI.ScoreIndicator
                 1 => Scoreboard.Combo.ToString(),
                 2 => Scoreboard.GetAchievement().ToString("0.00") + "%",
                 3 => (Scoreboard.GetDeductedAchievement() + 100).ToString("0.00") + "%",
+                4 => Scoreboard.Score.ToString(),
+                5 => (Scoreboard.TotalScore + Scoreboard.DeductedScore).ToString(),
                 _ => ""
             };
 

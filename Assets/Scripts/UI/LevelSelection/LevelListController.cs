@@ -1,17 +1,10 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using GihanSoft.String;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
 using TinyPinyin;
 using UI.GameSettings;
 using UnityEngine;
-using UnityEngine.Networking;
 using UnityEngine.Serialization;
 using Image = UnityEngine.UI.Image;
 
@@ -75,29 +68,21 @@ namespace UI.LevelSelection
                     File.Exists(pvPathAvi) ? pvPathAvi : pvPathMp4,
                     File.Exists(bgPathPng) ? bgPathPng : bgPathJpg);
 
-                StartCoroutine(maidata.LoadSprite());
-
                 _maidataList.Add(maidata);
             }
 
-            levelList.Initialize(GetLevelListItemData(groupByRule), levelItemPrefab);
+            UIManager.GetInstance().UpdateTMPAtlas(Maidata.UsedCharacters.ToArray());
         }
 
-        public void Reinitialize()
+        public void Initialize()
         {
-            var lastGroupByRule = groupByRule;
-
             groupByRule = SettingsPool.GetValue("song_list.group_rule") switch
             {
                 0 => SortingRules.Alphabet,
                 _ => SortingRules.Difficulty
             };
 
-            if (lastGroupByRule != groupByRule)
-            {
-                PlayerPrefs.SetInt(levelList.indexPreferenceName, 1);
-                levelList.Initialize(GetLevelListItemData(groupByRule), levelItemPrefab);
-            }
+            levelList.Initialize(GetLevelListItemData(groupByRule), levelItemPrefab);
         }
 
         public static LevelListController GetInstance()
@@ -119,8 +104,7 @@ namespace UI.LevelSelection
                         {
                             var difficultyName = maidata.Difficulties[i];
 
-                            if (difficultyName == "" &&
-                                maidata.Designers[i] == "" && maidata.Charts[i] == "")
+                            if (maidata.Charts[i] == string.Empty)
                                 continue;
 
                             difficultyStringHashSet.Add(difficultyName);
@@ -175,7 +159,7 @@ namespace UI.LevelSelection
                     listItemDataList.Add(new LevelListItemData
                     {
                         Maidata = item.Item1,
-                        DefaultDifficultyIndex = item.Item2
+                        DifficultyIndex = item.Item2
                     });
             }
 
@@ -228,9 +212,9 @@ namespace UI.LevelSelection
 
                     foreach (var maidata in _maidataList)
                         for (var i = 0; i < maidata.Difficulties.Length; i++)
-                            if (maidata.Difficulties[i] == difficulty)
+                            if (maidata.Difficulties[i] == difficulty && maidata.Charts[i] != string.Empty)
                                 difficultyGroup.Add((maidata, i));
-                    
+
                     if (difficultyGroup.Count == 0)
                         continue;
 

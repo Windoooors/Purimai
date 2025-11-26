@@ -7,9 +7,9 @@ namespace Game.Notes.Slides
         protected override void InitializeSlideDirection()
         {
             SlideJudgeDisplaySpriteIndexes = new[] { 0, 1 };
-            
+
             IsClockwise = IsClockWise(fromLaneIndex + 1, toLaneIndexes[0] + 1, toLaneIndexes[1] + 1);
-            
+
             if (IsClockwise)
             {
                 MirrorSlideSensorIds();

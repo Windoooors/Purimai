@@ -1,5 +1,4 @@
 using Game.ChartManagement;
-using UnityEngine;
 
 namespace Game.Notes.Slides
 {
@@ -19,7 +18,7 @@ namespace Game.Notes.Slides
             else
             {
                 MirrorSlideSensorIds();
-                
+
                 flipPathY = true;
                 pathRotation = -45f * fromLaneIndex - 45;
             }

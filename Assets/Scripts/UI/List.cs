@@ -27,14 +27,16 @@ namespace UI
         public TitleListItem titleItemPrefab;
 
         public float spacingBetweenListItems = 30;
-        public int index;
+        [FormerlySerializedAs("index")] public int dataIndex;
 
         public string indexPreferenceName;
+        public int visibleItemCount = 12;
 
-        public readonly List<ListItemBase> ItemObjectList = new();
+        private readonly List<ListItemBase> _itemObjectPool = new();
 
         private RectTransform _contentRoot;
-        private Vector2 _contentRootPosition;
+
+        private float _contentRootPositionY;
 
         private ListItemBase _firstItem;
         private int _holdDirection;
@@ -46,9 +48,12 @@ namespace UI
         private ListItemBase _lastItem;
 
         private float _normalItemHeight;
+        private ListItemBase _normalItemPrefab;
         private float _titleItemHeight;
 
-        private int _viewIndex;
+        private float _top;
+
+        public ItemDataBase[] AllData;
 
         public EventHandler<ListEventArgs> OnItemSelected;
 
@@ -83,21 +88,11 @@ namespace UI
             };
         }
 
-        public void MoveTo(int targetIndex, bool animated = true)
-        {
-            var delta = targetIndex - index;
-            var down = delta > 0;
-            for (var i = 0; i < Math.Abs(delta); i++) MoveSelection(down ? 1 : -1, animated, false);
-
-            if (ItemObjectList[targetIndex] is TitleListItem)
-                MoveSelection(1, false);
-        }
-
         private IEnumerator RepeatedlySelect()
         {
             while (_isSelectingByHolding)
             {
-                yield return new WaitForSeconds(0.15f);
+                yield return new WaitForSeconds(0.2f);
                 MoveSelection(_holdDirection);
             }
         }
@@ -148,139 +143,284 @@ namespace UI
             SimulatedSensor.OnLeave -= OnLeave;
         }
 
-        public void Initialize(ItemDataBase[] allData, ListItemBase normalItemPrefab)
+        public void Initialize(ItemDataBase[] data, ListItemBase normalItemPrefab)
         {
-            var top = 0f;
-
-            index = 0;
-            _viewIndex = 0;
-
+            AllData = data;
+            _normalItemPrefab = normalItemPrefab;
             _contentRoot = GetComponent<RectTransform>();
+            _normalItemHeight = _normalItemPrefab.GetComponent<RectTransform>().sizeDelta.y;
+            _titleItemHeight = titleItemPrefab.GetComponent<RectTransform>().sizeDelta.y;
+
+            if (data.Length == 0)
+                return;
+
+            dataIndex = PlayerPrefs.GetInt(indexPreferenceName, 1);
+
+            if (dataIndex > AllData.Length)
+                dataIndex = 1;
+
+            if (data[dataIndex] is TitleListItem.TitleData)
+                dataIndex++;
+
+            InitializeHeight();
+            InitializePool();
+            BindData();
+
+            OnItemSelected?.Invoke(this, new ListEventArgs(dataIndex, false));
+        }
+
+        public ListItemBase GetSelectedItemObject()
+        {
+            return _itemObjectPool.Find(x => x.indexOnScreen == visibleItemCount / 2);
+        }
+
+        private void InitializeHeight()
+        {
+            _top = 0;
+
+            _contentRootPositionY = 0;
+
+            ClearMotionHandles(true);
 
             _contentRoot.anchoredPosition = new Vector2(_contentRoot.anchoredPosition.x, 0);
 
-            _contentRootPosition = _contentRoot.anchoredPosition;
-            _normalItemHeight = normalItemPrefab.GetComponent<RectTransform>().sizeDelta.y;
-            _titleItemHeight = titleItemPrefab.GetComponent<RectTransform>().sizeDelta.y;
-
-            foreach (var obj in ItemObjectList) Destroy(obj.gameObject);
-            ItemObjectList.Clear();
-
-            for (var i = 0; i < (allData.Length < 8 ? 8 : 1); i++)
-                foreach (var data in allData)
-                {
-                    var isTitle = data is TitleListItem.TitleData;
-
-                    var generatedItemObject = Instantiate(isTitle ? titleItemPrefab : normalItemPrefab, transform);
-
-                    generatedItemObject.Bind(data);
-
-                    var rectTransform = generatedItemObject.GetComponent<RectTransform>();
-
-                    rectTransform.anchoredPosition = new Vector2(0,
-                        top - (isTitle ? _titleItemHeight / 2 : _normalItemHeight / 2) + _normalItemHeight / 2);
-
-                    top -= (isTitle ? _titleItemHeight : _normalItemHeight) + spacingBetweenListItems;
-
-                    generatedItemObject.Deselect();
-
-                    ItemObjectList.Add(generatedItemObject);
-                }
-
-            top = spacingBetweenListItems;
-            // Flip the last four items onto the above of the first item.
-            for (var i = 1; i <= 4; i++)
+            for (var i = dataIndex - visibleItemCount / 2; i < dataIndex; i++)
             {
-                var generatedItemObject = ItemObjectList[^i];
-                var isTitle = generatedItemObject is TitleListItem;
-                var rectTransform = generatedItemObject.GetComponent<RectTransform>();
+                var j = i;
 
-                rectTransform.anchoredPosition = new Vector2(0,
-                    top + (isTitle ? _titleItemHeight / 2 : _normalItemHeight / 2) + _normalItemHeight / 2);
-                top += (isTitle ? _titleItemHeight : _normalItemHeight) + spacingBetweenListItems;
-            }
+                if (j < 0)
+                    j += AllData.Length;
+                if (j > AllData.Length - 1)
+                    j -= AllData.Length;
 
-            _firstItem = ItemObjectList[^4];
-            _lastItem = ItemObjectList[^5];
+                var data = AllData[j];
 
-            if (ItemObjectList.Count > 1)
-            {
-                var lastSavedIndex = PlayerPrefs.GetInt(indexPreferenceName, 1);
-                MoveTo(lastSavedIndex > ItemObjectList.Count - 1 ? 1 : lastSavedIndex, false);
+                var isTitle = data is TitleListItem.TitleData;
+
+                _top += (isTitle ? _titleItemHeight : _normalItemHeight) + spacingBetweenListItems;
             }
         }
 
-        private void MoveSelection(int direction, bool animated = true, bool ignoreTitleItem = true)
+        private void InitializePool()
         {
-            _contentRootPosition = Move(_contentRootPosition);
+            foreach (var obj in _itemObjectPool) Destroy(obj.gameObject);
+            _itemObjectPool.Clear();
 
-            if (ItemObjectList[index] is TitleListItem && ignoreTitleItem)
-                _contentRootPosition = Move(_contentRootPosition);
+            for (var i = 0; i < visibleItemCount + 2; i++)
+            {
+                var normalItem = Instantiate(_normalItemPrefab, transform);
+                var titleItem = Instantiate(titleItemPrefab, transform);
+
+                normalItem.rectTransform.anchoredPosition = new Vector2(-5000, _top);
+                titleItem.rectTransform.anchoredPosition = new Vector2(-5000, _top);
+
+                _itemObjectPool.Add(normalItem);
+                _itemObjectPool.Add(titleItem);
+            }
+        }
+
+        private void BindData()
+        {
+            var indexOnScreen = 0;
+
+            for (var i = dataIndex - visibleItemCount / 2; i < dataIndex + visibleItemCount / 2; i++)
+            {
+                var j = i;
+
+                if (j < 0)
+                    j += AllData.Length;
+                if (j > AllData.Length - 1)
+                    j -= AllData.Length;
+
+                var data = AllData[j];
+
+                var isTitle = data is TitleListItem.TitleData;
+
+                var availableListItem = GetAvailableListItem(isTitle);
+
+                availableListItem.Bind(data);
+                availableListItem.Allocate(indexOnScreen++);
+
+                var rectTransform = availableListItem.rectTransform;
+
+                rectTransform.anchoredPosition = new Vector2(0,
+                    _top - (isTitle ? _titleItemHeight / 2 : _normalItemHeight / 2) + _normalItemHeight / 2);
+
+                _top -= (isTitle ? _titleItemHeight : _normalItemHeight) + spacingBetweenListItems;
+
+                if (i != dataIndex)
+                    availableListItem.Deselect(false);
+                else
+                    availableListItem.Select(false);
+            }
+        }
+
+        private ListItemBase GetAvailableListItem(bool findTitle)
+        {
+            foreach (var itemObject in _itemObjectPool)
+                if (!itemObject.shownOnScreen)
+                {
+                    if (findTitle && itemObject is TitleListItem titleListItem)
+                        return titleListItem;
+
+                    if (!findTitle && itemObject is not TitleListItem)
+                        return itemObject;
+                }
+
+            return null;
+        }
+
+        private void MoveSelection(int direction, bool animated = true)
+        {
+            _itemObjectPool.Find(x => x.indexOnScreen == visibleItemCount / 2).Deselect(animated);
+
+            var deltaTop = direction * (spacingBetweenListItems +
+                                        (GetSelectedItemObject() is TitleListItem
+                                            ? _titleItemHeight
+                                            : _normalItemHeight));
+
+            dataIndex += direction;
+            if (dataIndex < 0)
+                dataIndex += AllData.Length;
+            if (dataIndex > AllData.Length - 1)
+                dataIndex -= AllData.Length;
+
+            PlayerPrefs.SetInt(indexPreferenceName, dataIndex);
+
+            var selectedItemIsTitle = AllData[dataIndex] is TitleListItem.TitleData;
+
+            var newItemDataIndex =
+                dataIndex + direction switch { 1 => visibleItemCount / 2 - 1, -1 => -visibleItemCount / 2, _ => 0 };
+            if (newItemDataIndex < 0)
+                newItemDataIndex += AllData.Length;
+            if (newItemDataIndex > AllData.Length - 1)
+                newItemDataIndex -= AllData.Length;
+
+            var newItemData = AllData[newItemDataIndex];
+
+            var newItemIsTitle = newItemData is TitleListItem.TitleData;
+
+            var newTop = 0f;
+
+            switch (direction)
+            {
+                case -1:
+                    var firstItem = GetFirst();
+
+                    newTop = firstItem.rectTransform.anchoredPosition.y +
+                             (firstItem is TitleListItem ? _titleItemHeight / 2 : _normalItemHeight / 2) +
+                             spacingBetweenListItems;
+
+                    DeallocateLast();
+
+                    foreach (var item in _itemObjectPool)
+                        if (item.shownOnScreen)
+                            item.indexOnScreen++;
+
+                    break;
+                case 1:
+                    var lastItem = GetLast();
+
+                    newTop = lastItem.rectTransform.anchoredPosition.y -
+                             (lastItem is TitleListItem ? _titleItemHeight / 2 : _normalItemHeight / 2) -
+                             spacingBetweenListItems;
+
+                    DeallocateFirst();
+
+                    foreach (var item in _itemObjectPool)
+                        if (item.shownOnScreen)
+                            item.indexOnScreen--;
+
+                    break;
+            }
+
+            var newLastItem = GetAvailableListItem(newItemIsTitle);
+
+            newLastItem.Allocate(direction == 1 ? visibleItemCount - 1 : 0);
+
+            newLastItem.rectTransform.anchoredPosition = new Vector2(0,
+                newTop - direction * (newItemIsTitle ? _titleItemHeight / 2 : _normalItemHeight / 2));
+
+            newLastItem.Bind(newItemData);
+
+            _itemObjectPool.Find(x => x.indexOnScreen == visibleItemCount / 2).Select(animated);
+
+            OnItemSelected?.Invoke(this, new ListEventArgs(dataIndex, animated));
+
+            ClearMotionHandles();
+
+            _contentRootPositionY += deltaTop;
+
+            var nowContentRootPositionY = _contentRoot.anchoredPosition.y;
 
             if (animated)
-                AddMotionHandle(LMotion
-                    .Create(_contentRoot.anchoredPosition, _contentRootPosition, 0.5f)
-                    .WithEase(Ease.OutExpo)
-                    .Bind(x => { _contentRoot.anchoredPosition = x; }
-                    ));
+                AddMotionHandle(
+                    LMotion.Create(nowContentRootPositionY, _contentRootPositionY, 0.5f).WithEase(Ease.OutExpo)
+                        .Bind(x =>
+                        {
+                            _contentRoot.anchoredPosition =
+                                new Vector2(_contentRoot.anchoredPosition.x, x);
+                        }), false
+                );
             else
-                _contentRoot.anchoredPosition = _contentRootPosition;
+                _contentRoot.anchoredPosition =
+                    new Vector2(_contentRoot.anchoredPosition.x, _contentRootPositionY);
 
-            return;
+            if (selectedItemIsTitle)
+                MoveSelection(direction, animated);
+        }
 
-            Vector2 Move(Vector2 contentRootPosition)
+        private ListItemBase GetLast()
+        {
+            return _itemObjectPool.Find(x => x.indexOnScreen == visibleItemCount - 1);
+        }
+
+        private ListItemBase GetFirst()
+        {
+            return _itemObjectPool.Find(x => x.indexOnScreen == 0);
+        }
+
+        private void DeallocateLast()
+        {
+            foreach (var item in _itemObjectPool)
+                if (item.indexOnScreen == visibleItemCount - 1)
+                {
+                    item.Deallocate();
+                    item.Deselect(false);
+                    item.rectTransform.anchoredPosition =
+                        new Vector2(-5000, _top);
+                }
+        }
+
+        private void DeallocateFirst()
+        {
+            foreach (var item in _itemObjectPool)
+                if (item.indexOnScreen == 0)
+                {
+                    item.Deallocate();
+                    item.Deselect(false);
+                    item.rectTransform.anchoredPosition =
+                        new Vector2(-5000, _top);
+                }
+        }
+
+        public void MoveTo(int targetIndex, bool animated = true)
+        {
+            dataIndex = targetIndex;
+            PlayerPrefs.SetInt(indexPreferenceName, dataIndex);
+            InitializeHeight();
+
+            foreach (var item in _itemObjectPool)
             {
-                var lastIndex = index;
-
-                _viewIndex += direction;
-                index = Mod(_viewIndex, ItemObjectList.Count);
-
-                PlayerPrefs.SetInt(indexPreferenceName, index);
-
-                var result = contentRootPosition + direction * new Vector2(0,
-                    spacingBetweenListItems + (ItemObjectList[direction == 1 ? lastIndex : index] is TitleListItem
-                        ? _titleItemHeight
-                        : _normalItemHeight));
-
-                OnItemSelected?.Invoke(this, new ListEventArgs(index, animated));
-
-                ItemObjectList[index].Select();
-                ItemObjectList[lastIndex].Deselect();
-
-                switch (direction)
-                {
-                    case 1:
-                        var temporaryLastItem = _lastItem;
-                        _lastItem = _firstItem;
-                        _firstItem =
-                            ItemObjectList[Mod(ItemObjectList.IndexOf(_firstItem) + 1, ItemObjectList.Count)];
-
-                        _lastItem.rectTransform.anchoredPosition = temporaryLastItem.rectTransform.anchoredPosition -
-                                                                   new Vector2(0,
-                                                                       _lastItem.rectTransform.sizeDelta.y / 2 +
-                                                                       temporaryLastItem.rectTransform.sizeDelta.y / 2
-                                                                       + spacingBetweenListItems);
-                        break;
-                    case -1:
-                        var temporaryFirstItem = _firstItem;
-                        _firstItem = _lastItem;
-                        _lastItem = ItemObjectList[Mod(ItemObjectList.IndexOf(_lastItem) - 1, ItemObjectList.Count)];
-
-                        _firstItem.rectTransform.anchoredPosition = temporaryFirstItem.rectTransform.anchoredPosition +
-                                                                    new Vector2(0,
-                                                                        _firstItem.rectTransform.sizeDelta.y / 2 +
-                                                                        temporaryFirstItem.rectTransform.sizeDelta.y /
-                                                                        2 + spacingBetweenListItems);
-                        break;
-                }
-
-                return result;
-
-                int Mod(int a, int b)
-                {
-                    return (a % b + b) % b;
-                }
+                item.Deallocate();
+                item.Deselect(false);
+                item.rectTransform.anchoredPosition =
+                    new Vector2(-5000, _top);
             }
+
+            BindData();
+
+            OnItemSelected?.Invoke(this, new ListEventArgs(targetIndex, animated));
         }
     }
 }

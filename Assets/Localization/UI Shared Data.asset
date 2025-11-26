@@ -123,6 +123,14 @@ MonoBehaviour:
     m_Key: settings.game.score_indicator_content.deducted_achievement
     m_Metadata:
       m_Items: []
+  - m_Id: 5839053164371968
+    m_Key: settings.game.score_indicator_content.score
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5838749295435776
+    m_Key: settings.game.score_indicator_content.deducted_score
+    m_Metadata:
+      m_Items: []
   - m_Id: 3121485303504896
     m_Key: settings.general.framerate_limiter
     m_Metadata:
@@ -149,6 +157,18 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 4009813037015040
     m_Key: settings.game.sensor_radius
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5837558100516864
+    m_Key: settings.game.sensor_radius.area.a
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5837577113296896
+    m_Key: settings.game.sensor_radius.area.b
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5837590254051328
+    m_Key: settings.game.sensor_radius.area.c
     m_Metadata:
       m_Items: []
   m_Metadata:

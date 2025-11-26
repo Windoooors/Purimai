@@ -3,6 +3,7 @@ using LitMotion;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Task = System.Threading.Tasks.Task;
 
 namespace UI.LevelSelection
 {
@@ -15,19 +16,30 @@ namespace UI.LevelSelection
 
         public Image songCover;
 
+        public Image songCoverMask;
+
         public TextMeshProUGUI songArtistText;
         public TextMeshProUGUI songBpmText;
-        public int difficultyIndex;
 
-        private bool _coverLoaded;
-        public Maidata maidata;
+        private Coroutine _showRoutine;
+
+        private bool _textureUpdated;
+
+        public Maidata Maidata;
 
         private void Update()
         {
-            if (maidata.SongCover && !_coverLoaded)
+            if (Maidata is not null && Maidata.CoverDataLoaded && !_textureUpdated && shownOnScreen)
             {
-                songCover.sprite = maidata.SongCover;
-                _coverLoaded = true;
+                _textureUpdated = true;
+
+                songCover.sprite = Maidata.SongCoverDecodedImage.GetSprite();
+
+                AddMotionHandle(LMotion.Create(1f, 0, 0.1f).Bind(x =>
+                {
+                    songCoverMask.color = new Color(songCoverMask.color.r, songCoverMask.color.g, songCoverMask.color.b,
+                        x);
+                }), false);
             }
         }
 
@@ -40,38 +52,77 @@ namespace UI.LevelSelection
             songTitleTextBackground.text = levelListItemData.Maidata.Title;
             songBpmText.text = levelListItemData.Maidata.Bpm.ToString("0");
             songArtistText.text = levelListItemData.Maidata.Artist;
-            difficultyIndex = levelListItemData.DefaultDifficultyIndex;
-            maidata = levelListItemData.Maidata;
+            Maidata = levelListItemData.Maidata;
+
+            Task.Run(() => { Maidata.LoadSongCover(); });
         }
 
-        public override void ProcessSelect()
+        public override void ProcessSelect(bool animated = true)
         {
-            AddMotionHandle(LMotion.Create(new Color(255, 255, 255, 0), Color.white, 0.5f).WithEase(Ease.OutExpo)
-                .Bind(x =>
-                {
-                    songTitleTextBackground.color = new Color(songTitleTextBackground.color.r,
-                        songTitleTextBackground.color.g, songTitleTextBackground.color.b,
-                        255 * 0.1f * x.a
-                    );
-                    background.color = x;
-                }));
+            if (animated)
+            {
+                AddMotionHandle(LMotion.Create(new Color(1, 1, 1, 0), Color.white, 0.5f).WithEase(Ease.OutExpo)
+                    .Bind(x =>
+                    {
+                        songTitleTextBackground.color = new Color(songTitleTextBackground.color.r,
+                            songTitleTextBackground.color.g, songTitleTextBackground.color.b,
+                            x.a
+                        );
+                        background.color = x;
+                    }));
+            }
+            else
+            {
+                ClearMotionHandles();
+
+                songTitleTextBackground.color = new Color(songTitleTextBackground.color.r,
+                    songTitleTextBackground.color.g, songTitleTextBackground.color.b,
+                    1f
+                );
+                background.color = Color.white;
+            }
         }
 
-        public override void ProcessDeselect()
+        public override void ProcessDeallocate()
         {
-            AddMotionHandle(LMotion.Create(Color.white, new Color(1, 1, 1, 0), 0.5f).WithEase(Ease.OutExpo)
-                .Bind(x =>
-                {
-                    songTitleTextBackground.color = new Color(songTitleTextBackground.color.r,
-                        songTitleTextBackground.color.g, songTitleTextBackground.color.b, 1 * 0.1f * x.a);
-                    background.color = x;
-                }));
+            if (Maidata != null)
+            {
+                if (Maidata.SongCoverDecodedImage != null)
+                    Maidata.SongCoverDecodedImage.Dispose();
+                Maidata.CoverDataLoaded = false;
+            }
+
+            songCoverMask.color = new Color(songCoverMask.color.r, songCoverMask.color.g, songCoverMask.color.b, 1);
+
+            _textureUpdated = false;
+        }
+
+        public override void ProcessDeselect(bool animated = true)
+        {
+            if (animated)
+            {
+                AddMotionHandle(LMotion.Create(Color.white, new Color(1, 1, 1, 0), 0.5f).WithEase(Ease.OutExpo)
+                    .Bind(x =>
+                    {
+                        songTitleTextBackground.color = new Color(songTitleTextBackground.color.r,
+                            songTitleTextBackground.color.g, songTitleTextBackground.color.b, x.a);
+                        background.color = x;
+                    }));
+            }
+            else
+            {
+                ClearMotionHandles();
+
+                songTitleTextBackground.color = new Color(songTitleTextBackground.color.r,
+                    songTitleTextBackground.color.g, songTitleTextBackground.color.b, 0);
+                background.color = new Color(1, 1, 1, 0);
+            }
         }
     }
 
     public class LevelListItemData : ItemDataBase
     {
-        public int DefaultDifficultyIndex;
+        public int DifficultyIndex;
         public Maidata Maidata;
     }
 }

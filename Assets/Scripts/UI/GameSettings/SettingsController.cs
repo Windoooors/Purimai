@@ -41,7 +41,7 @@ namespace UI.GameSettings
 
             settingsList.Initialize(itemDataList.ToArray(), settingsListItem);
 
-            Hide(false);
+            Hide(true);
         }
 
         private void Show()
@@ -62,12 +62,12 @@ namespace UI.GameSettings
                 {
                     LevelListController.GetInstance().levelSelectionUiLayer.gameObject.SetActive(false);
                     SimulatedSensor.Enabled = true;
-                    settingsList.ItemObjectList[settingsList.index].Select();
+                    settingsList.GetSelectedItemObject().Select(false);
                 }
             ).Bind(x => settingsUiLayer.alpha = x));
         }
 
-        private void Hide(bool initializeHide = true)
+        private void Hide(bool hideOnInitialization = false)
         {
             SimulatedSensor.Enabled = false;
 
@@ -80,29 +80,45 @@ namespace UI.GameSettings
 
             LevelListController.GetInstance().levelSelectionUiLayer.gameObject.SetActive(true);
 
-            if (initializeHide)
-                LevelListController.GetInstance().Reinitialize();
+            LevelListController.GetInstance().Initialize();
 
             OnSettingsChanged?.Invoke(this, EventArgs.Empty);
 
-            AddMotionHandle(LMotion.Create(1f, 0f, initializeHide ? 0.2f : 0)
-                .WithOnComplete(() =>
-                    {
-                        SimulatedSensor.OnTap += (_, args) =>
+            if (!hideOnInitialization)
+            {
+                AddMotionHandle(LMotion.Create(1f, 0f, 0.2f)
+                    .WithOnComplete(() =>
                         {
-                            if (args.SensorId == "A8")
-                                Show();
-                        };
+                            SimulatedSensor.OnTap += (_, args) =>
+                            {
+                                if (args.SensorId == "A8")
+                                    Show();
+                            };
 
-                        SimulatedSensor.Enabled = true;
+                            SimulatedSensor.Enabled = true;
 
-                        settingsUiLayer.gameObject.SetActive(false);
-                    }
-                ).Bind(x =>
+                            settingsUiLayer.gameObject.SetActive(false);
+                        }
+                    ).Bind(x =>
+                    {
+                        LevelListController.GetInstance().levelSelectionUiLayer.alpha = 1 - x;
+                        settingsUiLayer.alpha = x;
+                    }));
+            }
+            else
+            {
+                LevelListController.GetInstance().levelSelectionUiLayer.alpha = 1;
+                settingsUiLayer.alpha = 0;
+                SimulatedSensor.OnTap += (_, args) =>
                 {
-                    LevelListController.GetInstance().levelSelectionUiLayer.alpha = 1 - x;
-                    settingsUiLayer.alpha = x;
-                }));
+                    if (args.SensorId == "A8")
+                        Show();
+                };
+
+                SimulatedSensor.Enabled = true;
+
+                settingsUiLayer.gameObject.SetActive(false);
+            }
         }
     }
 }

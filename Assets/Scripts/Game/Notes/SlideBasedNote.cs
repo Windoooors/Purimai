@@ -55,8 +55,6 @@ namespace Game.Notes
 
         private SpriteRenderer[] _slideArrowSpriteRenderers;
 
-        protected GameObject SlideContentRoot;
-
         private bool _slidedHalf;
 
         private int _slideJudgeTiming;
@@ -66,6 +64,8 @@ namespace Game.Notes
         private bool _waitingStarted;
 
         protected bool IsClockwise;
+
+        protected GameObject SlideContentRoot;
 
         protected bool Slided;
         protected int[] SlideJudgeDisplaySpriteIndexes;
@@ -86,23 +86,27 @@ namespace Game.Notes
             UpdateUniversalSegments();
 
             VectorGraphicsUtility.ObjectRotationOffset = starObjectRotationOffset;
-            
+
             if (slideType is not NoteDataObject.SlideDataObject.SlideType.Wifi)
             {
                 var pair = VectorGraphicsUtility.GetPositionRotationPair(1f - 0.6f / slideArrowCount);
                 judgeDisplaySpriteRenderer.transform.position = pair.position;
                 if ((int)slideType is not 0 and not 1 and not 2)
+                {
                     judgeDisplaySpriteRenderer.transform.eulerAngles =
                         pair.rotation.eulerAngles + new Vector3(0, 0, 18);
+                }
                 else
                 {
                     if (IsClockwise)
+                    {
                         judgeDisplaySpriteRenderer.transform.eulerAngles =
                             pair.rotation.eulerAngles + new Vector3(0, 0, 37.5f);
+                    }
                     else
                     {
                         judgeDisplaySpriteRenderer.transform.eulerAngles =
-                            pair.rotation.eulerAngles + new Vector3(0,0,-1.5f);
+                            pair.rotation.eulerAngles + new Vector3(0, 0, -1.5f);
                         judgeDisplaySpriteRenderer.transform.Rotate(180, 0, 0, Space.Self);
                         //judgeDisplaySpriteRenderer.flipY = true;
                     }
@@ -406,7 +410,7 @@ namespace Game.Notes
         {
             OnSensorHold(e);
         }
-        
+
         protected abstract void OnSensorLeave(TouchEventArgs e);
 
         protected abstract void OnSensorHold(TouchEventArgs e);

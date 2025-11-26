@@ -162,30 +162,54 @@ namespace UI.GameSettings
             SimulatedSensor.OnLeave -= OnLeave;
         }
 
-        public override void ProcessSelect()
+        public override void ProcessSelect(bool animated = true)
         {
             SimulatedSensor.OnTap += OnTap;
-            AddMotionHandle(LMotion.Create(new Color(255, 255, 255, 0), Color.white, 0.5f).WithEase(Ease.OutExpo)
-                .Bind(x =>
-                {
-                    titleBackgroundText.color = new Color(titleBackgroundText.color.r,
-                        titleBackgroundText.color.g, titleBackgroundText.color.b,
-                        255f * 0.1f * x.a
-                    );
-                    background.color = x;
-                }));
+            if (animated)
+            {
+                AddMotionHandle(LMotion.Create(new Color(1, 1, 1, 0), Color.white, 0.5f).WithEase(Ease.OutExpo)
+                    .Bind(x =>
+                    {
+                        titleBackgroundText.color = new Color(titleBackgroundText.color.r,
+                            titleBackgroundText.color.g, titleBackgroundText.color.b,
+                            x.a
+                        );
+                        background.color = x;
+                    }));
+            }
+            else
+            {
+                ClearMotionHandles();
+
+                titleBackgroundText.color = new Color(titleBackgroundText.color.r,
+                    titleBackgroundText.color.g, titleBackgroundText.color.b,
+                    1f
+                );
+                background.color = Color.white;
+            }
         }
 
-        public override void ProcessDeselect()
+        public override void ProcessDeselect(bool animated = true)
         {
             SimulatedSensor.OnTap -= OnTap;
-            AddMotionHandle(LMotion.Create(Color.white, new Color(255, 255, 255, 0), 0.5f).WithEase(Ease.OutExpo)
-                .Bind(x =>
-                {
-                    titleBackgroundText.color = new Color(titleBackgroundText.color.r,
-                        titleBackgroundText.color.g, titleBackgroundText.color.b, 255f * 0.1f * x.a);
-                    background.color = x;
-                }));
+            if (animated)
+            {
+                AddMotionHandle(LMotion.Create(Color.white, new Color(1, 1, 1, 0), 0.5f).WithEase(Ease.OutExpo)
+                    .Bind(x =>
+                    {
+                        titleBackgroundText.color = new Color(titleBackgroundText.color.r,
+                            titleBackgroundText.color.g, titleBackgroundText.color.b, x.a);
+                        background.color = x;
+                    }));
+            }
+            else
+            {
+                ClearMotionHandles();
+
+                titleBackgroundText.color = new Color(titleBackgroundText.color.r,
+                    titleBackgroundText.color.g, titleBackgroundText.color.b, 0);
+                background.color = new Color(1, 1, 1, 0);
+            }
         }
 
         private void OnTap(object sender, TouchEventArgs args)

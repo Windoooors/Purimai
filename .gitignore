@@ -130,9 +130,9 @@ apdisk
 /[Aa]ssets/[Tt]ext[Mm]esh Pro/
 /[Aa]ssets/[Tt]ext[Mm]esh Pro.meta
 
-# Native Audio
-/[Aa]ssets/[Nn]ative [Aa]udio/
-/[Aa]ssets/[Nn]ative [Aa]udio.meta
+# FMOD
+/[Aa]ssets/[Pp]lugins/FMOD
+/[Aa]ssets/[Pp]lugins/FMOD.meta
 
 # Nuget Packages
 /[Aa]ssets/[Pp]ackages/

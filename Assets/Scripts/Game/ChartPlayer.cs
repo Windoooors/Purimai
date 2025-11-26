@@ -1,3 +1,5 @@
+using FMOD;
+using FMODUnity;
 using Game.Notes;
 using UI;
 using UI.GameSettings;
@@ -10,7 +12,6 @@ namespace Game
     public class ChartPlayer : MonoBehaviour
     {
         public static ChartPlayer Instance;
-        public AudioSource audioSource;
 
         public Image backgroundImage;
 
@@ -43,7 +44,12 @@ namespace Game
         public JudgeSettings slideJudgeSettings;
         public JudgeSettings holdTailJudgeSettings;
 
+        private Channel _channel;
         private bool _isPlayingOnLastFrame;
+
+        private bool _playbackStarted;
+
+        public Sound SongClip;
 
         public void Awake()
         {
@@ -61,7 +67,10 @@ namespace Game
 
         private void Update()
         {
-            isPlaying = audioSource.isPlaying;
+            if (!_playbackStarted)
+                return;
+
+            _channel.isPlaying(out isPlaying);
 
             if (!isPlaying && _isPlayingOnLastFrame)
             {
@@ -71,7 +80,8 @@ namespace Game
 
             if (isPlaying)
             {
-                time = (int)(audioSource.time * 1000);
+                _channel.getPosition(out var unsignedTime, TIMEUNIT.MS);
+                time = (int)unsignedTime;
                 _isPlayingOnLastFrame = true;
             }
         }
@@ -84,13 +94,14 @@ namespace Game
 
         private void OnPlayCompleted()
         {
-            UIManager.Instance.EnableUI();
+            UIManager.GetInstance().EnableUI();
             ResultController.GetInstance().ShowResult();
         }
 
         public void Play()
         {
-            audioSource.Play();
+            RuntimeManager.CoreSystem.playSound(SongClip, default, false, out _channel);
+            _playbackStarted = true;
         }
     }
 }

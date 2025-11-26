@@ -63,10 +63,25 @@ namespace UI.GameSettings
                         "-0.5", "-0.4", "-0.3", "-0.2", "-0.1", "0", "0.1", "0.2", "0.3", "0.4", "0.5",
                         "0.6", "0.7", "0.8", "0.9", "1"
                     }, false),
-                    new("game.score_indicator_content", 0,
-                        new[] { "none", "combo", "achievement", "deducted_achievement" }),
+                    new("game.score_indicator_content", 1,
+                        new[] { "none", "combo", "achievement", "deducted_achievement", "score", "deducted_score" }),
                     new("game.blurred_cover", 0, new[] { "disabled", "enabled" }),
                     new("game.sensor_radius", 3, new[]
+                    {
+                        "1", "1.1", "1.2", "1.3", "1.4",
+                        "1.5", "1.6", "1.7", "1.8", "1.9", "2.0"
+                    }, false),
+                    new("game.sensor_radius.area.a", 0, new[]
+                    {
+                        "1", "1.1", "1.2", "1.3", "1.4",
+                        "1.5", "1.6", "1.7", "1.8", "1.9", "2.0"
+                    }, false),
+                    new("game.sensor_radius.area.b", 4, new[]
+                    {
+                        "1", "1.1", "1.2", "1.3", "1.4",
+                        "1.5", "1.6", "1.7", "1.8", "1.9", "2.0"
+                    }, false),
+                    new("game.sensor_radius.area.c", 4, new[]
                     {
                         "1", "1.1", "1.2", "1.3", "1.4",
                         "1.5", "1.6", "1.7", "1.8", "1.9", "2.0"

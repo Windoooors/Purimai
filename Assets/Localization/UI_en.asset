@@ -151,7 +151,27 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 4009813037015040
-    m_Localized: Size of Simulated Touch Sensors
+    m_Localized: Size of Simulated Touch Sensors (Global)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5837558100516864
+    m_Localized: Size of Simulated Touch Sensors (Area A)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5837577113296896
+    m_Localized: Size of Simulated Touch Sensors (Area B)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5837590254051328
+    m_Localized: Size of Simulated Touch Sensors (Area C)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5838749295435776
+    m_Localized: Score (Max Base Score+)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5839053164371968
+    m_Localized: Score (0+)
     m_Metadata:
       m_Items: []
   references:

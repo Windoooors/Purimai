@@ -8,9 +8,11 @@ namespace UI
     {
         private readonly List<MotionHandle> _motionHandles = new();
 
-        protected void ClearMotionHandles()
+        protected void ClearMotionHandles(bool tryComplete = false)
         {
-            foreach (var motionHandle in _motionHandles) motionHandle.TryCancel();
+            foreach (var motionHandle in _motionHandles)
+                if (tryComplete) motionHandle.TryComplete();
+                else motionHandle.TryCancel();
 
             _motionHandles.Clear();
         }

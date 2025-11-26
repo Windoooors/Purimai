@@ -40,10 +40,10 @@ namespace UI.Result
             canvasGroup.gameObject.SetActive(true);
             canvasGroup.alpha = 0;
 
-            backgroundImage.sprite = maidata.SongCoverBlurredAsBackground;
-            blurredSongCoverImage.sprite = maidata.SongCoverBlurred;
+            backgroundImage.sprite = maidata.BlurredSongCoverAsBackgroundDecodedImage.GetSprite();
+            blurredSongCoverImage.sprite = maidata.BlurredSongCoverDecodedImage.GetSprite();
 
-            foreach (var image in songCoverImage) image.sprite = maidata.SongCover;
+            foreach (var image in songCoverImage) image.sprite = maidata.SongCoverDecodedImage.GetSprite();
 
             artistText.text = maidata.Artist;
             songTitleText.text = maidata.Title;
@@ -107,7 +107,7 @@ namespace UI.Result
 
             AddMotionHandle(LMotion.Create(0, 1f, 1f).WithEase(Ease.OutExpo).Bind(x =>
             {
-                UIManager.Instance.maskCanvasGroup.alpha = x;
+                UIManager.GetInstance().maskCanvasGroup.alpha = x;
                 resultDifficultyIndicatorCanvasGroup.transform.position =
                     originalPosition + new Vector3(2 - x * 2, 0, 0);
             }));

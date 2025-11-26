@@ -266,7 +266,7 @@ Shader "Hidden/TextMeshPro/Mobile/Distance Field SSD (UIEffect)"
                 float4 outlineColor = lerp(input.faceColor, input.outlineColor,
                                            sqrt(min(1.0, input.param.z * scale * 2)));
                 faceColor = lerp(outlineColor, input.faceColor,
-                             saturate((d - input.param.x - input.param.z) * scale + 0.5));
+                                 saturate((d - input.param.x - input.param.z) * scale + 0.5));
                 faceColor *= saturate((d - input.param.x + input.param.z) * scale + 0.5);
                 #endif
 

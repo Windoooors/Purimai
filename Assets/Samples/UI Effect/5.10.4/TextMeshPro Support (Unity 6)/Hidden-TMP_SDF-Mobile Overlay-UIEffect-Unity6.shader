@@ -235,7 +235,7 @@ Shader "Hidden/TextMeshPro/Mobile/Distance Field Overlay (UIEffect)"
                 const half2 maskSoftness = half2(max(_UIMaskSoftnessX, _MaskSoftnessX),
                                                  max(_UIMaskSoftnessY, _MaskSoftnessY));
                 output.mask = half4(vert.xy * 2 - clampedRect.xy - clampedRect.zw,
-                        0.25 / (0.25 * maskSoftness + pixelSize.xy));
+                                    0.25 / (0.25 * maskSoftness + pixelSize.xy));
                 #if (UNDERLAY_ON || UNDERLAY_INNER)
                 output.texcoord1 = float4(input.texcoord0 + layerOffset, 1, 0);
                 output.underlayParam = half2(layerScale, layerBias);
