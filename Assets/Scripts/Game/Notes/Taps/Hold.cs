@@ -1,5 +1,6 @@
 using System;
 using LitMotion;
+using LitMotion.Extensions;
 using UI.Result;
 using Unity.Mathematics;
 using UnityEngine;
@@ -48,8 +49,6 @@ namespace Game.Notes.Taps
                 holdJudged = true;
                 judgeState = JudgeState.Miss;
 
-                Scoreboard.DeductedScore -= 1000;
-
                 Scoreboard.HoldCount.Count(JudgeState.Miss);
 
                 Scoreboard.ResetCombo();
@@ -89,7 +88,7 @@ namespace Game.Notes.Taps
                 SimulatedSensor.OnLeave -= OnLeave;
             }
 
-            if (ChartPlayer.Instance.time > timing - 2 * EmergingDuration &&
+            if (ChartPlayer.Instance.time >= timing - 2 * EmergingDuration &&
                 ChartPlayer.Instance.time < timing - 1 * EmergingDuration && !_emerging)
             {
                 _emerging = true;
@@ -101,21 +100,24 @@ namespace Game.Notes.Taps
 
                 transform.position = Vector3.zero;
 
-                LMotion.Create(0, 1f, EmergingDuration / 1000f / (IsAdxFlowSpeedStyle ? 2 : 1))
-                    .WithDelay(IsAdxFlowSpeedStyle ? EmergingDuration / 1000f / 2 : 0)
+                var animationDuration = EmergingDuration / 1000f / (IsAdxFlowSpeedStyle ? 2 : 1);
+                var animationDelay = IsAdxFlowSpeedStyle ? EmergingDuration / 1000f / 2 : 0;
+
+                LMotion.Create(0, 1f, animationDuration)
+                    .WithDelay(animationDelay)
                     .WithEase(Ease.OutSine)
                     .Bind(x =>
                     {
                         holdSpriteRenderer.color = new Color(1, 1, 1, x);
                         lineSpriteRenderer.color = new Color(1, 1, 1, x);
                     });
-                LMotion.Create(0, 1f, EmergingDuration / 1000f / (IsAdxFlowSpeedStyle ? 2 : 1))
-                    .WithDelay(IsAdxFlowSpeedStyle ? EmergingDuration / 1000f / 2 : 0)
+                LMotion.Create(Vector3.zero, Vector3.one, animationDuration)
+                    .WithDelay(animationDelay)
                     .WithEase(Ease.Linear)
-                    .Bind(x => holdTransform.localScale = x * Vector3.one);
+                    .BindToLocalScale(holdTransform);
             }
 
-            if (ChartPlayer.Instance.time > timing - 1 * EmergingDuration && _emerging && !_moving)
+            if (ChartPlayer.Instance.time >= timing - 1 * EmergingDuration && _emerging && !_moving)
             {
                 _emerging = false;
                 _moving = true;
@@ -185,7 +187,7 @@ namespace Game.Notes.Taps
                 return;
             }
 
-            if (ChartPlayer.Instance.time > timing)
+            if (ChartPlayer.Instance.time >= timing)
                 TrimHold(_nowEmergingDuration < duration);
 
             holdSpriteRenderer.size = new Vector2(holdSpriteRenderer.size.x, _initialHoldSize + _grossHoldSize);
@@ -287,18 +289,6 @@ namespace Game.Notes.Taps
                 judgeState = _headJudgeState == JudgeState.Good ? JudgeState.Good : JudgeState.Great;
             else if (_holdTailJudgeState == JudgeState.Good) judgeState = JudgeState.Good;
 
-            var score = judgeState switch
-            {
-                JudgeState.CriticalPerfect or JudgeState.SemiCriticalPerfect or JudgeState.Perfect => 1000,
-                JudgeState.Great or JudgeState.SemiGreat or JudgeState.QuarterGreat => 800,
-                JudgeState.Good => 500,
-                _ => 0
-            };
-
-            Scoreboard.Score += score;
-
-            Scoreboard.DeductedScore += score - 1000;
-
             Scoreboard.HoldCount.Count(judgeState);
 
             Scoreboard.Combo++;
@@ -333,8 +323,6 @@ namespace Game.Notes.Taps
 
             _glowAnimator = GetComponent<Animator>();
 
-            Scoreboard.TotalScore += 1000;
-            Scoreboard.TotalScoreWithExtraScore += 1000;
             Scoreboard.HoldCount.TotalCount++;
         }
 

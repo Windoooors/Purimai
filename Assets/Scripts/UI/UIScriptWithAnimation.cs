@@ -8,7 +8,7 @@ namespace UI
     {
         private readonly List<MotionHandle> _motionHandles = new();
 
-        protected void ClearMotionHandles(bool tryComplete = false)
+        public void ClearMotion(bool tryComplete = false)
         {
             foreach (var motionHandle in _motionHandles)
                 if (tryComplete) motionHandle.TryComplete();
@@ -20,7 +20,7 @@ namespace UI
         protected void AddMotionHandle(MotionHandle motionHandle, bool clearList = true)
         {
             if (clearList)
-                ClearMotionHandles();
+                ClearMotion();
 
             _motionHandles.Add(motionHandle);
         }

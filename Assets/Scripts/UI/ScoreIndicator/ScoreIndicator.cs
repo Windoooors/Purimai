@@ -12,6 +12,13 @@ namespace UI.ScoreIndicator
 
         public int settingsIndex;
 
+        private ResultController.AchievementType _achievementType;
+
+        private void Start()
+        {
+            _achievementType = (ResultController.AchievementType)SettingsPool.GetValue("game.achievement_type");
+        }
+
         private void Update()
         {
             titleText.text = settingsIndex switch
@@ -28,10 +35,13 @@ namespace UI.ScoreIndicator
             {
                 0 => "",
                 1 => Scoreboard.Combo.ToString(),
-                2 => Scoreboard.GetAchievement().ToString("0.00") + "%",
-                3 => (Scoreboard.GetDeductedAchievement() + 100).ToString("0.00") + "%",
-                4 => Scoreboard.Score.ToString(),
-                5 => (Scoreboard.TotalScore + Scoreboard.DeductedScore).ToString(),
+                2 => Scoreboard.GetCurrentAchievement(_achievementType)
+                    .ToString(_achievementType == ResultController.AchievementType.Finale ? "0.00" : "0.0000") + "%",
+                3 => (Scoreboard.GetDeltaAchievement(_achievementType) + 100).ToString(
+                    _achievementType == ResultController.AchievementType.Finale ? "0.00" : "0.0000") + "%",
+                4 => Scoreboard.GetScore().ToString(),
+                5 => (Scoreboard.GetDeltaScore(ResultController.AchievementType.Finale).deltaBasicScore +
+                    Scoreboard.GetTotalScore() - Scoreboard.GetHighestExtraScore()).ToString(),
                 _ => ""
             };
 

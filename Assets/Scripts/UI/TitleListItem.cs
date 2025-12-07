@@ -9,9 +9,9 @@ namespace UI
         public TextMeshProUGUI categoryNameText;
         public LocalizeStringEvent categoryNameStringEvent;
 
-        public override void Bind(ItemDataBase data)
+        public override void ProcessBind()
         {
-            if (data is not TitleData levelListItemData)
+            if (Data is not TitleData levelListItemData)
                 throw new Exception("ItemData is not LevelListItemData");
 
             if (levelListItemData.ManagedLocalization)

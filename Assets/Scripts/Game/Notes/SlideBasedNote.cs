@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.ChartManagement;
 using LitMotion;
+using LitMotion.Extensions;
 using UI.Result;
 using Unity.Mathematics;
 using UnityEngine;
@@ -127,7 +128,7 @@ namespace Game.Notes
                     star.spriteRenderer.sprite = NoteGenerator.Instance.eachStarSprite;
                 star.spriteRenderer.color = new Color(0, 0, 0, 0);
                 star.transform.localScale = Vector3.zero;
-                star.spriteRenderer.sortingOrder += order;
+                star.spriteRenderer.sortingOrder -= order;
             }
 
             InitializeSlideSegments();
@@ -142,11 +143,11 @@ namespace Game.Notes
 
             judgeDisplaySpriteRenderer.enabled = false;
 
+            judgeDisplaySpriteRenderer.sortingOrder -= order;
+
             SimulatedSensor.OnHold += OnHoldSlidePath;
             SimulatedSensor.OnLeave += OnLeaveSlidePath;
 
-            Scoreboard.TotalScore += 1500;
-            Scoreboard.TotalScoreWithExtraScore += 1500;
             Scoreboard.SlideCount.TotalCount++;
 
             SlideContentRoot = new GameObject("SlideContent");
@@ -177,7 +178,7 @@ namespace Game.Notes
                     segment.MotionHandles = segment.slideSpriteRenderers.Select(spriteRenderer =>
                         LMotion.Create(0, 1f, suddenlyAppears ? 0 : ChartPlayer.Instance.slideFadeInDuration / 1000f)
                             .WithEase(Ease.Linear)
-                            .Bind(x => { spriteRenderer.color = new Color(1, 1, 1, x); })).ToArray();
+                            .BindToColorA(spriteRenderer)).ToArray();
 
                 foreach (var star in stars) star.MoveToStart();
 
@@ -218,19 +219,7 @@ namespace Game.Notes
 
                 //transform.position = NoteGenerator.Instance.outOfScreenPosition;
 
-                var score = _judgeState switch
-                {
-                    JudgeState.CriticalPerfect or JudgeState.SemiCriticalPerfect or JudgeState.Perfect => 1500,
-                    JudgeState.Great or JudgeState.SemiGreat or JudgeState.QuarterGreat => 1200,
-                    JudgeState.Good => 750,
-                    _ => 0
-                };
-
-                Scoreboard.Score += score;
-
                 Scoreboard.SlideCount.Count(_judgeState);
-
-                Scoreboard.DeductedScore += score - 1500;
 
                 Scoreboard.Combo++;
 
@@ -257,7 +246,6 @@ namespace Game.Notes
                     UpdateJudgeDisplayDirection(5);
                     _judgeState = JudgeState.Miss;
 
-                    Scoreboard.DeductedScore -= 1500;
                     Scoreboard.SlideCount.Count(JudgeState.Miss);
                     Scoreboard.ResetCombo();
                 }
@@ -266,8 +254,6 @@ namespace Game.Notes
                     UpdateJudgeDisplayDirection(4);
                     _judgeState = JudgeState.Good;
 
-                    Scoreboard.DeductedScore -= 750;
-                    Scoreboard.Score += 750;
                     Scoreboard.SlideCount.Count(JudgeState.Good);
                     Scoreboard.Combo++;
                 }
@@ -496,7 +482,7 @@ namespace Game.Notes
                     continue;
                 }
 
-                var matchedSensor = SimulatedSensor.Sensors.Find(x => x.settings.sensorId == segment.mainSensor);
+                var matchedSensorShape = SensorShape.SensorShapes.Find(x => x.sensorId == segment.mainSensor);
 
                 var spriteWithinAreaList = new List<SpriteRenderer>();
                 var spriteOutsideAreaList = new List<SpriteRenderer>();
@@ -505,12 +491,12 @@ namespace Game.Notes
 
                 for (var i = startIndex;
                      i < _slideArrowSpriteRenderers.Length &&
-                     (!ArrowOverlapsOnSensor(i - 1, matchedSensor.GetComponent<Collider2D>()) ||
-                      (ArrowOverlapsOnSensor(i - 1, matchedSensor.GetComponent<Collider2D>())
-                       && ArrowOverlapsOnSensor(i, matchedSensor.GetComponent<Collider2D>())));
+                     (!ArrowOverlapsOnSensor(i - 1, matchedSensorShape.GetComponent<Collider2D>()) ||
+                      (ArrowOverlapsOnSensor(i - 1, matchedSensorShape.GetComponent<Collider2D>())
+                       && ArrowOverlapsOnSensor(i, matchedSensorShape.GetComponent<Collider2D>())));
                      i++)
                 {
-                    if (ArrowOverlapsOnSensor(i, matchedSensor.GetComponent<Collider2D>()))
+                    if (ArrowOverlapsOnSensor(i, matchedSensorShape.GetComponent<Collider2D>()))
                         spriteWithinAreaList.Add(_slideArrowSpriteRenderers[i]);
                     else
                         spriteOutsideAreaList.Add(_slideArrowSpriteRenderers[i]);

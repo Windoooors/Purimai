@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Game;
 using LitMotion;
+using LitMotion.Extensions;
 using UI.LevelSelection;
 using UnityEngine;
 
@@ -41,11 +42,43 @@ namespace UI.GameSettings
 
             settingsList.Initialize(itemDataList.ToArray(), settingsListItem);
 
-            Hide(true);
+            Hide(false);
+        }
+
+        public void OnApplicationQuit()
+        {
+            SettingsPool.Save();
         }
 
         private void Show()
         {
+            foreach (var itemObject in settingsList.ItemObjectPool)
+            {
+                if (itemObject.Data == null)
+                    continue;
+
+                itemObject.ProcessBind();
+            }
+
+            Button.GetButton(7).Press();
+
+            Button.HideAll(false, () =>
+            {
+                var rightButton = Button.GetButton(2);
+                var leftButton = Button.GetButton(5);
+
+                Button.GetButton(7).ChangeIcon(UIManager.GetInstance().buttonIcons.back);
+
+                rightButton.ChangeIcon(UIManager.GetInstance().buttonIcons.levelUp);
+                leftButton.ChangeIcon(UIManager.GetInstance().buttonIcons.levelDown);
+
+                Button.GetButton(7).Show();
+                Button.GetButton(0).Show();
+                Button.GetButton(3).Show();
+                Button.GetButton(2).Show();
+                Button.GetButton(5).Show();
+            });
+
             SimulatedSensor.Enabled = false;
 
             SimulatedSensor.OnTap = (_, args) =>
@@ -64,11 +97,22 @@ namespace UI.GameSettings
                     SimulatedSensor.Enabled = true;
                     settingsList.GetSelectedItemObject().Select(false);
                 }
-            ).Bind(x => settingsUiLayer.alpha = x));
+            ).BindToAlpha(settingsUiLayer));
         }
 
-        private void Hide(bool hideOnInitialization = false)
+        private void Hide(bool animated = true)
         {
+            if (animated)
+            {
+                Button.GetButton(7).Press();
+
+                Button.HideAll(false, LevelListController.GetInstance().ShowButton);
+            }
+            else
+            {
+                LevelListController.GetInstance().ShowButton();
+            }
+
             SimulatedSensor.Enabled = false;
 
             SettingsPool.Save();
@@ -84,7 +128,7 @@ namespace UI.GameSettings
 
             OnSettingsChanged?.Invoke(this, EventArgs.Empty);
 
-            if (!hideOnInitialization)
+            if (animated)
             {
                 AddMotionHandle(LMotion.Create(1f, 0f, 0.2f)
                     .WithOnComplete(() =>
@@ -119,6 +163,15 @@ namespace UI.GameSettings
 
                 settingsUiLayer.gameObject.SetActive(false);
             }
+        }
+
+        public void RegisterEvent()
+        {
+            SimulatedSensor.OnTap += (_, args) =>
+            {
+                if (args.SensorId == "A8")
+                    Show();
+            };
         }
     }
 }

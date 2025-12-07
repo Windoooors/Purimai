@@ -1,17 +1,43 @@
+using System;
+using Coffee.UISoftMask;
 using TMPro;
 using UI.GameSettings;
 using UnityEngine;
 
 namespace UI
 {
+    [Serializable]
+    public class ButtonIcons
+    {
+        public Sprite upArrow;
+        public Sprite downArrow;
+        public Sprite play;
+        public Sprite settings;
+        public Sprite levelUp;
+        public Sprite levelDown;
+        public Sprite back;
+        public Sprite sheet;
+        public Sprite finale;
+        public Sprite dx;
+        public Sprite score;
+        public Sprite achievement;
+        public Sprite retry;
+    }
+
     public class UIManager : MonoBehaviour
     {
         private static UIManager _instance;
 
         public CanvasGroup maskCanvasGroup;
+        public SoftMask mask;
         public Canvas canvas;
 
         public TMP_FontAsset mainFontAsset;
+
+        public ButtonIcons buttonIcons;
+
+        public VertexGradient fcGoldColorGradient;
+        public VertexGradient fcColorGradient;
 
         private void Awake()
         {

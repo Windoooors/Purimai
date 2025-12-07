@@ -1,11 +1,15 @@
 using FMOD;
 using FMODUnity;
 using Game.Notes;
+using LitMotion;
 using UI;
 using UI.GameSettings;
 using UI.Result;
 using UnityEngine;
 using UnityEngine.UI;
+#if UNITY_EDITOR
+using EditorScript;
+#endif
 
 namespace Game
 {
@@ -44,10 +48,10 @@ namespace Game
         public JudgeSettings slideJudgeSettings;
         public JudgeSettings holdTailJudgeSettings;
 
+        private bool _audioPlaybackStarted;
+
         private Channel _channel;
         private bool _isPlayingOnLastFrame;
-
-        private bool _playbackStarted;
 
         public Sound SongClip;
 
@@ -63,11 +67,13 @@ namespace Game
 
             slideAppearanceDeltaTime = -(int)(2400 / flowSpeed * (1 - slideAppearanceDelay));
             slideFadeInDuration = -slideAppearanceDeltaTime > 200 ? 200 : -slideAppearanceDeltaTime;
+
+            time = -3000;
         }
 
         private void Update()
         {
-            if (!_playbackStarted)
+            if (!_audioPlaybackStarted)
                 return;
 
             _channel.isPlaying(out isPlaying);
@@ -100,8 +106,21 @@ namespace Game
 
         public void Play()
         {
-            RuntimeManager.CoreSystem.playSound(SongClip, default, false, out _channel);
-            _playbackStarted = true;
+            LMotion.Create(-3000, 0, 3f).WithEase(Ease.Linear).WithOnComplete(() =>
+            {
+                RuntimeManager.CoreSystem.playSound(SongClip, default, false, out _channel);
+                _audioPlaybackStarted = true;
+            }).Bind(x => time = x);
+
+            isPlaying = true;
         }
+
+#if UNITY_EDITOR
+        [InspectorButton("Skip Playback")]
+        public void Skip()
+        {
+            _channel.stop();
+        }
+#endif
     }
 }

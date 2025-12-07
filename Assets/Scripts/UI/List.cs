@@ -32,7 +32,7 @@ namespace UI
         public string indexPreferenceName;
         public int visibleItemCount = 12;
 
-        private readonly List<ListItemBase> _itemObjectPool = new();
+        public readonly List<ListItemBase> ItemObjectPool = new();
 
         private RectTransform _contentRoot;
 
@@ -70,6 +70,11 @@ namespace UI
         }
 
         private void OnEnable()
+        {
+            RegisterSimulatedSensorEvent();
+        }
+
+        public void RegisterSimulatedSensorEvent()
         {
             SimulatedSensor.OnTap += (_, args) =>
             {
@@ -171,7 +176,7 @@ namespace UI
 
         public ListItemBase GetSelectedItemObject()
         {
-            return _itemObjectPool.Find(x => x.indexOnScreen == visibleItemCount / 2);
+            return ItemObjectPool.Find(x => x.indexOnScreen == visibleItemCount / 2);
         }
 
         private void InitializeHeight()
@@ -180,7 +185,7 @@ namespace UI
 
             _contentRootPositionY = 0;
 
-            ClearMotionHandles(true);
+            ClearMotion(true);
 
             _contentRoot.anchoredPosition = new Vector2(_contentRoot.anchoredPosition.x, 0);
 
@@ -188,9 +193,9 @@ namespace UI
             {
                 var j = i;
 
-                if (j < 0)
+                while (j < 0)
                     j += AllData.Length;
-                if (j > AllData.Length - 1)
+                while (j > AllData.Length - 1)
                     j -= AllData.Length;
 
                 var data = AllData[j];
@@ -203,8 +208,8 @@ namespace UI
 
         private void InitializePool()
         {
-            foreach (var obj in _itemObjectPool) Destroy(obj.gameObject);
-            _itemObjectPool.Clear();
+            foreach (var obj in ItemObjectPool) Destroy(obj.gameObject);
+            ItemObjectPool.Clear();
 
             for (var i = 0; i < visibleItemCount + 2; i++)
             {
@@ -214,8 +219,8 @@ namespace UI
                 normalItem.rectTransform.anchoredPosition = new Vector2(-5000, _top);
                 titleItem.rectTransform.anchoredPosition = new Vector2(-5000, _top);
 
-                _itemObjectPool.Add(normalItem);
-                _itemObjectPool.Add(titleItem);
+                ItemObjectPool.Add(normalItem);
+                ItemObjectPool.Add(titleItem);
             }
         }
 
@@ -227,9 +232,9 @@ namespace UI
             {
                 var j = i;
 
-                if (j < 0)
+                while (j < 0)
                     j += AllData.Length;
-                if (j > AllData.Length - 1)
+                while (j > AllData.Length - 1)
                     j -= AllData.Length;
 
                 var data = AllData[j];
@@ -257,9 +262,11 @@ namespace UI
 
         private ListItemBase GetAvailableListItem(bool findTitle)
         {
-            foreach (var itemObject in _itemObjectPool)
+            foreach (var itemObject in ItemObjectPool)
                 if (!itemObject.shownOnScreen)
                 {
+                    itemObject.Deselect(false);
+
                     if (findTitle && itemObject is TitleListItem titleListItem)
                         return titleListItem;
 
@@ -270,9 +277,24 @@ namespace UI
             return null;
         }
 
+        public void Rebind()
+        {
+            foreach (var item in ItemObjectPool)
+                if (item.shownOnScreen)
+                    item.ProcessBind();
+        }
+
         private void MoveSelection(int direction, bool animated = true)
         {
-            _itemObjectPool.Find(x => x.indexOnScreen == visibleItemCount / 2).Deselect(animated);
+            var button = Button.GetButton(direction switch
+            {
+                -1 => 0,
+                _ => 3
+            });
+
+            button.Press();
+
+            ItemObjectPool.Find(x => x.indexOnScreen == visibleItemCount / 2).Deselect(animated);
 
             var deltaTop = direction * (spacingBetweenListItems +
                                         (GetSelectedItemObject() is TitleListItem
@@ -280,9 +302,9 @@ namespace UI
                                             : _normalItemHeight));
 
             dataIndex += direction;
-            if (dataIndex < 0)
+            while (dataIndex < 0)
                 dataIndex += AllData.Length;
-            if (dataIndex > AllData.Length - 1)
+            while (dataIndex > AllData.Length - 1)
                 dataIndex -= AllData.Length;
 
             PlayerPrefs.SetInt(indexPreferenceName, dataIndex);
@@ -291,9 +313,9 @@ namespace UI
 
             var newItemDataIndex =
                 dataIndex + direction switch { 1 => visibleItemCount / 2 - 1, -1 => -visibleItemCount / 2, _ => 0 };
-            if (newItemDataIndex < 0)
+            while (newItemDataIndex < 0)
                 newItemDataIndex += AllData.Length;
-            if (newItemDataIndex > AllData.Length - 1)
+            while (newItemDataIndex > AllData.Length - 1)
                 newItemDataIndex -= AllData.Length;
 
             var newItemData = AllData[newItemDataIndex];
@@ -313,7 +335,7 @@ namespace UI
 
                     DeallocateLast();
 
-                    foreach (var item in _itemObjectPool)
+                    foreach (var item in ItemObjectPool)
                         if (item.shownOnScreen)
                             item.indexOnScreen++;
 
@@ -327,7 +349,7 @@ namespace UI
 
                     DeallocateFirst();
 
-                    foreach (var item in _itemObjectPool)
+                    foreach (var item in ItemObjectPool)
                         if (item.shownOnScreen)
                             item.indexOnScreen--;
 
@@ -343,11 +365,11 @@ namespace UI
 
             newLastItem.Bind(newItemData);
 
-            _itemObjectPool.Find(x => x.indexOnScreen == visibleItemCount / 2).Select(animated);
+            ItemObjectPool.Find(x => x.indexOnScreen == visibleItemCount / 2).Select(animated);
 
             OnItemSelected?.Invoke(this, new ListEventArgs(dataIndex, animated));
 
-            ClearMotionHandles();
+            ClearMotion();
 
             _contentRootPositionY += deltaTop;
 
@@ -372,17 +394,17 @@ namespace UI
 
         private ListItemBase GetLast()
         {
-            return _itemObjectPool.Find(x => x.indexOnScreen == visibleItemCount - 1);
+            return ItemObjectPool.Find(x => x.indexOnScreen == visibleItemCount - 1);
         }
 
         private ListItemBase GetFirst()
         {
-            return _itemObjectPool.Find(x => x.indexOnScreen == 0);
+            return ItemObjectPool.Find(x => x.indexOnScreen == 0);
         }
 
         private void DeallocateLast()
         {
-            foreach (var item in _itemObjectPool)
+            foreach (var item in ItemObjectPool)
                 if (item.indexOnScreen == visibleItemCount - 1)
                 {
                     item.Deallocate();
@@ -394,7 +416,7 @@ namespace UI
 
         private void DeallocateFirst()
         {
-            foreach (var item in _itemObjectPool)
+            foreach (var item in ItemObjectPool)
                 if (item.indexOnScreen == 0)
                 {
                     item.Deallocate();
@@ -410,7 +432,7 @@ namespace UI
             PlayerPrefs.SetInt(indexPreferenceName, dataIndex);
             InitializeHeight();
 
-            foreach (var item in _itemObjectPool)
+            foreach (var item in ItemObjectPool)
             {
                 item.Deallocate();
                 item.Deselect(false);

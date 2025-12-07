@@ -33,7 +33,7 @@ namespace UI.GameSettings
                     {
                         DefaultValue = 0,
                         ValueUpperLimit = 1000,
-                        ValueLowerLimit = 0
+                        ValueLowerLimit = -1000
                     }),
                     new("game.judge_delay", new SuccessiveValueSet
                     {
@@ -65,6 +65,9 @@ namespace UI.GameSettings
                     }, false),
                     new("game.score_indicator_content", 1,
                         new[] { "none", "combo", "achievement", "deducted_achievement", "score", "deducted_score" }),
+                    new("game.score_indicator_type", 1,
+                        new[] { "score", "achievement" }),
+                    new("game.achievement_type", 0, new[] { "FiNALE", "DX" }, false),
                     new("game.blurred_cover", 0, new[] { "disabled", "enabled" }),
                     new("game.sensor_radius", 3, new[]
                     {
@@ -76,12 +79,12 @@ namespace UI.GameSettings
                         "1", "1.1", "1.2", "1.3", "1.4",
                         "1.5", "1.6", "1.7", "1.8", "1.9", "2.0"
                     }, false),
-                    new("game.sensor_radius.area.b", 4, new[]
+                    new("game.sensor_radius.area.b", 6, new[]
                     {
                         "1", "1.1", "1.2", "1.3", "1.4",
                         "1.5", "1.6", "1.7", "1.8", "1.9", "2.0"
                     }, false),
-                    new("game.sensor_radius.area.c", 4, new[]
+                    new("game.sensor_radius.area.c", 6, new[]
                     {
                         "1", "1.1", "1.2", "1.3", "1.4",
                         "1.5", "1.6", "1.7", "1.8", "1.9", "2.0"

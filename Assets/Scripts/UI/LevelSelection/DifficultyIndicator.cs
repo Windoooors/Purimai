@@ -3,18 +3,20 @@ using System.Threading.Tasks;
 using FMOD;
 using Game;
 using LitMotion;
+using LitMotion.Extensions;
 using TMPro;
 using UI.GameSettings;
 using UI.Result;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace UI.LevelSelection
 {
     public class DifficultyIndicator : UIScriptWithAnimation
     {
-        public static DifficultyIndicator Instance;
+        private static DifficultyIndicator _instance;
         public Color[] backgroundColors;
         public Color[] textColors;
 
@@ -25,10 +27,24 @@ namespace UI.LevelSelection
         public TextMeshProUGUI difficultyText;
         public TextMeshProUGUI charterNameText;
         public TextMeshProUGUI difficultyNameText;
+        public TextMeshProUGUI achievementTitleText;
+        public TextMeshProUGUI achievementText;
+        public TextMeshProUGUI alternativeAchievementText;
+        public TextMeshProUGUI rankText;
+        public TextMeshProUGUI rankTitleText;
 
-        public CanvasGroup canvasGroup;
+        public TextMeshProUGUI comboText;
+        public TextMeshProUGUI comboStateText;
+
+        [FormerlySerializedAs("canvasGroup")] public CanvasGroup difficultyIndicatorCanvasGroup;
+        public CanvasGroup comboIndicatorCanvasGroup;
+
+        public CanvasGroup scoreIndicatorCanvasGroup;
 
         private Maidata _lastSelectedMaidata;
+        private Vector3 _originalDifficultyIndicatorPosition;
+
+        private Vector3 _originalListPosition;
 
         private int _selectedDifficulty;
 
@@ -38,13 +54,20 @@ namespace UI.LevelSelection
 
             SimulatedSensor.OnTap += OnTap;
 
-            Instance = this;
+            _instance = this;
         }
 
         private void OnDisable()
         {
             SimulatedSensor.OnTap -= OnTap;
             LevelListController.GetInstance().levelList.OnItemSelected -= OnLevelSelected;
+        }
+
+        public static DifficultyIndicator GetInstance()
+        {
+            return _instance ??
+                   FindAnyObjectByType<DifficultyIndicator>(
+                       FindObjectsInactive.Include);
         }
 
         private void OnTap(object _, TouchEventArgs args)
@@ -59,6 +82,11 @@ namespace UI.LevelSelection
 
         private IEnumerator EnterLevel()
         {
+            Scoreboard.Reset();
+
+            Button.GetButton(4).Press();
+            Button.HideAll(false);
+
             var levelListController = LevelListController.GetInstance();
 
             var difficultyIndex =
@@ -80,7 +108,8 @@ namespace UI.LevelSelection
             {
                 yield return null;
 
-                if (!maidata.SongLoaded || maidata.BlurredSongCoverAsBackgroundDecodedImage == null)
+                if (!maidata.SongLoaded || maidata.BlurredSongCoverAsBackgroundDecodedImage == null ||
+                    maidata.SongCoverDecodedImage == null)
                     continue;
 
                 break;
@@ -90,10 +119,8 @@ namespace UI.LevelSelection
             SimulatedSensor.OnHold = null;
             SimulatedSensor.OnLeave = null;
 
-            var originalListPosition = levelListController.levelList.transform.position;
-            var originalPosition = transform.position;
-
-            var currentAlpha = levelListController.songCoverBackgroundImage.color.a;
+            _originalListPosition = levelListController.levelList.transform.position;
+            _originalDifficultyIndicatorPosition = transform.position;
 
             levelListController.songCoverBackgroundImage.sprite = SettingsPool.GetValue("game.blurred_cover") == 1
                 ? maidata.BlurredSongCoverAsBackgroundDecodedImage.GetSprite()
@@ -102,29 +129,55 @@ namespace UI.LevelSelection
             levelListController.songCoverBackgroundImage.transform.localScale =
                 SettingsPool.GetValue("game.blurred_cover") == 1 ? Vector3.one * 1.1f : Vector3.one;
 
-            AddMotionHandle(LMotion.Create(
-                    0, 15f, 0.5f).WithEase(Ease.InExpo).WithOnComplete(() =>
-                {
-                    LoadScene(maidata.SongFMODSound, maidata, difficultyIndex);
-                    levelListController.backgroundImage.enabled = false;
-                })
-                .Bind(x =>
-                {
-                    levelListController.levelList.transform.position = originalListPosition + new Vector3(-x, 0, 0);
-                    var rgbValue = (1 - x / 15f) * 0.43529412f + 0.56470588f;
-                    levelListController.songCoverBackgroundImage.color =
-                        new Color(rgbValue, rgbValue, rgbValue, x / 15f * (1 - currentAlpha) + currentAlpha);
-                    transform.position = originalPosition + new Vector3(x * 0.3f, 0, 0);
-                })
-            );
+            AddMotionHandle(LSequence.Create()
+                .Append(LMotion.Create(0, -15f, 0.5f).WithEase(Ease.InExpo).Bind(x =>
+                    levelListController.levelList.transform.position = _originalListPosition + new Vector3(x, 0, 0)))
+                .Join(
+                    LMotion.Create(0, 5f, 0.5f).WithEase(Ease.InExpo)
+                        .Bind(x => transform.position = _originalDifficultyIndicatorPosition + new Vector3(x, 0, 0))
+                ).Join(
+                    LMotion.Create(0, 1f, 0.5f).WithEase(Ease.InExpo).WithOnComplete(() =>
+                        {
+                            LoadScene(maidata.SongFMODSound, maidata, difficultyIndex);
+                            levelListController.backgroundImage.enabled = false;
+                        })
+                        .BindToColorA(levelListController.songCoverBackgroundImage)
+                ).Run());
+        }
+
+        public void ReloadScene()
+        {
+            var levelListController = LevelListController.GetInstance();
+
+            var difficultyIndex =
+                ((LevelListItemData)levelListController.levelList.AllData[levelListController.levelList.dataIndex])
+                .DifficultyIndex;
+
+            var maidata =
+                ((LevelListItemData)levelListController.levelList.AllData[levelListController.levelList.dataIndex])
+                .Maidata;
+
+            levelListController.levelSelectionUiLayer.gameObject.SetActive(true);
+            levelListController.levelSelectionUiLayer.alpha = 0;
+
+            SimulatedSensor.OnHold = null;
+            SimulatedSensor.OnTap = null;
+            SimulatedSensor.OnLeave = null;
+
+            LoadScene(maidata.SongFMODSound, maidata, difficultyIndex);
         }
 
         private void LoadScene(Sound sound, Maidata maidata, int difficultyIndex)
         {
             SceneManager.LoadScene("Game");
 
-            SceneManager.sceneLoaded += (_, _) =>
+            SceneManager.sceneLoaded += OnSceneLoaded;
+
+            return;
+
+            void OnSceneLoaded(Scene scene, LoadSceneMode mode)
             {
+                SceneManager.sceneLoaded -= OnSceneLoaded;
                 var noteGenerator =
                     FindAnyObjectByType<NoteGenerator>(FindObjectsInactive.Include);
                 noteGenerator.GenerateNotes(maidata.Charts[difficultyIndex], maidata.FirstNoteTime);
@@ -149,31 +202,29 @@ namespace UI.LevelSelection
                 resultController.Initialize(maidata, difficultyIndex);
 
                 StartCoroutine(PlayChart(chartPlayer));
-            };
+            }
         }
 
         private IEnumerator PlayChart(ChartPlayer chartPlayer)
         {
             for (var i = 0; i < 4; i++) yield return new WaitForEndOfFrame();
 
+            UIManager.GetInstance().mask.showMaskGraphic = false;
+
             AddMotionHandle(LMotion.Create(1, 0f, 0.5f).WithEase(Ease.OutExpo).WithOnComplete(() =>
                 {
-                    LevelListController.GetInstance().levelList.transform.position += new Vector3(15, 0, 0);
-                    transform.position += new Vector3(-5, 0, 0);
-                    StartCoroutine(WaitAndPlay());
+                    LevelListController.GetInstance().levelList.transform.position = _originalListPosition;
+                    transform.position = _originalDifficultyIndicatorPosition;
+                    chartPlayer.Play();
+                    UIManager.GetInstance().DisableUI();
                     LevelListController.GetInstance().backgroundImage.enabled = true;
+                    LevelListController.GetInstance().levelSelectionUiLayer.alpha = 1;
+                    LevelListController.GetInstance().songCoverBackgroundImage.color = new Color(
+                        LevelListController.GetInstance().songCoverBackgroundImage.color.r,
+                        LevelListController.GetInstance().songCoverBackgroundImage.color.g,
+                        LevelListController.GetInstance().songCoverBackgroundImage.color.b, 0);
                 })
                 .Bind(x => { UIManager.GetInstance().maskCanvasGroup.alpha = x; }));
-
-            yield break;
-
-            IEnumerator WaitAndPlay()
-            {
-                yield return new WaitForSeconds(1);
-
-                chartPlayer.Play();
-                UIManager.GetInstance().DisableUI();
-            }
         }
 
         private void ChangeDifficulty(int direction)
@@ -209,6 +260,17 @@ namespace UI.LevelSelection
                     }
 
                     break;
+            }
+
+            if (nextDifficultyIndex != currentDifficultyIndex)
+            {
+                var button = direction switch
+                {
+                    -1 => Button.GetButton(1),
+                    _ => Button.GetButton(2)
+                };
+
+                button.Press();
             }
 
             if (LevelListController.GetInstance().groupByRule == LevelListController.SortingRules.Difficulty)
@@ -247,6 +309,83 @@ namespace UI.LevelSelection
                     OnLevelSelected(LevelListController.GetInstance().levelList,
                         new ListEventArgs(LevelListController.GetInstance().levelList.dataIndex, true));
             }
+        }
+
+        public void SetScoreIndicatorContent(string maidataPath, int difficultyIndex)
+        {
+            achievementTitleText.text = SettingsPool.GetValue("game.score_indicator_type") switch
+            {
+                0 => "Score",
+                _ => "Achievement"
+            };
+
+            scoreIndicatorCanvasGroup.alpha = 1;
+
+            var type = (ResultController.AchievementType)SettingsPool.GetValue("game.achievement_type");
+
+            var chartRankData = ChartRankDataManager.GetChartRankData(maidataPath);
+
+            if (chartRankData == null)
+            {
+                scoreIndicatorCanvasGroup.alpha = 0;
+                return;
+            }
+
+            var levelRankData = chartRankData.GetLevelRankData(difficultyIndex);
+
+            if (levelRankData == null)
+            {
+                scoreIndicatorCanvasGroup.alpha = 0;
+                return;
+            }
+
+            var score = type switch
+            {
+                ResultController.AchievementType.Dx => levelRankData.LevelAchievements.DxBestAchievement.Score,
+                _ => levelRankData.LevelAchievements.FinaleBestAchievement.Score
+            };
+
+            var achievement = type switch
+            {
+                ResultController.AchievementType.Dx => levelRankData.LevelAchievements.DxBestAchievement
+                    .DxAchievement,
+                _ => levelRankData.LevelAchievements.FinaleBestAchievement.FinaleAchievement
+            };
+
+            achievementText.text = SettingsPool.GetValue("game.score_indicator_type") switch
+            {
+                0 => score.ToString(),
+                _ => achievement.ToString(type == ResultController.AchievementType.Finale ? "0.00" : "0.0000") + "%"
+            };
+
+            alternativeAchievementText.text = type switch
+            {
+                ResultController.AchievementType.Finale => "D.A. " + levelRankData.LevelAchievements
+                    .FinaleBestAchievement
+                    .DxAchievement.ToString("0.0000") + "%",
+                _ => "F.A. " + levelRankData.LevelAchievements.DxBestAchievement.FinaleAchievement.ToString("0.00") +
+                     "%"
+            };
+
+            rankText.text = ResultController.GetRankName(achievement, score,
+                levelRankData.TotalScore, type);
+
+            comboText.text = levelRankData.Combo.ToString();
+            comboStateText.text = levelRankData.FcState switch
+            {
+                FcState.Fc => "FC",
+                FcState.FcGold => "FC",
+                FcState.Ap => "AP",
+                _ => "Played"
+            };
+
+            comboStateText.colorGradient = levelRankData.FcState switch
+            {
+                FcState.Fc => UIManager.GetInstance().fcColorGradient,
+                FcState.FcGold => UIManager.GetInstance().fcGoldColorGradient,
+                FcState.Ap => UIManager.GetInstance().fcGoldColorGradient,
+                _ => UIManager.GetInstance().fcColorGradient
+            };
         }
 
         private void OnLevelSelected(object sender, ListEventArgs e)
@@ -295,19 +434,31 @@ namespace UI.LevelSelection
                 _ => ""
             };
 
+            SetScoreIndicatorContent(levelListItemData.Maidata.MaidataDirectoryName, levelListItemData.DifficultyIndex);
+
             var textColor = textColors[levelListItemData.Maidata.IsUtage ? 5 : levelListItemData.DifficultyIndex];
 
             difficultyText.color = new Color(textColor.r, textColor.g, textColor.b, difficultyText.color.a);
             charterNameText.color = new Color(textColor.r, textColor.g, textColor.b, charterNameText.color.a);
             difficultyNameText.color = new Color(textColor.r, textColor.g, textColor.b, difficultyNameText.color.a);
+
+            achievementTitleText.color = new Color(textColor.r, textColor.g, textColor.b, achievementTitleText.color.a);
+            achievementText.color = new Color(textColor.r, textColor.g, textColor.b, achievementText.color.a);
+            alternativeAchievementText.color =
+                new Color(textColor.r, textColor.g, textColor.b, achievementText.color.a);
+            rankText.color = new Color(textColor.r, textColor.g, textColor.b, rankText.color.a);
+            rankTitleText.color = new Color(textColor.r, textColor.g, textColor.b, rankTitleText.color.a);
+
             difficultyNameText.colorGradient =
                 textGradientColors[levelListItemData.Maidata.IsUtage ? 5 : levelListItemData.DifficultyIndex];
+            backgroundImage.color =
+                backgroundColors[levelListItemData.Maidata.IsUtage ? 5 : levelListItemData.DifficultyIndex];
 
             if (e.IndexChangeIsAnimated)
             {
                 AddMotionHandle(LMotion.Create(0, 1f, 0.5f).WithEase(Ease.OutExpo).Bind(x =>
                 {
-                    canvasGroup.alpha = x;
+                    difficultyIndicatorCanvasGroup.alpha = x;
                     transform.position = new Vector3(transform.position.x,
                         LevelListController.GetInstance().levelList.GetSelectedItemObject().transform.position.y,
                         transform.position.z);
@@ -315,7 +466,7 @@ namespace UI.LevelSelection
             }
             else
             {
-                canvasGroup.alpha = 1;
+                difficultyIndicatorCanvasGroup.alpha = 1;
                 transform.position = new Vector3(transform.position.x,
                     LevelListController.GetInstance().levelList.GetSelectedItemObject().transform.position.y,
                     transform.position.z);

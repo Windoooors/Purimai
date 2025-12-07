@@ -171,6 +171,22 @@ MonoBehaviour:
     m_Key: settings.game.sensor_radius.area.c
     m_Metadata:
       m_Items: []
+  - m_Id: 7561223791960064
+    m_Key: settings.game.achievement_type
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7623114899841024
+    m_Key: settings.game.score_indicator_type
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7623446728007680
+    m_Key: settings.game.score_indicator_type.achievement
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7623505725087744
+    m_Key: settings.game.score_indicator_type.score
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

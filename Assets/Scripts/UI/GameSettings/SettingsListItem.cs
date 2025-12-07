@@ -39,9 +39,9 @@ namespace UI.GameSettings
             }
         }
 
-        public override void Bind(ItemDataBase data)
+        public override void ProcessBind()
         {
-            if (data is not SettingsListItemData settingsListItemData)
+            if (Data is not SettingsListItemData settingsListItemData)
                 throw new Exception("Data type is not SettingsListItemData");
 
             var settingsItem = settingsListItemData.SettingsItem;
@@ -83,6 +83,16 @@ namespace UI.GameSettings
                     (currentValue < 1 && direction < 0))
                     return;
 
+                switch (direction)
+                {
+                    case 1:
+                        Button.GetButton(2).Press();
+                        break;
+                    case -1:
+                        Button.GetButton(5).Press();
+                        break;
+                }
+
                 SettingsPool.SetValue(_data.SettingsItem.Identifier, currentValue + direction);
 
                 if (_data.SettingsItem.ManagedValueLocalization)
@@ -100,6 +110,16 @@ namespace UI.GameSettings
                 if ((currentValue > successiveValueSet.ValueUpperLimit - 1 && direction > 0) ||
                     (currentValue < successiveValueSet.ValueLowerLimit + 1 && direction < 0))
                     return;
+
+                switch (direction)
+                {
+                    case 1:
+                        Button.GetButton(2).Press();
+                        break;
+                    case -1:
+                        Button.GetButton(5).Press();
+                        break;
+                }
 
                 SettingsPool.SetValue(_data.SettingsItem.Identifier, currentValue + direction);
 
@@ -179,7 +199,7 @@ namespace UI.GameSettings
             }
             else
             {
-                ClearMotionHandles();
+                ClearMotion();
 
                 titleBackgroundText.color = new Color(titleBackgroundText.color.r,
                     titleBackgroundText.color.g, titleBackgroundText.color.b,
@@ -204,7 +224,7 @@ namespace UI.GameSettings
             }
             else
             {
-                ClearMotionHandles();
+                ClearMotion();
 
                 titleBackgroundText.color = new Color(titleBackgroundText.color.r,
                     titleBackgroundText.color.g, titleBackgroundText.color.b, 0);

@@ -10,6 +10,7 @@ namespace UI
         [FormerlySerializedAs("dataIndex")] public int indexOnScreen = -1;
         public bool shownOnScreen;
         [HideInInspector] public DecodedImage backgroundImage;
+        public ItemDataBase Data;
 
         private void Awake()
         {
@@ -64,7 +65,14 @@ namespace UI
         {
         }
 
-        public virtual void Bind(ItemDataBase data)
+        public void Bind(ItemDataBase data)
+        {
+            Data = data;
+
+            ProcessBind();
+        }
+
+        public virtual void ProcessBind()
         {
         }
     }

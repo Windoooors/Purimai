@@ -1,4 +1,3 @@
-using System.Collections;
 using UI.GameSettings;
 using UnityEngine;
 
@@ -16,17 +15,17 @@ namespace Game
         {
             gameObject.name = sensorId;
 
-            StartCoroutine(ChangeSensorScale());
+            ChangeSensorScale();
+
+            SettingsController.OnSettingsChanged += (_, _) => ChangeSensorScale();
         }
 
-        private IEnumerator ChangeSensorScale()
+        private void ChangeSensorScale()
         {
-            yield return null;
-
             var globalSettingsValue = SettingsPool.GetValue("game.sensor_radius");
             var settingsValue = SettingsPool.GetValue(scaleSettingsIdentifier);
 
-            transform.localScale *= scale * (globalSettingsValue / 10f + 1f) * (settingsValue / 10f + 1f);
+            transform.localScale = scale * (globalSettingsValue / 10f + 1f) * (settingsValue / 10f + 1f) * Vector3.one;
         }
     }
 }

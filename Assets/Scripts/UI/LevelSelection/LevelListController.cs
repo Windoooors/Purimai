@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -36,10 +37,7 @@ namespace UI.LevelSelection
         private void Awake()
         {
             _instance = this;
-        }
 
-        private void OnEnable()
-        {
             groupByRule = SettingsPool.GetValue("song_list.group_rule") switch
             {
                 0 => SortingRules.Alphabet,
@@ -53,25 +51,56 @@ namespace UI.LevelSelection
 
             foreach (var levelPath in Directory.GetDirectories(path))
             {
-                var maidataPath = Path.Combine(levelPath, "maidata.txt");
-                var songPathMp3 = Path.Combine(levelPath, "track.mp3");
-                var songPathOgg = Path.Combine(levelPath, "track.ogg");
-                var pvPathMp4 = Path.Combine(levelPath, "pv.mp4");
-                var pvPathAvi = Path.Combine(levelPath, "pv.avi");
-                var bgPathPng = Path.Combine(levelPath, "bg.png");
-                var bgPathJpg = Path.Combine(levelPath, "bg.jpg");
-
-                if (!(File.Exists(maidataPath) && (File.Exists(songPathMp3) || File.Exists(songPathOgg))))
+                if (!(FileExistsIgnoreExtCase(Path.Combine(levelPath, "maidata.txt"), out var actualMaidataPath) &&
+                      (FileExistsIgnoreExtCase(Path.Combine(levelPath, "track.mp3"), out var actualSongMp3Path) ||
+                       FileExistsIgnoreExtCase(Path.Combine(levelPath, "track.ogg"), out var actualSongOggPath))))
                     continue;
 
-                var maidata = new Maidata(maidataPath, File.Exists(songPathMp3) ? songPathMp3 : songPathOgg,
-                    File.Exists(pvPathAvi) ? pvPathAvi : pvPathMp4,
-                    File.Exists(bgPathPng) ? bgPathPng : bgPathJpg);
+                actualSongOggPath = "";
+
+                var aviExists = FileExistsIgnoreExtCase(Path.Combine(levelPath, "pv.avi"), out var actualPvPathAvi);
+                FileExistsIgnoreExtCase(Path.Combine(levelPath, "pv.mp4"), out var actualPvPathMp4);
+
+                var pngExists = FileExistsIgnoreExtCase(Path.Combine(levelPath, "bg.png"), out var actualBgPathPng);
+                var jpgExists = FileExistsIgnoreExtCase(Path.Combine(levelPath, "bg.jpg"), out var actualBgPathJpg);
+
+                if (!jpgExists)
+                    FileExistsIgnoreExtCase(Path.Combine(levelPath, "bg.jpeg"), out actualBgPathJpg);
+
+                var maidata = new Maidata(actualMaidataPath,
+                    File.Exists(actualSongMp3Path) ? actualSongMp3Path : actualSongOggPath,
+                    aviExists ? actualPvPathAvi : actualPvPathMp4,
+                    pngExists ? actualBgPathPng : actualBgPathJpg);
 
                 _maidataList.Add(maidata);
             }
 
             UIManager.GetInstance().UpdateTMPAtlas(Maidata.UsedCharacters.ToArray());
+        }
+
+        private static bool FileExistsIgnoreExtCase(string path, out string actualPath)
+        {
+            var directory = Path.GetDirectoryName(path);
+            var filenameWithoutExt = Path.GetFileNameWithoutExtension(path);
+            var ext = Path.GetExtension(path);
+
+            if (!Directory.Exists(directory))
+            {
+                actualPath = "";
+                return false;
+            }
+
+            var files = Directory.GetFiles(directory, filenameWithoutExt + ".*");
+
+            foreach (var file in files)
+                if (string.Equals(Path.GetExtension(file), ext, StringComparison.OrdinalIgnoreCase))
+                {
+                    actualPath = file;
+                    return true;
+                }
+
+            actualPath = "";
+            return false;
         }
 
         public void Initialize()
@@ -83,6 +112,33 @@ namespace UI.LevelSelection
             };
 
             levelList.Initialize(GetLevelListItemData(groupByRule), levelItemPrefab);
+        }
+
+        public void ShowButton()
+        {
+            var upArrowButton = Button.GetButton(0);
+            upArrowButton.ChangeIcon(UIManager.GetInstance().buttonIcons.upArrow);
+            upArrowButton.Show();
+
+            var downArrowButton = Button.GetButton(3);
+            downArrowButton.ChangeIcon(UIManager.GetInstance().buttonIcons.downArrow);
+            downArrowButton.Show();
+
+            var settingsButton = Button.GetButton(7);
+            settingsButton.ChangeIcon(UIManager.GetInstance().buttonIcons.settings);
+            settingsButton.Show();
+
+            var playButton = Button.GetButton(4);
+            playButton.ChangeIcon(UIManager.GetInstance().buttonIcons.play);
+            playButton.Show();
+
+            var levelUpButton = Button.GetButton(2);
+            levelUpButton.ChangeIcon(UIManager.GetInstance().buttonIcons.levelUp);
+            levelUpButton.Show();
+
+            var levelDownButton = Button.GetButton(1);
+            levelDownButton.ChangeIcon(UIManager.GetInstance().buttonIcons.levelDown);
+            levelDownButton.Show();
         }
 
         public static LevelListController GetInstance()
@@ -192,8 +248,7 @@ namespace UI.LevelSelection
                         var validCharts = 0;
 
                         for (var i = 0; i < 6; i++)
-                            if (!(x.Item1.Charts[i] == "" && x.Item1.Designers[i] == "" &&
-                                  x.Item1.Difficulties[i] == ""))
+                            if (x.Item1.Charts[i] != "")
                                 validCharts++;
 
                         return validCharts > 0;

@@ -352,7 +352,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Song Title
+  m_text: Song TitleSong TitleSong TitleSong TitleSong TitleSong Title
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d961d3012624b44cfb4f55ac11f5154b, type: 2}
   m_sharedMaterial: {fileID: 3843238189932187593, guid: d961d3012624b44cfb4f55ac11f5154b,
@@ -1099,7 +1099,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rectTransform: {fileID: 0}
-  backgroundImage: {fileID: 0}
   indexOnScreen: -1
   shownOnScreen: 0
   songTitleText: {fileID: 2087041742924821559}
@@ -1109,5 +1108,3 @@ MonoBehaviour:
   songCoverMask: {fileID: 377326494764733543}
   songArtistText: {fileID: 2018750833042524859}
   songBpmText: {fileID: 3912598710289481513}
-  backgroundTexture: {fileID: 0}
-  backgroundSprite: {fileID: 0}

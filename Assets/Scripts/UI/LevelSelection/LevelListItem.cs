@@ -43,9 +43,9 @@ namespace UI.LevelSelection
             }
         }
 
-        public override void Bind(ItemDataBase data)
+        public override void ProcessBind()
         {
-            if (data is not LevelListItemData levelListItemData)
+            if (Data is not LevelListItemData levelListItemData)
                 throw new Exception("ItemData is not LevelListItemData");
 
             songTitleText.text = levelListItemData.Maidata.Title;
@@ -53,6 +53,7 @@ namespace UI.LevelSelection
             songBpmText.text = levelListItemData.Maidata.Bpm.ToString("0");
             songArtistText.text = levelListItemData.Maidata.Artist;
             Maidata = levelListItemData.Maidata;
+
 
             Task.Run(() => { Maidata.LoadSongCover(); });
         }
@@ -73,7 +74,7 @@ namespace UI.LevelSelection
             }
             else
             {
-                ClearMotionHandles();
+                ClearMotion();
 
                 songTitleTextBackground.color = new Color(songTitleTextBackground.color.r,
                     songTitleTextBackground.color.g, songTitleTextBackground.color.b,
@@ -87,8 +88,8 @@ namespace UI.LevelSelection
         {
             if (Maidata != null)
             {
-                if (Maidata.SongCoverDecodedImage != null)
-                    Maidata.SongCoverDecodedImage.Dispose();
+                Maidata.SongCoverDecodedImage?.Dispose();
+                Maidata.SongCoverDecodedImage = null;
                 Maidata.CoverDataLoaded = false;
             }
 
@@ -111,7 +112,7 @@ namespace UI.LevelSelection
             }
             else
             {
-                ClearMotionHandles();
+                ClearMotion();
 
                 songTitleTextBackground.color = new Color(songTitleTextBackground.color.r,
                     songTitleTextBackground.color.g, songTitleTextBackground.color.b, 0);

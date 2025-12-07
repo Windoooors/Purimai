@@ -49,6 +49,7 @@ namespace UI
         public readonly string Genre;
 
         public readonly bool IsUtage;
+        public readonly string MaidataDirectoryName;
         public readonly string MainChartDesigner;
         public readonly string PvPath;
         public readonly string SongPath;
@@ -66,6 +67,7 @@ namespace UI
 
         public Maidata(string maidataPath, string songPath, string pvPath, string songCoverPath)
         {
+            MaidataDirectoryName = Path.GetFileNameWithoutExtension(Path.GetDirectoryName(maidataPath));
             SongPath = songPath;
             PvPath = pvPath;
             _songCoverPath = songCoverPath;
@@ -126,7 +128,7 @@ namespace UI
             foreach (var difficulty in Difficulties)
             {
                 index++;
-                if (difficulty == string.Empty && Designers[index] == string.Empty)
+                if (Charts[index] == "")
                     continue;
                 if (!UtageRegex.IsMatch(difficulty.ToLower()))
                     IsUtage = false;
@@ -171,7 +173,6 @@ namespace UI
             var system = RuntimeManager.CoreSystem;
 
             var mode = MODE.DEFAULT |
-                       MODE.CREATESTREAM |
                        MODE.NONBLOCKING |
                        MODE._2D;
 

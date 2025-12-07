@@ -1,4 +1,5 @@
 using LitMotion;
+using LitMotion.Extensions;
 using UI.Result;
 using UnityEngine;
 
@@ -32,8 +33,6 @@ namespace Game.Notes.Taps
                 headJudged = true;
                 judgeState = JudgeState.Miss;
 
-                Scoreboard.DeductedScore += isBreak ? -2500 : -500;
-
                 if (isBreak)
                     Scoreboard.BreakCount.Count(JudgeState.Miss);
                 else
@@ -49,7 +48,7 @@ namespace Game.Notes.Taps
                 NoteContentRoot.SetActive(false);
             }
 
-            if (ChartPlayer.Instance.time > timing - 2 * EmergingDuration &&
+            if (ChartPlayer.Instance.time >= timing - 2 * EmergingDuration &&
                 ChartPlayer.Instance.time < timing - 1 * EmergingDuration && !_emerging)
             {
                 NoteContentRoot.SetActive(true);
@@ -61,21 +60,24 @@ namespace Game.Notes.Taps
 
                 transform.position = Vector3.zero;
 
-                LMotion.Create(0, 1f, EmergingDuration / 1000f / (IsAdxFlowSpeedStyle ? 2 : 1))
-                    .WithDelay(IsAdxFlowSpeedStyle ? EmergingDuration / 1000f / 2 : 0)
+                var duration = EmergingDuration / 1000f / (IsAdxFlowSpeedStyle ? 2 : 1);
+                var delay = IsAdxFlowSpeedStyle ? EmergingDuration / 1000f / 2 : 0;
+
+                LMotion.Create(0, 1f, duration)
+                    .WithDelay(delay)
                     .WithEase(Ease.OutSine)
                     .Bind(x =>
                     {
                         tapSpriteRenderer.color = new Color(1, 1, 1, x);
                         lineSpriteRenderer.color = new Color(1, 1, 1, x);
                     });
-                LMotion.Create(0, 1f, EmergingDuration / 1000f / (IsAdxFlowSpeedStyle ? 2 : 1))
-                    .WithDelay(IsAdxFlowSpeedStyle ? EmergingDuration / 1000f / 2 : 0)
+                LMotion.Create(Vector3.zero, Vector3.one, duration)
+                    .WithDelay(delay)
                     .WithEase(Ease.Linear)
-                    .Bind(x => tapTransform.localScale = x * Vector3.one);
+                    .BindToLocalScale(tapTransform);
             }
 
-            if (ChartPlayer.Instance.time > timing - 1 * EmergingDuration && _emerging && !_moving)
+            if (ChartPlayer.Instance.time >= timing - 1 * EmergingDuration && _emerging && !_moving)
             {
                 _emerging = false;
                 _moving = true;
@@ -110,8 +112,6 @@ namespace Game.Notes.Taps
             tapSpriteRenderer.enabled = false;
             lineSpriteRenderer.enabled = false;
 
-            Scoreboard.TotalScore += isBreak ? 2500 : 500;
-            Scoreboard.TotalScoreWithExtraScore += isBreak ? 2600 : 500;
             if (isBreak)
                 Scoreboard.BreakCount.TotalCount++;
             else
@@ -151,30 +151,6 @@ namespace Game.Notes.Taps
             judgeState = state.Item1;
 
             isFast = state.isFast;
-
-            var score = isBreak
-                ? judgeState switch
-                {
-                    JudgeState.CriticalPerfect => 2600,
-                    JudgeState.SemiCriticalPerfect => 2550,
-                    JudgeState.Perfect => 2500,
-                    JudgeState.Great => 2000,
-                    JudgeState.SemiGreat => 1500,
-                    JudgeState.QuarterGreat => 1250,
-                    JudgeState.Good => 1000,
-                    _ => 0
-                }
-                : judgeState switch
-                {
-                    JudgeState.CriticalPerfect or JudgeState.SemiCriticalPerfect or JudgeState.Perfect => 500,
-                    JudgeState.Great or JudgeState.SemiGreat or JudgeState.QuarterGreat => 400,
-                    JudgeState.Good => 250,
-                    _ => 0
-                };
-
-            Scoreboard.Score += score;
-
-            Scoreboard.DeductedScore += isBreak ? score - 2500 : score - 500;
 
             if (isBreak)
                 Scoreboard.BreakCount.Count(judgeState);

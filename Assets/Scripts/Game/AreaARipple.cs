@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Game
 {
@@ -17,6 +18,15 @@ namespace Game
             SimulatedSensor.OnTap += Show;
 
             _animator = GetComponent<Animator>();
+
+            SceneManager.sceneLoaded += ClearList;
+            return;
+
+            void ClearList(Scene scene, LoadSceneMode mode)
+            {
+                SceneManager.sceneLoaded -= ClearList;
+                AreaARipples.Clear();
+            }
         }
 
         public void CancelAnimation()

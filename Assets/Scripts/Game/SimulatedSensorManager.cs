@@ -17,6 +17,8 @@ namespace Game
             if (FindObjectsByType<SimulatedSensorManager>(FindObjectsInactive.Exclude, FindObjectsSortMode.None)
                     .Length != 1)
                 gameObject.SetActive(false);
+
+            DontDestroyOnLoad(gameObject);
         }
     }
 

@@ -12,7 +12,7 @@ namespace Game.Notes.Taps
             if (!ChartPlayer.Instance.isPlaying)
                 return;
 
-            if (ChartPlayer.Instance.time > timing - (IsAdxFlowSpeedStyle ? 1.5f : 2f) * EmergingDuration &&
+            if (ChartPlayer.Instance.time >= timing - (IsAdxFlowSpeedStyle ? 1.5f : 2f) * EmergingDuration &&
                 ChartPlayer.Instance.time < timing - 1 * EmergingDuration && !_emerging)
             {
                 NoteContentRoot.SetActive(true);
@@ -20,7 +20,7 @@ namespace Game.Notes.Taps
                 lineSpriteRenderer.color = Color.white;
             }
 
-            if (ChartPlayer.Instance.time > timing - 1 * EmergingDuration && _emerging && !_moving)
+            if (ChartPlayer.Instance.time >= timing - 1 * EmergingDuration && _emerging && !_moving)
             {
                 _emerging = false;
                 _moving = true;

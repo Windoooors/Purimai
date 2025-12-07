@@ -41,6 +41,8 @@ namespace Game
 
         private GameObject _noteParent;
 
+        private int _slideOrder;
+
         private void Awake()
         {
             _noteParent = new GameObject("Notes");
@@ -54,6 +56,8 @@ namespace Game
 
             var order = 0;
 
+            _slideOrder = 0;
+
             foreach (var noteDataObject in noteDataObjects)
             {
                 var isEach = noteDataObject.TapDataObjects.Length + noteDataObject.HoldDataObjects.Length > 1;
@@ -61,7 +65,7 @@ namespace Game
 
                 GenerateTaps(noteDataObject, isEach, order);
                 GenerateHolds(noteDataObject, isEach, order);
-                GenerateSlides(noteDataObject, order);
+                GenerateSlides(noteDataObject);
 
                 order--;
 
@@ -171,7 +175,7 @@ namespace Game
             }
         }
 
-        private void GenerateSlides(NoteDataObject noteDataObject, int order)
+        private void GenerateSlides(NoteDataObject noteDataObject)
         {
             var slidesGroupedByWaitDuration = new List<(int waitDuration, List<NoteDataObject.SlideDataObject>)>();
 
@@ -226,14 +230,14 @@ namespace Game
 
                 if (slideBasedNoteObjectInstance)
                 {
-                    slideBasedNoteObjectInstance.order = -order;
+                    slideBasedNoteObjectInstance.order = -_slideOrder;
                     slideBasedNoteObjectInstance.timing = noteDataObject.Timing;
                     slideBasedNoteObjectInstance.slideType = slide.Type;
                     slideBasedNoteObjectInstance.isEach = (slidesGroupedByWaitDuration
                         .Find(x => x.waitDuration == slide.WaitDuration).Item2?.Count ?? 1) > 1;
                     slideBasedNoteObjectInstance.suddenlyAppears = slide.SuddenlyAppears;
 
-                    order--;
+                    _slideOrder -= slideBasedNoteObjectInstance.slideArrowCount;
 
                     SlideList.Add(slideBasedNoteObjectInstance);
 
