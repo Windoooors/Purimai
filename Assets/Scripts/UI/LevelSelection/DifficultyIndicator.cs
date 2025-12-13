@@ -77,7 +77,23 @@ namespace UI.LevelSelection
             if (args.SensorId == "A3")
                 ChangeDifficulty(1);
             if (args.SensorId == "A5")
+            {
+                var isHolding = LevelListController.GetInstance().levelList.isHolding;
+                
+                LevelListController.GetInstance().levelList.EndHoldingUp();
+                LevelListController.GetInstance().levelList.EndHoldingDown();
+                
+                if (isHolding)
+                    return;
+
+                ClearMotion(true);
+                
+                SimulatedSensor.OnTap = null;
+                SimulatedSensor.OnHold = null;
+                SimulatedSensor.OnLeave = null;
+                
                 StartCoroutine(EnterLevel());
+            }
         }
 
         private IEnumerator EnterLevel()
@@ -114,10 +130,6 @@ namespace UI.LevelSelection
 
                 break;
             }
-
-            SimulatedSensor.OnTap = null;
-            SimulatedSensor.OnHold = null;
-            SimulatedSensor.OnLeave = null;
 
             _originalListPosition = levelListController.levelList.transform.position;
             _originalDifficultyIndicatorPosition = transform.position;

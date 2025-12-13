@@ -328,7 +328,7 @@ namespace Game.Notes
             if (Slided)
                 return;
 
-            var deltaTiming = _slideJudgeTiming - ChartPlayer.Instance.time + ChartPlayer.Instance.judgeDelay;
+            var deltaTiming = _slideJudgeTiming - ChartPlayer.Instance.GetTime() + ChartPlayer.Instance.judgeDelay;
 
             var absDeltaTiming = math.abs(deltaTiming);
 

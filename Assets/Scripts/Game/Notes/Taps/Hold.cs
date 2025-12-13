@@ -34,9 +34,9 @@ namespace Game.Notes.Taps
         private bool _lineMoving;
         private bool _moving;
 
-        private int _nowEmergingDuration;
+        private int _nowEmergingTimePosition;
 
-        public void Update()
+        private void Update()
         {
             if (!ChartPlayer.Instance.isPlaying || holdJudged)
                 return;
@@ -152,18 +152,19 @@ namespace Game.Notes.Taps
 
             holdTransform.localScale = Vector3.one;
 
-            _nowEmergingDuration = EmergingDuration - (timing - ChartPlayer.Instance.time);
+            _nowEmergingTimePosition = EmergingDuration - (timing - ChartPlayer.Instance.time);
 
-            if (_nowEmergingDuration <= Math.Max(EmergingDuration, duration))
+            if (_nowEmergingTimePosition <= Math.Max(EmergingDuration, duration))
             {
                 if ((_distance > _grossHoldSize && EmergingDuration < duration) ||
-                    (EmergingDuration >= duration && _nowEmergingDuration < duration))
+                    (EmergingDuration >= duration && _nowEmergingTimePosition < duration))
                 {
                     _grossHoldSize += Speed * Time.deltaTime;
                     holdTransform.Translate(0.5f * Speed * Time.deltaTime * Vector3.up);
                 }
-                else if (_nowEmergingDuration > duration)
+                else if (_nowEmergingTimePosition > duration)
                 {
+                    holdEndSpriteRenderer.enabled = true;
                     holdEndSpriteRenderer.color = Color.white;
                     holdEnd.Translate(Speed * Time.deltaTime * Vector3.up);
                     holdTransform.Translate(Speed * Time.deltaTime * Vector3.up);
@@ -171,6 +172,7 @@ namespace Game.Notes.Taps
             }
             else
             {
+                holdEndSpriteRenderer.enabled = true;
                 holdEndSpriteRenderer.color = Color.white;
                 holdEnd.Translate(Speed * Time.deltaTime * Vector3.up);
                 _grossHoldSize -= Speed * Time.deltaTime;
@@ -188,7 +190,7 @@ namespace Game.Notes.Taps
             }
 
             if (ChartPlayer.Instance.time >= timing)
-                TrimHold(_nowEmergingDuration < duration);
+                TrimHold(_nowEmergingTimePosition < duration);
 
             holdSpriteRenderer.size = new Vector2(holdSpriteRenderer.size.x, _initialHoldSize + _grossHoldSize);
         }
@@ -213,7 +215,7 @@ namespace Game.Notes.Taps
             if (indexInLane != 0 && !noteGenerator.LaneList[lane - 1][indexInLane - 1].headJudged)
                 return;
 
-            var deltaTiming = timing - ChartPlayer.Instance.time + ChartPlayer.Instance.judgeDelay;
+            var deltaTiming = timing - ChartPlayer.Instance.GetTime() + ChartPlayer.Instance.judgeDelay;
 
             var judgeSettings = ChartPlayer.Instance.tapJudgeSettings;
 
@@ -260,7 +262,9 @@ namespace Game.Notes.Taps
             if (!headJudged)
                 return;
 
-            if (ChartPlayer.Instance.time < timing || ChartPlayer.Instance.time > timing + duration +
+            var time = ChartPlayer.Instance.GetTime();
+
+            if (time < timing || time > timing + duration +
                 ChartPlayer.Instance.holdTailJudgeSettings.greatTiming + ChartPlayer.Instance.judgeDelay)
                 return;
 
@@ -268,7 +272,7 @@ namespace Game.Notes.Taps
 
             _glowAnimator.SetTrigger("Reset");
 
-            var deltaTiming = timing + duration - ChartPlayer.Instance.time + ChartPlayer.Instance.judgeDelay;
+            var deltaTiming = timing + duration - time + ChartPlayer.Instance.judgeDelay;
 
             var absDeltaTiming = math.abs(deltaTiming);
 

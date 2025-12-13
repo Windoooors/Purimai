@@ -5,6 +5,7 @@ using Game.ChartManagement;
 using Game.Notes;
 using Game.Notes.Slides;
 using Game.Notes.Taps;
+using UI.GameSettings;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -37,11 +38,11 @@ namespace Game
             new(), new(), new(), new()
         };
 
-        public readonly List<SlideBasedNote> SlideList = new();
-
         private GameObject _noteParent;
 
         private int _slideOrder;
+
+        public List<int> criticalTimeList { get; private set; }
 
         private void Awake()
         {
@@ -58,8 +59,18 @@ namespace Game
 
             _slideOrder = 0;
 
+            var audioOffset = SettingsPool.GetValue("game.delay") / 1000f;
+
+            var criticalTimeHashSet = new HashSet<int>();
+
             foreach (var noteDataObject in noteDataObjects)
             {
+                criticalTimeHashSet.Add((int)((noteDataObject.TimingInSeconds - audioOffset) * 1000));
+
+                foreach (var hold in noteDataObject.HoldDataObjects)
+                    criticalTimeHashSet.Add(
+                        (int)((noteDataObject.TimingInSeconds + hold.HoldDurationInSeconds - audioOffset) * 1000));
+
                 var isEach = noteDataObject.TapDataObjects.Length + noteDataObject.HoldDataObjects.Length > 1;
                 //var isSlideEach = noteDataObject.SlideDataObjects.Length > 1;
 
@@ -75,6 +86,9 @@ namespace Game
             foreach (var lane in LaneList)
                 for (var i = lane.Count - 1; i >= 0; i--)
                     lane[i].RegisterTapEvent();
+
+            criticalTimeList = criticalTimeHashSet.ToList();
+            criticalTimeList.Sort();
         }
 
         private void GenerateTaps(NoteDataObject noteDataObject, bool isEach, int order)
@@ -238,8 +252,6 @@ namespace Game
                     slideBasedNoteObjectInstance.suddenlyAppears = slide.SuddenlyAppears;
 
                     _slideOrder -= slideBasedNoteObjectInstance.slideArrowCount;
-
-                    SlideList.Add(slideBasedNoteObjectInstance);
 
                     slideBasedNoteObjectInstance.transform.parent = _noteParent.transform;
                 }

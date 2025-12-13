@@ -135,6 +135,18 @@ namespace UI
             }
         }
 
+        public void UnloadedResources()
+        {
+            SongFMODSound.release();
+            SongFMODSound.clearHandle();
+            BlurredSongCoverAsBackgroundDecodedImage.Dispose();
+            BlurredSongCoverDecodedImage.Dispose();
+            BlurredSongCoverAsBackgroundDecodedImage = null;
+            BlurredSongCoverDecodedImage = null;
+            BlurredSongCoverGenerated = false;
+            SongLoaded = false;
+        }
+
         private static void AddUsedCharacters(string usedCharacters)
         {
             foreach (var character in usedCharacters) UsedCharacters.Add(character);
@@ -170,9 +182,13 @@ namespace UI
 
         public void LoadSongClip()
         {
+            if (SongLoaded)
+                return;
+
             var system = RuntimeManager.CoreSystem;
 
             var mode = MODE.DEFAULT |
+                       MODE.CREATESTREAM |
                        MODE.NONBLOCKING |
                        MODE._2D;
 

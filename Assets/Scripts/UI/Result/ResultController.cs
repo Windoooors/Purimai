@@ -284,6 +284,8 @@ namespace UI.Result
 
         private void Retry()
         {
+            ClearMotion(true);
+            
             SimulatedSensor.OnTap = null;
             SimulatedSensor.OnHold = null;
             SimulatedSensor.OnLeave = null;
@@ -325,6 +327,8 @@ namespace UI.Result
 
         private void ReturnToLevelSelector()
         {
+            ClearMotion(true);
+            
             LevelListController.GetInstance().levelSelectionUiLayer.gameObject.SetActive(true);
 
             DifficultyIndicator.GetInstance().SetScoreIndicatorContent(_maidata.MaidataDirectoryName, _difficultyIndex);
@@ -332,6 +336,8 @@ namespace UI.Result
             SimulatedSensor.OnTap = null;
             SimulatedSensor.OnHold = null;
             SimulatedSensor.OnLeave = null;
+
+            _maidata.UnloadedResources();
 
             var originalPosition =
                 resultDifficultyIndicatorCanvasGroup.transform.position;

@@ -95,7 +95,7 @@ namespace Game.ChartManagement
 
                 if (isNotSoleTimingMark)
                     noteDataObject = new NoteDataObject(match.Groups[0].Value, (int)((_time + _firstNoteTime) * 1000),
-                        _bpm);
+                        _bpm, _time + _firstNoteTime);
 
                 _time += 4 * (60f / _bpm / _noteValue);
                 _chartString = NoteRegex.Replace(_chartString, "", 1).Trim();
@@ -117,9 +117,12 @@ namespace Game.ChartManagement
         public readonly TapDataObject[] TapDataObjects;
         public readonly int Timing;
 
-        public NoteDataObject(string noteString, int timing, double bpm)
+        public readonly double TimingInSeconds;
+
+        public NoteDataObject(string noteString, int timing, double bpm, double timingInSeconds)
         {
             Timing = timing;
+            TimingInSeconds = timingInSeconds;
 
             var briefEachTapRegex = new Regex("([0-8])([0-8]),");
             var briefEachTapMatch = briefEachTapRegex.Match(noteString);
@@ -167,6 +170,7 @@ namespace Game.ChartManagement
                     holds.Add(new HoldDataObject
                     {
                         HoldDuration = (int)(holdMatch.HoldDuration * 1000),
+                        HoldDurationInSeconds = holdMatch.HoldDuration,
                         Lane = lane
                     });
 
@@ -393,6 +397,7 @@ namespace Game.ChartManagement
         public class HoldDataObject : TapDataObjectBase
         {
             public int HoldDuration;
+            public double HoldDurationInSeconds;
         }
 
         public class SlideDataObject

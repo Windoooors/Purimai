@@ -21406,6 +21406,16 @@ MonoBehaviour:
     topRight: {r: 0, g: 0, b: 0, a: 1}
     bottomLeft: {r: 0, g: 0, b: 0, a: 1}
     bottomRight: {r: 0, g: 0, b: 0, a: 1}
+  soundFileNameData:
+    perfectSoundPath: perfect.wav
+    greatSoundPath: great.wav
+    goodSoundPath: good.wav
+    breakExtraSoundPath: break_extra_score.wav
+    breakPerfectSoundPath: break_perfect.wav
+    breakGreatSoundPath: break_great.wav
+    slideSoundPath: slide.wav
+    criticalSoundPath: critical_sound.wav
+    preparatoryBeatSoundPath: preparatory_beat.wav
 --- !u!1 &2079231106
 GameObject:
   m_ObjectHideFlags: 0

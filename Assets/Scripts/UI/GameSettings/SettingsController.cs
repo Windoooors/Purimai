@@ -80,6 +80,9 @@ namespace UI.GameSettings
             });
 
             SimulatedSensor.Enabled = false;
+            
+            LevelListController.GetInstance().levelList.EndHoldingUp();
+            LevelListController.GetInstance().levelList.EndHoldingDown();
 
             SimulatedSensor.OnTap = (_, args) =>
             {
@@ -112,6 +115,9 @@ namespace UI.GameSettings
             {
                 LevelListController.GetInstance().ShowButton();
             }
+            
+            settingsList.EndHoldingUp();
+            settingsList.EndHoldingDown();
 
             SimulatedSensor.Enabled = false;
 

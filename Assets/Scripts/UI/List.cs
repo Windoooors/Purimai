@@ -42,7 +42,7 @@ namespace UI
         private int _holdDirection;
         private float _holdTime;
 
-        private bool _isHolding;
+        [FormerlySerializedAs("_isHolding")] public bool isHolding;
 
         private bool _isSelectingByHolding;
         private ListItemBase _lastItem;
@@ -56,10 +56,10 @@ namespace UI
         public ItemDataBase[] AllData;
 
         public EventHandler<ListEventArgs> OnItemSelected;
-
+        
         private void Update()
         {
-            if (_isHolding)
+            if (isHolding)
                 _holdTime += Time.deltaTime;
 
             if (_holdTime > 0.5f && !_isSelectingByHolding)
@@ -104,36 +104,36 @@ namespace UI
 
         private void StartHoldingDown()
         {
-            if (_isHolding)
+            if (isHolding)
                 return;
 
-            _isHolding = true;
+            isHolding = true;
             _holdDirection = 1;
         }
 
         private void StartHoldingUp()
         {
-            if (_isHolding)
+            if (isHolding)
                 return;
 
-            _isHolding = true;
+            isHolding = true;
             _holdDirection = -1;
         }
 
-        private void EndHoldingDown()
+        public void EndHoldingDown()
         {
-            if (!_isHolding || _holdDirection != 1) return;
+            if (!isHolding || _holdDirection != 1) return;
 
-            _isHolding = false;
+            isHolding = false;
             _holdTime = 0;
             _isSelectingByHolding = false;
         }
 
-        private void EndHoldingUp()
+        public void EndHoldingUp()
         {
-            if (!_isHolding || _holdDirection != -1) return;
+            if (!isHolding || _holdDirection != -1) return;
 
-            _isHolding = false;
+            isHolding = false;
             _holdTime = 0;
             _isSelectingByHolding = false;
         }
