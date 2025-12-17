@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem.EnhancedTouch;
+using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.SceneManagement;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
@@ -45,7 +46,9 @@ namespace Game
             if (_activeFingers.Count > 0)
                 StartCoroutine(TriggerEvent(() =>
                 {
-                    if (Enabled) OnHold?.Invoke(this, new TouchEventArgs(settings.sensorId));
+                    if (Enabled)
+                        OnHold?.Invoke(this,
+                            new TouchEventArgs(settings.sensorId));
                 }));
         }
 

@@ -187,6 +187,26 @@ MonoBehaviour:
     m_Key: settings.game.score_indicator_type.score
     m_Metadata:
       m_Items: []
+  - m_Id: 12684111637372928
+    m_Key: settings.game.volume.song
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12684168176590848
+    m_Key: settings.game.volume.tap
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12684299626078208
+    m_Key: settings.game.volume.break
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12684403716120576
+    m_Key: settings.game.volume.slide
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12684929446961152
+    m_Key: settings.game.volume.critical_sound
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

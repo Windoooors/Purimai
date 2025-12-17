@@ -4,6 +4,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using FMOD;
 using FMODUnity;
+using Game;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
@@ -59,6 +60,7 @@ namespace UI
         public DecodedImage BlurredSongCoverDecodedImage;
         public bool BlurredSongCoverGenerated;
         public bool CoverDataLoaded;
+        public bool LoadingSong;
 
         public DecodedImage SongCoverDecodedImage;
 
@@ -160,17 +162,67 @@ namespace UI
                 return string.Empty;
 
             var contentStart = startIndex + startToken.Length;
-            var nextToken = $"&inote_{i + 1}=";
-            var nextIndex = maidataString.IndexOf(nextToken, contentStart, StringComparison.Ordinal);
+            int endIndex = -1;
+            
+            int eSearch = contentStart;
+            while (true)
+            {
+                int eIndex = maidataString.IndexOf('E', eSearch);
+                if (eIndex < 0)
+                    break;
 
-            if (nextIndex < 0)
-                return maidataString.Substring(contentStart);
+                int nextPos = eIndex + 1;
+                if (nextPos >= maidataString.Length || maidataString[nextPos] == '\n')
+                {
+                    endIndex = eIndex;
+                    break;
+                }
 
-            return maidataString.Substring(contentStart, nextIndex - contentStart);
+                eSearch = eIndex + 1;
+            }
+            
+            if (endIndex < 0)
+            {
+                int searchPos = contentStart;
+
+                while (true)
+                {
+                    int tokenPos = maidataString.IndexOf("&inote_", searchPos, StringComparison.Ordinal);
+                    if (tokenPos < 0)
+                        break;
+
+                    int numberStart = tokenPos + "&inote_".Length;
+                    int numberEnd = maidataString.IndexOf('=', numberStart);
+                    if (numberEnd < 0)
+                        break;
+
+                    if (int.TryParse(
+                            maidataString.Substring(numberStart, numberEnd - numberStart),
+                            out int foundIndex) &&
+                        foundIndex > i)
+                    {
+                        endIndex = tokenPos;
+                        break;
+                    }
+
+                    searchPos = numberEnd + 1;
+                }
+            }
+            
+            if (endIndex < 0)
+                endIndex = maidataString.Length;
+
+            return maidataString.Substring(contentStart, endIndex - contentStart);
         }
+
+        private bool _loadingCover;
 
         public void LoadSongCover()
         {
+            if (_loadingCover)
+                return;
+            
+            _loadingCover = true;
             using var image = File.Exists(_songCoverPath)
                 ? Image.Load<Rgba32>(_songCoverPath)
                 : new Image<Rgba32>(50, 50, new Rgba32(0.5f, 0.5f, 0.5f));
@@ -178,19 +230,26 @@ namespace UI
             SongCoverDecodedImage = new DecodedImage(image);
 
             CoverDataLoaded = true;
+            _loadingCover = false;
         }
 
         public void LoadSongClip()
         {
+            if (LoadingSong)
+                return;
+            
             if (SongLoaded)
                 return;
 
-            var system = RuntimeManager.CoreSystem;
+            LoadingSong = true;
+            
+
+            var system = SoundEffectManager.System;
 
             var mode = MODE.DEFAULT |
                        MODE.CREATESTREAM |
                        MODE.NONBLOCKING |
-                       MODE._2D;
+                       MODE._2D | MODE.ACCURATETIME;
 
             var result = system.createSound(SongPath, mode, out var sound);
 
@@ -199,6 +258,7 @@ namespace UI
             SongFMODSound = sound;
 
             SongLoaded = true;
+            LoadingSong = false;
         }
 
         public void GenerateBlurredCover()

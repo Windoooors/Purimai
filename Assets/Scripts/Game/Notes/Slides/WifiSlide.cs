@@ -17,6 +17,8 @@ namespace Game.Notes.Slides
         private bool _lastRSegmentTouchedByHolding;
 
         private bool _sensorJumped;
+
+        private bool _slideStarted;
         private int _touchedLSegmentIndex;
         private int _touchedMSegmentIndex;
         private int _touchedRSegmentIndex;
@@ -114,7 +116,7 @@ namespace Game.Notes.Slides
             if (touchedSegmentsIndex == segments.Length)
                 return;
 
-            if (timing > ChartPlayer.Instance.time)
+            if (timing > ChartPlayer.Instance.GetTime())
                 return;
 
             var sensorJumped =
@@ -188,6 +190,12 @@ namespace Game.Notes.Slides
             if (segmentToBeConcealedIndex != -1 &&
                 segmentToBeConcealedIndex - lastSegmentToBeConcealedIndex > 0)
             {
+                if (!_slideStarted)
+                {
+                    PlaySlideSound();
+                    _slideStarted = true;
+                }
+
                 ConcealSegment(segmentToBeConcealedIndex, isOnHold ? false : _sensorJumped);
                 if (!isOnHold)
                     _sensorJumped = false;

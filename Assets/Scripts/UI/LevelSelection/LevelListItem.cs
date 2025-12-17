@@ -54,7 +54,6 @@ namespace UI.LevelSelection
             songArtistText.text = levelListItemData.Maidata.Artist;
             Maidata = levelListItemData.Maidata;
 
-
             Task.Run(() => { Maidata.LoadSongCover(); });
         }
 
@@ -86,13 +85,24 @@ namespace UI.LevelSelection
 
         public override void ProcessDeallocate()
         {
-            if (Maidata != null)
+            bool maidataIsShown = false;
+            
+            foreach (var itemObject in List.ItemObjectPool)
+            {
+                if (itemObject is LevelListItem levelListItem && levelListItem != this && levelListItem.Maidata == Maidata && levelListItem.shownOnScreen)
+                {
+                    maidataIsShown = true;
+                    break;
+                }
+            }
+
+            if (!maidataIsShown && Maidata != null)
             {
                 Maidata.SongCoverDecodedImage?.Dispose();
                 Maidata.SongCoverDecodedImage = null;
                 Maidata.CoverDataLoaded = false;
             }
-
+            
             songCoverMask.color = new Color(songCoverMask.color.r, songCoverMask.color.g, songCoverMask.color.b, 1);
 
             _textureUpdated = false;

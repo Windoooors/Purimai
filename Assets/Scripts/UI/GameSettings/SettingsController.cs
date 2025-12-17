@@ -60,8 +60,8 @@ namespace UI.GameSettings
                 itemObject.ProcessBind();
             }
 
+            Button.ClearAllMotion();
             Button.GetButton(7).Press();
-
             Button.HideAll(false, () =>
             {
                 var rightButton = Button.GetButton(2);
@@ -80,7 +80,7 @@ namespace UI.GameSettings
             });
 
             SimulatedSensor.Enabled = false;
-            
+
             LevelListController.GetInstance().levelList.EndHoldingUp();
             LevelListController.GetInstance().levelList.EndHoldingDown();
 
@@ -107,6 +107,7 @@ namespace UI.GameSettings
         {
             if (animated)
             {
+                Button.ClearAllMotion();
                 Button.GetButton(7).Press();
 
                 Button.HideAll(false, LevelListController.GetInstance().ShowButton);
@@ -115,7 +116,7 @@ namespace UI.GameSettings
             {
                 LevelListController.GetInstance().ShowButton();
             }
-            
+
             settingsList.EndHoldingUp();
             settingsList.EndHoldingDown();
 

@@ -11,9 +11,9 @@ namespace UI
         public readonly int Height;
         public readonly int Width;
 
-        public Sprite _sprite;
-
+        private Sprite _sprite;
         private Texture2D _texture;
+
         public byte[] PixelData;
 
         public DecodedImage(Image<Rgba32> image)
@@ -50,19 +50,22 @@ namespace UI
         public Sprite GetSprite()
         {
             if (!_sprite)
-                _sprite = Texture2DToSprite(ToTexture2D());
+                _sprite = Texture2DToSprite(GetTexture2D());
 
             return _sprite;
         }
 
-        private Texture2D ToTexture2D()
+        public Texture2D GetTexture2D()
         {
-            var texture = new Texture2D(Width, Height, TextureFormat.RGBA32, false);
+            if (!_texture)
+            {
+                _texture = new Texture2D(Width, Height, TextureFormat.RGBA32, false);
 
-            texture.SetPixelData(PixelData, 0);
-            texture.Apply(false, false);
+                _texture.SetPixelData(PixelData, 0);
+                _texture.Apply(false, false);
+            }
 
-            return texture;
+            return _texture;
         }
 
         private static Sprite Texture2DToSprite(Texture2D texture)

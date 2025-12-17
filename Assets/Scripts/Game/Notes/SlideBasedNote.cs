@@ -162,7 +162,7 @@ namespace Game.Notes
 
         private void Update()
         {
-            if (ChartPlayer.Instance.time >=
+            if (ChartPlayer.Instance.GetTime() >=
                 timing + (suddenlyAppears ? 0 : ChartPlayer.Instance.slideAppearanceDeltaTime) && !_revealed)
             {
                 SlideContentRoot.SetActive(true);
@@ -185,7 +185,7 @@ namespace Game.Notes
                 _revealed = true;
             }
 
-            if (ChartPlayer.Instance.time >= timing && !_waitingStarted)
+            if (ChartPlayer.Instance.GetTime() >= timing && !_waitingStarted)
             {
                 _waitingStarted = true;
                 foreach (var star in stars)
@@ -197,7 +197,7 @@ namespace Game.Notes
                         });
             }
 
-            if (ChartPlayer.Instance.time >= timing + waitDuration && !_starMovingStarted)
+            if (ChartPlayer.Instance.GetTime() >= timing + waitDuration && !_starMovingStarted)
             {
                 _starMovingStarted = true;
                 foreach (var star in stars)
@@ -207,7 +207,7 @@ namespace Game.Notes
                 }
             }
 
-            if (ChartPlayer.Instance.time >= timing + waitDuration + slideDuration && !_concealed && Slided)
+            if (ChartPlayer.Instance.GetTime() >= timing + waitDuration + slideDuration && !_concealed && Slided)
             {
                 foreach (var spriteRenderer in _slideArrowSpriteRenderers) spriteRenderer.enabled = false;
 
@@ -228,7 +228,7 @@ namespace Game.Notes
                 _concealed = true;
             }
 
-            if (ChartPlayer.Instance.time >=
+            if (ChartPlayer.Instance.GetTime() >=
                 timing + waitDuration + slideDuration +
                 ChartPlayer.Instance.slideJudgeSettings.fastGoodTiming + ChartPlayer.Instance.judgeDelay
                 && !_concealed && !Slided)
@@ -265,7 +265,7 @@ namespace Game.Notes
                 _concealed = true;
             }
 
-            if (ChartPlayer.Instance.time >=
+            if (ChartPlayer.Instance.GetTime() >=
                 timing + waitDuration + slideDuration +
                 ChartPlayer.Instance.slideJudgeSettings.fastGoodTiming +
                 ChartPlayer.Instance.slideJudgeDisplayAnimationDuration + ChartPlayer.Instance.judgeDelay
@@ -565,6 +565,11 @@ namespace Game.Notes
             transform.Rotate(new Vector3(0, 0, -45f * fromLaneIndex));
 
             pathRotation = -45f * fromLaneIndex;
+        }
+
+        protected void PlaySlideSound()
+        {
+            SoundEffectManager.PlaySlideSound();
         }
 
         protected virtual void UpdateJudgeDisplayDirection(int judgeSpriteGroupIndex)

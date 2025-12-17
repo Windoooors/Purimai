@@ -12,7 +12,7 @@ TagManager:
   - Water
   - UI
   - Sensors
-  - 
+  - Video
   - 
   - 
   - 
@@ -40,6 +40,9 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Android Background Cover
+    uniqueID: 3432812871
     locked: 0
   - name: Judge Circle
     uniqueID: 321762465

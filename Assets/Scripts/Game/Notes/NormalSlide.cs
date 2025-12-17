@@ -13,6 +13,8 @@ namespace Game.Notes
         private int _lastSegmentTouchedOnLeaveIndex = -1;
         private int _lastTouchedSegmentIndex = -1;
 
+        private bool _slideStarted;
+
         private HashSet<string> _tappedSegmentSensorIds = new();
 
         protected override void UpdateUniversalSegments()
@@ -54,7 +56,7 @@ namespace Game.Notes
 
         private void JudgeSegment(string sensorId, bool isFromHold)
         {
-            if (ChartPlayer.Instance.time < timing || !SlideContentRoot.activeSelf)
+            if (ChartPlayer.Instance.GetTime() < timing || !SlideContentRoot.activeSelf)
                 return;
 
             for (var i = _lastTouchedSegmentIndex + 1; i < segments.Length; i++)
@@ -71,6 +73,13 @@ namespace Game.Notes
                     if (i - 1 >= 0 && (jumpAllowed || segments[i - 1].touched))
                     {
                         segments[i - 1].touched = true;
+
+                        if (!_slideStarted)
+                        {
+                            PlaySlideSound();
+                            _slideStarted = true;
+                        }
+
                         ConcealSegment(i - 1, false);
                         _lastTouchedSegmentIndex = i - 1;
 
@@ -103,6 +112,13 @@ namespace Game.Notes
 
                     segments[i].touched = true;
                     ConcealSegment(i, touchingSequenceJumped);
+
+                    if (!_slideStarted)
+                    {
+                        PlaySlideSound();
+                        _slideStarted = true;
+                    }
+
                     _lastTouchedSegmentIndex = i;
                 }
             }

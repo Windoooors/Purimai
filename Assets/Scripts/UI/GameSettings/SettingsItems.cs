@@ -29,13 +29,13 @@ namespace UI.GameSettings
                 Identifier = "game",
                 Items = new List<SettingsItem>
                 {
-                    new("game.delay", new SuccessiveValueSet
+                    new("game.delay", new SuccessiveIntegerValueSet
                     {
                         DefaultValue = 0,
                         ValueUpperLimit = 1000,
                         ValueLowerLimit = -1000
                     }),
-                    new("game.judge_delay", new SuccessiveValueSet
+                    new("game.judge_delay", new SuccessiveIntegerValueSet
                     {
                         DefaultValue = 0,
                         ValueUpperLimit = 1000,
@@ -72,22 +72,47 @@ namespace UI.GameSettings
                     new("game.sensor_radius", 3, new[]
                     {
                         "1", "1.1", "1.2", "1.3", "1.4",
-                        "1.5", "1.6", "1.7", "1.8", "1.9", "2.0"
+                        "1.5", "1.6", "1.7", "1.8", "1.9", "2"
                     }, false),
                     new("game.sensor_radius.area.a", 0, new[]
                     {
                         "1", "1.1", "1.2", "1.3", "1.4",
-                        "1.5", "1.6", "1.7", "1.8", "1.9", "2.0"
+                        "1.5", "1.6", "1.7", "1.8", "1.9", "2"
                     }, false),
                     new("game.sensor_radius.area.b", 6, new[]
                     {
                         "1", "1.1", "1.2", "1.3", "1.4",
-                        "1.5", "1.6", "1.7", "1.8", "1.9", "2.0"
+                        "1.5", "1.6", "1.7", "1.8", "1.9", "2"
                     }, false),
                     new("game.sensor_radius.area.c", 6, new[]
                     {
                         "1", "1.1", "1.2", "1.3", "1.4",
-                        "1.5", "1.6", "1.7", "1.8", "1.9", "2.0"
+                        "1.5", "1.6", "1.7", "1.8", "1.9", "2"
+                    }, false),
+                    new("game.volume.song", 10, new[]
+                    {
+                        "0", "0.1", "0.2", "0.3", "0.4",
+                        "0.5", "0.6", "0.7", "0.8", "0.9", "1"
+                    }, false),
+                    new("game.volume.break", 10, new[]
+                    {
+                        "0", "0.1", "0.2", "0.3", "0.4",
+                        "0.5", "0.6", "0.7", "0.8", "0.9", "1"
+                    }, false),
+                    new("game.volume.tap", 10, new[]
+                    {
+                        "0", "0.1", "0.2", "0.3", "0.4",
+                        "0.5", "0.6", "0.7", "0.8", "0.9", "1"
+                    }, false),
+                    new("game.volume.slide", 10, new[]
+                    {
+                        "0", "0.1", "0.2", "0.3", "0.4",
+                        "0.5", "0.6", "0.7", "0.8", "0.9", "1"
+                    }, false),
+                    new("game.volume.critical_sound", 10, new[]
+                    {
+                        "0", "0.1", "0.2", "0.3", "0.4",
+                        "0.5", "0.6", "0.7", "0.8", "0.9", "1"
                     }, false)
                 }
             }
@@ -125,7 +150,7 @@ namespace UI.GameSettings
     {
     }
 
-    public class SuccessiveValueSet : ValueSet
+    public class SuccessiveIntegerValueSet : ValueSet
     {
         public int DefaultValue;
         public int ValueLowerLimit;

@@ -1,92 +1,218 @@
 using System;
 using FMOD;
 using FMODUnity;
+using UI.GameSettings;
+using UnityEngine;
+#if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
+using E7.Native;
+#endif
 
 namespace Game
 {
     public static class SoundEffectManager
     {
-        private static Sound _perfectSound;
-        private static Sound _greatSound;
-        private static Sound _goodSound;
-        private static Sound _breakExtraSound;
-        private static Sound _breakPerfectSound;
-        private static Sound _breakGreatSound;
-        private static Sound _slideSound;
+#if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
+        private static NativeAudioPointer _perfectSound;
+        private static NativeAudioPointer _greatSound;
+        private static NativeAudioPointer _goodSound;
+        private static NativeAudioPointer _breakExtraSound;
+        private static NativeAudioPointer _breakPerfectSound;
+        private static NativeAudioPointer _breakGreatSound;
+        private static NativeAudioPointer _slideSound;
+
+        private static NativeSource _tapNativeSource;
+        private static NativeSource _breakNativeSource;
+        private static NativeSource _breakExtraNativeSource;
+        private static NativeSource _slideNativeSource;
+#endif
+
         public static Sound CriticalSound;
         private static Sound _preparatoryBeatSound;
 
-        private static Channel _criticalSoundChannel;
-
         public static void PlayPreparatoryBeatSound()
         {
-            RuntimeManager.CoreSystem.playSound(_preparatoryBeatSound, default, false, out _);
+            throw new NotImplementedException();
         }
 
         public static void PlayPerfectSound()
         {
-            RuntimeManager.CoreSystem.playSound(_perfectSound, default, false, out _);
+#if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
+            if (_tapVolume == 0)
+                return;
+            
+            if (!_tapNativeSource.IsValid)
+            {
+                _tapNativeSource = NativeAudio.GetNativeSource(0);
+                _tapNativeSource.SetVolume(_tapVolume);
+            }
+            
+            _tapNativeSource.Play(_perfectSound);
+#endif
         }
 
         public static void PlayGreatSound()
         {
-            RuntimeManager.CoreSystem.playSound(_greatSound, default, false, out _);
+#if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
+            if (_tapVolume == 0)
+                return;
+            
+            if (!_tapNativeSource.IsValid)
+            {
+                _tapNativeSource = NativeAudio.GetNativeSource(0);
+                _tapNativeSource.SetVolume(_tapVolume);
+            }
+            
+            _tapNativeSource.Play(_greatSound);
+#endif
         }
 
         public static void PlayGoodSound()
         {
-            RuntimeManager.CoreSystem.playSound(_goodSound, default, false, out _);
+#if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
+            if (_tapVolume == 0)
+                return;
+            
+            if (!_tapNativeSource.IsValid)
+            {
+                _tapNativeSource = NativeAudio.GetNativeSource(0);
+                _tapNativeSource.SetVolume(_tapVolume);
+            }
+            
+            _tapNativeSource.Play(_goodSound);
+#endif
         }
 
         public static void PlayBreakExtraScoreSound()
         {
-            RuntimeManager.CoreSystem.playSound(_breakExtraSound, default, false, out _);
+#if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
+            if (_breakVolume == 0)
+                return;
+            
+            if (!_breakExtraNativeSource.IsValid)
+            {
+                _breakExtraNativeSource = NativeAudio.GetNativeSource(2);
+                _breakExtraNativeSource.SetVolume(_breakVolume);
+            }
+            
+            _breakExtraNativeSource.Play(_breakExtraSound);
+#endif
         }
 
         public static void PlayBreakPerfectSound()
         {
-            RuntimeManager.CoreSystem.playSound(_breakPerfectSound, default, false, out _);
+#if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
+            if (_breakVolume == 0)
+                return;
+            
+            if (!_breakNativeSource.IsValid)
+            {
+                _breakNativeSource = NativeAudio.GetNativeSource(3);
+                _breakNativeSource.SetVolume(_breakVolume);
+            }
+            
+            _tapNativeSource.Play(_breakPerfectSound);
+#endif
         }
 
         public static void PlayBreakGreatSound()
         {
-            RuntimeManager.CoreSystem.playSound(_breakGreatSound, default, false, out _);
+#if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
+            if (_breakVolume == 0)
+                return;
+            
+            if (!_breakNativeSource.IsValid)
+            {
+                _breakNativeSource = NativeAudio.GetNativeSource(3);
+                _breakNativeSource.SetVolume(_breakVolume);
+            }
+            
+            _tapNativeSource.Play(_breakGreatSound);
+#endif
         }
 
         public static void PlaySlideSound()
         {
-            RuntimeManager.CoreSystem.playSound(_slideSound, default, false, out _);
+#if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
+            if (_slideVolume == 0)
+                return;
+            
+            if (!_slideNativeSource.IsValid)
+            {
+                _slideNativeSource = NativeAudio.GetNativeSource(1);
+                _slideNativeSource.SetVolume(_slideVolume);
+            }
+            
+            _slideNativeSource.Play(_slideSound);
+#endif
+        }
+
+        private static float _tapVolume = 1;
+        private static float _breakVolume = 1;
+        private static float _slideVolume = 1;
+
+        public static FMOD.System System;
+
+        private static ChannelGroup _channelGroup;
+
+        public static ChannelGroup GetChannelGroup()
+        {
+            if (_channelGroup.hasHandle())
+                return _channelGroup;
+            
+            System.createChannelGroup("master", out _channelGroup);
+            return _channelGroup;
+        }
+
+        public static void ReleaseSystem()
+        {
+            //System.close();
         }
 
         public static void LoadAllSound(SoundPathData soundPathData)
         {
-            ReleaseSound(_perfectSound);
-            ReleaseSound(_greatSound);
-            ReleaseSound(_goodSound);
-            ReleaseSound(_breakExtraSound);
-            ReleaseSound(_breakPerfectSound);
-            ReleaseSound(_breakGreatSound);
-            ReleaseSound(_slideSound);
-            ReleaseSound(CriticalSound);
-            ReleaseSound(_preparatoryBeatSound);
+            Factory.System_Create(out System);
+            System.init(512, INITFLAGS.NORMAL, IntPtr.Zero);
 
-            _perfectSound = LoadSingleSound(soundPathData.perfectSoundPath);
-            _greatSound = LoadSingleSound(soundPathData.greatSoundPath);
-            _goodSound = LoadSingleSound(soundPathData.goodSoundPath);
-            _breakExtraSound = LoadSingleSound(soundPathData.breakExtraSoundPath);
-            _breakPerfectSound = LoadSingleSound(soundPathData.breakPerfectSoundPath);
-            _breakGreatSound = LoadSingleSound(soundPathData.breakGreatSoundPath);
-            _slideSound = LoadSingleSound(soundPathData.slideSoundPath);
-            CriticalSound = LoadSingleSound(soundPathData.criticalSoundPath);
-            _preparatoryBeatSound = LoadSingleSound(soundPathData.preparatoryBeatSoundPath);
+            System.createChannelGroup("master", out _channelGroup);
+            
+            _tapVolume = SettingsPool.GetValue("game.volume.tap") / 10f;
+            _breakVolume = SettingsPool.GetValue("game.volume.break") / 10f;
+            _slideVolume = SettingsPool.GetValue("game.volume.slide") / 10f;
+            SettingsController.OnSettingsChanged += (_, _) =>
+            {
+                _tapVolume = SettingsPool.GetValue("game.volume.tap") / 10f;
+                _breakVolume = SettingsPool.GetValue("game.volume.break") / 10f;
+                _slideVolume = SettingsPool.GetValue("game.volume.slide") / 10f;
+            };
+
+            ReleaseFMODSound(CriticalSound);
+            ReleaseFMODSound(_preparatoryBeatSound);
+
+            CriticalSound = LoadSingleFMODSound(soundPathData.criticalSoundPath);
+            _preparatoryBeatSound = LoadSingleFMODSound(soundPathData.preparatoryBeatSoundPath);
+
+#if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
+            NativeAudio.Initialize();
+
+            _perfectSound = NativeAudio.Load(soundPathData.perfectSoundPath, NativeAudio.LoadOptions.defaultOptions);
+            _breakExtraSound =
+ NativeAudio.Load(soundPathData.breakExtraSoundPath, NativeAudio.LoadOptions.defaultOptions);
+            _breakPerfectSound =
+ NativeAudio.Load(soundPathData.breakPerfectSoundPath, NativeAudio.LoadOptions.defaultOptions);
+            _breakGreatSound =
+ NativeAudio.Load(soundPathData.breakGreatSoundPath, NativeAudio.LoadOptions.defaultOptions);
+            _slideSound = NativeAudio.Load(soundPathData.slideSoundPath, NativeAudio.LoadOptions.defaultOptions);
+            _greatSound = NativeAudio.Load(soundPathData.greatSoundPath, NativeAudio.LoadOptions.defaultOptions);
+            _goodSound = NativeAudio.Load(soundPathData.goodSoundPath, NativeAudio.LoadOptions.defaultOptions);
+#endif
 
             return;
 
-            Sound LoadSingleSound(string path)
+            Sound LoadSingleFMODSound(string path)
             {
-                var system = RuntimeManager.CoreSystem;
+                var system = SoundEffectManager.System;
 
-                var mode = MODE.DEFAULT | MODE._2D;
+                var mode = MODE.DEFAULT | MODE._2D | MODE.CREATESAMPLE;
 
                 var result = system.createSound(path, mode, out var sound);
 
@@ -95,7 +221,7 @@ namespace Game
                 return sound;
             }
 
-            void ReleaseSound(Sound sound)
+            void ReleaseFMODSound(Sound sound)
             {
                 if (!sound.hasHandle())
                     return;

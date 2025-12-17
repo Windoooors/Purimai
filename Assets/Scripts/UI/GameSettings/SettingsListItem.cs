@@ -39,6 +39,12 @@ namespace UI.GameSettings
             }
         }
 
+        private void OnEnable()
+        {
+            if (Data != null)
+                ProcessBind();
+        }
+
         public override void ProcessBind()
         {
             if (Data is not SettingsListItemData settingsListItemData)
@@ -52,14 +58,25 @@ namespace UI.GameSettings
             titleLocalizeStringEvent.SetEntry($"settings.{settingsItem.Identifier}");
             titleBackgroundLocalizeStringEvent.SetEntry($"settings.{settingsItem.Identifier}");
             if (settingsItem.ValueSet is SeparatedValueSet separatedValueSet)
+            {
                 if (settingsItem.ManagedValueLocalization)
+                {
+                    valueLocalizeStringEvent.enabled = true;
                     valueLocalizeStringEvent.SetEntry(
                         $"settings.{settingsItem.Identifier}.{separatedValueSet.AvailableValues[SettingsPool.GetValue(_data.SettingsItem.Identifier)]}");
+                }
                 else
+                {
+                    valueLocalizeStringEvent.enabled = false;
                     valueText.text =
                         separatedValueSet.AvailableValues[SettingsPool.GetValue(_data.SettingsItem.Identifier)];
-            else if (settingsItem.ValueSet is SuccessiveValueSet)
+                }
+            }
+            else if (settingsItem.ValueSet is SuccessiveIntegerValueSet)
+            {
+                valueLocalizeStringEvent.enabled = false;
                 valueText.text = SettingsPool.GetValue(_data.SettingsItem.Identifier).ToString();
+            }
         }
 
         private void SelectRight()
@@ -96,15 +113,21 @@ namespace UI.GameSettings
                 SettingsPool.SetValue(_data.SettingsItem.Identifier, currentValue + direction);
 
                 if (_data.SettingsItem.ManagedValueLocalization)
+                {
+                    valueLocalizeStringEvent.enabled = true;
                     valueLocalizeStringEvent.SetEntry(
                         $"settings.{_data.SettingsItem.Identifier}.{separatedValueSet.AvailableValues[currentValue + direction]}");
+                }
                 else
+                {
+                    valueLocalizeStringEvent.enabled = false;
                     valueText.text =
                         separatedValueSet.AvailableValues[currentValue + direction];
+                }
             }
             else
             {
-                var successiveValueSet = (SuccessiveValueSet)_data.SettingsItem.ValueSet;
+                var successiveValueSet = (SuccessiveIntegerValueSet)_data.SettingsItem.ValueSet;
                 var currentValue = SettingsPool.GetValue(_data.SettingsItem.Identifier);
 
                 if ((currentValue > successiveValueSet.ValueUpperLimit - 1 && direction > 0) ||

@@ -285,7 +285,7 @@ namespace UI.Result
         private void Retry()
         {
             ClearMotion(true);
-            
+
             SimulatedSensor.OnTap = null;
             SimulatedSensor.OnHold = null;
             SimulatedSensor.OnLeave = null;
@@ -299,6 +299,7 @@ namespace UI.Result
                     ? 1.1f * Vector3.one
                     : Vector3.one;
 
+            Button.ClearAllMotion();
             Button.GetButton(3).Press();
             Button.HideAll(false);
 
@@ -328,7 +329,7 @@ namespace UI.Result
         private void ReturnToLevelSelector()
         {
             ClearMotion(true);
-            
+
             LevelListController.GetInstance().levelSelectionUiLayer.gameObject.SetActive(true);
 
             DifficultyIndicator.GetInstance().SetScoreIndicatorContent(_maidata.MaidataDirectoryName, _difficultyIndex);
@@ -336,8 +337,6 @@ namespace UI.Result
             SimulatedSensor.OnTap = null;
             SimulatedSensor.OnHold = null;
             SimulatedSensor.OnLeave = null;
-
-            _maidata.UnloadedResources();
 
             var originalPosition =
                 resultDifficultyIndicatorCanvasGroup.transform.position;
@@ -356,12 +355,14 @@ namespace UI.Result
                                 SceneManager.LoadScene("Empty");
                                 SceneManager.sceneLoaded += Register;
                                 difficultyIndicatorCanvasGroup.transform.position = originalPosition;
+                                _maidata.UnloadedResources();
                             }
                         )
                         .BindToAlpha(difficultyIndicatorCanvasGroup))
                     .Run()
             );
 
+            Button.ClearAllMotion();
             Button.GetButton(4).Press();
             Button.HideAll(false);
 

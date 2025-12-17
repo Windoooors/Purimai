@@ -11,6 +11,7 @@ namespace UI
         public bool shownOnScreen;
         [HideInInspector] public DecodedImage backgroundImage;
         public ItemDataBase Data;
+        public List List;
 
         private void Awake()
         {

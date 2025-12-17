@@ -49,12 +49,12 @@ namespace Game.Notes
         private Animator _judgeDisplayAnimator;
         private float _timeOnScreenWithBasicSpeed = 2.8f;
 
-        protected int EmergingDuration;
-
         protected bool IsAdxFlowSpeedStyle;
         protected float LineExpansionSpeed;
 
         protected GameObject NoteContentRoot;
+
+        protected int OnScreenTime;
 
         protected float Speed;
 
@@ -80,13 +80,10 @@ namespace Game.Notes
             var emergingDuration = _timeOnScreenWithBasicSpeed / ChartPlayer.Instance.flowSpeed;
 
             Speed = speed;
-            EmergingDuration = (int)(emergingDuration * 1000);
+            OnScreenTime = (int)(emergingDuration * 1000);
 
             transform.position = Vector3.zero;
             transform.rotation = Lanes.Instance.startPoints[laneIndex].rotation;
-
-            lineSpriteRenderer.color = new Color(1, 1, 1, 0);
-            lineTransform.localScale = NoteGenerator.Instance.originCircleScale * Vector3.one;
 
             _judgeDisplayAnimator = TapJudgeDisplayManager.Instance.judgeDisplayAnimators[laneIndex];
 
@@ -104,6 +101,49 @@ namespace Game.Notes
 
         public virtual void RegisterTapEvent()
         {
+        }
+
+        protected void PlayJudgeSound(bool isBreak, JudgeState state)
+        {
+            switch (state)
+            {
+                case JudgeState.CriticalPerfect:
+                    if (isBreak)
+                    {
+                        SoundEffectManager.PlayBreakPerfectSound();
+                        SoundEffectManager.PlayBreakExtraScoreSound();
+                    }
+                    else
+                    {
+                        SoundEffectManager.PlayPerfectSound();
+                    }
+
+                    break;
+                case JudgeState.Perfect:
+                case JudgeState.SemiCriticalPerfect:
+                    if (isBreak)
+                        SoundEffectManager.PlayBreakPerfectSound();
+                    else
+                        SoundEffectManager.PlayPerfectSound();
+
+                    break;
+                case JudgeState.SemiGreat:
+                case JudgeState.QuarterGreat:
+                case JudgeState.Great:
+                    if (isBreak)
+                        SoundEffectManager.PlayBreakGreatSound();
+                    else
+                        SoundEffectManager.PlayGreatSound();
+
+                    break;
+                case JudgeState.Good:
+                    if (isBreak)
+                        SoundEffectManager.PlayBreakGreatSound();
+                    else
+                        SoundEffectManager.PlayGoodSound();
+
+                    break;
+            }
         }
 
         protected void PlayJudgeAnimation()
@@ -152,7 +192,50 @@ namespace Game.Notes
         {
         }
 
-        protected (JudgeState, bool isFast, bool judged) GetJudgeState(int deltaTiming, JudgeSettings judgeSettings)
+        protected TapOrLineTransform GetTapOrLineTransform()
+        {
+            var currentPosition = ChartPlayer.Instance.GetTime();
+
+            var adjustedEmergingDuration = IsAdxFlowSpeedStyle ? OnScreenTime / 2 : OnScreenTime;
+
+            var startEmergingTiming = timing - adjustedEmergingDuration - OnScreenTime;
+            var startMovingTiming = timing - OnScreenTime;
+
+            var result = new TapOrLineTransform();
+
+            if (currentPosition > startEmergingTiming && currentPosition < startMovingTiming)
+            {
+                var factor = 1 - (startMovingTiming - currentPosition) / adjustedEmergingDuration;
+
+                result.Scale = factor * Vector3.one;
+                result.Alpha = factor;
+                result.PositionInLane = 0;
+                result.Shown = true;
+
+                return result;
+            }
+
+            if (currentPosition >= startMovingTiming)
+            {
+                var factor = (currentPosition - startMovingTiming) / OnScreenTime;
+
+                result.Scale = Vector3.one;
+                result.Alpha = 1;
+                result.PositionInLane = factor;
+                result.Shown = true;
+
+                return result;
+            }
+
+            result.Scale = Vector3.zero;
+            result.Alpha = 0;
+            result.PositionInLane = 0;
+            result.Shown = false;
+
+            return result;
+        }
+
+        protected (JudgeState, bool isFast, bool judged) GetJudgeState(float deltaTiming, JudgeSettings judgeSettings)
         {
             var absDeltaTiming = math.abs(deltaTiming);
 
@@ -187,6 +270,15 @@ namespace Game.Notes
                 state = JudgeState.CriticalPerfect;
 
             return (state, fast, true);
+        }
+
+        protected class TapOrLineTransform
+        {
+            public float Alpha;
+            public float PositionInLane;
+            public Vector3 Scale;
+
+            public bool Shown;
         }
     }
 }

@@ -30,7 +30,9 @@ namespace UI
         [FormerlySerializedAs("index")] public int dataIndex;
 
         public string indexPreferenceName;
-        public int visibleItemCount = 12;
+        public int visibleItemCount = 16;
+
+        [FormerlySerializedAs("_isHolding")] public bool isHolding;
 
         public readonly List<ListItemBase> ItemObjectPool = new();
 
@@ -41,8 +43,6 @@ namespace UI
         private ListItemBase _firstItem;
         private int _holdDirection;
         private float _holdTime;
-
-        [FormerlySerializedAs("_isHolding")] public bool isHolding;
 
         private bool _isSelectingByHolding;
         private ListItemBase _lastItem;
@@ -56,7 +56,7 @@ namespace UI
         public ItemDataBase[] AllData;
 
         public EventHandler<ListEventArgs> OnItemSelected;
-        
+
         private void Update()
         {
             if (isHolding)
@@ -97,7 +97,7 @@ namespace UI
         {
             while (_isSelectingByHolding)
             {
-                yield return new WaitForSeconds(0.2f);
+                yield return new WaitForSeconds(0.1f);
                 MoveSelection(_holdDirection);
             }
         }
@@ -218,6 +218,9 @@ namespace UI
 
                 normalItem.rectTransform.anchoredPosition = new Vector2(-5000, _top);
                 titleItem.rectTransform.anchoredPosition = new Vector2(-5000, _top);
+
+                normalItem.List = this;
+                titleItem.List = this;
 
                 ItemObjectPool.Add(normalItem);
                 ItemObjectPool.Add(titleItem);

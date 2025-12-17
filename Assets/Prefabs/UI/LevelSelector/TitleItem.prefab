@@ -239,6 +239,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rectTransform: {fileID: 0}
-  backgroundImage: {fileID: 0}
+  indexOnScreen: -1
+  shownOnScreen: 0
   categoryNameText: {fileID: 6019906965657243740}
   categoryNameStringEvent: {fileID: 6238040284725813220}

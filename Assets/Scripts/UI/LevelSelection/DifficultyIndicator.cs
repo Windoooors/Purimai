@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Threading.Tasks;
 using FMOD;
+using FMODUnity;
 using Game;
 using LitMotion;
 using LitMotion.Extensions;
@@ -48,6 +49,10 @@ namespace UI.LevelSelection
 
         private int _selectedDifficulty;
 
+        private Coroutine _songPlaybackCoroutine;
+
+        private Channel _songPreviewChannel;
+
         private void OnEnable()
         {
             LevelListController.GetInstance().levelList.OnItemSelected += OnLevelSelected;
@@ -55,12 +60,26 @@ namespace UI.LevelSelection
             SimulatedSensor.OnTap += OnTap;
 
             _instance = this;
+
+            if (_songPlaybackCoroutine != null)
+                _songPlaybackCoroutine = StartCoroutine(WaitAndPlaySong());
         }
 
         private void OnDisable()
         {
             SimulatedSensor.OnTap -= OnTap;
             LevelListController.GetInstance().levelList.OnItemSelected -= OnLevelSelected;
+
+            if (_songPlaybackCoroutine != null)
+            {
+                StopCoroutine(_songPlaybackCoroutine);
+                LMotion.Create(SettingsPool.GetValue("game.volume.song") / 10f, 0, 0.2f).WithOnComplete(() =>
+                    {
+                        _songPreviewChannel.stop();
+                        _songPreviewChannel.clearHandle();
+                    })
+                    .Bind(x => _songPreviewChannel.setVolume(x));
+            }
         }
 
         public static DifficultyIndicator GetInstance()
@@ -79,27 +98,35 @@ namespace UI.LevelSelection
             if (args.SensorId == "A5")
             {
                 var isHolding = LevelListController.GetInstance().levelList.isHolding;
-                
+
                 LevelListController.GetInstance().levelList.EndHoldingUp();
                 LevelListController.GetInstance().levelList.EndHoldingDown();
-                
+
                 if (isHolding)
                     return;
 
                 ClearMotion(true);
-                
+
                 SimulatedSensor.OnTap = null;
                 SimulatedSensor.OnHold = null;
                 SimulatedSensor.OnLeave = null;
-                
+
                 StartCoroutine(EnterLevel());
             }
         }
 
         private IEnumerator EnterLevel()
         {
+            if (_songPreviewChannel.hasHandle())
+                LMotion.Create(SettingsPool.GetValue("game.volume.song") / 10f, 0f, 0.2f).WithOnComplete(() =>
+                {
+                    _songPreviewChannel.stop();
+                    _songPreviewChannel.clearHandle();
+                }).Bind(x => _songPreviewChannel.setVolume(x));
+
             Scoreboard.Reset();
 
+            Button.ClearAllMotion();
             Button.GetButton(4).Press();
             Button.HideAll(false);
 
@@ -117,7 +144,10 @@ namespace UI.LevelSelection
                 Task.Run(() =>
                 {
                     maidata.GenerateBlurredCover();
-                    maidata.LoadSongClip();
+                    if (!maidata.CoverDataLoaded)
+                        maidata.LoadSongCover();
+                    if (!maidata.SongLoaded && !maidata.LoadingSong)
+                        maidata.LoadSongClip();
                 });
 
             while (true)
@@ -159,6 +189,8 @@ namespace UI.LevelSelection
 
         public void ReloadScene()
         {
+            SoundEffectManager.System.release();
+            
             var levelListController = LevelListController.GetInstance();
 
             var difficultyIndex =
@@ -198,14 +230,16 @@ namespace UI.LevelSelection
 
                 chartPlayer.SongClip = sound;
 
-                chartPlayer.backgroundImage.sprite = SettingsPool.GetValue("game.blurred_cover") == 1
-                    ? maidata.BlurredSongCoverAsBackgroundDecodedImage.GetSprite()
-                    : maidata.SongCoverDecodedImage.GetSprite();
+                chartPlayer.backgroundImage.texture = SettingsPool.GetValue("game.blurred_cover") == 1
+                    ? maidata.BlurredSongCoverAsBackgroundDecodedImage.GetTexture2D()
+                    : maidata.SongCoverDecodedImage.GetTexture2D();
 
                 chartPlayer.backgroundImage.transform.localScale =
                     SettingsPool.GetValue("game.blurred_cover") == 1
                         ? 1.1f * Vector3.one
                         : Vector3.one;
+
+                chartPlayer.LoadVideo(maidata.PvPath);
 
                 chartPlayer.InitializeCircleColor(difficultyIndex, maidata.IsUtage);
 
@@ -400,6 +434,60 @@ namespace UI.LevelSelection
             };
         }
 
+        private IEnumerator WaitAndPlaySong()
+        {
+            if (_songPreviewChannel.hasHandle())
+                LMotion.Create(SettingsPool.GetValue("game.volume.song") / 10f, 0f, 0.2f).WithOnComplete(() =>
+                {
+                    _songPreviewChannel.stop();
+                    _songPreviewChannel.clearHandle();
+                }).Bind(x => _songPreviewChannel.setVolume(x));
+
+            yield return new WaitForSeconds(0.5f);
+
+            var levelListController = LevelListController.GetInstance();
+
+            var maidata =
+                ((LevelListItemData)levelListController.levelList.AllData[levelListController.levelList.dataIndex])
+                .Maidata;
+
+            if (!maidata.SongLoaded || !maidata.BlurredSongCoverGenerated)
+                Task.Run(() =>
+                {
+                    if (!maidata.SongLoaded && !maidata.LoadingSong)
+                        maidata.LoadSongClip();
+                });
+
+            while (true)
+            {
+                yield return null;
+
+                if (!maidata.SongLoaded)
+                    continue;
+
+                break;
+            }
+
+            SoundEffectManager.System.playSound(maidata.SongFMODSound, default, false, out _songPreviewChannel);
+            _songPreviewChannel.setVolume(SettingsPool.GetValue("game.volume.song") / 10f);
+
+            while (true)
+            {
+                yield return null;
+
+                _songPreviewChannel.isPlaying(out var isPlaying);
+
+                if (!isPlaying)
+                {
+                    _songPreviewChannel.stop();
+                    _songPreviewChannel.clearHandle();
+
+                    SoundEffectManager.System.playSound(maidata.SongFMODSound, default, false, out _songPreviewChannel);
+                    _songPreviewChannel.setVolume(SettingsPool.GetValue("game.volume.song") / 10f);
+                }
+            }
+        }
+
         private void OnLevelSelected(object sender, ListEventArgs e)
         {
             if (sender is not List list)
@@ -483,6 +571,15 @@ namespace UI.LevelSelection
                     LevelListController.GetInstance().levelList.GetSelectedItemObject().transform.position.y,
                     transform.position.z);
             }
+
+            if (_lastSelectedMaidata != levelListItemData.Maidata)
+            {
+                if (_songPlaybackCoroutine != null)
+                    StopCoroutine(_songPlaybackCoroutine);
+                _songPlaybackCoroutine = StartCoroutine(WaitAndPlaySong());
+            }
+
+            _lastSelectedMaidata = levelListItemData.Maidata;
         }
     }
 }

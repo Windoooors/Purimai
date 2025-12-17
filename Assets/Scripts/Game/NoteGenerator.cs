@@ -32,6 +32,8 @@ namespace Game
 
         public float originCircleScale = 0.250f;
 
+        public float endingTime;
+
         public readonly List<TapBasedNote>[] LaneList =
         {
             new(), new(), new(), new(),
@@ -127,6 +129,9 @@ namespace Game
                 tapObjectInstance.indexInLane = LaneList[laneIndex].Count - 1;
 
                 tapObjectInstance.transform.parent = _noteParent.transform;
+
+                if (noteDataObject.Timing > endingTime)
+                    endingTime = noteDataObject.Timing;
             }
         }
 
@@ -186,6 +191,9 @@ namespace Game
                 holdObjectInstance.indexInLane = LaneList[laneIndex].Count - 1;
 
                 holdObjectInstance.transform.parent = _noteParent.transform;
+
+                if (noteDataObject.Timing + holdObjectInstance.duration > endingTime)
+                    endingTime = noteDataObject.Timing + holdObjectInstance.duration;
             }
         }
 
@@ -254,6 +262,9 @@ namespace Game
                     _slideOrder -= slideBasedNoteObjectInstance.slideArrowCount;
 
                     slideBasedNoteObjectInstance.transform.parent = _noteParent.transform;
+
+                    if (noteDataObject.Timing + slide.WaitDuration + slide.SlideDuration > endingTime)
+                        endingTime = noteDataObject.Timing + slide.WaitDuration + slide.SlideDuration;
                 }
             }
         }

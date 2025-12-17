@@ -21,7 +21,7 @@ namespace UI.GameSettings
             foreach (var category in SettingsItems.Settings)
             foreach (var settingsItem in category.Items)
                 if (settingsItem.Identifier == identifier)
-                    if (settingsItem.ValueSet is SuccessiveValueSet successiveValueSet)
+                    if (settingsItem.ValueSet is SuccessiveIntegerValueSet successiveValueSet)
                         value = successiveValueSet.DefaultValue;
                     else if (settingsItem.ValueSet is SeparatedValueSet separatedValueSet)
                         value = separatedValueSet.DefaultValueIndex;

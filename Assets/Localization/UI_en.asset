@@ -35,11 +35,11 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 328744296448
-    m_Localized: Flow Speed Type
+    m_Localized: Note Speed Style
     m_Metadata:
       m_Items: []
   - m_Id: 361648611328
-    m_Localized: Flow Speed
+    m_Localized: Note Speed
     m_Metadata:
       m_Items: []
   - m_Id: 410050879488
@@ -179,7 +179,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 7623114899841024
-    m_Localized: Show Achievement Or Score
+    m_Localized: Scoring Method
     m_Metadata:
       m_Items: []
   - m_Id: 7623446728007680
@@ -188,6 +188,26 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 7623505725087744
     m_Localized: Score
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12684111637372928
+    m_Localized: Song Volume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12684168176590848
+    m_Localized: Tap and Hold Note Sound Volume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12684299626078208
+    m_Localized: Break Note Sound Volume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12684403716120576
+    m_Localized: Slide Note Sound Volume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12684929446961152
+    m_Localized: Cue Sound Volume
     m_Metadata:
       m_Items: []
   references:

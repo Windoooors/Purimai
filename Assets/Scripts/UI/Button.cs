@@ -66,6 +66,11 @@ namespace UI
             }
         }
 
+        public static void ClearAllMotion()
+        {
+            foreach (var button in Buttons) button.ClearMotion(true);
+        }
+
         public void Hide(bool clearList = true, Action callback = null)
         {
             if (_hidden)

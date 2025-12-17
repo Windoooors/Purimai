@@ -61,32 +61,37 @@ namespace UI
             {
                 var soundPathData = new SoundEffectManager.SoundPathData();
 
-                yield return StartCoroutine(StartDownloadSound(soundFileNameData.perfectSoundPath));
-                yield return StartCoroutine(StartDownloadSound(soundFileNameData.greatSoundPath));
-                yield return StartCoroutine(StartDownloadSound(soundFileNameData.goodSoundPath));
-                yield return StartCoroutine(StartDownloadSound(soundFileNameData.breakExtraSoundPath));
-                yield return StartCoroutine(StartDownloadSound(soundFileNameData.breakPerfectSoundPath));
-                yield return StartCoroutine(StartDownloadSound(soundFileNameData.breakGreatSoundPath));
                 yield return StartCoroutine(StartDownloadSound(soundFileNameData.criticalSoundPath));
-                yield return StartCoroutine(StartDownloadSound(soundFileNameData.slideSoundPath));
                 yield return StartCoroutine(StartDownloadSound(soundFileNameData.preparatoryBeatSoundPath));
 
-                soundPathData.perfectSoundPath = PathConstructor(soundFileNameData.perfectSoundPath);
-                soundPathData.greatSoundPath = PathConstructor(soundFileNameData.greatSoundPath);
-                soundPathData.goodSoundPath = PathConstructor(soundFileNameData.goodSoundPath);
-                soundPathData.breakExtraSoundPath = PathConstructor(soundFileNameData.breakExtraSoundPath);
-                soundPathData.breakPerfectSoundPath = PathConstructor(soundFileNameData.breakPerfectSoundPath);
-                soundPathData.breakGreatSoundPath = PathConstructor(soundFileNameData.breakGreatSoundPath);
-                soundPathData.slideSoundPath = PathConstructor(soundFileNameData.slideSoundPath);
-                soundPathData.criticalSoundPath = PathConstructor(soundFileNameData.criticalSoundPath);
-                soundPathData.preparatoryBeatSoundPath = PathConstructor(soundFileNameData.preparatoryBeatSoundPath);
+                soundPathData.perfectSoundPath = StreamingAssetsPathConstructor(soundFileNameData.perfectSoundPath);
+                soundPathData.greatSoundPath = StreamingAssetsPathConstructor(soundFileNameData.greatSoundPath);
+                soundPathData.goodSoundPath = StreamingAssetsPathConstructor(soundFileNameData.goodSoundPath);
+                soundPathData.breakExtraSoundPath =
+                    StreamingAssetsPathConstructor(soundFileNameData.breakExtraSoundPath);
+                soundPathData.breakPerfectSoundPath =
+                    StreamingAssetsPathConstructor(soundFileNameData.breakPerfectSoundPath);
+                soundPathData.breakGreatSoundPath =
+                    StreamingAssetsPathConstructor(soundFileNameData.breakGreatSoundPath);
+                soundPathData.slideSoundPath = StreamingAssetsPathConstructor(soundFileNameData.slideSoundPath);
+
+                soundPathData.criticalSoundPath = PersistentPathConstructor(soundFileNameData.criticalSoundPath);
+                soundPathData.preparatoryBeatSoundPath =
+                    PersistentPathConstructor(soundFileNameData.preparatoryBeatSoundPath);
 
                 SoundEffectManager.LoadAllSound(soundPathData);
 
                 yield break;
-                
-                string PathConstructor(string fileName) =>
-                    Path.Combine(Application.persistentDataPath, "DefaultSFX/GameSFX/" + fileName);
+
+                string PersistentPathConstructor(string fileName)
+                {
+                    return Path.Combine(Application.persistentDataPath, "DefaultSFX/GameSFX/" + fileName);
+                }
+
+                string StreamingAssetsPathConstructor(string fileName)
+                {
+                    return "DefaultSFX/GameSFX/" + fileName;
+                }
             }
 
             IEnumerator StartDownloadSound(string fileName)
@@ -114,7 +119,7 @@ namespace UI
         private void Start()
         {
             DontDestroyOnLoad(gameObject);
-            
+
             EnableUI();
         }
 
@@ -129,6 +134,11 @@ namespace UI
         {
             var characterString = new string(characters);
             mainFontAsset.TryAddCharacters(characterString);
+        }
+
+        public void OnApplicationQuit()
+        {
+            SoundEffectManager.ReleaseSystem();
         }
 
         public void EnableUI()

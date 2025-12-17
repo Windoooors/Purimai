@@ -166,7 +166,7 @@ MonoBehaviour:
     - line: '|   loadStoreDebugModeEnabled: 0'
     - line: '|   visionOSBundleVersion: 1.0'
     - line: '|   tvOSBundleVersion: 1.0'
-    - line: '|   bundleVersion: 0.1.4'
+    - line: '|   bundleVersion: 0.1.5'
     - line: '|   preloadedAssets:'
     - line: '|   - {fileID: 11400000, guid: 9cbc8a2eb3fca4b41bf73a59da0fe242, type:
         2}'
@@ -198,7 +198,7 @@ MonoBehaviour:
     - line: '|   buildNumber:'
     - line: '|     Standalone: 0'
     - line: '|     VisionOS: 0'
-    - line: '|     iPhone: 2025121002'
+    - line: '|     iPhone: 2025121603'
     - line: '|     tvOS: 0'
     - line: '|   overrideDefaultApplicationIdentifier: 0'
     - line: '|   AndroidBundleVersionCode: 1'

@@ -1,5 +1,3 @@
-using LitMotion;
-using LitMotion.Extensions;
 using UI.Result;
 using UnityEngine;
 
@@ -16,9 +14,6 @@ namespace Game.Notes.Taps
         public SpriteRenderer tapSpriteRenderer;
         public Transform tapTransform;
 
-        private bool _emerging;
-        private bool _moving;
-
         private void Update()
         {
             if (!ChartPlayer.Instance.isPlaying)
@@ -27,7 +22,7 @@ namespace Game.Notes.Taps
             if (headJudged)
                 return;
 
-            if (!headJudged && ChartPlayer.Instance.time >
+            if (!headJudged && ChartPlayer.Instance.GetTime() >
                 timing + ChartPlayer.Instance.tapJudgeSettings.lateGoodTiming + ChartPlayer.Instance.judgeDelay)
             {
                 headJudged = true;
@@ -40,7 +35,6 @@ namespace Game.Notes.Taps
 
                 Scoreboard.ResetCombo();
 
-                tapSpriteRenderer.enabled = false;
                 PlayJudgeAnimation();
 
                 SimulatedSensor.OnTap -= Judge;
@@ -48,55 +42,25 @@ namespace Game.Notes.Taps
                 NoteContentRoot.SetActive(false);
             }
 
-            if (ChartPlayer.Instance.time >= timing - 2 * EmergingDuration &&
-                ChartPlayer.Instance.time < timing - 1 * EmergingDuration && !_emerging)
-            {
+            var tapAndLineTransform = GetTapOrLineTransform();
+
+            if (tapAndLineTransform.Shown && !headJudged)
                 NoteContentRoot.SetActive(true);
 
-                _emerging = true;
+            tapTransform.position = Lanes.Instance.startPoints[lane - 1].position +
+                                    (Lanes.Instance.endPoints[lane - 1].position -
+                                     Lanes.Instance.startPoints[lane - 1].position) *
+                                    tapAndLineTransform.PositionInLane;
+            tapTransform.localScale = tapAndLineTransform.Scale;
 
-                lineSpriteRenderer.enabled = true;
-                tapSpriteRenderer.enabled = true;
+            var color = new Color(1, 1, 1, tapAndLineTransform.Alpha);
+            tapSpriteRenderer.color = color;
+            lineSpriteRenderer.color = color;
 
-                transform.position = Vector3.zero;
-
-                var duration = EmergingDuration / 1000f / (IsAdxFlowSpeedStyle ? 2 : 1);
-                var delay = IsAdxFlowSpeedStyle ? EmergingDuration / 1000f / 2 : 0;
-
-                LMotion.Create(0, 1f, duration)
-                    .WithDelay(delay)
-                    .WithEase(Ease.OutSine)
-                    .Bind(x =>
-                    {
-                        tapSpriteRenderer.color = new Color(1, 1, 1, x);
-                        lineSpriteRenderer.color = new Color(1, 1, 1, x);
-                    });
-                LMotion.Create(Vector3.zero, Vector3.one, duration)
-                    .WithDelay(delay)
-                    .WithEase(Ease.Linear)
-                    .BindToLocalScale(tapTransform);
-            }
-
-            if (ChartPlayer.Instance.time >= timing - 1 * EmergingDuration && _emerging && !_moving)
-            {
-                _emerging = false;
-                _moving = true;
-            }
-
-            if (ChartPlayer.Instance.time > timing + 1000)
-            {
-                _moving = false;
-                lineSpriteRenderer.enabled = false;
-                tapSpriteRenderer.enabled = false;
-            }
-
-            if (_moving)
-            {
-                tapTransform.localScale = Vector3.one;
-                tapTransform.position += Speed * Time.deltaTime * transform.up;
-
-                lineTransform.localScale += LineExpansionSpeed * Time.deltaTime * Vector3.one;
-            }
+            lineTransform.localScale = (NoteGenerator.Instance.originCircleScale +
+                                        (1 - NoteGenerator.Instance.originCircleScale) *
+                                        tapAndLineTransform.PositionInLane)
+                                       * Vector3.one;
 
             if (!isNoSpinningStarHead && (isStarHead || isBreak))
                 tapTransform.Rotate(new Vector3(0, 0,
@@ -109,8 +73,6 @@ namespace Game.Notes.Taps
             tapTransform.localScale = Vector3.zero;
             tapTransform.position *= NoteGenerator.Instance.originCircleScale;
             tapSpriteRenderer.color = new Color(1, 1, 1, 0);
-            tapSpriteRenderer.enabled = false;
-            lineSpriteRenderer.enabled = false;
 
             if (isBreak)
                 Scoreboard.BreakCount.TotalCount++;
@@ -160,6 +122,8 @@ namespace Game.Notes.Taps
             Scoreboard.Combo++;
 
             PlayJudgeAnimation();
+
+            PlayJudgeSound(isBreak, judgeState);
 
             tapSpriteRenderer.enabled = false;
 

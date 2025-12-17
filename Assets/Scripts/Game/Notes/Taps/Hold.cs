@@ -1,6 +1,3 @@
-using System;
-using LitMotion;
-using LitMotion.Extensions;
 using UI.Result;
 using Unity.Mathematics;
 using UnityEngine;
@@ -30,7 +27,7 @@ namespace Game.Notes.Taps
         private bool _holdDone;
 
         private JudgeState _holdTailJudgeState;
-        private float _initialHoldSize;
+        private float _initialHoldLength;
         private bool _lineMoving;
         private bool _moving;
 
@@ -41,7 +38,7 @@ namespace Game.Notes.Taps
             if (!ChartPlayer.Instance.isPlaying || holdJudged)
                 return;
 
-            if (ChartPlayer.Instance.time > timing + ChartPlayer.Instance.tapJudgeSettings.lateGoodTiming +
+            if (ChartPlayer.Instance.GetTime() > timing + ChartPlayer.Instance.tapJudgeSettings.lateGoodTiming +
                 ChartPlayer.Instance.judgeDelay &&
                 !headJudged)
             {
@@ -64,12 +61,12 @@ namespace Game.Notes.Taps
                 NoteContentRoot.SetActive(false);
             }
 
-            if (ChartPlayer.Instance.time >
+            if (ChartPlayer.Instance.GetTime() >
                 timing + duration &&
                 headJudged && !holdJudged)
                 ChartPlayer.Instance.holdRippleAnimators[lane - 1].SetTrigger("Reset");
 
-            if (ChartPlayer.Instance.time >
+            if (ChartPlayer.Instance.GetTime() >
                 timing + duration + ChartPlayer.Instance.holdTailJudgeSettings.greatTiming +
                 ChartPlayer.Instance.judgeDelay &&
                 headJudged && !holdJudged)
@@ -78,6 +75,7 @@ namespace Game.Notes.Taps
                 _holdTailJudgeState = JudgeState.Good;
                 judgeState = JudgeState.Good;
 
+                PlayJudgeSound(false, JudgeState.Good);
                 PlayJudgeAnimation();
 
                 holdSpriteRenderer.enabled = false;
@@ -85,114 +83,146 @@ namespace Game.Notes.Taps
 
                 _glowAnimator.SetTrigger("Reset");
 
+                NoteContentRoot.SetActive(false);
+
                 SimulatedSensor.OnLeave -= OnLeave;
             }
 
-            if (ChartPlayer.Instance.time >= timing - 2 * EmergingDuration &&
-                ChartPlayer.Instance.time < timing - 1 * EmergingDuration && !_emerging)
-            {
-                _emerging = true;
+            var holdTransformData = GetHoldTransform();
 
+            if (holdTransformData.Shown && !headJudged && !holdJudged)
                 NoteContentRoot.SetActive(true);
 
-                lineSpriteRenderer.enabled = true;
-                holdSpriteRenderer.enabled = true;
+            holdTransform.position = Lanes.Instance.startPoints[lane - 1].position +
+                                     (Lanes.Instance.endPoints[lane - 1].position -
+                                      Lanes.Instance.startPoints[lane - 1].position) * holdTransformData.PositionInLane;
+            holdTransform.localScale = holdTransformData.Scale;
 
-                transform.position = Vector3.zero;
+            var color = new Color(1, 1, 1, holdTransformData.Alpha);
+            holdSpriteRenderer.color = color;
+            lineSpriteRenderer.color = color;
 
-                var animationDuration = EmergingDuration / 1000f / (IsAdxFlowSpeedStyle ? 2 : 1);
-                var animationDelay = IsAdxFlowSpeedStyle ? EmergingDuration / 1000f / 2 : 0;
+            var tapOrLineTransform = GetTapOrLineTransform();
 
-                LMotion.Create(0, 1f, animationDuration)
-                    .WithDelay(animationDelay)
-                    .WithEase(Ease.OutSine)
-                    .Bind(x =>
-                    {
-                        holdSpriteRenderer.color = new Color(1, 1, 1, x);
-                        lineSpriteRenderer.color = new Color(1, 1, 1, x);
-                    });
-                LMotion.Create(Vector3.zero, Vector3.one, animationDuration)
-                    .WithDelay(animationDelay)
-                    .WithEase(Ease.Linear)
-                    .BindToLocalScale(holdTransform);
+            lineTransform.localScale = (NoteGenerator.Instance.originCircleScale +
+                                        (1 - NoteGenerator.Instance.originCircleScale) *
+                                        (holdTransformData.LinePositionInLane > 0
+                                            ? holdTransformData.LinePositionInLane
+                                            : tapOrLineTransform.PositionInLane))
+                                       * Vector3.one;
+
+            holdSpriteRenderer.size = new Vector2(holdSpriteRenderer.size.x, holdTransformData.HoldSpriteLength);
+
+            holdEndSpriteRenderer.enabled = holdTransformData.TailDotShown;
+            holdEndSpriteRenderer.transform.position = Lanes.Instance.startPoints[lane - 1].position +
+                                                       (Lanes.Instance.endPoints[lane - 1].position -
+                                                        Lanes.Instance.startPoints[lane - 1].position) *
+                                                       holdTransformData.TailDotPositionInLane;
+        }
+
+        private HoldTransform GetHoldTransform()
+        {
+            var currentPosition = ChartPlayer.Instance.GetTime();
+
+            var adjustedEmergingDuration = IsAdxFlowSpeedStyle ? OnScreenTime / 2 : OnScreenTime;
+
+            var startEmergingTiming = timing - adjustedEmergingDuration - OnScreenTime;
+            var startMovingTiming = timing - OnScreenTime;
+
+            var result = new HoldTransform();
+
+            if (currentPosition > startEmergingTiming && currentPosition < startMovingTiming)
+            {
+                var factor = 1 - (startMovingTiming - currentPosition) / adjustedEmergingDuration;
+
+                result.Scale = factor * Vector3.one;
+                result.Alpha = factor;
+                result.PositionInLane = 0;
+                result.HoldSpriteLength = _initialHoldLength;
+                result.Shown = true;
+                result.TailDotShown = false;
+
+                return result;
             }
 
-            if (ChartPlayer.Instance.time >= timing - 1 * EmergingDuration && _emerging && !_moving)
-            {
-                _emerging = false;
-                _moving = true;
-                _lineMoving = true;
-            }
+            result.Scale = Vector3.one;
+            result.Alpha = 1;
+            result.Shown = false;
 
-            if (ChartPlayer.Instance.time >= timing && _lineMoving)
+            if (currentPosition >= startMovingTiming)
             {
-                lineTransform.localScale = Vector3.one;
-                _lineMoving = false;
-            }
+                result.Shown = true;
 
-            if (_lineMoving) lineTransform.localScale += LineExpansionSpeed * Time.deltaTime * Vector3.one;
+                var totalHoldLength = duration * Speed / 1000f;
+                var laneLength = (Lanes.Instance.endPoints[lane - 1].position -
+                                  Lanes.Instance.startPoints[lane - 1].position).magnitude;
 
-            if (_holdDone)
-            {
-                if (ChartPlayer.Instance.time > _disappearTime)
+                if (currentPosition - startMovingTiming <= duration)
                 {
-                    lineSpriteRenderer.enabled = false;
-                    holdSpriteRenderer.enabled = false;
-                    holdEndSpriteRenderer.enabled = false;
-                    _moving = false;
-                    _holdDone = false;
+                    result.HoldSpriteLength =
+                        _initialHoldLength + totalHoldLength * (currentPosition - startMovingTiming) / duration;
+
+                    if (result.HoldSpriteLength - _initialHoldLength > laneLength)
+                        result.HoldSpriteLength = laneLength + _initialHoldLength;
+
+                    result.TailDotShown = false;
+
+                    result.PositionInLane = (result.HoldSpriteLength - _initialHoldLength) / 2 / laneLength;
                 }
 
-                holdTransform.Translate(Speed * Time.deltaTime * Vector3.up);
-                return;
-            }
-
-            if (!_moving)
-                return;
-
-            holdTransform.localScale = Vector3.one;
-
-            _nowEmergingTimePosition = EmergingDuration - (timing - ChartPlayer.Instance.time);
-
-            if (_nowEmergingTimePosition <= Math.Max(EmergingDuration, duration))
-            {
-                if ((_distance > _grossHoldSize && EmergingDuration < duration) ||
-                    (EmergingDuration >= duration && _nowEmergingTimePosition < duration))
+                if (currentPosition - startMovingTiming > duration && currentPosition < timing)
                 {
-                    _grossHoldSize += Speed * Time.deltaTime;
-                    holdTransform.Translate(0.5f * Speed * Time.deltaTime * Vector3.up);
+                    result.TailDotShown = true;
+
+                    var movableLength = laneLength - totalHoldLength * 2;
+
+                    var position = movableLength * ((currentPosition - startMovingTiming - duration) /
+                                                    (OnScreenTime - 2 * duration)) + totalHoldLength / 2;
+
+                    result.PositionInLane = position / laneLength;
+
+                    result.HoldSpriteLength = totalHoldLength + _initialHoldLength;
+
+                    result.TailDotPositionInLane = (currentPosition - startMovingTiming - duration) / OnScreenTime;
                 }
-                else if (_nowEmergingTimePosition > duration)
+
+                var startShrinkingTiming = timing + (totalHoldLength > laneLength ? duration - OnScreenTime : 0);
+
+                if (currentPosition >= startShrinkingTiming)
                 {
-                    holdEndSpriteRenderer.enabled = true;
-                    holdEndSpriteRenderer.color = Color.white;
-                    holdEnd.Translate(Speed * Time.deltaTime * Vector3.up);
-                    holdTransform.Translate(Speed * Time.deltaTime * Vector3.up);
+                    result.TailDotShown = true;
+
+                    var maxHoldLength = (totalHoldLength > laneLength ? laneLength : totalHoldLength) +
+                                        _initialHoldLength;
+
+                    var position = laneLength - (maxHoldLength - _initialHoldLength) / 2 +
+                                   (currentPosition - startShrinkingTiming) * Speed / 1000f / 2;
+
+                    result.PositionInLane = position / laneLength;
+
+                    result.HoldSpriteLength = maxHoldLength - (currentPosition - startShrinkingTiming) * Speed / 1000f;
+
+                    result.TailDotPositionInLane =
+                        (currentPosition - startShrinkingTiming + (duration > OnScreenTime
+                            ? 0
+                            : OnScreenTime - duration)) / OnScreenTime;
+                }
+
+                if (currentPosition >= timing && currentPosition < timing + duration)
+                    result.LinePositionInLane = 1;
+
+                if (currentPosition >= timing + duration)
+                {
+                    result.PositionInLane = (laneLength + (currentPosition - timing - duration) / 1000f * Speed) /
+                                            laneLength;
+                    result.HoldSpriteLength = _initialHoldLength;
+
+                    result.LinePositionInLane =
+                        1 + (currentPosition - timing - duration) / 1000f * Speed / laneLength;
                 }
             }
-            else
-            {
-                holdEndSpriteRenderer.enabled = true;
-                holdEndSpriteRenderer.color = Color.white;
-                holdEnd.Translate(Speed * Time.deltaTime * Vector3.up);
-                _grossHoldSize -= Speed * Time.deltaTime;
-                holdTransform.Translate(0.5f * Speed * Time.deltaTime * Vector3.up);
-            }
 
-            if (_grossHoldSize < 0)
-            {
-                holdTransform.Translate(0.5f * _grossHoldSize * Vector3.up);
-                _grossHoldSize = 0;
-                _disappearTime = ChartPlayer.Instance.time + 100;
-                _holdDone = true;
-                holdSpriteRenderer.size = new Vector2(holdSpriteRenderer.size.x, _initialHoldSize);
-                return;
-            }
-
-            if (ChartPlayer.Instance.time >= timing)
-                TrimHold(_nowEmergingTimePosition < duration);
-
-            holdSpriteRenderer.size = new Vector2(holdSpriteRenderer.size.x, _initialHoldSize + _grossHoldSize);
+            return result;
         }
 
         public override void RegisterTapEvent()
@@ -242,6 +272,8 @@ namespace Game.Notes.Taps
                     JudgeState.Great => "HoldGreat",
                     _ => "HoldPerfect"
                 });
+
+            PlayJudgeSound(false, _headJudgeState);
 
             AreaARipple.AreaARipples.Find(x => x.sensorId == "A" + lane).CancelAnimation();
 
@@ -295,6 +327,8 @@ namespace Game.Notes.Taps
 
             Scoreboard.HoldCount.Count(judgeState);
 
+            PlayJudgeSound(false, judgeState);
+
             Scoreboard.Combo++;
 
             PlayJudgeAnimation();
@@ -316,9 +350,7 @@ namespace Game.Notes.Taps
             holdTransform.position *= NoteGenerator.Instance.originCircleScale;
             holdSpriteRenderer.color = new Color(1, 1, 1, 0);
             holdEndSpriteRenderer.enabled = false;
-            holdSpriteRenderer.enabled = false;
-            lineSpriteRenderer.enabled = false;
-            _initialHoldSize = holdSpriteRenderer.size.y;
+            _initialHoldLength = holdSpriteRenderer.size.y;
 
             var laneIndex = lane - 1;
             var endPoint = Lanes.Instance.endPoints[laneIndex];
@@ -330,19 +362,19 @@ namespace Game.Notes.Taps
             Scoreboard.HoldCount.TotalCount++;
         }
 
-        private void TrimHold(bool forceLong = false)
+        private class HoldTransform
         {
-            var roughDistance =
-                (holdTransform.position - Lanes.Instance.startPoints[lane - 1].position).magnitude +
-                _grossHoldSize / 2;
+            public float Alpha;
+            public float HoldSpriteLength;
 
-            var deltaDistance = _distance - roughDistance;
+            public float LinePositionInLane;
+            public float PositionInLane;
+            public Vector3 Scale;
 
-            if (!forceLong)
-                _grossHoldSize += deltaDistance;
-            else
-                _grossHoldSize = _distance;
-            holdTransform.Translate(0.5f * deltaDistance * Vector3.up);
+            public bool Shown;
+            public float TailDotPositionInLane;
+
+            public bool TailDotShown;
         }
     }
 }
