@@ -174,12 +174,14 @@ namespace Game.Notes.Taps
                 {
                     result.TailDotShown = true;
 
-                    var movableLength = laneLength - totalHoldLength * 2;
+                    var movableLength = laneLength - totalHoldLength;
 
                     var position = movableLength * ((currentPosition - startMovingTiming - duration) /
-                                                    (OnScreenTime - 2 * duration)) + totalHoldLength / 2;
+                                                    (OnScreenTime - duration)) + totalHoldLength / 2;
 
                     result.PositionInLane = position / laneLength;
+
+                    Debug.Log(result.PositionInLane);
 
                     result.HoldSpriteLength = totalHoldLength + _initialHoldLength;
 
@@ -245,7 +247,7 @@ namespace Game.Notes.Taps
             if (indexInLane != 0 && !noteGenerator.LaneList[lane - 1][indexInLane - 1].headJudged)
                 return;
 
-            var deltaTiming = timing - ChartPlayer.Instance.GetTime() + ChartPlayer.Instance.judgeDelay;
+            var deltaTiming = timing - ChartPlayer.Instance.GetTime(true) + ChartPlayer.Instance.judgeDelay;
 
             var judgeSettings = ChartPlayer.Instance.tapJudgeSettings;
 
@@ -294,7 +296,7 @@ namespace Game.Notes.Taps
             if (!headJudged)
                 return;
 
-            var time = ChartPlayer.Instance.GetTime();
+            var time = ChartPlayer.Instance.GetTime(true);
 
             if (time < timing || time > timing + duration +
                 ChartPlayer.Instance.holdTailJudgeSettings.greatTiming + ChartPlayer.Instance.judgeDelay)

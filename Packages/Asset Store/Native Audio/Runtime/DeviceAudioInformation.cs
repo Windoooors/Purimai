@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 #if UNITY_IOS
 using System;
 #endif
+
 #if UNITY_ANDROID
 using UnityEngine;
 #endif
@@ -12,7 +13,7 @@ namespace E7.Native
     /// <summary>
     ///     <para>
     ///         Several properties about the device asked from the native side that might help you.
-    ///         Returned from <see cref="NativeAudio.GetDeviceAudioInformation"/>
+    ///         Returned from <see cref="NativeAudio.GetDeviceAudioInformation" />
     ///     </para>
     ///     <para>
     ///         The content of this <c>struct</c> changes completely depending on active build platform.
@@ -106,7 +107,7 @@ namespace E7.Native
             /// <summary>
             ///     Input or output via Car Audio.
             /// </summary>
-            CarAudio = 13,
+            CarAudio = 13
         }
 
         /// <summary>
@@ -200,7 +201,8 @@ namespace E7.Native
         ///         .
         ///     </para>
         ///     <para>
-        ///         The available range for hardware sample rate is device dependent. It typically ranges from 8000 through 48000 hertz.
+        ///         The available range for hardware sample rate is device dependent. It typically ranges from 8000 through 48000
+        ///         hertz.
         ///     </para>
         /// </remarks>
         public double sampleRate { get; }
@@ -215,7 +217,7 @@ namespace E7.Native
         ///     </para>
         ///     <para>
         ///         At native side this is freely specifiable, but iOS might give you something else
-        ///         that becomes <see cref="sampleRate"/>.
+        ///         that becomes <see cref="sampleRate" />.
         ///     </para>
         ///     <para>
         ///         A result from
@@ -288,11 +290,11 @@ namespace E7.Native
         ///         but now must write half less audio seconds because it now have twice as many data.
         ///     </para>
         ///     <para>
-        ///         By setting <see cref="preferredIOBufferDuration"/> at native side to 0.005
+        ///         By setting <see cref="preferredIOBufferDuration" /> at native side to 0.005
         ///         (the limit mentioned in the documentation) this became 0.005333.
         ///     </para>
         ///     <para>
-        ///         When set <see cref="preferredIOBufferDuration"/> back to 0, this became 0.021333.
+        ///         When set <see cref="preferredIOBufferDuration" /> back to 0, this became 0.021333.
         ///         (The same as Good Latency, even though Unity is currently in Best Latency.)
         ///         However by benchmarking sometimes 0.005 duration do produce worse latency than 0.01, I wonder why..
         ///     </para>
@@ -305,7 +307,7 @@ namespace E7.Native
         /// <remarks>
         ///     <para>
         ///         At native side this is freely specifiable, but iOS might give you something else
-        ///         that becomes <see cref="ioBufferDuration"/>.
+        ///         that becomes <see cref="ioBufferDuration" />.
         ///     </para>
         ///     <para>
         ///         This is shared with Unity, not just for Native Audio, because <c>AVAudioSession</c>
@@ -313,7 +315,8 @@ namespace E7.Native
         ///     </para>
         ///     <para>
         ///         A result from
-        ///         <a href="https://developer.apple.com/documentation/avfoundation/avaudiosession/1616464-preferrediobufferduration">
+        ///         <a
+        ///             href="https://developer.apple.com/documentation/avfoundation/avaudiosession/1616464-preferrediobufferduration">
         ///             this <c>AVAudioSession</c> instance property
         ///         </a>
         ///         .
@@ -329,10 +332,8 @@ namespace E7.Native
         public DeviceAudioInformation(double[] interopDoubleArray, IosAudioPortType[] portArray)
         {
             if (interopDoubleArray.Length != interopArrayLength)
-            {
                 throw new ArgumentException("The array that fetched data from iOS should be of length " +
                                             interopArrayLength);
-            }
 
             outputLatency = interopDoubleArray[0];
             sampleRate = interopDoubleArray[1];

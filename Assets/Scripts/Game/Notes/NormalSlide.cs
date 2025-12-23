@@ -56,7 +56,7 @@ namespace Game.Notes
 
         private void JudgeSegment(string sensorId, bool isFromHold)
         {
-            if (ChartPlayer.Instance.GetTime() < timing || !SlideContentRoot.activeSelf)
+            if (ChartPlayer.Instance.GetTime(true) < timing || !SlideContentRoot.activeSelf)
                 return;
 
             for (var i = _lastTouchedSegmentIndex + 1; i < segments.Length; i++)
@@ -154,6 +154,5 @@ namespace Game.Notes
     public class NormalSegment : Segment
     {
         public string[] sensorsNearby;
-        public bool touched;
     }
 }

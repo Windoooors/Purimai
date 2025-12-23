@@ -9,9 +9,9 @@ namespace UI
 
         [FormerlySerializedAs("dataIndex")] public int indexOnScreen = -1;
         public bool shownOnScreen;
+        public List List;
         [HideInInspector] public DecodedImage backgroundImage;
         public ItemDataBase Data;
-        public List List;
 
         private void Awake()
         {

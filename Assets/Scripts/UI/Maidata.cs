@@ -1,13 +1,13 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using FMOD;
-using FMODUnity;
 using Game;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
+using UnityEngine;
 
 namespace UI
 {
@@ -56,15 +56,17 @@ namespace UI
         public readonly string SongPath;
 
         public readonly string Title;
+
+        private bool _loadingCover;
         public DecodedImage BlurredSongCoverAsBackgroundDecodedImage;
         public DecodedImage BlurredSongCoverDecodedImage;
         public bool BlurredSongCoverGenerated;
         public bool CoverDataLoaded;
         public bool LoadingSong;
 
-        public DecodedImage SongCoverDecodedImage;
+        public AudioClip SongAudioClip;
 
-        public Sound SongFMODSound;
+        public DecodedImage SongCoverDecodedImage;
         public bool SongLoaded;
 
         public Maidata(string maidataPath, string songPath, string pvPath, string songCoverPath)
@@ -139,8 +141,7 @@ namespace UI
 
         public void UnloadedResources()
         {
-            SongFMODSound.release();
-            SongFMODSound.clearHandle();
+            MonoBehaviour.Destroy(SongAudioClip);
             BlurredSongCoverAsBackgroundDecodedImage.Dispose();
             BlurredSongCoverDecodedImage.Dispose();
             BlurredSongCoverAsBackgroundDecodedImage = null;
@@ -162,16 +163,16 @@ namespace UI
                 return string.Empty;
 
             var contentStart = startIndex + startToken.Length;
-            int endIndex = -1;
-            
-            int eSearch = contentStart;
+            var endIndex = -1;
+
+            var eSearch = contentStart;
             while (true)
             {
-                int eIndex = maidataString.IndexOf('E', eSearch);
+                var eIndex = maidataString.IndexOf('E', eSearch);
                 if (eIndex < 0)
                     break;
 
-                int nextPos = eIndex + 1;
+                var nextPos = eIndex + 1;
                 if (nextPos >= maidataString.Length || maidataString[nextPos] == '\n')
                 {
                     endIndex = eIndex;
@@ -180,25 +181,25 @@ namespace UI
 
                 eSearch = eIndex + 1;
             }
-            
+
             if (endIndex < 0)
             {
-                int searchPos = contentStart;
+                var searchPos = contentStart;
 
                 while (true)
                 {
-                    int tokenPos = maidataString.IndexOf("&inote_", searchPos, StringComparison.Ordinal);
+                    var tokenPos = maidataString.IndexOf("&inote_", searchPos, StringComparison.Ordinal);
                     if (tokenPos < 0)
                         break;
 
-                    int numberStart = tokenPos + "&inote_".Length;
-                    int numberEnd = maidataString.IndexOf('=', numberStart);
+                    var numberStart = tokenPos + "&inote_".Length;
+                    var numberEnd = maidataString.IndexOf('=', numberStart);
                     if (numberEnd < 0)
                         break;
 
                     if (int.TryParse(
                             maidataString.Substring(numberStart, numberEnd - numberStart),
-                            out int foundIndex) &&
+                            out var foundIndex) &&
                         foundIndex > i)
                     {
                         endIndex = tokenPos;
@@ -208,20 +209,18 @@ namespace UI
                     searchPos = numberEnd + 1;
                 }
             }
-            
+
             if (endIndex < 0)
                 endIndex = maidataString.Length;
 
             return maidataString.Substring(contentStart, endIndex - contentStart);
         }
 
-        private bool _loadingCover;
-
         public void LoadSongCover()
         {
             if (_loadingCover)
                 return;
-            
+
             _loadingCover = true;
             using var image = File.Exists(_songCoverPath)
                 ? Image.Load<Rgba32>(_songCoverPath)
@@ -233,29 +232,17 @@ namespace UI
             _loadingCover = false;
         }
 
-        public void LoadSongClip()
+        public IEnumerator LoadSongClip()
         {
             if (LoadingSong)
-                return;
-            
+                yield break;
+
             if (SongLoaded)
-                return;
+                yield break;
 
             LoadingSong = true;
-            
 
-            var system = SoundEffectManager.System;
-
-            var mode = MODE.DEFAULT |
-                       MODE.CREATESTREAM |
-                       MODE.NONBLOCKING |
-                       MODE._2D | MODE.ACCURATETIME;
-
-            var result = system.createSound(SongPath, mode, out var sound);
-
-            if (result != RESULT.OK) return;
-
-            SongFMODSound = sound;
+            yield return AudioManager.GetInstance().LoadAudioClip(SongPath, clip => SongAudioClip = clip, true);
 
             SongLoaded = true;
             LoadingSong = false;

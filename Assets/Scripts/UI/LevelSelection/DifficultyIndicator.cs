@@ -1,7 +1,5 @@
 using System.Collections;
 using System.Threading.Tasks;
-using FMOD;
-using FMODUnity;
 using Game;
 using LitMotion;
 using LitMotion.Extensions;
@@ -51,7 +49,7 @@ namespace UI.LevelSelection
 
         private Coroutine _songPlaybackCoroutine;
 
-        private Channel _songPreviewChannel;
+        private AudioSourcePool.AudioSourceHandler _songPreviewAudioSourceHandler;
 
         private void OnEnable()
         {
@@ -70,15 +68,14 @@ namespace UI.LevelSelection
             SimulatedSensor.OnTap -= OnTap;
             LevelListController.GetInstance().levelList.OnItemSelected -= OnLevelSelected;
 
-            if (_songPlaybackCoroutine != null)
+            if (_songPlaybackCoroutine != null && _songPreviewAudioSourceHandler != null)
             {
                 StopCoroutine(_songPlaybackCoroutine);
-                LMotion.Create(SettingsPool.GetValue("game.volume.song") / 10f, 0, 0.2f).WithOnComplete(() =>
-                    {
-                        _songPreviewChannel.stop();
-                        _songPreviewChannel.clearHandle();
-                    })
-                    .Bind(x => _songPreviewChannel.setVolume(x));
+                LMotion.Create(SettingsPool.GetValue("game.volume.song") / 10f, 0f, 0.2f).WithOnComplete(() =>
+                {
+                    _songPreviewAudioSourceHandler.Stop();
+                    _songPreviewAudioSourceHandler = null;
+                }).Bind(x => _songPreviewAudioSourceHandler.SetVolume(x));
             }
         }
 
@@ -117,12 +114,14 @@ namespace UI.LevelSelection
 
         private IEnumerator EnterLevel()
         {
-            if (_songPreviewChannel.hasHandle())
+            if (_songPreviewAudioSourceHandler != null)
                 LMotion.Create(SettingsPool.GetValue("game.volume.song") / 10f, 0f, 0.2f).WithOnComplete(() =>
                 {
-                    _songPreviewChannel.stop();
-                    _songPreviewChannel.clearHandle();
-                }).Bind(x => _songPreviewChannel.setVolume(x));
+                    _songPreviewAudioSourceHandler.Stop();
+                    _songPreviewAudioSourceHandler = null;
+                }).Bind(x => _songPreviewAudioSourceHandler.SetVolume(x));
+
+            if (_songPlaybackCoroutine != null) StopCoroutine(_songPlaybackCoroutine);
 
             Scoreboard.Reset();
 
@@ -141,14 +140,17 @@ namespace UI.LevelSelection
                 .Maidata;
 
             if (!maidata.SongLoaded || !maidata.BlurredSongCoverGenerated)
+            {
                 Task.Run(() =>
                 {
                     maidata.GenerateBlurredCover();
                     if (!maidata.CoverDataLoaded)
                         maidata.LoadSongCover();
-                    if (!maidata.SongLoaded && !maidata.LoadingSong)
-                        maidata.LoadSongClip();
                 });
+
+                if (!maidata.SongLoaded && !maidata.LoadingSong)
+                    StartCoroutine(maidata.LoadSongClip());
+            }
 
             while (true)
             {
@@ -180,7 +182,7 @@ namespace UI.LevelSelection
                 ).Join(
                     LMotion.Create(0, 1f, 0.5f).WithEase(Ease.InExpo).WithOnComplete(() =>
                         {
-                            LoadScene(maidata.SongFMODSound, maidata, difficultyIndex);
+                            LoadScene(maidata.SongAudioClip, maidata, difficultyIndex);
                             levelListController.backgroundImage.enabled = false;
                         })
                         .BindToColorA(levelListController.songCoverBackgroundImage)
@@ -189,8 +191,6 @@ namespace UI.LevelSelection
 
         public void ReloadScene()
         {
-            SoundEffectManager.System.release();
-            
             var levelListController = LevelListController.GetInstance();
 
             var difficultyIndex =
@@ -208,10 +208,10 @@ namespace UI.LevelSelection
             SimulatedSensor.OnTap = null;
             SimulatedSensor.OnLeave = null;
 
-            LoadScene(maidata.SongFMODSound, maidata, difficultyIndex);
+            LoadScene(maidata.SongAudioClip, maidata, difficultyIndex);
         }
 
-        private void LoadScene(Sound sound, Maidata maidata, int difficultyIndex)
+        private void LoadScene(AudioClip clip, Maidata maidata, int difficultyIndex)
         {
             SceneManager.LoadScene("Game");
 
@@ -228,7 +228,7 @@ namespace UI.LevelSelection
 
                 var chartPlayer = FindAnyObjectByType<ChartPlayer>(FindObjectsInactive.Include);
 
-                chartPlayer.SongClip = sound;
+                chartPlayer.songClip = clip;
 
                 chartPlayer.backgroundImage.texture = SettingsPool.GetValue("game.blurred_cover") == 1
                     ? maidata.BlurredSongCoverAsBackgroundDecodedImage.GetTexture2D()
@@ -436,12 +436,18 @@ namespace UI.LevelSelection
 
         private IEnumerator WaitAndPlaySong()
         {
-            if (_songPreviewChannel.hasHandle())
+            if (_songPreviewAudioSourceHandler != null)
                 LMotion.Create(SettingsPool.GetValue("game.volume.song") / 10f, 0f, 0.2f).WithOnComplete(() =>
                 {
-                    _songPreviewChannel.stop();
-                    _songPreviewChannel.clearHandle();
-                }).Bind(x => _songPreviewChannel.setVolume(x));
+                    if (_songPreviewAudioSourceHandler != null)
+                    {
+                        _songPreviewAudioSourceHandler.Stop();
+                        _songPreviewAudioSourceHandler = null;
+                    }
+                }).Bind(x =>
+                {
+                    if (_songPreviewAudioSourceHandler != null) _songPreviewAudioSourceHandler.SetVolume(x);
+                });
 
             yield return new WaitForSeconds(0.5f);
 
@@ -452,11 +458,8 @@ namespace UI.LevelSelection
                 .Maidata;
 
             if (!maidata.SongLoaded || !maidata.BlurredSongCoverGenerated)
-                Task.Run(() =>
-                {
-                    if (!maidata.SongLoaded && !maidata.LoadingSong)
-                        maidata.LoadSongClip();
-                });
+                if (!maidata.SongLoaded && !maidata.LoadingSong)
+                    StartCoroutine(maidata.LoadSongClip());
 
             while (true)
             {
@@ -468,22 +471,24 @@ namespace UI.LevelSelection
                 break;
             }
 
-            SoundEffectManager.System.playSound(maidata.SongFMODSound, default, false, out _songPreviewChannel);
-            _songPreviewChannel.setVolume(SettingsPool.GetValue("game.volume.song") / 10f);
+            AudioManager.GetInstance().AudioSourcePool.TryGetAudioSourceHandler(out _songPreviewAudioSourceHandler);
+
+            _songPreviewAudioSourceHandler.SetClip(maidata.SongAudioClip);
+            _songPreviewAudioSourceHandler.Play();
+            _songPreviewAudioSourceHandler.SetVolume(SettingsPool.GetValue("game.volume.song") / 10f);
 
             while (true)
             {
                 yield return null;
 
-                _songPreviewChannel.isPlaying(out var isPlaying);
-
-                if (!isPlaying)
+                if (_songPreviewAudioSourceHandler.IsFree)
                 {
-                    _songPreviewChannel.stop();
-                    _songPreviewChannel.clearHandle();
+                    AudioManager.GetInstance().AudioSourcePool
+                        .TryGetAudioSourceHandler(out _songPreviewAudioSourceHandler);
 
-                    SoundEffectManager.System.playSound(maidata.SongFMODSound, default, false, out _songPreviewChannel);
-                    _songPreviewChannel.setVolume(SettingsPool.GetValue("game.volume.song") / 10f);
+                    _songPreviewAudioSourceHandler.SetClip(maidata.SongAudioClip);
+                    _songPreviewAudioSourceHandler.Play();
+                    _songPreviewAudioSourceHandler.SetVolume(SettingsPool.GetValue("game.volume.song") / 10f);
                 }
             }
         }

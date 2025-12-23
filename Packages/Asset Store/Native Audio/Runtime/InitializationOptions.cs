@@ -4,8 +4,8 @@ namespace E7.Native
     {
         /// <summary>
         ///     <para>
-        ///         An option for <see cref="NativeAudio.Initialize(InitializationOptions)"/>.
-        ///         Because it is a <c>struct</c>, start making it from <see cref="defaultOptions"/> to get a good default values.
+        ///         An option for <see cref="NativeAudio.Initialize(InitializationOptions)" />.
+        ///         Because it is a <c>struct</c>, start making it from <see cref="defaultOptions" /> to get a good default values.
         ///     </para>
         ///     <para>
         ///         This class is currently only contains options for Android. iOS options are fixed.
@@ -15,7 +15,8 @@ namespace E7.Native
         {
             /// <summary>
             ///     <para>
-            ///         [Android] On using <see cref="NativeAudio.Initialize(InitializationOptions)"/> you could freely specify a custom
+            ///         [Android] On using <see cref="NativeAudio.Initialize(InitializationOptions)" /> you could freely specify a
+            ///         custom
             ///         buffer size that is not device's native buffer size.
             ///     </para>
             ///     <para>
@@ -31,16 +32,17 @@ namespace E7.Native
             ///     <list type="bullet">
             ///         <item>
             ///             <description>
-            ///                 If <paramref name="bufferSize"/> is lower than device's native buffer size, it will be clamped to
+            ///                 If <paramref name="bufferSize" /> is lower than device's native buffer size, it will be clamped to
             ///                 device's native buffer size.
             ///             </description>
             ///         </item>
             ///         <item>
             ///             <description>
-            ///                 If <paramref name="bufferSize"/> is higher than device's native buffer size,
+            ///                 If <paramref name="bufferSize" /> is higher than device's native buffer size,
             ///                 you get back an even larger number which is the next nearest multiple of device's
             ///                 native buffer size. The reason is to reduce jitter
-            ///                 as stated in <a href="https://developer.android.com/ndk/guides/audio/audio-latency#buffer-size">here</a>.
+            ///                 as stated in
+            ///                 <a href="https://developer.android.com/ndk/guides/audio/audio-latency#buffer-size">here</a>.
             ///             </description>
             ///         </item>
             ///     </list>
@@ -58,7 +60,7 @@ namespace E7.Native
             ///     <para>
             ///         [iOS] Returns the same buffer size. Note that iOS cannot specify custom buffer size as it shares the
             ///         same size as you selected for Unity. (e.g. Best Latency = 256, etc.) This is why the option
-            ///         has been named as <see cref="androidBufferSize"/>.
+            ///         has been named as <see cref="androidBufferSize" />.
             ///     </para>
             /// </summary>
             public static int OptimizeBufferSize(int bufferSize)
@@ -80,16 +82,16 @@ namespace E7.Native
             ///     A <c>struct</c> cannot have default value on <c>new</c>, this statically allocated
             ///     <c>struct</c> is prepared for you to copy from instead.
             /// </remarks>
-            public static readonly InitializationOptions defaultOptions = new InitializationOptions
+            public static readonly InitializationOptions defaultOptions = new()
             {
                 androidAudioTrackCount = 3,
                 androidBufferSize = -1,
-                preserveOnMinimize = false,
+                preserveOnMinimize = false
             };
 
             /// <summary>
             ///     How many native sources to request for Android.
-            ///     <b>Default to 3</b> when using <see cref="defaultOptions"/>.
+            ///     <b>Default to 3</b> when using <see cref="defaultOptions" />.
             ///     It directly translates to maximum concurrency you can have while staying unmixed.
             /// </summary>
             /// <remarks>
@@ -125,7 +127,7 @@ namespace E7.Native
             ///         </item>
             ///     </list>
             ///     <para>
-            ///         See <see cref="OptimizeBufferSize"/>, which is a helper static method to get a buffer size
+            ///         See <see cref="OptimizeBufferSize" />, which is a helper static method to get a buffer size
             ///         that is more compatible with the device.
             ///     </para>
             /// </summary>
@@ -150,8 +152,8 @@ namespace E7.Native
             ///     <list type="bullet">
             ///         <item>
             ///             <description>
-            ///                 If <c>false</c> (a default on <see cref="defaultOptions"/>),
-            ///                 on <see cref="Initialize()"/> the native side will remember the spec you request.
+            ///                 If <c>false</c> (a default on <see cref="defaultOptions" />),
+            ///                 on <see cref="Initialize()" /> the native side will remember the spec you request.
             ///                 On minimize it will dispose all the sources
             ///                 (and in turn stopping them). On coming back it will reinitialize with the same spec
             ///             </description>
@@ -179,7 +181,8 @@ namespace E7.Native
             ///     <para>
             ///         However this is not good since it adds "wake lock" to your game.
             ///         With <c>adb shell dumpsys power</c> while your game is minimized after using Native Audio
-            ///         you will see something like <c> PARTIAL_WAKE_LOCK 'AudioMix' ACQ=-27s586ms(uid= 1041 ws= WorkSource{ 10331})</c>.
+            ///         you will see something like
+            ///         <c> PARTIAL_WAKE_LOCK 'AudioMix' ACQ=-27s586ms(uid= 1041 ws= WorkSource{ 10331})</c>.
             ///     </para>
             ///     <para>
             ///         Meaning that the OS have to keep the audio mix alive all the time.
@@ -198,7 +201,10 @@ namespace E7.Native
             ///     <para>
             ///         If you want the audio to continue to be heard in minimize,
             ///         use "Behaviour in background" set as Custom - Audio in Unity Player Settings then
-            ///         <a href="https://forum.unity.com/threads/how-do-i-get-the-audio-running-in-background-ios.319602/">follow this thread</a>
+            ///         <a href="https://forum.unity.com/threads/how-do-i-get-the-audio-running-in-background-ios.319602/">
+            ///             follow this
+            ///             thread
+            ///         </a>
             ///         to setup the <c>AVAudioSession</c> to correct settings.
             ///     </para>
             /// </remarks>

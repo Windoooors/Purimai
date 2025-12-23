@@ -110,37 +110,37 @@ namespace Game.Notes
                 case JudgeState.CriticalPerfect:
                     if (isBreak)
                     {
-                        SoundEffectManager.PlayBreakPerfectSound();
-                        SoundEffectManager.PlayBreakExtraScoreSound();
+                        AudioManager.GetInstance().PlayBreakPerfectSound();
+                        AudioManager.GetInstance().PlayBreakExtraScoreSound();
                     }
                     else
                     {
-                        SoundEffectManager.PlayPerfectSound();
+                        AudioManager.GetInstance().PlayPerfectSound();
                     }
 
                     break;
                 case JudgeState.Perfect:
                 case JudgeState.SemiCriticalPerfect:
                     if (isBreak)
-                        SoundEffectManager.PlayBreakPerfectSound();
+                        AudioManager.GetInstance().PlayBreakPerfectSound();
                     else
-                        SoundEffectManager.PlayPerfectSound();
+                        AudioManager.GetInstance().PlayPerfectSound();
 
                     break;
                 case JudgeState.SemiGreat:
                 case JudgeState.QuarterGreat:
                 case JudgeState.Great:
                     if (isBreak)
-                        SoundEffectManager.PlayBreakGreatSound();
+                        AudioManager.GetInstance().PlayBreakGreatSound();
                     else
-                        SoundEffectManager.PlayGreatSound();
+                        AudioManager.GetInstance().PlayGreatSound();
 
                     break;
                 case JudgeState.Good:
                     if (isBreak)
-                        SoundEffectManager.PlayBreakGreatSound();
+                        AudioManager.GetInstance().PlayBreakGreatSound();
                     else
-                        SoundEffectManager.PlayGoodSound();
+                        AudioManager.GetInstance().PlayGoodSound();
 
                     break;
             }

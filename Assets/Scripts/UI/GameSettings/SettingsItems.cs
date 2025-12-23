@@ -69,6 +69,7 @@ namespace UI.GameSettings
                         new[] { "score", "achievement" }),
                     new("game.achievement_type", 0, new[] { "FiNALE", "DX" }, false),
                     new("game.blurred_cover", 0, new[] { "disabled", "enabled" }),
+                    new("game.background_video_playback", 1, new[] { "disabled", "enabled" }),
                     new("game.sensor_radius", 3, new[]
                     {
                         "1", "1.1", "1.2", "1.3", "1.4",

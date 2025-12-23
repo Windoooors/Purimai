@@ -207,7 +207,9 @@ namespace UI.Result
                     var deltaScore = GetDeltaScore(ResultController.AchievementType.Dx);
 
                     return deltaScore.deltaBasicScore / (float)(GetTotalScore() - GetHighestExtraScore()) * 100 +
-                           deltaScore.extraScore / (float)GetHighestExtraScore();
+                           deltaScore.extraScore / ((float)GetHighestExtraScore() == 0
+                               ? 1
+                               : (float)GetHighestExtraScore());
             }
 
             return 0;

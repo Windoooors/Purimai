@@ -3,8 +3,8 @@ namespace E7.Native
     public static partial class NativeAudio
     {
         /// <summary>
-        ///     An option for <see cref="NativeAudio.Load(UnityEngine.AudioClip, LoadOptions)"/>.
-        ///     Because it is a <c>struct</c>, start making it from <see cref="defaultOptions"/>
+        ///     An option for <see cref="NativeAudio.Load(UnityEngine.AudioClip, LoadOptions)" />.
+        ///     Because it is a <c>struct</c>, start making it from <see cref="defaultOptions" />
         ///     to get a good default values.
         /// </summary>
         public struct LoadOptions
@@ -12,9 +12,9 @@ namespace E7.Native
             /// <summary>
             ///     A good starting values to create custom options. A <c>struct</c> cannot have default value on <c>new</c>.
             /// </summary>
-            public static readonly LoadOptions defaultOptions = new LoadOptions
+            public static readonly LoadOptions defaultOptions = new()
             {
-                resamplingQuality = ResamplingQuality.SINC_FASTEST,
+                resamplingQuality = ResamplingQuality.SINC_FASTEST
             };
 
             /// <summary>
@@ -45,12 +45,12 @@ namespace E7.Native
                 ///     The missing value will be linearly interpolated.
                 ///     Faster than sinc resampling.
                 /// </summary>
-                LINEAR = 4,
+                LINEAR = 4
             }
 
             /// <summary>
             ///     The quality which <c>libsamplerate</c> will use to resample your audio to match the device's native rate.
-            ///     Default to <see cref="ResamplingQuality.SINC_FASTEST"/> on <see cref="defaultOptions"/>
+            ///     Default to <see cref="ResamplingQuality.SINC_FASTEST" /> on <see cref="defaultOptions" />
             /// </summary>
             /// <remarks>
             ///     <para>

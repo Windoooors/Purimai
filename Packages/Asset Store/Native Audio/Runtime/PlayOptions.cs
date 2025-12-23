@@ -5,12 +5,12 @@ namespace E7.Native
     public partial struct NativeSource
     {
         /// <summary>
-        ///     Used with <see cref="Play(NativeAudioPointer, PlayOptions)"/> to customize your play.
-        ///     Start creating it from <see cref="PlayOptions.defaultOptions"/>.
+        ///     Used with <see cref="Play(NativeAudioPointer, PlayOptions)" /> to customize your play.
+        ///     Start creating it from <see cref="PlayOptions.defaultOptions" />.
         /// </summary>
         /// <remarks>
         ///     <para>
-        ///         On some platforms like iOS, adjusting them after the play with <see cref="NativeSource"/>
+        ///         On some platforms like iOS, adjusting them after the play with <see cref="NativeSource" />
         ///         is already too late because you will already hear the audio. (Even in consecutive lines of code)
         ///     </para>
         ///     <para>
@@ -48,12 +48,12 @@ namespace E7.Native
             ///         </item>
             ///     </list>
             /// </remarks>
-            public static readonly PlayOptions defaultOptions = new PlayOptions
+            public static readonly PlayOptions defaultOptions = new()
             {
                 volume = 1,
                 pan = 0,
                 offsetSeconds = 0,
-                sourceLoop = false,
+                sourceLoop = false
             };
 
             /// <summary>
@@ -120,10 +120,10 @@ namespace E7.Native
             ///     </para>
             ///     <para>
             ///         To "protect" the looping sound, you likely have to plan your native source index carefully when
-            ///         choosing which source to play via <see cref="NativeAudio.GetNativeSource(int)"/>
+            ///         choosing which source to play via <see cref="NativeAudio.GetNativeSource(int)" />
             ///     </para>
             ///     <para>
-            ///         Using the default round-robin <see cref="NativeAudio.GetNativeSourceAuto()"/> sooner or later
+            ///         Using the default round-robin <see cref="NativeAudio.GetNativeSourceAuto()" /> sooner or later
             ///         will stop your looping sound when it wraps back.
             ///     </para>
             /// </remarks>

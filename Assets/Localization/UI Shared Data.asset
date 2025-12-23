@@ -207,6 +207,18 @@ MonoBehaviour:
     m_Key: settings.game.volume.critical_sound
     m_Metadata:
       m_Items: []
+  - m_Id: 15599568048611328
+    m_Key: settings.game.background_video_playback
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15599764950212608
+    m_Key: settings.game.background_video_playback.enabled
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15599864019673088
+    m_Key: settings.game.background_video_playback.disabled
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

@@ -116,7 +116,7 @@ namespace Game.Notes.Slides
             if (touchedSegmentsIndex == segments.Length)
                 return;
 
-            if (timing > ChartPlayer.Instance.GetTime())
+            if (timing > ChartPlayer.Instance.GetTime(true))
                 return;
 
             var sensorJumped =
@@ -197,6 +197,8 @@ namespace Game.Notes.Slides
                 }
 
                 ConcealSegment(segmentToBeConcealedIndex, isOnHold ? false : _sensorJumped);
+                segments[segmentToBeConcealedIndex].touched = true;
+
                 if (!isOnHold)
                     _sensorJumped = false;
             }
@@ -231,6 +233,9 @@ namespace Game.Notes.Slides
             {
                 ConcealSegment(segments.Length - 2,
                     false);
+
+                segments[^2].touched = true;
+
                 Judge();
             }
         }

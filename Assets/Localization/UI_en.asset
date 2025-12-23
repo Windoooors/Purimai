@@ -210,6 +210,18 @@ MonoBehaviour:
     m_Localized: Cue Sound Volume
     m_Metadata:
       m_Items: []
+  - m_Id: 15599568048611328
+    m_Localized: Background Video Playback
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15599764950212608
+    m_Localized: On
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15599864019673088
+    m_Localized: Off
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

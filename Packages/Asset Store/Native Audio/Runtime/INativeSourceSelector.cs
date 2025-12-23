@@ -1,7 +1,7 @@
 namespace E7.Native
 {
     /// <summary>
-    ///     An <c>interface</c> to use with <see cref="NativeAudio.GetNativeSourceAuto(INativeSourceSelector)"/>
+    ///     An <c>interface</c> to use with <see cref="NativeAudio.GetNativeSourceAuto(INativeSourceSelector)" />
     ///     You can implement your own logic that derives an index depending on some internal state.
     /// </summary>
     /// <remarks>
@@ -19,13 +19,13 @@ namespace E7.Native
     ///             <item>
     ///                 <description>
     ///                     The kick drum one keeps returning <c>0</c> in its
-    ///                     <see cref="NextNativeSourceIndex"/> implementation.
+    ///                     <see cref="NextNativeSourceIndex" /> implementation.
     ///                 </description>
     ///             </item>
     ///             <item>
     ///                 <description>
     ///                     The snare one return <c>1</c> and <c>2</c> alternately on each
-    ///                     <see cref="NextNativeSourceIndex"/> call.
+    ///                     <see cref="NextNativeSourceIndex" /> call.
     ///                 </description>
     ///             </item>
     ///         </list>
@@ -36,7 +36,7 @@ namespace E7.Native
         /// <summary>
         ///     <para>
         ///         Each call could return a different native source index by your own logic.
-        ///         Native Audio will call this once on each <see cref="NativeAudio.GetNativeSourceAuto(INativeSourceSelector)"/>
+        ///         Native Audio will call this once on each <see cref="NativeAudio.GetNativeSourceAuto(INativeSourceSelector)" />
         ///     </para>
         ///     <para>
         ///         If the returned <c>int</c> turns out to be an invalid index at native side,

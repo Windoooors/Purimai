@@ -5,13 +5,13 @@ namespace E7.Native
 {
     /// <summary>
     ///     <para>
-    ///         This is a reference to one of all native sources you obtained at <see cref="NativeAudio.Initialize()"/>.
-    ///         Parallels <see cref="AudioSource"/> of Unity except they are at native side, you play an audio using it.
+    ///         This is a reference to one of all native sources you obtained at <see cref="NativeAudio.Initialize()" />.
+    ///         Parallels <see cref="AudioSource" /> of Unity except they are at native side, you play an audio using it.
     ///     </para>
     ///     <para>
-    ///         Main way to get this is by <see cref="NativeAudio.GetNativeSource(int)"/>,
-    ///         <see cref="NativeAudio.GetNativeSourceAuto()"/>, or
-    ///         <see cref="NativeAudio.GetNativeSourceAuto(INativeSourceSelector)"/>
+    ///         Main way to get this is by <see cref="NativeAudio.GetNativeSource(int)" />,
+    ///         <see cref="NativeAudio.GetNativeSourceAuto()" />, or
+    ///         <see cref="NativeAudio.GetNativeSourceAuto(INativeSourceSelector)" />
     ///     </para>
     /// </summary>
     public partial struct NativeSource
@@ -25,25 +25,23 @@ namespace E7.Native
 
         /// <summary>
         ///     This is used to separate a <c>struct</c> returned from Native Audio's
-        ///     <see cref="NativeAudio.GetNativeSource(int)"/> method
+        ///     <see cref="NativeAudio.GetNativeSource(int)" /> method
         ///     from a default <c>struct</c>. (A trick to make <c>struct</c> kinda nullable.)
         /// </summary>
         public bool IsValid { get; }
 
         /// <summary>
         ///     It's like an ID of this native source. This is zero-indexed of how many
-        ///     native sources you get at <see cref="NativeAudio.Initialize()"/>
+        ///     native sources you get at <see cref="NativeAudio.Initialize()" />
         ///     If you initialize 3 native sources, then this could be 0, 1, or 2.
         /// </summary>
         public int Index { get; }
 
         private void AssertInitialized()
         {
-            if (NativeAudio.Initialized == false)
-            {
+            if (!NativeAudio.Initialized)
                 throw new InvalidOperationException(
                     "You cannot use NativeSource while Native Audio itself is not yet in initialized state.");
-            }
         }
 
         /// <summary>
@@ -130,22 +128,22 @@ namespace E7.Native
         ///         (depending on where you call it in the script)
         ///     </para>
         ///     <para>
-        ///         This behaviour is similar to when calling <see cref="AudioSettings.dspTime"/>
-        ///         or <see cref="AudioSource.time"/> property, those two are in the same update step.
+        ///         This behaviour is similar to when calling <see cref="AudioSettings.dspTime" />
+        ///         or <see cref="AudioSource.time" /> property, those two are in the same update step.
         ///     </para>
         ///     <para>
-        ///         Note that <see cref="Time.realtimeSinceStartup"/> is not in an update step unlike audio time,
+        ///         Note that <see cref="Time.realtimeSinceStartup" /> is not in an update step unlike audio time,
         ///         and will change every time you call even in 2 consecutive lines of code.
         ///     </para>
         ///     <para>
-        ///         A looping audio played by <see cref="PlayOptions.sourceLoop"/> has a playback time
+        ///         A looping audio played by <see cref="PlayOptions.sourceLoop" /> has a playback time
         ///         resets to 0 everytime a new loop arrives.
         ///     </para>
         ///     <para>
         ///         [iOS] Get <c>AL_SEC_OFFSET</c> attribute. It update in a certain discrete step,
         ///         and if that step happen in the middle of the frame this method will return different value
         ///         depending on where in the script you call it. The update step timing is <b>THE SAME</b> as
-        ///         <see cref="AudioSettings.dspTime"/> and <see cref="AudioSource.time"/>.
+        ///         <see cref="AudioSettings.dspTime" /> and <see cref="AudioSource.time" />.
         ///     </para>
         ///     <para>
         ///         I observed (in iPad 3, iOS 9) that this function sometimes lags on first few calls.
@@ -155,7 +153,7 @@ namespace E7.Native
         ///         [Android] Use <c>GetPosition</c> of <c>SLPlayItf</c> interface. It update in a certain discrete step,
         ///         and if that step happen in the middle of the frame this method will return different value
         ///         depending on where in the script you call it. The update step timing is <b>INDEPENDENT</b> from
-        ///         <see cref="AudioSettings.dspTime"/> and <see cref="AudioSource.time"/>.
+        ///         <see cref="AudioSettings.dspTime" /> and <see cref="AudioSource.time" />.
         ///     </para>
         ///     <para>
         ///         Because of how "stop hack" was implemented, any stopped audio will have a playback
@@ -229,7 +227,7 @@ namespace E7.Native
 
         /// <summary>
         ///     A native source will play an audio using loaded audio memory at native side,
-        ///     specified by <paramref name="nativeAudioPointer"/>.
+        ///     specified by <paramref name="nativeAudioPointer" />.
         /// </summary>
         /// <exception cref="InvalidOperationException">Thrown when you attempt to play an unloaded audio.</exception>
         public void Play(NativeAudioPointer nativeAudioPointer)
@@ -239,12 +237,12 @@ namespace E7.Native
 
         /// <summary>
         ///     A native source will play an audio using loaded audio memory at native side,
-        ///     specified by <paramref name="nativeAudioPointer"/>.
+        ///     specified by <paramref name="nativeAudioPointer" />.
         /// </summary>
         /// <exception cref="InvalidOperationException">Thrown when you attempt to play an unloaded audio.</exception>
         /// <param name="playOptions">
         ///     Customize your play. Begin creating the option from
-        ///     <see cref="PlayOptions.defaultOptions"/>
+        ///     <see cref="PlayOptions.defaultOptions" />
         /// </param>
         public void Play(NativeAudioPointer nativeAudioPointer, PlayOptions playOptions)
         {
@@ -260,11 +258,11 @@ namespace E7.Native
 
         /// <summary>
         ///     <para>
-        ///         (<b>EXPERIMENTAL</b>) Try to make the next <see cref="Play(NativeAudioPointer)"/> faster by pre-associating
+        ///         (<b>EXPERIMENTAL</b>) Try to make the next <see cref="Play(NativeAudioPointer)" /> faster by pre-associating
         ///         the pointer to this native source. Whether if this is possible or not depends on platform.
         ///     </para>
         ///     <para>
-        ///         To "fire" the prepared audio, use the parameterless play <see cref="PlayPrepared()"/> method.
+        ///         To "fire" the prepared audio, use the parameterless play <see cref="PlayPrepared()" /> method.
         ///     </para>
         ///     <para>
         ///         Not recommended to care about this generally, because the gain could be next to nothing for hassle you get.
@@ -280,13 +278,13 @@ namespace E7.Native
         /// </summary>
         /// <remarks>
         ///     <para>
-        ///         [iOS] Normally on <see cref="Play(NativeAudioPointer)"/> OpenAL will
+        ///         [iOS] Normally on <see cref="Play(NativeAudioPointer)" /> OpenAL will
         ///     </para>
         ///     <list type="number">
         ///         <item>
         ///             <description>
-        ///                 Choose a source at native side, depending on your <see cref="PlayOptions"/>
-        ///                 when using <see cref="Play(NativeAudioPointer, PlayOptions)"/> if manually.
+        ///                 Choose a source at native side, depending on your <see cref="PlayOptions" />
+        ///                 when using <see cref="Play(NativeAudioPointer, PlayOptions)" /> if manually.
         ///                 Or automatically round-robin without options.
         ///             </description>
         ///         </item>
@@ -298,12 +296,12 @@ namespace E7.Native
         ///         </item>
         ///     </list>
         ///     <para>
-        ///         Preparing make it do 1. and 2. preemptively. Then <see cref="PlayPrepared()"/> performs 3. "blindly"
+        ///         Preparing make it do 1. and 2. preemptively. Then <see cref="PlayPrepared()" /> performs 3. "blindly"
         ///         without caring about the current audio. If you didn't wait too long, the preparation should be usable.
         ///     </para>
         ///     <para>
         ///         [Android] No effect as OpenSL ES play audio by pushing data into <c>SLAndroidSimpleBufferQueueItf</c>.
-        ///         All the prepare is already at the <see cref="NativeAudio.Load(AudioClip)"/>. I cannot find any other way
+        ///         All the prepare is already at the <see cref="NativeAudio.Load(AudioClip)" />. I cannot find any other way
         ///         to pre-speeding this up.
         ///     </para>
         /// </remarks>
@@ -321,20 +319,21 @@ namespace E7.Native
         /// <summary>
         ///     <para>
         ///         (<b>EXPERIMENTAL</b>)
-        ///         Play the audio "blindly" without <see cref="NativeAudioPointer"/>,
-        ///         but <b>believing</b> that the prepared audio at <see cref="Prepare(NativeAudioPointer)"/> is still
+        ///         Play the audio "blindly" without <see cref="NativeAudioPointer" />,
+        ///         but <b>believing</b> that the prepared audio at <see cref="Prepare(NativeAudioPointer)" /> is still
         ///         associated with this native source.
         ///     </para>
         ///     <para>
         ///         If successful, the play could be potentially faster depending on platforms.
         ///     </para>
         ///     <para>
-        ///         If you waited too long and the native source has already been used with other audio, this may produce unexpected
+        ///         If you waited too long and the native source has already been used with other audio, this may produce
+        ///         unexpected
         ///         result such as repeating an audio you were not expecting when you prepared. With careful native source
         ///         planning, you can know that this will or will not happen.
         ///     </para>
         ///     <para>
-        ///         [iOS] Use this after <see cref="Prepare(NativeAudioPointer)"/>.
+        ///         [iOS] Use this after <see cref="Prepare(NativeAudioPointer)" />.
         ///     </para>
         ///     <para>
         ///         [Android] No effect, Android has no prepare implemented yet.
@@ -348,20 +347,21 @@ namespace E7.Native
         /// <summary>
         ///     <para>
         ///         (<b>EXPERIMENTAL</b>)
-        ///         Play the audio "blindly" without <see cref="NativeAudioPointer"/>,
-        ///         but <b>believing</b> that the prepared audio at <see cref="Prepare(NativeAudioPointer)"/> is still
+        ///         Play the audio "blindly" without <see cref="NativeAudioPointer" />,
+        ///         but <b>believing</b> that the prepared audio at <see cref="Prepare(NativeAudioPointer)" /> is still
         ///         associated with this native source.
         ///     </para>
         ///     <para>
         ///         If successful, the play could be potentially faster depending on platforms.
         ///     </para>
         ///     <para>
-        ///         If you waited too long and the native source has already been used with other audio, this may produce unexpected
+        ///         If you waited too long and the native source has already been used with other audio, this may produce
+        ///         unexpected
         ///         result such as repeating an audio you were not expecting when you prepared. With careful native source
         ///         planning, you can know that this will or will not happen.
         ///     </para>
         ///     <para>
-        ///         [iOS] Use this after <see cref="Prepare(NativeAudioPointer)"/>.
+        ///         [iOS] Use this after <see cref="Prepare(NativeAudioPointer)" />.
         ///     </para>
         ///     <para>
         ///         [Android] No effect, Android has no prepare implemented yet.

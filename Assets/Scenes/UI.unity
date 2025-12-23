@@ -927,7 +927,7 @@ GameObject:
   - component: {fileID: 42258396}
   - component: {fileID: 42258395}
   - component: {fileID: 42258397}
-  - component: {fileID: 42258398}
+  - component: {fileID: 42258399}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1045,20 +1045,14 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
---- !u!114 &42258398
-MonoBehaviour:
+--- !u!81 &42258399
+AudioListener:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 42258393}
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioListener
-  nonRigidbodyVelocity: 0
-  attenuationObject: {fileID: 0}
 --- !u!1 &57627255
 GameObject:
   m_ObjectHideFlags: 0
@@ -21337,6 +21331,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2015539220}
   - component: {fileID: 2015539221}
+  - component: {fileID: 2015539222}
   m_Layer: 5
   m_Name: UI
   m_TagString: Untagged
@@ -21418,6 +21413,20 @@ MonoBehaviour:
     slideSoundPath: slide.wav
     criticalSoundPath: critical_sound.wav
     preparatoryBeatSoundPath: preparatory_beat.wav
+--- !u!114 &2015539222
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2015539219}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83ba3f013fef4987be4c324fdc2203ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.AudioManager
+  criticalSound: {fileID: 0}
+  preparatoryBeatSound: {fileID: 0}
 --- !u!1 &2079231106
 GameObject:
   m_ObjectHideFlags: 0

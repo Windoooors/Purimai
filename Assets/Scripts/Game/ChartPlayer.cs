@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using FMOD;
-using FMODUnity;
-using Game;
 using Game.Notes;
 using LitMotion;
 using UI;
@@ -10,9 +5,7 @@ using UI.GameSettings;
 using UI.Result;
 using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using UnityEngine.Video;
 #if UNITY_EDITOR
@@ -40,7 +33,7 @@ namespace Game
 
         public Color[] judgeCircleColors;
 
-        [HideInInspector] public int slideAppearanceDeltaTime;
+        public int timeGapBeforeSlideStartsAppearing;
         [HideInInspector] public int slideFadeInDuration;
 
         public Animator[] holdRippleAnimators;
@@ -51,35 +44,36 @@ namespace Game
         public JudgeSettings tapJudgeSettings;
         public JudgeSettings slideJudgeSettings;
         public JudgeSettings holdTailJudgeSettings;
-        
+
         [SerializeField] private float _time;
 
         public bool isPlaying;
 
+        public AudioClip songClip;
+
+        [SerializeField] private float _dspTime;
+
         private readonly float _generalPlaybackDelayInSeconds = 3f;
-        private ChannelGroup _channelGroup;
+
+        private readonly int _maxScheduledCriticalSoundCount = 16;
+
+        private double _audioDspTimeWhenPlaybackStarts;
 
         private bool _chartHasVideo;
-
-        private ChannelPool _criticalSoundChannelPool;
 
         private int _criticalSoundIndex;
 
         private float _criticalSoundVolume;
-        
-        private ulong _dspClockWhenPlaybackStarts;
-        [SerializeField] private float _dspTime;
-        private int _frequency;
 
-        private Channel _songChannel;
-        private float _songVolume;
-        private VideoPlayer _videoPlayer;
-        private RenderTexture _videoTexture;
-
-        public Sound SongClip;
+        private bool _needSync;
 
         private bool _paused;
         private float _songLength;
+        private AudioSourcePool.AudioSourceHandler _songPlaybackAudioSourceHandler;
+
+        private float _songVolume;
+        private VideoPlayer _videoPlayer;
+        private RenderTexture _videoTexture;
 
         public void Awake()
         {
@@ -91,10 +85,8 @@ namespace Game
 
             slideJudgeDisplayAnimationDuration = (int)(judgeDisplayAnimationClip.length * 1000);
 
-            slideAppearanceDeltaTime = -(int)(2400 / flowSpeed * (1 - slideAppearanceDelay));
-            slideFadeInDuration = -slideAppearanceDeltaTime > 200 ? 200 : -slideAppearanceDeltaTime;
-
-            _criticalSoundChannelPool = new ChannelPool(24);
+            timeGapBeforeSlideStartsAppearing = (int)(2400 / flowSpeed * (1 - slideAppearanceDelay));
+            slideFadeInDuration = timeGapBeforeSlideStartsAppearing > 200 ? timeGapBeforeSlideStartsAppearing : 200;
 
             SceneManager.sceneUnloaded += _ => { Destroy(_videoTexture); };
 
@@ -102,6 +94,39 @@ namespace Game
 
             _criticalSoundVolume = SettingsPool.GetValue("game.volume.critical_sound") / 10f;
             _songVolume = SettingsPool.GetValue("game.volume.song") / 10f;
+        }
+
+        private void Update()
+        {
+            if (isPlaying)
+                _dspTime = (float)AudioSettings.dspTime - (float)_audioDspTimeWhenPlaybackStarts -
+                           _generalPlaybackDelayInSeconds;
+
+            if (isPlaying && !_paused)
+            {
+                if (_needSync)
+                {
+                    _needSync = false;
+
+                    _songPlaybackAudioSourceHandler.Resume();
+
+                    _time = _dspTime;
+                }
+
+                _time += Time.deltaTime;
+
+                if (math.abs(_time - _dspTime) > 0.02)
+                    _time = _dspTime;
+
+                SetCriticalSoundChannel();
+
+                if (_time > math.max(NoteGenerator.Instance.endingTime / 1000f + 0.5f, _songLength))
+                {
+                    isPlaying = false;
+                    LMotion.Create(_songVolume, 0, 0.5f).WithOnComplete(OnPlayCompleted)
+                        .Bind(x => _songPlaybackAudioSourceHandler.SetVolume(x));
+                }
+            }
         }
 
         private void OnApplicationFocus(bool hasFocus)
@@ -114,7 +139,7 @@ namespace Game
 
         private void Pause()
         {
-            _channelGroup.setPaused(true);
+            _songPlaybackAudioSourceHandler.Pause();
             _paused = true;
         }
 
@@ -124,49 +149,9 @@ namespace Game
             _paused = false;
         }
 
-        private bool _needSync;
-
-        private void Update()
-        {
-            if (isPlaying)
-            {
-                _channelGroup.getDSPClock(out _, out var currentDspClock);
-
-                _dspTime = (float)(currentDspClock - _dspClockWhenPlaybackStarts) / _frequency -
-                           _generalPlaybackDelayInSeconds;
-            }
-            
-            if (isPlaying && !_paused)
-            {
-                if (_needSync)
-                {
-                    _needSync = false;
-
-                    _songChannel.setPaused(false);
-
-                    _time = _dspTime;
-                }
-                
-                _time += Time.deltaTime;
-                
-                SetCriticalSoundChannel();
-                
-                if (_time > math.max(NoteGenerator.Instance.endingTime / 1000f + 0.5f, _songLength))
-                {
-                    isPlaying = false;
-                    LMotion.Create(_songVolume, 0, 0.5f).WithOnComplete(OnPlayCompleted)
-                        .Bind(x =>
-                        {
-                            if (_songChannel.hasHandle())
-                                _songChannel.setVolume(x);
-                        });
-                }
-            }
-        }
-
         public void LoadVideo(string path)
         {
-            if (path == "")
+            if (path == "" || SettingsPool.GetValue("game.background_video_playback") == 0)
                 return;
 
             _chartHasVideo = true;
@@ -204,9 +189,17 @@ namespace Game
             _videoPlayer.Prepare();
         }
 
-        public float GetTime()
+        public float GetTime(bool getDspTime = false)
         {
-            return _time * 1000;
+            if (_songPlaybackAudioSourceHandler != null)
+                return (getDspTime
+                    ? _songPlaybackAudioSourceHandler.IsPlaying()
+                        ? (float)AudioSettings.dspTime - (float)_audioDspTimeWhenPlaybackStarts -
+                          _generalPlaybackDelayInSeconds
+                        : _time
+                    : _time) * 1000;
+
+            return _time;
         }
 
         public void InitializeCircleColor(int index, bool isUtage)
@@ -217,8 +210,8 @@ namespace Game
 
         private void OnPlayCompleted()
         {
-            _songChannel.stop();
-            
+            _songPlaybackAudioSourceHandler.Stop();
+
             UIManager.GetInstance().EnableUI();
             ResultController.GetInstance().ShowResult();
         }
@@ -228,10 +221,7 @@ namespace Game
             LMotion.Create(_generalPlaybackDelayInSeconds * 1000f, 0, _generalPlaybackDelayInSeconds)
                 .WithEase(Ease.Linear).WithOnComplete(() =>
                 {
-                    if (_chartHasVideo)
-                    {
-                        _videoPlayer.Play();
-                    }
+                    if (_chartHasVideo) _videoPlayer.Play();
                 }).Bind(_ => { });
 
             isPlaying = true;
@@ -241,39 +231,25 @@ namespace Game
 
         private void PlaySound()
         {
-            var system = SoundEffectManager.System;
+            _audioDspTimeWhenPlaybackStarts = AudioSettings.dspTime;
 
-            var masterGroup = SoundEffectManager.GetChannelGroup();
+            AudioManager.GetInstance().AudioSourcePool.TryGetAudioSourceHandler(out _songPlaybackAudioSourceHandler);
 
-            var result = system.getSoftwareFormat(
-                out var frequency,
-                out _,
-                out _
-            );
+            _songPlaybackAudioSourceHandler.SetClip(songClip);
 
-            masterGroup.getDSPClock(out _, out _dspClockWhenPlaybackStarts);
+            var delay = _audioDspTimeWhenPlaybackStarts +
+                        _generalPlaybackDelayInSeconds;
 
-            var songStartOffset = (ulong)(frequency * _generalPlaybackDelayInSeconds);
+            _songPlaybackAudioSourceHandler.PlayScheduled(delay);
 
-            system.playSound(SongClip, masterGroup, true, out _songChannel);
-            _songChannel.setDelay(_dspClockWhenPlaybackStarts + songStartOffset, 0);
-            _songChannel.setPaused(false);
-            
-            _songChannel.setVolume(_songVolume);
-            
-            _channelGroup = SoundEffectManager.GetChannelGroup();
+            _songPlaybackAudioSourceHandler.ScheduledStartTime = delay;
 
-            system.getSoftwareFormat(
-                out _frequency,
-                out _,
-                out _
-            );
+            _songPlaybackAudioSourceHandler.SetVolume(_songVolume);
 
             isPlaying = true;
-            
-            SongClip.getLength(out uint songLength, TIMEUNIT.MS);
-            _songLength = songLength / 1000f;
-            
+
+            _songLength = songClip.length;
+
             SetCriticalSoundChannel(true);
         }
 
@@ -282,48 +258,48 @@ namespace Game
             if (_criticalSoundIndex == NoteGenerator.Instance.criticalTimeList.Count)
                 return;
 
-            var sound = SoundEffectManager.CriticalSound;
-
-            var system = SoundEffectManager.System;
+            AudioSourcePool.AudioSourceHandler handler;
 
             if (initialSet)
             {
-                _channelGroup.getDSPClock(out _, out _dspClockWhenPlaybackStarts);
-            }
-
-            Channel channel;
-
-            if (initialSet)
-            {
-                for (var i = 0; i < _criticalSoundChannelPool.Size; i++)
+                for (var i = 0; i < _maxScheduledCriticalSoundCount; i++)
                 {
-                    _criticalSoundChannelPool.TryGetChannel(sound, out channel);
+                    AudioManager.GetInstance().AudioSourcePool.TryGetAudioSourceHandler(out handler);
 
-                    SetUpChannelDelay(channel);
-                    channel.setVolume(_criticalSoundVolume);
+                    SetUpChannelDelay(handler);
+                    handler.SetVolume(_criticalSoundVolume);
                 }
 
                 return;
             }
 
-            var channelAvailable = _criticalSoundChannelPool.TryGetChannel(sound, out channel);
+            if (AudioManager.GetInstance().AudioSourcePool.GetOccupiedCount() < _maxScheduledCriticalSoundCount)
+            {
+                var channelAvailable = AudioManager.GetInstance().AudioSourcePool.TryGetAudioSourceHandler(out handler);
 
-            if (!channelAvailable)
-                return;
+                if (!channelAvailable)
+                    return;
 
-            SetUpChannelDelay(channel);
-            channel.setVolume(_criticalSoundVolume);
+                SetUpChannelDelay(handler);
+                handler.SetVolume(_criticalSoundVolume);
+            }
 
             return;
 
-            void SetUpChannelDelay(Channel targetChannel)
+            void SetUpChannelDelay(AudioSourcePool.AudioSourceHandler handler)
             {
-                var delay = (ulong)(_frequency * (_generalPlaybackDelayInSeconds +
-                                                  NoteGenerator.Instance.criticalTimeList[_criticalSoundIndex] /
-                                                  1000f));
+                if (_criticalSoundIndex >= NoteGenerator.Instance.criticalTimeList.Count)
+                    return;
 
-                targetChannel.setDelay(_dspClockWhenPlaybackStarts + delay, 0);
-                targetChannel.setPaused(false);
+                var delay = _generalPlaybackDelayInSeconds +
+                            NoteGenerator.Instance.criticalTimeList[_criticalSoundIndex] /
+                            1000f + _audioDspTimeWhenPlaybackStarts;
+
+                var audioClip = AudioManager.GetInstance().criticalSound;
+
+                handler.SetClip(audioClip);
+                handler.PlayScheduled(delay);
+                handler.ScheduledStartTime = delay;
 
                 _criticalSoundIndex++;
             }
@@ -338,68 +314,5 @@ namespace Game
             _videoPlayer.Stop();
         }
 #endif
-    }
-}
-
-public class ChannelPool
-{
-    private readonly ChannelGroup _channelGroup;
-
-    private readonly List<ChannelHandler> _pool = new();
-
-    public readonly int Size;
-
-    public ChannelPool(int size)
-    {
-        Size = size;
-
-        _channelGroup = SoundEffectManager.GetChannelGroup();
-
-        for (var i = 0; i < size; i++) _pool.Add(new ChannelHandler());
-    }
-
-    public bool TryGetChannel(Sound sound, out Channel channel)
-    {
-        foreach (var channelHandler in _pool)
-        {
-            if (!channelHandler.Channel.hasHandle())
-            {
-                channelHandler.Free = true;
-                continue;
-            }
-
-            channelHandler.Channel.isPlaying(out var isPlaying);
-            channelHandler.Channel.getPaused(out var paused);
-            if (!isPlaying || paused)
-            {
-                channelHandler.Channel.stop();
-                channelHandler.Channel.clearHandle();
-                channelHandler.Channel = default;
-
-                channelHandler.Free = true;
-            }
-        }
-
-        for (var i = 0; i < Size; i++)
-        {
-            if (!_pool[i].Free)
-                continue;
-
-            SoundEffectManager.System.playSound(sound, _channelGroup, true, out _pool[i].Channel);
-
-            _pool[i].Free = false;
-
-            channel = _pool[i].Channel;
-            return true;
-        }
-
-        channel = default;
-        return false;
-    }
-
-    private class ChannelHandler
-    {
-        public Channel Channel;
-        public bool Free = true;
     }
 }

@@ -15,11 +15,11 @@ namespace E7.Native
     {
         /// <summary>
         ///     <para>
-        ///         Returns <c>true</c> after calling <see cref="Initialize()"/> successfully, meaning that
+        ///         Returns <c>true</c> after calling <see cref="Initialize()" /> successfully, meaning that
         ///         we have a certain amount of native sources ready for use at native side.
         ///     </para>
         ///     <para>
-        ///         It is able to turn back to <c>false</c> if you call <see cref="NativeAudio.Dispose"/>
+        ///         It is able to turn back to <c>false</c> if you call <see cref="NativeAudio.Dispose" />
         ///         to return native sources back to the OS.
         ///     </para>
         /// </summary>
@@ -52,9 +52,7 @@ namespace E7.Native
         private static void AssertInitialized()
         {
             if (!Initialized)
-            {
                 throw new InvalidOperationException("You cannot use Native Audio while in uninitialized state.");
-            }
         }
 
         /// <summary>
@@ -67,7 +65,7 @@ namespace E7.Native
         ///         (and in turn native <c>AudioTrack</c>) will be allocated all at once.
         ///     </para>
         ///     <para>
-        ///         See <see cref="NativeAudio.Initialize(InitializationOptions)"/> overload
+        ///         See <see cref="NativeAudio.Initialize(InitializationOptions)" /> overload
         ///         how to customize your initialization.
         ///     </para>
         /// </summary>
@@ -106,7 +104,7 @@ namespace E7.Native
         ///         (and in turn native <c>AudioTrack</c>) will be allocated all at once.
         ///     </para>
         ///     <para>
-        ///         See <see cref="NativeAudio.Initialize(InitializationOptions)"/> overload
+        ///         See <see cref="NativeAudio.Initialize(InitializationOptions)" /> overload
         ///         how to customize your initialization.
         ///     </para>
         /// </summary>
@@ -126,7 +124,7 @@ namespace E7.Native
         /// </remarks>
         /// <param name="initializationOptions">
         ///     Customize your initialization.
-        ///     Start making it from <see cref="InitializationOptions.defaultOptions"/>
+        ///     Start making it from <see cref="InitializationOptions.defaultOptions" />
         /// </param>
         /// <exception cref="NotSupportedException">
         ///     Thrown when you initialize in Editor or something other than
@@ -134,24 +132,16 @@ namespace E7.Native
         /// </exception>
         public static void Initialize(InitializationOptions initializationOptions)
         {
-            if (!OnSupportedPlatform)
-            {
-                throw NotSupportedThrow();
-            }
+            if (!OnSupportedPlatform) throw NotSupportedThrow();
             //Now it is possible to initialize again with different option on Android. It would dispose and reallocate native sources.
 #if UNITY_IOS
-            if (Initialized)
-            {
-                return;
-            }
+            if (Initialized) return;
 #endif
 
 #if UNITY_IOS
             var errorCode = _Initialize();
             if (errorCode == -1)
-            {
                 throw new Exception("There is an error initializing Native Audio occured at native side.");
-            }
 
             //There is also a check at native side but just to be safe here.
             Initialized = true;
@@ -170,7 +160,7 @@ namespace E7.Native
 
         /// <summary>
         ///     <para>
-        ///         [Android] Undo the <see cref="Initialize()"/>.
+        ///         [Android] Undo the <see cref="Initialize()" />.
         ///         It doesn't affect any loaded audio, just dispose all the native sources returning them to OS and make them
         ///         available for other applications.
         ///     </para>
@@ -201,8 +191,8 @@ namespace E7.Native
 
         /// <summary>
         ///     <para>
-        ///         Loads by copying Unity-imported <see cref="AudioClip"/>'s raw audio memory to native side.
-        ///         You are free to unload the <see cref="AudioClip"/>'s audio data without affecting
+        ///         Loads by copying Unity-imported <see cref="AudioClip" />'s raw audio memory to native side.
+        ///         You are free to unload the <see cref="AudioClip" />'s audio data without affecting
         ///         what's loaded at the native side after this.
         ///     </para>
         ///     <para>
@@ -211,7 +201,8 @@ namespace E7.Native
         /// </summary>
         /// <remarks>
         ///     <para>
-        ///         If you did not <see cref="Initialize()"/> yet, it will initialize with no <see cref="InitializationOptions"/>.
+        ///         If you did not <see cref="Initialize()" /> yet, it will initialize with no <see cref="InitializationOptions" />
+        ///         .
         ///         You cannot load audio while uninitialized.
         ///     </para>
         ///     <para>
@@ -226,14 +217,14 @@ namespace E7.Native
         ///         </item>
         ///         <item>
         ///             <description>
-        ///                 If you use Load In Background, you must call <see cref="AudioClip.LoadAudioData"/> beforehand
-        ///                 and ensure that <see cref="AudioClip.loadState"/> is <see cref="AudioDataLoadState.Loaded"/> before
-        ///                 calling <see cref="Load(UnityEngine.AudioClip)"/>. Otherwise it would throw an exception.
-        ///                 If you are not using <see cref="AudioClip.loadInBackground"/> but also not using
-        ///                 <see cref="AudioClip.preloadAudioData"/>, Native Audio can load for you if not yet loaded.
+        ///                 If you use Load In Background, you must call <see cref="AudioClip.LoadAudioData" /> beforehand
+        ///                 and ensure that <see cref="AudioClip.loadState" /> is <see cref="AudioDataLoadState.Loaded" /> before
+        ///                 calling <see cref="Load(UnityEngine.AudioClip)" />. Otherwise it would throw an exception.
+        ///                 If you are not using <see cref="AudioClip.loadInBackground" /> but also not using
+        ///                 <see cref="AudioClip.preloadAudioData" />, Native Audio can load for you if not yet loaded.
         ///             </description>
         ///         </item>
-        ///         <item>Must not be <see cref="AudioClip.ambisonic"/>.</item>
+        ///         <item>Must not be <see cref="AudioClip.ambisonic" />.</item>
         ///     </list>
         ///     <para>
         ///         It supports all compression format, force to mono, overriding to any sample rate, and quality slider.
@@ -257,7 +248,7 @@ namespace E7.Native
         ///     </para>
         ///     <para>
         ///         You can change the sampling quality of SRC (<c>libsamplerate</c>) library on a
-        ///         per-audio basis with the <see cref="NativeAudio.Load(AudioClip, LoadOptions)"/> overload.
+        ///         per-audio basis with the <see cref="NativeAudio.Load(AudioClip, LoadOptions)" /> overload.
         ///     </para>
         /// </remarks>
         /// <param name="audioClip">
@@ -273,30 +264,30 @@ namespace E7.Native
         ///         </item>
         ///         <item>
         ///             <description>
-        ///                 If you use Load In Background, you must call <see cref="AudioClip.LoadAudioData"/> beforehand
-        ///                 and ensure that <see cref="AudioClip.loadState"/> is <see cref="AudioDataLoadState.Loaded"/> before
-        ///                 calling <see cref="Load(UnityEngine.AudioClip)"/>. Otherwise it would throw an exception.
-        ///                 If you are not using <see cref="AudioClip.loadInBackground"/> but also not using
-        ///                 <see cref="AudioClip.preloadAudioData"/>, Native Audio can load for you if not yet loaded.
+        ///                 If you use Load In Background, you must call <see cref="AudioClip.LoadAudioData" /> beforehand
+        ///                 and ensure that <see cref="AudioClip.loadState" /> is <see cref="AudioDataLoadState.Loaded" /> before
+        ///                 calling <see cref="Load(UnityEngine.AudioClip)" />. Otherwise it would throw an exception.
+        ///                 If you are not using <see cref="AudioClip.loadInBackground" /> but also not using
+        ///                 <see cref="AudioClip.preloadAudioData" />, Native Audio can load for you if not yet loaded.
         ///             </description>
         ///         </item>
         ///         <item>
-        ///             <description>Must not be <see cref="AudioClip.ambisonic"/>.</description>
+        ///             <description>Must not be <see cref="AudioClip.ambisonic" />.</description>
         ///         </item>
         ///     </list>
         /// </param>
         /// <returns>
-        ///     An audio buffer pointer for use with <see cref="NativeSource.Play(NativeAudioPointer)"/>.
-        ///     Get the source from <see cref="NativeAudio.GetNativeSource(int)"/>
+        ///     An audio buffer pointer for use with <see cref="NativeSource.Play(NativeAudioPointer)" />.
+        ///     Get the source from <see cref="NativeAudio.GetNativeSource(int)" />
         /// </returns>
         /// <exception cref="Exception">Thrown when some unexpected exception at native side loading occurs.</exception>
         /// <exception cref="NotSupportedException">
         ///     Thrown when you have
-        ///     prohibited settings on your <see cref="AudioClip"/>.
+        ///     prohibited settings on your <see cref="AudioClip" />.
         /// </exception>
         /// <exception cref="InvalidOperationException">
         ///     Thrown when you didn't manually
-        ///     load your <see cref="AudioClip"/> when it is not set to load in background.
+        ///     load your <see cref="AudioClip" /> when it is not set to load in background.
         /// </exception>
         public static NativeAudioPointer Load(AudioClip audioClip)
         {
@@ -305,8 +296,8 @@ namespace E7.Native
 
         /// <summary>
         ///     <para>
-        ///         Loads by copying Unity-imported <see cref="AudioClip"/>'s raw audio memory to native side.
-        ///         You are free to unload the <see cref="AudioClip"/>'s audio data without affecting
+        ///         Loads by copying Unity-imported <see cref="AudioClip" />'s raw audio memory to native side.
+        ///         You are free to unload the <see cref="AudioClip" />'s audio data without affecting
         ///         what's loaded at the native side after this.
         ///     </para>
         ///     <para>
@@ -315,7 +306,8 @@ namespace E7.Native
         /// </summary>
         /// <remarks>
         ///     <para>
-        ///         If you did not <see cref="Initialize()"/> yet, it will initialize with no <see cref="InitializationOptions"/>.
+        ///         If you did not <see cref="Initialize()" /> yet, it will initialize with no <see cref="InitializationOptions" />
+        ///         .
         ///         You cannot load audio while uninitialized.
         ///     </para>
         ///     <para>
@@ -330,15 +322,15 @@ namespace E7.Native
         ///         </item>
         ///         <item>
         ///             <description>
-        ///                 If you use Load In Background, you must call <see cref="AudioClip.LoadAudioData"/> beforehand
-        ///                 and ensure that <see cref="AudioClip.loadState"/> is <see cref="AudioDataLoadState.Loaded"/> before
-        ///                 calling <see cref="Load(UnityEngine.AudioClip)"/>. Otherwise it would throw an exception.
-        ///                 If you are not using <see cref="AudioClip.loadInBackground"/> but also not using
-        ///                 <see cref="AudioClip.preloadAudioData"/>, Native Audio can load for you if not yet loaded.
+        ///                 If you use Load In Background, you must call <see cref="AudioClip.LoadAudioData" /> beforehand
+        ///                 and ensure that <see cref="AudioClip.loadState" /> is <see cref="AudioDataLoadState.Loaded" /> before
+        ///                 calling <see cref="Load(UnityEngine.AudioClip)" />. Otherwise it would throw an exception.
+        ///                 If you are not using <see cref="AudioClip.loadInBackground" /> but also not using
+        ///                 <see cref="AudioClip.preloadAudioData" />, Native Audio can load for you if not yet loaded.
         ///             </description>
         ///         </item>
         ///         <item>
-        ///             <description>Must not be <see cref="AudioClip.ambisonic"/>.</description>
+        ///             <description>Must not be <see cref="AudioClip.ambisonic" />.</description>
         ///         </item>
         ///     </list>
         ///     <para>
@@ -363,7 +355,7 @@ namespace E7.Native
         ///     </para>
         ///     <para>
         ///         You can change the sampling quality of SRC (<c>libsamplerate</c>) library on a
-        ///         per-audio basis with the <see cref="NativeAudio.Load(AudioClip, LoadOptions)"/> overload.
+        ///         per-audio basis with the <see cref="NativeAudio.Load(AudioClip, LoadOptions)" /> overload.
         ///     </para>
         /// </remarks>
         /// <param name="audioClip">
@@ -379,34 +371,34 @@ namespace E7.Native
         ///         </item>
         ///         <item>
         ///             <description>
-        ///                 If you use Load In Background, you must call <see cref="AudioClip.LoadAudioData"/> beforehand
-        ///                 and ensure that <see cref="AudioClip.loadState"/> is <see cref="AudioDataLoadState.Loaded"/> before
-        ///                 calling <see cref="Load(UnityEngine.AudioClip, LoadOptions)"/>. Otherwise it would throw an exception.
-        ///                 If you are not using <see cref="AudioClip.loadInBackground"/> but also not using
-        ///                 <see cref="AudioClip.preloadAudioData"/>, Native Audio can load for you if not yet loaded.
+        ///                 If you use Load In Background, you must call <see cref="AudioClip.LoadAudioData" /> beforehand
+        ///                 and ensure that <see cref="AudioClip.loadState" /> is <see cref="AudioDataLoadState.Loaded" /> before
+        ///                 calling <see cref="Load(UnityEngine.AudioClip, LoadOptions)" />. Otherwise it would throw an exception.
+        ///                 If you are not using <see cref="AudioClip.loadInBackground" /> but also not using
+        ///                 <see cref="AudioClip.preloadAudioData" />, Native Audio can load for you if not yet loaded.
         ///             </description>
         ///         </item>
         ///         <item>
-        ///             <description>Must not be <see cref="AudioClip.ambisonic"/>.</description>
+        ///             <description>Must not be <see cref="AudioClip.ambisonic" />.</description>
         ///         </item>
         ///     </list>
         /// </param>
         /// <param name="loadOptions">
         ///     Customize your load.
-        ///     Start creating your option from <see cref="LoadOptions.defaultOptions"/>.
+        ///     Start creating your option from <see cref="LoadOptions.defaultOptions" />.
         /// </param>
         /// <returns>
-        ///     An audio buffer pointer for use with <see cref="NativeSource.Play(NativeAudioPointer)"/>.
-        ///     Get the source from <see cref="NativeAudio.GetNativeSource(int)"/>
+        ///     An audio buffer pointer for use with <see cref="NativeSource.Play(NativeAudioPointer)" />.
+        ///     Get the source from <see cref="NativeAudio.GetNativeSource(int)" />
         /// </returns>
         /// <exception cref="Exception">Thrown when some unexpected exception at native side loading occurs.</exception>
         /// <exception cref="NotSupportedException">
         ///     Thrown when you have
-        ///     prohibited settings on your <see cref="AudioClip"/>.
+        ///     prohibited settings on your <see cref="AudioClip" />.
         /// </exception>
         /// <exception cref="InvalidOperationException">
         ///     Thrown when you didn't manually
-        ///     load your <see cref="AudioClip"/> when it is not set to load in background.
+        ///     load your <see cref="AudioClip" /> when it is not set to load in background.
         /// </exception>
         public static NativeAudioPointer Load(AudioClip audioClip, LoadOptions loadOptions)
         {
@@ -427,9 +419,7 @@ namespace E7.Native
             shortArrayPinned.Free();
 
             if (startingIndex == -1)
-            {
                 throw new Exception("Error loading NativeAudio with AudioClip named : " + audioClip.name);
-            }
 
             var length = _LengthByAudioBuffer(startingIndex);
             return new NativeAudioPointer(audioClip.name, startingIndex, length);
@@ -454,7 +444,7 @@ namespace E7.Native
         /// <summary>
         ///     <para>
         ///         (<b>ADVANCED</b>) Loads an audio from <c>StreamingAssets</c> folder's destination at runtime.
-        ///         Most of the cases you should use the <see cref="NativeAudio.Load(AudioClip)"/> overload instead.
+        ///         Most of the cases you should use the <see cref="NativeAudio.Load(AudioClip)" /> overload instead.
         ///     </para>
         ///     <para>
         ///         It only supports <c>.wav</c> PCM 16-bit format, stereo or mono,
@@ -470,8 +460,8 @@ namespace E7.Native
         ///     loading occurs.
         /// </exception>
         /// <returns>
-        ///     An audio buffer pointer for use with <see cref="NativeSource.Play(NativeAudioPointer)"/>.
-        ///     Get the source from <see cref="NativeAudio.GetNativeSource(int)"/>
+        ///     An audio buffer pointer for use with <see cref="NativeSource.Play(NativeAudioPointer)" />.
+        ///     Get the source from <see cref="NativeAudio.GetNativeSource(int)" />
         /// </returns>
         public static NativeAudioPointer Load(string streamingAssetsRelativePath)
         {
@@ -481,7 +471,7 @@ namespace E7.Native
         /// <summary>
         ///     <para>
         ///         (<b>ADVANCED</b>) Loads an audio from <c>StreamingAssets</c> folder's destination at runtime.
-        ///         Most of the cases you should use the <see cref="NativeAudio.Load(AudioClip)"/> overload instead.
+        ///         Most of the cases you should use the <see cref="NativeAudio.Load(AudioClip)" /> overload instead.
         ///     </para>
         ///     <para>
         ///         It only supports <c>.wav</c> PCM 16-bit format, stereo or mono,
@@ -494,35 +484,31 @@ namespace E7.Native
         /// </param>
         /// <param name="loadOptions">
         ///     Customize your load.
-        ///     Start creating your option from <see cref="LoadOptions.defaultOptions"/>.
+        ///     Start creating your option from <see cref="LoadOptions.defaultOptions" />.
         /// </param>
         /// <exception cref="System.IO.FileLoadException">
         ///     Thrown when some unexpected exception at native side
         ///     loading occurs.
         /// </exception>
         /// <returns>
-        ///     An audio buffer pointer for use with <see cref="NativeSource.Play(NativeAudioPointer)"/>.
-        ///     Get the source from <see cref="NativeAudio.GetNativeSource(int)"/>
+        ///     An audio buffer pointer for use with <see cref="NativeSource.Play(NativeAudioPointer)" />.
+        ///     Get the source from <see cref="NativeAudio.GetNativeSource(int)" />
         /// </returns>
         public static NativeAudioPointer Load(string streamingAssetsRelativePath, LoadOptions loadOptions)
         {
             AssertInitialized();
 
             if (Path.GetExtension(streamingAssetsRelativePath).ToLower() == ".ogg")
-            {
                 throw new NotSupportedException(
                     "Loading via StreamingAssets does not support OGG. Please use the AudioClip overload and set the import settings to Vorbis.");
-            }
 
 #if UNITY_IOS
-            var startingIndex = _LoadAudio(streamingAssetsRelativePath, (int) loadOptions.resamplingQuality);
+            var startingIndex = _LoadAudio(streamingAssetsRelativePath, (int)loadOptions.resamplingQuality);
             if (startingIndex == -1)
-            {
                 throw new FileLoadException(
                     "Error loading audio at path : " + streamingAssetsRelativePath +
                     " Please check if that audio file really exist relative to StreamingAssets folder or not. Remember that you must include the file's extension as well.",
                     streamingAssetsRelativePath);
-            }
 
             var length = _LengthByAudioBuffer(startingIndex);
             return new NativeAudioPointer(streamingAssetsRelativePath, startingIndex, length);
@@ -548,27 +534,19 @@ namespace E7.Native
         private static void AssertAudioClip(AudioClip audioClip)
         {
             if (audioClip.loadType != AudioClipLoadType.DecompressOnLoad)
-            {
                 throw new NotSupportedException(string.Format(
                     "Your audio clip {0} load type is not Decompress On Load but {1}. " +
                     "Native Audio needs to read the raw PCM data by that import mode.",
                     audioClip.name, audioClip.loadType));
-            }
 
             if (audioClip.channels != 1 && audioClip.channels != 2)
-            {
                 throw new NotSupportedException(string.Format(
                     "Native Audio only supports mono or stereo. Your audio {0} has {1} channels", audioClip.name,
                     audioClip.channels));
-            }
 
-            if (audioClip.ambisonic)
-            {
-                throw new NotSupportedException("Native Audio does not support ambisonic audio!");
-            }
+            if (audioClip.ambisonic) throw new NotSupportedException("Native Audio does not support ambisonic audio!");
 
             if (audioClip.loadState != AudioDataLoadState.Loaded && audioClip.loadInBackground)
-            {
                 throw new InvalidOperationException(
                     "Your audio is not loaded yet while having the import settings Load In Background. " +
                     "Native Audio cannot wait for loading asynchronously for you and it would results in an empty audio. " +
@@ -576,28 +554,20 @@ namespace E7.Native
                     "beforehand and ensure that `audioClip.loadState` is `AudioDataLoadState.Loaded` " +
                     "before calling `NativeAudio.Load`, or remove Load In Background then Native Audio " +
                     "could load it for you.");
-            }
         }
 
         private static short[] AudioClipToShortArray(AudioClip audioClip)
         {
             if (audioClip.loadState != AudioDataLoadState.Loaded)
-            {
                 if (!audioClip.LoadAudioData())
-                {
                     throw new Exception(string.Format("Loading audio {0} failed!", audioClip.name));
-                }
-            }
 
             var data = new float[audioClip.samples * audioClip.channels];
             audioClip.GetData(data, 0);
 
             //Convert to 16-bit PCM
             var shortArray = new short[audioClip.samples * audioClip.channels];
-            for (var i = 0; i < shortArray.Length; i++)
-            {
-                shortArray[i] = (short) (data[i] * short.MaxValue);
-            }
+            for (var i = 0; i < shortArray.Length; i++) shortArray[i] = (short)(data[i] * short.MaxValue);
 
             return shortArray;
         }
@@ -614,7 +584,7 @@ namespace E7.Native
         /// <remarks>
         ///     <para>
         ///         It checks with the native side if
-        ///         a specified <paramref name="nativeSourceIndex"/> is valid or not before returning a native source
+        ///         a specified <paramref name="nativeSourceIndex" /> is valid or not before returning a native source
         ///         interfacing object to you. If not, it has a fallback to round-robin native source selection.
         ///     </para>
         ///     <para>
@@ -627,7 +597,7 @@ namespace E7.Native
         /// </remarks>
         /// <param name="nativeSourceIndex">
         ///     <para>
-        ///         Specify a zero-indexed native source that you want. If at <see cref="Initialize()"/> you
+        ///         Specify a zero-indexed native source that you want. If at <see cref="Initialize()" /> you
         ///         requested 3, then valid numbers here are : 0, 1, and 2.
         ///     </para>
         ///     <para>
@@ -640,7 +610,7 @@ namespace E7.Native
         ///         Native source representation you can use it to play audio.
         ///     </para>
         ///     <para>
-        ///         If <paramref name="nativeSourceIndex"/> used was invalid,
+        ///         If <paramref name="nativeSourceIndex" /> used was invalid,
         ///         then this is a result of fallback round-robin native source selection.
         ///     </para>
         /// </returns>
@@ -662,7 +632,7 @@ namespace E7.Native
         ///         You can keep and cache the returned native source reference and keep using it.
         ///     </para>
         ///     <para>
-        ///         Unlike <see cref="GetNativeSource(int)"/>,
+        ///         Unlike <see cref="GetNativeSource(int)" />,
         ///         this method is for when you just want to play an audio without much care about stopping
         ///         a previously played audio on any available native source.
         ///     </para>
@@ -699,9 +669,9 @@ namespace E7.Native
         ///         You can keep and cache the returned native source reference and keep using it.
         ///     </para>
         ///     <para>
-        ///         Like <see cref="GetNativeSource(int)"/>, this method is for when you want a specific index
+        ///         Like <see cref="GetNativeSource(int)" />, this method is for when you want a specific index
         ///         of native source to play. But unlike that, you can create your own "index returning object"
-        ///         that implements <see cref="INativeSourceSelector"/>. Making it more systematic for you.
+        ///         that implements <see cref="INativeSourceSelector" />. Making it more systematic for you.
         ///     </para>
         /// </summary>
         /// <remarks>
@@ -719,8 +689,8 @@ namespace E7.Native
         /// </remarks>
         /// <returns>
         ///     Native source representation you can use it to play audio, resulting from an index that
-        ///     Native Audio got from calling <see cref="INativeSourceSelector.NextNativeSourceIndex"/> on
-        ///     <paramref name="nativeSourceSelector"/>.
+        ///     Native Audio got from calling <see cref="INativeSourceSelector.NextNativeSourceIndex" /> on
+        ///     <paramref name="nativeSourceSelector" />.
         /// </returns>
         public static NativeSource GetNativeSourceAuto(INativeSourceSelector nativeSourceSelector)
         {
@@ -780,7 +750,7 @@ namespace E7.Native
         ///         if you are going to access any of its fields. Or else it would be an error if you switch your build platform.
         ///     </para>
         ///     <para>
-        ///         [Editor] Does not work, returns default value of <see cref="DeviceAudioInformation"/>.
+        ///         [Editor] Does not work, returns default value of <see cref="DeviceAudioInformation" />.
         ///     </para>
         /// </summary>
         public static DeviceAudioInformation GetDeviceAudioInformation()
@@ -813,7 +783,7 @@ namespace E7.Native
         ///     </para>
         ///     <para>
         ///         The test will be asynchronous because it has to wait for frame to play the next audio.
-        ///         Yield wait for the result with the returned <see cref="NativeAudioAnalyzer"/>.
+        ///         Yield wait for the result with the returned <see cref="NativeAudioAnalyzer" />.
         ///         This is a component of a new game object created to run a test coroutine on your scene.
         ///     </para>
         ///     <para>
@@ -831,7 +801,7 @@ namespace E7.Native
         ///         I have fixed most of the frame rate drop problem I found.
         ///         But if there are more obscure devices that drop frame rate, this method can check it at runtime
         ///         and by the returned result you can stop using Native Audio
-        ///         and return to Unity <see cref="AudioSource"/>.
+        ///         and return to Unity <see cref="AudioSource" />.
         ///     </para>
         /// </summary>
         public static NativeAudioAnalyzer SilentAnalyze()

@@ -8,13 +8,13 @@ namespace E7.Native
     ///         A representation of loaded audio memory at the native side.
     ///     </para>
     ///     <para>
-    ///         When you <see cref="NativeAudio.Load(AudioClip)"/> it is copying audio memory to native side. Each memory area
+    ///         When you <see cref="NativeAudio.Load(AudioClip)" /> it is copying audio memory to native side. Each memory area
     ///         of loaded audio is given an ID. This "pointer" is not really a "memory address pointer" like in C++, but just
     ///         the mentioned ID. Just a simple integer.
     ///     </para>
     ///     <para>
     ///         Please do not create an instance of this class on your own. You can only get and keep from calling
-    ///         <see cref="NativeAudio.Load(AudioClip)"/>
+    ///         <see cref="NativeAudio.Load(AudioClip)" />
     ///     </para>
     /// </summary>
     public class NativeAudioPointer
@@ -60,10 +60,7 @@ namespace E7.Native
             {
                 var toReturn = currentIndex;
                 currentIndex = currentIndex + 1;
-                if (currentIndex > startingIndex + amount - 1)
-                {
-                    currentIndex = startingIndex;
-                }
+                if (currentIndex > startingIndex + amount - 1) currentIndex = startingIndex;
 
                 return toReturn;
             }
@@ -71,16 +68,11 @@ namespace E7.Native
 
         internal void AssertLoadedAndInitialized()
         {
-            if (isUnloaded)
-            {
-                throw new InvalidOperationException("You cannot use an unloaded NativeAudioPointer.");
-            }
+            if (isUnloaded) throw new InvalidOperationException("You cannot use an unloaded NativeAudioPointer.");
 
-            if (NativeAudio.Initialized == false)
-            {
+            if (!NativeAudio.Initialized)
                 throw new InvalidOperationException(
                     "You cannot use NativeAudioPointer while Native Audio itself is not in initialized state.");
-            }
         }
 
         public override string ToString()
@@ -91,7 +83,8 @@ namespace E7.Native
         /// <summary>
         ///     <para>
         ///         Free up loaded audio memory.
-        ///         You cannot call <see cref="NativeSource.Play(NativeAudioPointer)"/> using this pointer anymore after unloading.
+        ///         You cannot call <see cref="NativeSource.Play(NativeAudioPointer)" /> using this pointer anymore after
+        ///         unloading.
         ///         It will throw an exception.
         ///     </para>
         ///     <para>
@@ -177,8 +170,8 @@ namespace E7.Native
         ///         The code can't help you since the check would be expensive.
         ///     </para>
         ///     <para>
-        ///         One last warning, if you <see cref="NativeSource.Stop"/>
-        ///         then immediately <see cref="Unload"/> on the next line of code,
+        ///         One last warning, if you <see cref="NativeSource.Stop" />
+        ///         then immediately <see cref="Unload" /> on the next line of code,
         ///         it is actually <b>not</b> 100% safe.
         ///     </para>
         ///     <para>
