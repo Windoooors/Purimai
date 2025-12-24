@@ -72,6 +72,31 @@ namespace UI.Result
 
         public static int HighestCombo => Combo > _highestComboAfterReset ? Combo : _highestComboAfterReset;
 
+        public static LevelRankData GetLevelRankData()
+        {
+            var result = new LevelRankData();
+            result.Combo = HighestCombo;
+            result.FcState = GetFcState();
+            result.TotalScore = GetTotalScore();
+            result.LevelAchievements = new LevelAchievement()
+            {
+                DxBestAchievement = new LevelAchievement.ScorePair()
+                {
+                    DxAchievement = GetCurrentAchievement(ResultController.AchievementType.Dx),
+                    FinaleAchievement = GetCurrentAchievement(ResultController.AchievementType.Finale),
+                    Score = GetScore()
+                },
+                FinaleBestAchievement = new LevelAchievement.ScorePair()
+                {
+                    DxAchievement = GetCurrentAchievement(ResultController.AchievementType.Dx),
+                    FinaleAchievement = GetCurrentAchievement(ResultController.AchievementType.Finale),
+                    Score = GetScore()
+                }
+            };
+
+            return result;
+        }
+        
         public static FcState GetFcState()
         {
             var totalCount = SlideCount.TotalCount + HoldCount.TotalCount + TapCount.TotalCount + BreakCount.TotalCount;

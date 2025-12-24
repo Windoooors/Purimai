@@ -17,7 +17,7 @@ namespace UI
         private static readonly Regex ArtistRegex = new("&artist=(.*)");
         private static readonly Regex MainDesignerRegex = new("&des=(.*)");
         private static readonly Regex GenreRegex = new("&genre=(.*)");
-        private static readonly Regex FirstNoteTimeRegex = new(@"&first=(\d+.\d+|\d+)");
+        private static readonly Regex FirstNoteTimeRegex = new(@"&first=((\-?)\d+.\d+|(\-?)\d+)");
         private static readonly Regex BpmRegex = new(@"&wholebpm=(\d+.\d+|\d+)");
 
         private static readonly Regex UtageRegex =
@@ -111,8 +111,8 @@ namespace UI
                     ? designerRegex.Match(maidata).Groups[1].Value
                     : "";
 
-                difficultyNameList.Add(levelMatch);
-                designerList.Add(designerMatch);
+                difficultyNameList.Add(levelMatch.Trim());
+                designerList.Add(designerMatch.Trim());
 
                 AddUsedCharacters(levelMatch);
                 AddUsedCharacters(designerMatch);

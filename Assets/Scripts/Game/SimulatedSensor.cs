@@ -43,12 +43,11 @@ namespace Game
         private void Update()
         {
             if (_activeFingers.Count > 0)
-                StartCoroutine(TriggerEvent(() =>
-                {
-                    if (Enabled)
-                        OnHold?.Invoke(this,
-                            new TouchEventArgs(settings.sensorId));
-                }));
+            {
+                if (Enabled)
+                    OnHold?.Invoke(this,
+                        new TouchEventArgs(settings.sensorId));
+            }
         }
 
         private void OnDestroy()
@@ -68,10 +67,7 @@ namespace Game
                 return;
 
             _activeFingers.Add(finger);
-            StartCoroutine(TriggerEvent(() =>
-            {
-                if (Enabled) OnTap?.Invoke(this, new TouchEventArgs(settings.sensorId));
-            }));
+            if (Enabled) OnTap?.Invoke(this, new TouchEventArgs(settings.sensorId));
         }
 
         private void OnFingerUp(Finger finger)
@@ -81,10 +77,9 @@ namespace Game
             _activeFingers.Remove(finger);
 
             if (_activeFingers.Count == 0)
-                StartCoroutine(TriggerEvent(() =>
-                {
-                    if (Enabled) OnLeave?.Invoke(this, new TouchEventArgs(settings.sensorId));
-                }));
+            {
+                if (Enabled) OnLeave?.Invoke(this, new TouchEventArgs(settings.sensorId));
+            }
         }
 
         private void OnFingerMove(Finger finger)
@@ -96,28 +91,17 @@ namespace Game
             if (isInside && !isTracked)
             {
                 _activeFingers.Add(finger);
-                StartCoroutine(TriggerEvent(() =>
-                {
-                    if (Enabled) OnTap?.Invoke(this, new TouchEventArgs(settings.sensorId));
-                }));
+                if (Enabled) OnTap?.Invoke(this, new TouchEventArgs(settings.sensorId));
             }
             else if (!isInside && isTracked)
             {
                 _activeFingers.Remove(finger);
                 if (_activeFingers.Count == 0)
-                    StartCoroutine(
-                        TriggerEvent(() =>
-                        {
-                            if (Enabled) OnLeave?.Invoke(this, new TouchEventArgs(settings.sensorId));
-                        }));
+                {
+                    if (Enabled) OnLeave?.Invoke(this, new TouchEventArgs(settings.sensorId));
+                }
+                
             }
-        }
-
-        private IEnumerator TriggerEvent(Action callback)
-        {
-            yield return new WaitForSeconds(SimulatedSensorManager.Instance.offset);
-
-            callback?.Invoke();
         }
     }
 }

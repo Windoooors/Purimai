@@ -181,8 +181,6 @@ namespace Game.Notes.Taps
 
                     result.PositionInLane = position / laneLength;
 
-                    Debug.Log(result.PositionInLane);
-
                     result.HoldSpriteLength = totalHoldLength + _initialHoldLength;
 
                     result.TailDotPositionInLane = (currentPosition - startMovingTiming - duration) / OnScreenTime;

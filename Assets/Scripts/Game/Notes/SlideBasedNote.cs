@@ -165,10 +165,10 @@ namespace Game.Notes
 
             foreach (var segment in UniversalSegments)
             foreach (var arrowRenderer in segment.slideSpriteRenderers)
-                if ((!segment.touched && !Slided) || slideTransform.ArrowAlpha == 0)
+                if ((!segment.touched && !Slided && !segment.arrowInBetweenConcealed) || slideTransform.ArrowAlpha == 0)
                     arrowRenderer.color = new Color(1, 1, 1, slideTransform.ArrowAlpha);
 
-            if (ChartPlayer.Instance.GetTime() >= timing + waitDuration + slideDuration && Slided && !_concealed)
+            if (ChartPlayer.Instance.GetTime(true) >= timing + waitDuration + slideDuration && Slided && !_concealed)
             {
                 Scoreboard.SlideCount.Count(_judgeState);
 
@@ -179,7 +179,7 @@ namespace Game.Notes
                 _concealed = true;
             }
 
-            if (ChartPlayer.Instance.GetTime() >=
+            if (ChartPlayer.Instance.GetTime(true) >=
                 timing + waitDuration + slideDuration +
                 ChartPlayer.Instance.slideJudgeSettings.fastGoodTiming + ChartPlayer.Instance.judgeDelay
                 && !_concealed && !Slided)
@@ -479,6 +479,8 @@ namespace Game.Notes
 
                 foreach (var slideSprite in segment.slideSpriteRenderersOutsideSensorArea)
                     slideSprite.color = new Color(1, 1, 1, 0);
+
+                segment.arrowInBetweenConcealed = true;
             }));
         }
 
@@ -669,5 +671,6 @@ namespace Game.Notes
         public SpriteRenderer[] slideSpriteRenderersOutsideSensorArea;
 
         public bool touched;
+        public bool arrowInBetweenConcealed;
     }
 }

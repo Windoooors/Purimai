@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Game;
 using LitMotion;
 using UnityEngine;
@@ -74,6 +75,50 @@ namespace UI
             RegisterSimulatedSensorEvent();
         }
 
+        private string _lastTappedSensor;
+
+        private void ScrollSection(int direction)
+        {
+            _lastTappedSensor = "";
+            
+            var titleDataArray = AllData.Where(x => x is TitleListItem.TitleData).ToArray();
+            
+            if (titleDataArray.Length == 0)
+                return;
+            if (titleDataArray.Length == 1)
+            {
+                MoveTo(AllData.ToList().IndexOf(titleDataArray[0]) + 1);
+                
+                return;
+            }
+
+            var targetIndex = dataIndex;
+
+            var count = 0;
+
+            while (true)
+            {
+                targetIndex += direction;
+
+                if (targetIndex < 0)
+                    targetIndex = AllData.Length - 1;
+                if (targetIndex >= AllData.Length)
+                    targetIndex = 0;
+
+                if (AllData[targetIndex] is TitleListItem.TitleData)
+                {
+                    if (direction == 1)
+                        break;
+                    
+                    count++;
+                    if (count == 2)
+                        break;
+                }
+            }
+            
+            MoveTo(targetIndex + 1);
+        }
+
         public void RegisterSimulatedSensorEvent()
         {
             SimulatedSensor.OnTap += (_, args) =>
@@ -88,6 +133,13 @@ namespace UI
                     MoveSelection(1);
                     StartHoldingDown();
                 }
+
+                if (args.SensorId is "B3" or "B6" && _lastTappedSensor is "B2" or "B7")
+                    ScrollSection(-1);
+                else if (args.SensorId is "B2" or "B7" && _lastTappedSensor is "B3" or "B6")
+                    ScrollSection(1);
+                else
+                    _lastTappedSensor = args.SensorId;
 
                 SimulatedSensor.OnLeave += OnLeave;
             };
@@ -141,11 +193,15 @@ namespace UI
         private void OnLeave(object sender, TouchEventArgs args)
         {
             if (args.SensorId == "A4")
+            {
                 EndHoldingDown();
+                SimulatedSensor.OnLeave -= OnLeave;
+            }
             else if (args.SensorId == "A1")
+            {
                 EndHoldingUp();
-
-            SimulatedSensor.OnLeave -= OnLeave;
+                SimulatedSensor.OnLeave -= OnLeave;
+            }
         }
 
         public void Initialize(ItemDataBase[] data, ListItemBase normalItemPrefab)

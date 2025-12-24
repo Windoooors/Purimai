@@ -8,8 +8,8 @@ namespace UI
 {
     public class LevelAchievement
     {
-        public ScorePair DxBestAchievement { get; private set; } = new();
-        public ScorePair FinaleBestAchievement { get; private set; } = new();
+        public ScorePair DxBestAchievement { get; set; } = new();
+        public ScorePair FinaleBestAchievement { get; set; } = new();
 
         public class ScorePair
         {
@@ -42,6 +42,11 @@ namespace UI
         public LevelRankData(int difficultyIndex)
         {
             DifficultyIndex = difficultyIndex;
+        }
+
+        public LevelRankData()
+        {
+            DifficultyIndex = -1;
         }
 
         public override int GetHashCode()

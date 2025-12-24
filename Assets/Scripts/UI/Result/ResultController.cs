@@ -34,34 +34,22 @@ namespace UI.Result
             Dx
         }
 
+        public TextMeshProUGUI artistText;
+        public TextMeshProUGUI titleText;
+
         private static ResultController _instance;
         public Image backgroundImage;
         public Image blurredSongCoverImage;
         public Image[] songCoverImage;
 
-        public CanvasGroup resultDifficultyIndicatorCanvasGroup;
-        public CanvasGroup resultComboIndicatorCanvasGroup;
-
-        public TextMeshProUGUI artistText;
-        public TextMeshProUGUI songTitleText;
-        public TextMeshProUGUI achievementTitleText;
-        public TextMeshProUGUI achievementText;
-        public TextMeshProUGUI alternativeAchievementText;
-        public TextMeshProUGUI rankText;
-        public TextMeshProUGUI rankTitleText;
-        public TextMeshProUGUI difficultyText;
-        public TextMeshProUGUI difficultyNameText;
-        public TextMeshProUGUI charterNameText;
-
-        public TextMeshProUGUI comboText;
-        public TextMeshProUGUI comboStateText;
-
-        public Image difficultyIndicatorBackgroundImage;
-
+        public DifficultyIndicatorDataManager.DifficultyIndicatorBindingData difficultyIndicatorBindingData;
+        
         [FormerlySerializedAs("ScoreboardTextMeshPros")]
         public ScoreboardTextMeshPros scoreboardTextMeshPros;
 
         public CanvasGroup detailedScoreboardCanvasGroup;
+
+        public CanvasGroup resultDifficultyIndicatorCanvasGroup;
 
         [FormerlySerializedAs("canvasGroup")] public CanvasGroup resultLayer;
         public CanvasGroup difficultyIndicatorCanvasGroup;
@@ -95,48 +83,9 @@ namespace UI.Result
             blurredSongCoverImage.sprite = maidata.BlurredSongCoverDecodedImage.GetSprite();
 
             foreach (var image in songCoverImage) image.sprite = maidata.SongCoverDecodedImage.GetSprite();
-
+            
             artistText.text = maidata.Artist;
-            songTitleText.text = maidata.Title;
-
-            difficultyText.text = maidata.Difficulties[difficultyIndex];
-
-            var designerName = maidata.Designers[difficultyIndex];
-
-            designerName = designerName == "\r" ? maidata.MainChartDesigner : designerName;
-            designerName = designerName == "\r" ? "Unknown Designer" : designerName;
-
-            charterNameText.text = designerName;
-
-            difficultyNameText.text = (maidata.IsUtage ? 6 : difficultyIndex) switch
-            {
-                0 => "EZ",
-                1 => "BAS",
-                2 => "ADV",
-                3 => "EXP",
-                4 => "MAS",
-                5 => "RE",
-                6 => "UTAGE",
-                _ => ""
-            };
-
-            var textColor = DifficultyIndicator.GetInstance().textColors[maidata.IsUtage ? 5 : difficultyIndex];
-
-            difficultyText.color = new Color(textColor.r, textColor.g, textColor.b, difficultyText.color.a);
-            charterNameText.color = new Color(textColor.r, textColor.g, textColor.b, charterNameText.color.a);
-            difficultyNameText.color = new Color(textColor.r, textColor.g, textColor.b, difficultyNameText.color.a);
-
-            achievementTitleText.color = new Color(textColor.r, textColor.g, textColor.b, achievementTitleText.color.a);
-            achievementText.color = new Color(textColor.r, textColor.g, textColor.b, achievementText.color.a);
-            alternativeAchievementText.color =
-                new Color(textColor.r, textColor.g, textColor.b, achievementText.color.a);
-            rankText.color = new Color(textColor.r, textColor.g, textColor.b, rankText.color.a);
-            rankTitleText.color = new Color(textColor.r, textColor.g, textColor.b, rankTitleText.color.a);
-
-            difficultyNameText.colorGradient =
-                DifficultyIndicator.GetInstance().textGradientColors[maidata.IsUtage ? 5 : difficultyIndex];
-            difficultyIndicatorBackgroundImage.color =
-                DifficultyIndicator.GetInstance().backgroundColors[maidata.IsUtage ? 5 : difficultyIndex];
+            titleText.text = maidata.Title;
 
             resultLayer.gameObject.SetActive(false);
         }
@@ -248,7 +197,11 @@ namespace UI.Result
             resultLayer.gameObject.SetActive(true);
             resultLayer.alpha = 1;
 
-            SetScoreIndicatorContent();
+            SaveHighestScore();
+
+            DifficultyIndicatorDataManager.SetContent(_maidata, _difficultyIndex, Scoreboard.GetLevelRankData(),
+                difficultyIndicatorBindingData,
+                DifficultyIndicator.GetInstance().colorData);
 
             InitializeScoreboard();
 
@@ -260,7 +213,7 @@ namespace UI.Result
 
             AddMotionHandle(LMotion.Create(0, 1f, 1f).WithOnComplete(() =>
                 {
-                    SimulatedSensor.OnTap += (sender, args) =>
+                    SimulatedSensor.OnTap += (_, args) =>
                     {
                         switch (args.SensorId)
                         {
@@ -332,7 +285,10 @@ namespace UI.Result
 
             LevelListController.GetInstance().levelSelectionUiLayer.gameObject.SetActive(true);
 
-            DifficultyIndicator.GetInstance().SetScoreIndicatorContent(_maidata.MaidataDirectoryName, _difficultyIndex);
+            var chartData = ChartRankDataManager.GetChartRankData(_maidata.MaidataDirectoryName);
+            var levelRankData = chartData?.GetLevelRankData(_difficultyIndex);
+            DifficultyIndicatorDataManager.SetContent(_maidata, _difficultyIndex, levelRankData,
+                DifficultyIndicator.GetInstance().bindingData, DifficultyIndicator.GetInstance().colorData);
 
             SimulatedSensor.OnTap = null;
             SimulatedSensor.OnHold = null;
@@ -399,7 +355,8 @@ namespace UI.Result
                 Button.GetButton(5).Show(false);
             });
 
-            SetScoreIndicatorContent();
+            DifficultyIndicatorDataManager.SetContent(_maidata, _difficultyIndex,Scoreboard.GetLevelRankData(), difficultyIndicatorBindingData,
+                DifficultyIndicator.GetInstance().colorData);
         }
 
         private void ChangeScoreOrAchievement()
@@ -420,54 +377,8 @@ namespace UI.Result
                 Button.GetButton(6).Show();
             });
 
-            SetScoreIndicatorContent();
-        }
-
-        private void SetScoreIndicatorContent()
-        {
-            achievementTitleText.text = SettingsPool.GetValue("game.score_indicator_type") switch
-            {
-                0 => "Score",
-                _ => "Achievement"
-            };
-
-            var type = (AchievementType)SettingsPool.GetValue("game.achievement_type");
-
-            achievementText.text = SettingsPool.GetValue("game.score_indicator_type") switch
-            {
-                0 => Scoreboard.GetScore().ToString(),
-                _ => Scoreboard.GetCurrentAchievement(type)
-                    .ToString(type == AchievementType.Finale ? "0.00" : "0.0000") + "%"
-            };
-
-            alternativeAchievementText.text = (type == AchievementType.Dx ? "F.A. " : "D.A. ") + Scoreboard
-                .GetCurrentAchievement(type == AchievementType.Dx ? AchievementType.Finale : AchievementType.Dx)
-                .ToString((type == AchievementType.Dx ? AchievementType.Finale : AchievementType.Dx) ==
-                          AchievementType.Finale
-                    ? "0.00"
-                    : "0.0000") + "%";
-
-            rankText.text = GetRankName(Scoreboard.GetCurrentAchievement(type), Scoreboard.GetScore(),
-                Scoreboard.GetTotalScore(), type);
-
-            comboText.text = Scoreboard.HighestCombo.ToString();
-            comboStateText.text = Scoreboard.GetFcState() switch
-            {
-                FcState.Fc => "FC",
-                FcState.FcGold => "FC",
-                FcState.Ap => "AP",
-                _ => "Played"
-            };
-
-            comboStateText.colorGradient = Scoreboard.GetFcState() switch
-            {
-                FcState.Fc => UIManager.GetInstance().fcColorGradient,
-                FcState.FcGold => UIManager.GetInstance().fcGoldColorGradient,
-                FcState.Ap => UIManager.GetInstance().fcGoldColorGradient,
-                _ => UIManager.GetInstance().fcColorGradient
-            };
-
-            SaveHighestScore();
+            DifficultyIndicatorDataManager.SetContent(_maidata, _difficultyIndex,Scoreboard.GetLevelRankData(), difficultyIndicatorBindingData,
+                DifficultyIndicator.GetInstance().colorData);
         }
 
         private void SaveHighestScore()
@@ -497,9 +408,11 @@ namespace UI.Result
                 levelRankData.LevelAchievements.DxBestAchievement.Score = Scoreboard.GetScore();
             }
 
-            levelRankData.TotalScore = Scoreboard.GetTotalScore();
+            if (Scoreboard.GetTotalScore() > levelRankData.TotalScore)
+                levelRankData.TotalScore = Scoreboard.GetTotalScore();
 
-            levelRankData.Combo = Scoreboard.HighestCombo;
+            if (Scoreboard.HighestCombo > levelRankData.Combo)
+                levelRankData.Combo = Scoreboard.HighestCombo;
 
             var fcState = Scoreboard.GetFcState();
 

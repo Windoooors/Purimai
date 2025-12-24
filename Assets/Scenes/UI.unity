@@ -9028,59 +9028,61 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f2d505d760cb428eaaefddd874fab03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  backgroundColors:
-  - {r: 0.6273585, g: 0.89789385, b: 1, a: 1}
-  - {r: 0.8062957, g: 1, b: 0.6, a: 1}
-  - {r: 1, g: 0.9546642, b: 0.48584908, a: 1}
-  - {r: 0.5660378, g: 0, b: 0, a: 1}
-  - {r: 0.5882353, g: 0.41960785, b: 0.7058824, a: 1}
-  - {r: 0.96415097, g: 0.9103774, b: 1, a: 1}
-  textColors:
-  - {r: 0, g: 0, b: 0, a: 1}
-  - {r: 0, g: 0, b: 0, a: 1}
-  - {r: 0, g: 0, b: 0, a: 1}
-  - {r: 1, g: 1, b: 1, a: 1}
-  - {r: 1, g: 1, b: 1, a: 1}
-  - {r: 0, g: 0, b: 0, a: 1}
-  textGradientColors:
-  - topLeft: {r: 1, g: 1, b: 1, a: 0}
-    topRight: {r: 1, g: 1, b: 1, a: 0}
-    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
-    bottomRight: {r: 1, g: 1, b: 1, a: 1}
-  - topLeft: {r: 1, g: 1, b: 1, a: 0}
-    topRight: {r: 1, g: 1, b: 1, a: 0}
-    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
-    bottomRight: {r: 1, g: 1, b: 1, a: 1}
-  - topLeft: {r: 1, g: 1, b: 1, a: 0}
-    topRight: {r: 1, g: 1, b: 1, a: 0}
-    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
-    bottomRight: {r: 1, g: 1, b: 1, a: 1}
-  - topLeft: {r: 1, g: 1, b: 1, a: 1}
-    topRight: {r: 1, g: 1, b: 1, a: 1}
-    bottomLeft: {r: 1, g: 1, b: 1, a: 0}
-    bottomRight: {r: 1, g: 1, b: 1, a: 0}
-  - topLeft: {r: 1, g: 1, b: 1, a: 1}
-    topRight: {r: 1, g: 1, b: 1, a: 1}
-    bottomLeft: {r: 1, g: 1, b: 1, a: 0}
-    bottomRight: {r: 1, g: 1, b: 1, a: 0}
-  - topLeft: {r: 1, g: 1, b: 1, a: 0}
-    topRight: {r: 1, g: 1, b: 1, a: 0}
-    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
-    bottomRight: {r: 1, g: 1, b: 1, a: 1}
-  backgroundImage: {fileID: 1927631593}
-  difficultyText: {fileID: 664706442}
-  charterNameText: {fileID: 1708849176}
-  difficultyNameText: {fileID: 1184403371}
-  achievementTitleText: {fileID: 57627257}
-  achievementText: {fileID: 969412707}
-  alternativeAchievementText: {fileID: 1278365177}
-  rankText: {fileID: 199247112}
-  rankTitleText: {fileID: 1500976087}
-  comboText: {fileID: 498850793}
-  comboStateText: {fileID: 1896016489}
   difficultyIndicatorCanvasGroup: {fileID: 809582399}
-  comboIndicatorCanvasGroup: {fileID: 265512201}
-  scoreIndicatorCanvasGroup: {fileID: 1656402021}
+  bindingData:
+    difficultyText: {fileID: 664706442}
+    charterNameText: {fileID: 1708849176}
+    difficultyNameText: {fileID: 1184403371}
+    achievementTitleText: {fileID: 57627257}
+    achievementText: {fileID: 969412707}
+    alternativeAchievementText: {fileID: 1278365177}
+    rankText: {fileID: 199247112}
+    rankTitleText: {fileID: 1500976087}
+    comboText: {fileID: 498850793}
+    comboStateText: {fileID: 1896016489}
+    backgroundImage: {fileID: 1927631593}
+    comboIndicatorCanvasGroup: {fileID: 265512201}
+    scoreIndicatorCanvasGroup: {fileID: 1656402021}
+  colorData:
+    backgroundColors:
+    - {r: 0.6901961, g: 0.8862745, b: 0.9882353, a: 1}
+    - {r: 0.84313726, g: 0.99607843, b: 0.6431373, a: 1}
+    - {r: 0.99215686, g: 0.9529412, b: 0.5529412, a: 1}
+    - {r: 0.5176471, g: 0.09803922, b: 0.05882353, a: 1}
+    - {r: 0.5686275, g: 0.42745098, b: 0.6901961, a: 1}
+    - {r: 0.95686275, g: 0.9098039, b: 0.99215686, a: 1}
+    textColors:
+    - {r: 0, g: 0, b: 0, a: 1}
+    - {r: 0, g: 0, b: 0, a: 1}
+    - {r: 0, g: 0, b: 0, a: 1}
+    - {r: 1, g: 1, b: 1, a: 1}
+    - {r: 1, g: 1, b: 1, a: 1}
+    - {r: 0, g: 0, b: 0, a: 1}
+    textGradientColors:
+    - topLeft: {r: 1, g: 1, b: 1, a: 0}
+      topRight: {r: 1, g: 1, b: 1, a: 0}
+      bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+      bottomRight: {r: 1, g: 1, b: 1, a: 1}
+    - topLeft: {r: 1, g: 1, b: 1, a: 0}
+      topRight: {r: 1, g: 1, b: 1, a: 0}
+      bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+      bottomRight: {r: 1, g: 1, b: 1, a: 1}
+    - topLeft: {r: 1, g: 1, b: 1, a: 0}
+      topRight: {r: 1, g: 1, b: 1, a: 0}
+      bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+      bottomRight: {r: 1, g: 1, b: 1, a: 1}
+    - topLeft: {r: 1, g: 1, b: 1, a: 1}
+      topRight: {r: 1, g: 1, b: 1, a: 1}
+      bottomLeft: {r: 1, g: 1, b: 1, a: 0}
+      bottomRight: {r: 1, g: 1, b: 1, a: 0}
+    - topLeft: {r: 1, g: 1, b: 1, a: 1}
+      topRight: {r: 1, g: 1, b: 1, a: 1}
+      bottomLeft: {r: 1, g: 1, b: 1, a: 0}
+      bottomRight: {r: 1, g: 1, b: 1, a: 0}
+    - topLeft: {r: 1, g: 1, b: 1, a: 0}
+      topRight: {r: 1, g: 1, b: 1, a: 0}
+      bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+      bottomRight: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &831876705
 GameObject:
   m_ObjectHideFlags: 0
@@ -19751,27 +19753,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56775ec9deb6d405389d783186dc38e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Result.ResultController
+  artistText: {fileID: 522832604}
+  titleText: {fileID: 1849618139}
   backgroundImage: {fileID: 1814722724}
   blurredSongCoverImage: {fileID: 2079231108}
   songCoverImage:
   - {fileID: 798358830}
   - {fileID: 1983148036}
   - {fileID: 1510227197}
-  resultDifficultyIndicatorCanvasGroup: {fileID: 1990203304}
-  resultComboIndicatorCanvasGroup: {fileID: 1719108431}
-  artistText: {fileID: 522832604}
-  songTitleText: {fileID: 1849618139}
-  achievementTitleText: {fileID: 1981889859}
-  achievementText: {fileID: 206048484}
-  alternativeAchievementText: {fileID: 269875473}
-  rankText: {fileID: 2143010706}
-  rankTitleText: {fileID: 1760183195}
-  difficultyText: {fileID: 9395733}
-  difficultyNameText: {fileID: 1290081380}
-  charterNameText: {fileID: 1154935515}
-  comboText: {fileID: 545960131}
-  comboStateText: {fileID: 1461142985}
-  difficultyIndicatorBackgroundImage: {fileID: 977478418}
+  difficultyIndicatorBindingData:
+    difficultyText: {fileID: 9395733}
+    charterNameText: {fileID: 1154935515}
+    difficultyNameText: {fileID: 1290081380}
+    achievementTitleText: {fileID: 1981889859}
+    achievementText: {fileID: 206048484}
+    alternativeAchievementText: {fileID: 269875473}
+    rankText: {fileID: 2143010706}
+    rankTitleText: {fileID: 1760183195}
+    comboText: {fileID: 545960131}
+    comboStateText: {fileID: 1461142985}
+    backgroundImage: {fileID: 977478418}
+    comboIndicatorCanvasGroup: {fileID: 1719108431}
+    scoreIndicatorCanvasGroup: {fileID: 1990203304}
   scoreboardTextMeshPros:
     tapTexts:
     - {fileID: 372139846}
@@ -19798,6 +19801,7 @@ MonoBehaviour:
     goodText: {fileID: 275279347}
     missText: {fileID: 288525680}
   detailedScoreboardCanvasGroup: {fileID: 1402274615}
+  resultDifficultyIndicatorCanvasGroup: {fileID: 1990203304}
   resultLayer: {fileID: 1215887828}
   difficultyIndicatorCanvasGroup: {fileID: 1990203304}
   songCoverBackground: {fileID: 937103696}
@@ -21427,6 +21431,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.AudioManager
   criticalSound: {fileID: 0}
   preparatoryBeatSound: {fileID: 0}
+  slideSound: {fileID: 0}
 --- !u!1 &2079231106
 GameObject:
   m_ObjectHideFlags: 0

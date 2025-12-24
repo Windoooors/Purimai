@@ -17,7 +17,9 @@ namespace Game
 
         public AudioClip criticalSound;
         public AudioClip preparatoryBeatSound;
+#if !(UNITY_IOS && !UNITY_EDITOR)
         public AudioClip slideSound;
+#endif
         private float _breakVolume = 1;
         private float _slideVolume = 1;
 
@@ -43,6 +45,7 @@ namespace Game
             _greatSound.Unload();
             _perfectSound.Unload();
             _breakGreatSound.Unload();
+            _slideSound.Unload();
 #endif
         }
 
@@ -148,27 +151,46 @@ namespace Game
             _breakNativeSource.Play(_breakGreatSound);
 #endif
         }
+#if !(UNITY_IOS && !UNITY_EDITOR)
+        private AudioSourcePool.AudioSourceHandler _slideAudioSourceHandler;
+#endif
 
         public void PlaySlideSound()
         {
+#if !(UNITY_IOS && !UNITY_EDITOR)
             if (_slideVolume == 0)
                 return;
 
-            var allocated = AudioSourcePool.TryGetAudioSourceHandler(out var slideAudioSourceHandler);
+            if (_slideAudioSourceHandler != null && _slideAudioSourceHandler.GetAudioClip() == slideSound)
+                _slideAudioSourceHandler.Stop();
+
+            var allocated = AudioSourcePool.TryGetAudioSourceHandler(out _slideAudioSourceHandler);
 
             if (!allocated)
                 return;
 
-            slideAudioSourceHandler.SetClip(slideSound);
-            slideAudioSourceHandler.SetVolume(_slideVolume);
-            slideAudioSourceHandler.Stop();
-            slideAudioSourceHandler.Play();
+            _slideAudioSourceHandler.SetClip(slideSound);
+            _slideAudioSourceHandler.SetVolume(_slideVolume);
+            _slideAudioSourceHandler.Stop();
+            _slideAudioSourceHandler.Play();
+#else
+            if (_slideVolume == 0)
+                return;
+
+            if (!_slideNativeSource.IsValid)
+            {
+                _slideNativeSource = NativeAudio.GetNativeSource(3);
+                _slideNativeSource.SetVolume(_slideVolume);
+            }
+
+            _slideNativeSource.Play(_slideSound);
+#endif
         }
 
         public IEnumerator LoadAudioClip(string path, Action<AudioClip> onComplete, bool streamed = false,
             bool compressed = false)
         {
-            using var webRequest = UnityWebRequestMultimedia.GetAudioClip("file://" + path, AudioType.UNKNOWN);
+            using var webRequest = UnityWebRequestMultimedia.GetAudioClip(new Uri(path), AudioType.UNKNOWN);
             ((DownloadHandlerAudioClip)webRequest.downloadHandler).streamAudio = streamed;
             if (!streamed)
                 ((DownloadHandlerAudioClip)webRequest.downloadHandler).compressed = compressed;
@@ -196,8 +218,11 @@ namespace Game
             StartCoroutine(LoadAudioClip(soundPathData.criticalSoundPath, clip => { criticalSound = clip; }));
             StartCoroutine(LoadAudioClip(soundPathData.preparatoryBeatSoundPath,
                 clip => { preparatoryBeatSound = clip; }));
+
+#if !(UNITY_IOS && !UNITY_EDITOR)
             StartCoroutine(LoadAudioClip(soundPathData.slideSoundPath,
                 clip => { slideSound = clip; }));
+#endif
 
 #if ((UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR)
             NativeAudio.Initialize();
@@ -242,6 +267,14 @@ namespace Game
                 {
                     clip.LoadAudioData();
                     _goodSound = NativeAudio.Load(clip);
+                }));
+#endif
+#if (UNITY_IOS && !UNITY_EDITOR)
+            StartCoroutine(LoadAudioClip(soundPathData.slideSoundPath,
+                clip =>
+                {
+                    clip.LoadAudioData();
+                    _slideSound = NativeAudio.Load(clip);
                 }));
 #endif
         }
@@ -296,6 +329,11 @@ namespace Game
         private static NativeSource _breakNativeSource;
         private static NativeSource _breakExtraNativeSource;
 #endif
+
+#if (UNITY_IOS && !UNITY_EDITOR)
+        private static NativeSource _slideNativeSource;
+        private static NativeAudioPointer _slideSound;
+#endif
     }
 
     public class AudioSourcePool
@@ -348,6 +386,11 @@ namespace Game
             private bool _paused;
 
             public double ScheduledStartTime = -1;
+
+            public AudioClip GetAudioClip()
+            {
+                return _audioSource.clip;
+            }
 
             public AudioSourceHandler(AudioSource audioSource)
             {

@@ -65,8 +65,6 @@ namespace Game
 
         private float _criticalSoundVolume;
 
-        private bool _needSync;
-
         private bool _paused;
         private float _songLength;
         private AudioSourcePool.AudioSourceHandler _songPlaybackAudioSourceHandler;
@@ -104,20 +102,8 @@ namespace Game
 
             if (isPlaying && !_paused)
             {
-                if (_needSync)
-                {
-                    _needSync = false;
-
-                    _songPlaybackAudioSourceHandler.Resume();
-
-                    _time = _dspTime;
-                }
-
                 _time += Time.deltaTime;
-
-                if (math.abs(_time - _dspTime) > 0.02)
-                    _time = _dspTime;
-
+                
                 SetCriticalSoundChannel();
 
                 if (_time > math.max(NoteGenerator.Instance.endingTime / 1000f + 0.5f, _songLength))
@@ -145,7 +131,6 @@ namespace Game
 
         private void Resume()
         {
-            _needSync = true;
             _paused = false;
         }
 

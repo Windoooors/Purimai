@@ -139,6 +139,20 @@ namespace UI.LevelSelection
             var levelDownButton = Button.GetButton(1);
             levelDownButton.ChangeIcon(UIManager.GetInstance().buttonIcons.levelDown);
             levelDownButton.Show();
+            
+            var versionButton = Button.GetButton(5);
+            var scoreButton = Button.GetButton(6);
+            
+            var versionIsFinale = SettingsPool.GetValue("game.achievement_type") == 0;
+            var showScore = SettingsPool.GetValue("game.score_indicator_type") == 0;
+
+            var buttonIconSet = UIManager.GetInstance().buttonIcons;
+
+            versionButton.ChangeIcon(versionIsFinale ? buttonIconSet.finale : buttonIconSet.dx);
+            scoreButton.ChangeIcon(showScore ? buttonIconSet.score : buttonIconSet.achievement);
+            
+            versionButton.Show();
+            scoreButton.Show();
         }
 
         public static LevelListController GetInstance()
