@@ -3,11 +3,12 @@ using UnityEngine;
 
 namespace Game
 {
-    public class TapJudgeDisplayManager : MonoBehaviour
+    public class JudgeDisplayManager : MonoBehaviour
     {
-        public static TapJudgeDisplayManager Instance;
+        public static JudgeDisplayManager Instance;
 
         public List<Animator> judgeDisplayAnimators;
+        public List<Animator> offsetDisplayAnimators;
 
         public void Awake()
         {

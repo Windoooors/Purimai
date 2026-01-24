@@ -96,11 +96,11 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 2201042975449088
-    m_Key: settings.game.blurred_cover.enabled
+    m_Key: settings.game.blurred_cover.none
     m_Metadata:
       m_Items: []
   - m_Id: 2201060729937920
-    m_Key: settings.game.blurred_cover.disabled
+    m_Key: settings.game.blurred_cover.more_blurred
     m_Metadata:
       m_Items: []
   - m_Id: 2491667327213568
@@ -217,6 +217,54 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 15599864019673088
     m_Key: settings.game.background_video_playback.disabled
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27093701846097920
+    m_Key: settings.game.offset_display_level
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27093840451067904
+    m_Key: settings.game.offset_display_level.none
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27093869765058560
+    m_Key: settings.game.offset_display_level.non_perfect
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27093955085590528
+    m_Key: settings.game.offset_display_level.non_crit_perfect
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27109958230204416
+    m_Key: settings.game.blurred_cover.most_blurred
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27110306596511744
+    m_Key: settings.game.background_brightness
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27110427027562496
+    m_Key: settings.game.background_brightness.darkest
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27110481939390464
+    m_Key: settings.game.background_brightness.darker
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27110511689588736
+    m_Key: settings.game.background_brightness.dark
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27110635220230144
+    m_Key: settings.game.background_brightness.bright
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27110673069629440
+    m_Key: settings.game.background_brightness.brighter
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27110701209214976
+    m_Key: settings.game.background_brightness.brightest
     m_Metadata:
       m_Items: []
   m_Metadata:

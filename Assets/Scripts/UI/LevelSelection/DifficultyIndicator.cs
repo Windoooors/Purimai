@@ -305,12 +305,25 @@ namespace UI.LevelSelection
             _originalListPosition = levelListController.levelList.transform.position;
             _originalDifficultyIndicatorPosition = transform.position;
 
-            levelListController.songCoverBackgroundImage.sprite = SettingsPool.GetValue("game.blurred_cover") == 1
+            levelListController.songCoverBackgroundImage.sprite = SettingsPool.GetValue("game.blurred_cover") != 0
                 ? maidata.BlurredSongCoverAsBackgroundDecodedImage.GetSprite()
                 : maidata.SongCoverDecodedImage.GetSprite();
 
             levelListController.songCoverBackgroundImage.transform.localScale =
-                SettingsPool.GetValue("game.blurred_cover") == 1 ? Vector3.one * 1.1f : Vector3.one;
+                SettingsPool.GetValue("game.blurred_cover") != 0 ? Vector3.one * 1.1f : Vector3.one;
+
+            var darkness = SettingsPool.GetValue("game.background_brightness") switch
+            {
+                0 => 1f,
+                1 => 0.7f,
+                2 => 0.435f,
+                3 => 0.3f,
+                4 => 0.2f,
+                5 => 0,
+                _ => 0.435f
+            };
+
+            levelListController.songCoverBackgroundImage.color = new Color(1 - darkness, 1 - darkness, 1 - darkness);
 
             AddMotionHandle(LSequence.Create()
                 .Append(LMotion.Create(0, -15f, 0.5f).WithEase(Ease.InExpo).Bind(x =>
@@ -320,12 +333,12 @@ namespace UI.LevelSelection
                         .Bind(x => transform.position = _originalDifficultyIndicatorPosition + new Vector3(x, 0, 0))
                 ).Join(
                     LMotion.Create(0, 1f, 0.5f).WithEase(Ease.InExpo).WithOnComplete(() =>
-                        {
-                            LoadScene(maidata.SongAudioClip, maidata, difficultyIndex);
-                            levelListController.backgroundImage.enabled = false;
-                        })
-                        .BindToColorA(levelListController.songCoverBackgroundImage)
-                ).Run());
+                    {
+                        LoadScene(maidata.SongAudioClip, maidata, difficultyIndex);
+                        levelListController.backgroundImage.enabled = false;
+                    }).BindToColorA(levelListController.songCoverBackgroundImage)
+                )
+                .Run());
         }
 
         public void ReloadScene()
@@ -369,12 +382,25 @@ namespace UI.LevelSelection
 
                 chartPlayer.songClip = clip;
 
-                chartPlayer.backgroundImage.texture = SettingsPool.GetValue("game.blurred_cover") == 1
+                chartPlayer.backgroundImage.texture = SettingsPool.GetValue("game.blurred_cover") != 0
                     ? maidata.BlurredSongCoverAsBackgroundDecodedImage.GetTexture2D()
                     : maidata.SongCoverDecodedImage.GetTexture2D();
+                
+                var darkness = SettingsPool.GetValue("game.background_brightness") switch
+                {
+                    0 => 1f,
+                    1 => 0.7f,
+                    2 => 0.435f,
+                    3 => 0.3f,
+                    4 => 0.2f,
+                    5 => 0,
+                    _ => 0.435f
+                };
+
+                chartPlayer.backgroundBrightnessCover.color = new Color(0, 0, 0, darkness);
 
                 chartPlayer.backgroundImage.transform.localScale =
-                    SettingsPool.GetValue("game.blurred_cover") == 1
+                    SettingsPool.GetValue("game.blurred_cover") != 0
                         ? 1.1f * Vector3.one
                         : Vector3.one;
 

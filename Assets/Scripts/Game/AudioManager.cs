@@ -45,6 +45,8 @@ namespace Game
             _greatSound.Unload();
             _perfectSound.Unload();
             _breakGreatSound.Unload();
+#endif
+#if (UNITY_IOS && !UNITY_EDITOR)
             _slideSound.Unload();
 #endif
         }

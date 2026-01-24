@@ -7,6 +7,7 @@ using Game;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
+using UI.GameSettings;
 using UnityEngine;
 
 namespace UI
@@ -261,6 +262,8 @@ namespace UI
 
             image.Mutate(x => { x.Resize(50, 50); });
 
+            var blurringLevel = SettingsPool.GetValue("game.blurred_cover");
+            
             transparentImage.Mutate(x =>
             {
                 x.DrawImage(image, new Point(
@@ -271,7 +274,13 @@ namespace UI
 
             BlurredSongCoverDecodedImage = new DecodedImage(transparentImage);
 
-            image.Mutate(x => x.GaussianBlur(5));
+            image.Mutate(x => x.GaussianBlur(blurringLevel
+                switch
+                {
+                    1 => 2,
+                    2 => 5,
+                    _ => 2
+                }));
 
             BlurredSongCoverAsBackgroundDecodedImage = new DecodedImage(image);
             BlurredSongCoverGenerated = true;

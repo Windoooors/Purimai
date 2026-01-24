@@ -1,6 +1,7 @@
 using System;
 using Game.Notes.Taps;
 using UI.GameSettings;
+using UI.Result;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -47,6 +48,7 @@ namespace Game.Notes
         [FormerlySerializedAs("judged")] public bool headJudged;
 
         private Animator _judgeDisplayAnimator;
+        protected Animator OffsetDisplayAnimator;
         private float _timeOnScreenWithBasicSpeed = 2.8f;
 
         protected bool IsAdxFlowSpeedStyle;
@@ -85,7 +87,8 @@ namespace Game.Notes
             transform.position = Vector3.zero;
             transform.rotation = Lanes.Instance.startPoints[laneIndex].rotation;
 
-            _judgeDisplayAnimator = TapJudgeDisplayManager.Instance.judgeDisplayAnimators[laneIndex];
+            _judgeDisplayAnimator = JudgeDisplayManager.Instance.judgeDisplayAnimators[laneIndex];
+            OffsetDisplayAnimator = JudgeDisplayManager.Instance.offsetDisplayAnimators[laneIndex];
 
             LateStart();
 
@@ -149,6 +152,34 @@ namespace Game.Notes
         protected void PlayJudgeAnimation()
         {
             lineSpriteRenderer.enabled = false;
+
+            if (judgeState is not JudgeState.CriticalPerfect and not JudgeState.Miss)
+            {
+                var settings = SettingsPool.GetValue("game.offset_display_level");
+
+                switch (settings)
+                {
+                    case 0:
+                        break;
+                    case 1:
+                        if (judgeState is not JudgeState.SemiCriticalPerfect and not JudgeState.Perfect)
+                        {
+                            OffsetDisplayAnimator.SetTrigger(isFast ? "ShowFast" : "ShowLate");
+                            if (isFast)
+                                Scoreboard.FastCount++;
+                            else
+                                Scoreboard.LateCount++;
+                        }
+                        break;
+                    case 2:
+                        OffsetDisplayAnimator.SetTrigger(isFast ? "ShowFast" : "ShowLate");
+                        if (isFast)
+                            Scoreboard.FastCount++;
+                        else
+                            Scoreboard.LateCount++;
+                        break;
+                }
+            }
 
             if (this is Tap tap && tap.isBreak)
                 switch (judgeState)

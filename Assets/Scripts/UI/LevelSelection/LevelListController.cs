@@ -29,7 +29,7 @@ namespace UI.LevelSelection
 
         [FormerlySerializedAs("songCoverBackground")]
         public Image songCoverBackgroundImage;
-
+        
         public Image backgroundImage;
 
         private readonly List<Maidata> _maidataList = new();

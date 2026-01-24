@@ -224,20 +224,12 @@ namespace Game.Notes
 
                 var slideFadeInDuration = suddenlyAppears ? 0 : ChartPlayer.Instance.slideFadeInDuration;
 
-                if (slideFadeInDuration < 400)
-                {
-                    result.ArrowAlpha = (currentTime - startAppearingTime) / slideFadeInDuration;
-                }
+                if (currentTime - startAppearingTime < slideFadeInDuration)
+                    result.ArrowAlpha = (currentTime - startAppearingTime) / slideFadeInDuration / 1.5f;
+                else if (startAppearingTime + slideFadeInDuration - currentTime <= 0)
+                    result.ArrowAlpha = 1f;
                 else
-                {
-                    if (currentTime - startAppearingTime < 200)
-                        result.ArrowAlpha = (currentTime - startAppearingTime) / 400f;
-                    else if (startAppearingTime + slideFadeInDuration - currentTime < 200)
-                        result.ArrowAlpha = 0.5f - (startAppearingTime + slideFadeInDuration - currentTime) / 400f +
-                                            0.5f;
-                    else
-                        result.ArrowAlpha = 0.5f;
-                }
+                    result.ArrowAlpha = 0.67f;
 
                 result.StarAlpha = 0;
                 result.StarPosition = 0;

@@ -65,6 +65,12 @@ namespace Game.Notes
 
                 if (!SensorContained(segment, sensorId) || !(i is 0 or 1 || segments[i - 2].touched))
                     continue;
+                
+                if (!_slideStarted)
+                {
+                    PlaySlideSound();
+                    _slideStarted = true;
+                }
 
                 var jumpAllowed = IsJumpedTouchingSequenceAllowed();
 
@@ -73,12 +79,6 @@ namespace Game.Notes
                     if (i - 1 >= 0 && (jumpAllowed || segments[i - 1].touched))
                     {
                         segments[i - 1].touched = true;
-
-                        if (!_slideStarted)
-                        {
-                            PlaySlideSound();
-                            _slideStarted = true;
-                        }
 
                         ConcealSegment(i - 1, false);
                         _lastTouchedSegmentIndex = i - 1;
@@ -112,12 +112,6 @@ namespace Game.Notes
 
                     segments[i].touched = true;
                     ConcealSegment(i, touchingSequenceJumped);
-
-                    if (!_slideStarted)
-                    {
-                        PlaySlideSound();
-                        _slideStarted = true;
-                    }
 
                     _lastTouchedSegmentIndex = i;
                 }

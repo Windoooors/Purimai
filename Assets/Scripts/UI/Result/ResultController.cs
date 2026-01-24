@@ -248,7 +248,7 @@ namespace UI.Result
             songCoverBackground.sprite = _maidata.BlurredSongCoverAsBackgroundDecodedImage.GetSprite();
 
             songCoverBackground.transform.localScale =
-                SettingsPool.GetValue("game.blurred_cover") == 1
+                SettingsPool.GetValue("game.blurred_cover") != 0
                     ? 1.1f * Vector3.one
                     : Vector3.one;
 

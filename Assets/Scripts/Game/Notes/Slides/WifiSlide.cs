@@ -129,6 +129,12 @@ namespace Game.Notes.Slides
 
             if (!activated)
                 return;
+            
+            if (!_slideStarted)
+            {
+                PlaySlideSound();
+                _slideStarted = true;
+            }
 
             if (isOnHold)
                 if (lastHeldSensorId != e.SensorId)
@@ -190,12 +196,6 @@ namespace Game.Notes.Slides
             if (segmentToBeConcealedIndex != -1 &&
                 segmentToBeConcealedIndex - lastSegmentToBeConcealedIndex > 0)
             {
-                if (!_slideStarted)
-                {
-                    PlaySlideSound();
-                    _slideStarted = true;
-                }
-
                 ConcealSegment(segmentToBeConcealedIndex, isOnHold ? false : _sensorJumped);
                 segments[segmentToBeConcealedIndex].touched = true;
 

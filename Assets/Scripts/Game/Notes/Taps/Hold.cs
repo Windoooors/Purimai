@@ -1,3 +1,4 @@
+using UI.GameSettings;
 using UI.Result;
 using Unity.Mathematics;
 using UnityEngine;
@@ -18,6 +19,8 @@ namespace Game.Notes.Taps
         private bool _compensationApplied;
         private int _disappearTime;
         private float _distance;
+
+        public bool isHeadFast;
 
         private bool _emerging;
 
@@ -258,7 +261,7 @@ namespace Game.Notes.Taps
 
             _headJudgeState = state.Item1;
 
-            isFast = state.isFast;
+            isHeadFast = state.isFast;
 
             ChartPlayer.Instance.holdRippleAnimators[lane - 1].SetTrigger(
                 _headJudgeState switch
@@ -272,6 +275,34 @@ namespace Game.Notes.Taps
                     JudgeState.Great => "HoldGreat",
                     _ => "HoldPerfect"
                 });
+
+            if (_headJudgeState is not JudgeState.CriticalPerfect and not JudgeState.Miss)
+            {
+                var settings = SettingsPool.GetValue("game.offset_display_level");
+
+                switch (settings)
+                {
+                    case 0:
+                        break;
+                    case 1:
+                        if (_headJudgeState is not JudgeState.SemiCriticalPerfect and not JudgeState.Perfect)
+                        {
+                            OffsetDisplayAnimator.SetTrigger(isHeadFast ? "ShowFast" : "ShowLate");
+                            if (isHeadFast)
+                                Scoreboard.FastCount++;
+                            else
+                                Scoreboard.LateCount++;
+                        }
+                        break;
+                    case 2:
+                        OffsetDisplayAnimator.SetTrigger(isHeadFast ? "ShowFast" : "ShowLate");
+                        if (isHeadFast)
+                            Scoreboard.FastCount++;
+                        else
+                            Scoreboard.LateCount++;
+                        break;
+                }
+            }
 
             PlayJudgeSound(false, _headJudgeState);
 
@@ -317,9 +348,9 @@ namespace Game.Notes.Taps
             if (absDeltaTiming <= judgeSettings.greatTiming && absDeltaTiming > judgeSettings.perfectTiming)
                 _holdTailJudgeState = JudgeState.Great;
             if (absDeltaTiming <= judgeSettings.perfectTiming)
-                _holdTailJudgeState = JudgeState.Perfect;
+                _holdTailJudgeState = JudgeState.CriticalPerfect;
 
-            if (_holdTailJudgeState == JudgeState.Perfect)
+            if (_holdTailJudgeState == JudgeState.CriticalPerfect)
                 judgeState = _headJudgeState;
             else if (_holdTailJudgeState == JudgeState.Great)
                 judgeState = _headJudgeState == JudgeState.Good ? JudgeState.Good : JudgeState.Great;

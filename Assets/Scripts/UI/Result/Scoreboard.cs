@@ -63,6 +63,9 @@ namespace UI.Result
     {
         public static int Combo;
 
+        public static int FastCount;
+        public static int LateCount;
+
         private static int _highestComboAfterReset;
 
         public static SpecifiedNoteScoreboard SlideCount = new();
@@ -125,6 +128,8 @@ namespace UI.Result
             BreakCount = new SpecifiedNoteScoreboard();
             Combo = 0;
             _highestComboAfterReset = 0;
+            FastCount = 0;
+            LateCount = 0;
         }
 
         public static int GetTotalScore()

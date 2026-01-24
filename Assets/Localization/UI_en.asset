@@ -99,11 +99,11 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 2201042975449088
-    m_Localized: On
+    m_Localized: Clear
     m_Metadata:
       m_Items: []
   - m_Id: 2201060729937920
-    m_Localized: Off
+    m_Localized: Blurred
     m_Metadata:
       m_Items: []
   - m_Id: 2491667327213568
@@ -220,6 +220,54 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 15599864019673088
     m_Localized: Off
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27093701846097920
+    m_Localized: Fast / Late Indicator
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27093840451067904
+    m_Localized: Off
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27093869765058560
+    m_Localized: Non-perfect
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27093955085590528
+    m_Localized: Non-critical-perfect
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27109958230204416
+    m_Localized: More Blurred
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27110306596511744
+    m_Localized: Background Brightness
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27110427027562496
+    m_Localized: Darkest
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27110481939390464
+    m_Localized: Darker
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27110511689588736
+    m_Localized: Dark
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27110635220230144
+    m_Localized: Bright
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27110673069629440
+    m_Localized: Brighter
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27110701209214976
+    m_Localized: Brightest
     m_Metadata:
       m_Items: []
   references:

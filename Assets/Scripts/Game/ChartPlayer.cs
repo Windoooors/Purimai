@@ -20,6 +20,8 @@ namespace Game
 
         public RawImage backgroundImage;
 
+        public Image backgroundBrightnessCover;
+
         public float flowSpeed;
         public float slideAppearanceDelay;
 
@@ -103,6 +105,9 @@ namespace Game
             if (isPlaying && !_paused)
             {
                 _time += Time.deltaTime;
+
+                if (math.abs(_dspTime - _time) >= 0.02f)
+                    _time = _dspTime;
                 
                 SetCriticalSoundChannel();
 
@@ -117,10 +122,10 @@ namespace Game
 
         private void OnApplicationFocus(bool hasFocus)
         {
-            if (!hasFocus)
+            /*if (!hasFocus)
                 Pause();
             else
-                Resume();
+                Resume();*/
         }
 
         private void Pause()

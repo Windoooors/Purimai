@@ -68,7 +68,8 @@ namespace UI.GameSettings
                     new("game.score_indicator_type", 1,
                         new[] { "score", "achievement" }),
                     new("game.achievement_type", 0, new[] { "FiNALE", "DX" }, false),
-                    new("game.blurred_cover", 0, new[] { "disabled", "enabled" }),
+                    new("game.blurred_cover", 0, new[] { "none", "more_blurred", "most_blurred" }),
+                    new("game.background_brightness", 2, new[] { "darkest", "darker", "dark" , "bright", "brighter", "brightest" }),
                     new("game.background_video_playback", 1, new[] { "disabled", "enabled" }),
                     new("game.sensor_radius", 3, new[]
                     {
@@ -114,7 +115,11 @@ namespace UI.GameSettings
                     {
                         "0", "0.1", "0.2", "0.3", "0.4",
                         "0.5", "0.6", "0.7", "0.8", "0.9", "1"
-                    }, false)
+                    }, false),
+                    new("game.offset_display_level", 0, new[]
+                    {
+                        "none", "non_perfect", "non_crit_perfect"
+                    }),
                 }
             }
         };
