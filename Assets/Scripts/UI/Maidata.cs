@@ -63,7 +63,7 @@ namespace UI
         public DecodedImage BlurredSongCoverDecodedImage;
         public bool BlurredSongCoverGenerated;
         public bool CoverDataLoaded;
-        public bool LoadingSong;
+        private bool _loadingSong;
 
         public AudioClip SongAudioClip;
 
@@ -140,14 +140,40 @@ namespace UI
             }
         }
 
-        public void UnloadedResources()
+        public void UnloadSongCover()
         {
-            MonoBehaviour.Destroy(SongAudioClip);
-            BlurredSongCoverAsBackgroundDecodedImage.Dispose();
-            BlurredSongCoverDecodedImage.Dispose();
+            if (SongCoverDecodedImage == null)
+            {
+                CoverDataLoaded = false;
+                return;
+            }
+            
+            SongCoverDecodedImage.Dispose();
+            SongCoverDecodedImage = null;
+            CoverDataLoaded = false;
+        }
+
+        public void UnloadResources()
+        {
+            if (SongAudioClip)
+                MonoBehaviour.Destroy(SongAudioClip);
+            
+            if (BlurredSongCoverAsBackgroundDecodedImage != null)
+                BlurredSongCoverAsBackgroundDecodedImage.Dispose();
+            
+            if (BlurredSongCoverDecodedImage != null)
+                BlurredSongCoverDecodedImage.Dispose();
+            
+            if (SongCoverDecodedImage != null)
+                SongCoverDecodedImage.Dispose();
+            
             BlurredSongCoverAsBackgroundDecodedImage = null;
             BlurredSongCoverDecodedImage = null;
+            SongCoverDecodedImage = null;
+            SongAudioClip = null;
+            
             BlurredSongCoverGenerated = false;
+            CoverDataLoaded = false;
             SongLoaded = false;
         }
 
@@ -235,24 +261,29 @@ namespace UI
 
         public IEnumerator LoadSongClip()
         {
-            if (LoadingSong)
+            if (_loadingSong)
                 yield break;
 
             if (SongLoaded)
                 yield break;
 
-            LoadingSong = true;
+            _loadingSong = true;
 
             yield return AudioManager.GetInstance().LoadAudioClip(SongPath, clip => SongAudioClip = clip, true);
 
             SongLoaded = true;
-            LoadingSong = false;
+            _loadingSong = false;
         }
 
         public void GenerateBlurredCover()
         {
+            if (_generatingBlurredCover)
+                return;
+            
             if (BlurredSongCoverDecodedImage != null && BlurredSongCoverAsBackgroundDecodedImage != null)
                 return;
+            
+            _generatingBlurredCover = true;
 
             using var image = File.Exists(_songCoverPath)
                 ? Image.Load<Rgba32>(_songCoverPath)
@@ -263,7 +294,7 @@ namespace UI
             image.Mutate(x => { x.Resize(50, 50); });
 
             var blurringLevel = SettingsPool.GetValue("game.blurred_cover");
-            
+
             transparentImage.Mutate(x =>
             {
                 x.DrawImage(image, new Point(
@@ -284,6 +315,10 @@ namespace UI
 
             BlurredSongCoverAsBackgroundDecodedImage = new DecodedImage(image);
             BlurredSongCoverGenerated = true;
+
+            _generatingBlurredCover = false;
         }
+
+        private bool _generatingBlurredCover;
     }
 }

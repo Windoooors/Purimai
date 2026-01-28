@@ -2,7 +2,6 @@ using Game.Notes;
 using LitMotion;
 using UI;
 using UI.GameSettings;
-using UI.Result;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -47,13 +46,13 @@ namespace Game
         public JudgeSettings slideJudgeSettings;
         public JudgeSettings holdTailJudgeSettings;
 
-        [SerializeField] private float _time;
+        private float _time;
 
         public bool isPlaying;
 
         public AudioClip songClip;
 
-        [SerializeField] private float _dspTime;
+        private float _dspTime;
 
         private readonly float _generalPlaybackDelayInSeconds = 3f;
 
@@ -108,10 +107,10 @@ namespace Game
 
                 if (math.abs(_dspTime - _time) >= 0.02f)
                     _time = _dspTime;
-                
+
                 SetCriticalSoundChannel();
 
-                if (_time > math.max(NoteGenerator.Instance.endingTime / 1000f + 0.5f, _songLength))
+                if (_time > math.max(NoteGenerator.GetInstance.endingTime / 1000f + 0.5f, _songLength))
                 {
                     isPlaying = false;
                     LMotion.Create(_songVolume, 0, 0.5f).WithOnComplete(OnPlayCompleted)
@@ -139,7 +138,7 @@ namespace Game
             _paused = false;
         }
 
-        public void LoadVideo(string path)
+        private void LoadVideo(string path)
         {
             if (path == "" || SettingsPool.GetValue("game.background_video_playback") == 0)
                 return;
@@ -192,7 +191,7 @@ namespace Game
             return _time;
         }
 
-        public void InitializeCircleColor(int index, bool isUtage)
+        private void InitializeCircleColor(int index, bool isUtage)
         {
             judgeCircleSpriteRenderer.color = judgeCircleColors[isUtage ? 5 : index == 5 ? 4 : index];
             judgeCircleGlowSpriteRenderer.color = judgeCircleColors[isUtage ? 5 : index == 5 ? 4 : index];
@@ -203,10 +202,10 @@ namespace Game
             _songPlaybackAudioSourceHandler.Stop();
 
             UIManager.GetInstance().EnableUI();
-            ResultController.GetInstance().ShowResult();
+            //ResultController.GetInstance().ShowResult();
         }
 
-        public void Play()
+        private void Play()
         {
             LMotion.Create(_generalPlaybackDelayInSeconds * 1000f, 0, _generalPlaybackDelayInSeconds)
                 .WithEase(Ease.Linear).WithOnComplete(() =>
@@ -245,7 +244,7 @@ namespace Game
 
         private void SetCriticalSoundChannel(bool initialSet = false)
         {
-            if (_criticalSoundIndex == NoteGenerator.Instance.criticalTimeList.Count)
+            if (_criticalSoundIndex == NoteGenerator.GetInstance.criticalTimeList.Count)
                 return;
 
             AudioSourcePool.AudioSourceHandler handler;
@@ -276,23 +275,53 @@ namespace Game
 
             return;
 
-            void SetUpChannelDelay(AudioSourcePool.AudioSourceHandler handler)
+            void SetUpChannelDelay(AudioSourcePool.AudioSourceHandler audioSourceHandler)
             {
-                if (_criticalSoundIndex >= NoteGenerator.Instance.criticalTimeList.Count)
+                if (_criticalSoundIndex >= NoteGenerator.GetInstance.criticalTimeList.Count)
                     return;
 
                 var delay = _generalPlaybackDelayInSeconds +
-                            NoteGenerator.Instance.criticalTimeList[_criticalSoundIndex] /
+                            NoteGenerator.GetInstance.criticalTimeList[_criticalSoundIndex] /
                             1000f + _audioDspTimeWhenPlaybackStarts;
 
                 var audioClip = AudioManager.GetInstance().criticalSound;
 
-                handler.SetClip(audioClip);
-                handler.PlayScheduled(delay);
-                handler.ScheduledStartTime = delay;
+                audioSourceHandler.SetClip(audioClip);
+                audioSourceHandler.PlayScheduled(delay);
+                audioSourceHandler.ScheduledStartTime = delay;
 
                 _criticalSoundIndex++;
             }
+        }
+
+        public void InitializeLevel(Maidata maidata, int difficultyIndex)
+        {
+            NoteGenerator.GetInstance.GenerateNotes(maidata.Charts[difficultyIndex], maidata.FirstNoteTime);
+            
+            songClip = maidata.SongAudioClip;
+
+            var useBlurredCover = SettingsPool.GetValue("game.blurred_cover") != 0;
+            
+            backgroundImage.texture = useBlurredCover? maidata.BlurredSongCoverAsBackgroundDecodedImage.GetTexture2D() : maidata.SongCoverDecodedImage.GetTexture2D();
+
+            LoadVideo(maidata.PvPath);
+            
+            InitializeCircleColor(difficultyIndex, maidata.IsUtage);
+            
+            var darkness = SettingsPool.GetValue("game.background_brightness") switch
+            {
+                0 => 1f,
+                1 => 0.7f,
+                2 => 0.435f,
+                3 => 0.3f,
+                4 => 0.2f,
+                5 => 0,
+                _ => 0.435f
+            };
+
+            backgroundBrightnessCover.color = new Color(0, 0, 0, darkness);
+            
+            Play();
         }
 
 
@@ -300,7 +329,7 @@ namespace Game
         [InspectorButton("Skip Playback")]
         public void Skip()
         {
-            _time = math.max(_songLength, NoteGenerator.Instance.endingTime / 1000f + 0.5f);
+            _time = math.max(_songLength, NoteGenerator.GetInstance.endingTime / 1000f + 0.5f);
             _videoPlayer.Stop();
         }
 #endif

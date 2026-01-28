@@ -2,6 +2,12 @@ using Game.Notes;
 
 namespace UI.Result
 {
+    public enum AchievementType
+    {
+        Dx,
+        Finale
+    }
+
     public class SpecifiedNoteScoreboard
     {
         public int TotalCount { set; get; }
@@ -81,25 +87,25 @@ namespace UI.Result
             result.Combo = HighestCombo;
             result.FcState = GetFcState();
             result.TotalScore = GetTotalScore();
-            result.LevelAchievements = new LevelAchievement()
+            result.LevelAchievements = new LevelAchievement
             {
-                DxBestAchievement = new LevelAchievement.ScorePair()
+                DxBestAchievement = new LevelAchievement.ScorePair
                 {
-                    DxAchievement = GetCurrentAchievement(ResultController.AchievementType.Dx),
-                    FinaleAchievement = GetCurrentAchievement(ResultController.AchievementType.Finale),
+                    DxAchievement = GetCurrentAchievement(AchievementType.Dx),
+                    FinaleAchievement = GetCurrentAchievement(AchievementType.Finale),
                     Score = GetScore()
                 },
-                FinaleBestAchievement = new LevelAchievement.ScorePair()
+                FinaleBestAchievement = new LevelAchievement.ScorePair
                 {
-                    DxAchievement = GetCurrentAchievement(ResultController.AchievementType.Dx),
-                    FinaleAchievement = GetCurrentAchievement(ResultController.AchievementType.Finale),
+                    DxAchievement = GetCurrentAchievement(AchievementType.Dx),
+                    FinaleAchievement = GetCurrentAchievement(AchievementType.Finale),
                     Score = GetScore()
                 }
             };
 
             return result;
         }
-        
+
         public static FcState GetFcState()
         {
             var totalCount = SlideCount.TotalCount + HoldCount.TotalCount + TapCount.TotalCount + BreakCount.TotalCount;
@@ -165,11 +171,11 @@ namespace UI.Result
             return score;
         }
 
-        public static (int deltaBasicScore, int extraScore) GetDeltaScore(ResultController.AchievementType type)
+        public static (int deltaBasicScore, int extraScore) GetDeltaScore(AchievementType type)
         {
             switch (type)
             {
-                case ResultController.AchievementType.Finale:
+                case AchievementType.Finale:
                     var deductedScore = BreakCount.CriticalPerfectCount * 100 +
                                         BreakCount.SemiCriticalPerfectCount * 50 +
                                         BreakCount.GreatCount * -500 + BreakCount.SemiGreatCount * -1000 +
@@ -189,7 +195,7 @@ namespace UI.Result
                         + SlideCount.GoodCount * -750 + SlideCount.MissCount * -1500;
 
                     return (deductedScore, 0);
-                case ResultController.AchievementType.Dx:
+                case AchievementType.Dx:
                     var deductedBasicScore =
                         BreakCount.GreatCount * -500 + BreakCount.SemiGreatCount * -1000 +
                         BreakCount.QuarterGreatCount * -1250 + BreakCount.GoodCount * -1500
@@ -226,15 +232,15 @@ namespace UI.Result
             return score;
         }
 
-        public static float GetDeltaAchievement(ResultController.AchievementType type)
+        public static float GetDeltaAchievement(AchievementType type)
         {
             switch (type)
             {
-                case ResultController.AchievementType.Finale:
-                    return GetDeltaScore(ResultController.AchievementType.Finale).deltaBasicScore /
+                case AchievementType.Finale:
+                    return GetDeltaScore(AchievementType.Finale).deltaBasicScore /
                         (float)(GetTotalScore() - GetHighestExtraScore()) * 100;
-                case ResultController.AchievementType.Dx:
-                    var deltaScore = GetDeltaScore(ResultController.AchievementType.Dx);
+                case AchievementType.Dx:
+                    var deltaScore = GetDeltaScore(AchievementType.Dx);
 
                     return deltaScore.deltaBasicScore / (float)(GetTotalScore() - GetHighestExtraScore()) * 100 +
                            deltaScore.extraScore / ((float)GetHighestExtraScore() == 0
@@ -245,7 +251,7 @@ namespace UI.Result
             return 0;
         }
 
-        public static float GetCurrentAchievement(ResultController.AchievementType type)
+        public static float GetCurrentAchievement(AchievementType type)
         {
             var currentBasicAchievement = (BreakCount.CurrentCount * 2500 + TapCount.CurrentCount * 500 +
                                            HoldCount.CurrentCount * 1000 + SlideCount.CurrentCount * 1500) /

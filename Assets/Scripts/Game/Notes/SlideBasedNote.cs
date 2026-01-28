@@ -121,7 +121,7 @@ namespace Game.Notes
             foreach (var star in stars)
             {
                 if (isEach)
-                    star.spriteRenderer.sprite = NoteGenerator.Instance.eachStarSprite;
+                    star.spriteRenderer.sprite = NoteGenerator.GetInstance.eachStarSprite;
                 star.spriteRenderer.color = new Color(1, 1, 1, 0);
                 star.transform.localScale = Vector3.zero;
                 star.spriteRenderer.sortingOrder -= order;
@@ -316,7 +316,7 @@ namespace Game.Notes
 
                 var pair = VectorGraphicsUtility.GetPositionRotationPair((float)progress);
 
-                var arrowObject = Instantiate(NoteGenerator.Instance.slideArrowPrefab, transform);
+                var arrowObject = Instantiate(NoteGenerator.GetInstance.slideArrowPrefab, transform);
 
                 arrowObject.GetComponent<SpriteRenderer>().sortingOrder = slideArrowOrder--;
 
@@ -419,11 +419,11 @@ namespace Game.Notes
             {
                 if (isWifi)
                     slideSpriteRenderer.sprite = isEach
-                        ? NoteGenerator.Instance.wifiSlideEachSprites[i]
-                        : NoteGenerator.Instance.wifiSlideSprites[i];
+                        ? NoteGenerator.GetInstance.wifiSlideEachSprites[i]
+                        : NoteGenerator.GetInstance.wifiSlideSprites[i];
                 else
                     slideSpriteRenderer.sprite =
-                        isEach ? NoteGenerator.Instance.slideEachSprite : NoteGenerator.Instance.slideSprite;
+                        isEach ? NoteGenerator.GetInstance.slideEachSprite : NoteGenerator.GetInstance.slideSprite;
 
                 i++;
 
@@ -585,7 +585,7 @@ namespace Game.Notes
             var judgeSpriteNeedsChange =
                 judgeDisplaySpriteRenderer.transform.rotation.eulerAngles.z is > 265 and <= 365 or > -5 and <= 95;
 
-            judgeDisplaySpriteRenderer.sprite = NoteGenerator.Instance.slideJudgeDisplaySprites[judgeSpriteGroupIndex]
+            judgeDisplaySpriteRenderer.sprite = NoteGenerator.GetInstance.slideJudgeDisplaySprites[judgeSpriteGroupIndex]
                 .normalSlideJudgeSprites[
                     judgeSpriteNeedsChange
                         ? SlideJudgeDisplaySpriteIndexes[1]

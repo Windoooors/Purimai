@@ -57,8 +57,8 @@ namespace Game.Notes.Taps
             tapSpriteRenderer.color = color;
             lineSpriteRenderer.color = color;
 
-            lineTransform.localScale = (NoteGenerator.Instance.originCircleScale +
-                                        (1 - NoteGenerator.Instance.originCircleScale) *
+            lineTransform.localScale = (NoteGenerator.GetInstance.originCircleScale +
+                                        (1 - NoteGenerator.GetInstance.originCircleScale) *
                                         tapAndLineTransform.PositionInLane)
                                        * Vector3.one;
 
@@ -71,7 +71,7 @@ namespace Game.Notes.Taps
         {
             transform.position = Vector3.zero;
             tapTransform.localScale = Vector3.zero;
-            tapTransform.position *= NoteGenerator.Instance.originCircleScale;
+            tapTransform.position *= NoteGenerator.GetInstance.originCircleScale;
             tapSpriteRenderer.color = new Color(1, 1, 1, 0);
 
             if (isBreak)
@@ -94,7 +94,7 @@ namespace Game.Notes.Taps
             if (touchedLane != lane)
                 return;
 
-            var noteGenerator = NoteGenerator.Instance;
+            var noteGenerator = NoteGenerator.GetInstance;
 
             if (indexInLane != 0 && !noteGenerator.LaneList[lane - 1][indexInLane - 1].headJudged)
                 return;

@@ -23,8 +23,8 @@ namespace Game.Notes.Taps
                 return;
             }
 
-            transform.localScale = (NoteGenerator.Instance.originCircleScale +
-                                    (1 - NoteGenerator.Instance.originCircleScale) *
+            transform.localScale = (NoteGenerator.GetInstance.originCircleScale +
+                                    (1 - NoteGenerator.GetInstance.originCircleScale) *
                                     tapOrLineTransform.PositionInLane)
                                    * Vector3.one;
         }

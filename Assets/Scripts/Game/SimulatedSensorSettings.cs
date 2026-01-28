@@ -17,7 +17,7 @@ namespace Game
 
             ChangeSensorScale();
 
-            SettingsController.OnSettingsChanged += (_, _) => ChangeSensorScale();
+            //SettingsController.OnSettingsChanged += (_, _) => ChangeSensorScale();
         }
 
         private void ChangeSensorScale()

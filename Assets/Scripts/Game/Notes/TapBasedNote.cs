@@ -48,13 +48,13 @@ namespace Game.Notes
         [FormerlySerializedAs("judged")] public bool headJudged;
 
         private Animator _judgeDisplayAnimator;
-        protected Animator OffsetDisplayAnimator;
         private float _timeOnScreenWithBasicSpeed = 2.8f;
 
         protected bool IsAdxFlowSpeedStyle;
         protected float LineExpansionSpeed;
 
         protected GameObject NoteContentRoot;
+        protected Animator OffsetDisplayAnimator;
 
         protected int OnScreenTime;
 
@@ -76,7 +76,7 @@ namespace Game.Notes
             var distance = (endPoint.position - startPoint.position).magnitude;
             var speed = distance / _timeOnScreenWithBasicSpeed * ChartPlayer.Instance.flowSpeed;
 
-            LineExpansionSpeed = (1 - NoteGenerator.Instance.originCircleScale) / _timeOnScreenWithBasicSpeed *
+            LineExpansionSpeed = (1 - NoteGenerator.GetInstance.originCircleScale) / _timeOnScreenWithBasicSpeed *
                                  ChartPlayer.Instance.flowSpeed;
 
             var emergingDuration = _timeOnScreenWithBasicSpeed / ChartPlayer.Instance.flowSpeed;
@@ -170,6 +170,7 @@ namespace Game.Notes
                             else
                                 Scoreboard.LateCount++;
                         }
+
                         break;
                     case 2:
                         OffsetDisplayAnimator.SetTrigger(isFast ? "ShowFast" : "ShowLate");

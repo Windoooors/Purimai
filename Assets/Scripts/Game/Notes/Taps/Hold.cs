@@ -16,11 +16,11 @@ namespace Game.Notes.Taps
 
         public int duration;
 
+        public bool isHeadFast;
+
         private bool _compensationApplied;
         private int _disappearTime;
         private float _distance;
-
-        public bool isHeadFast;
 
         private bool _emerging;
 
@@ -107,8 +107,8 @@ namespace Game.Notes.Taps
 
             var tapOrLineTransform = GetTapOrLineTransform();
 
-            lineTransform.localScale = (NoteGenerator.Instance.originCircleScale +
-                                        (1 - NoteGenerator.Instance.originCircleScale) *
+            lineTransform.localScale = (NoteGenerator.GetInstance.originCircleScale +
+                                        (1 - NoteGenerator.GetInstance.originCircleScale) *
                                         (holdTransformData.LinePositionInLane > 0
                                             ? holdTransformData.LinePositionInLane
                                             : tapOrLineTransform.PositionInLane))
@@ -243,7 +243,7 @@ namespace Game.Notes.Taps
             if (touchedLane != lane)
                 return;
 
-            var noteGenerator = NoteGenerator.Instance;
+            var noteGenerator = NoteGenerator.GetInstance;
 
             if (indexInLane != 0 && !noteGenerator.LaneList[lane - 1][indexInLane - 1].headJudged)
                 return;
@@ -293,6 +293,7 @@ namespace Game.Notes.Taps
                             else
                                 Scoreboard.LateCount++;
                         }
+
                         break;
                     case 2:
                         OffsetDisplayAnimator.SetTrigger(isHeadFast ? "ShowFast" : "ShowLate");
@@ -378,7 +379,7 @@ namespace Game.Notes.Taps
         {
             transform.position = Vector3.zero;
             holdTransform.localScale = Vector3.zero;
-            holdTransform.position *= NoteGenerator.Instance.originCircleScale;
+            holdTransform.position *= NoteGenerator.GetInstance.originCircleScale;
             holdSpriteRenderer.color = new Color(1, 1, 1, 0);
             holdEndSpriteRenderer.enabled = false;
             _initialHoldLength = holdSpriteRenderer.size.y;

@@ -65,7 +65,7 @@ namespace Game.Notes
 
                 if (!SensorContained(segment, sensorId) || !(i is 0 or 1 || segments[i - 2].touched))
                     continue;
-                
+
                 if (!_slideStarted)
                 {
                     PlaySlideSound();

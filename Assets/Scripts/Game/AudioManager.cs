@@ -15,6 +15,10 @@ namespace Game
     {
         private static AudioManager _instance;
 
+        public AudioClip entrySound;
+        public AudioClip rollSound;
+        public AudioClip selectSound;
+        
         public AudioClip criticalSound;
         public AudioClip preparatoryBeatSound;
 #if !(UNITY_IOS && !UNITY_EDITOR)
@@ -189,6 +193,30 @@ namespace Game
 #endif
         }
 
+        private float _selectVolume = 1;
+        private AudioSourcePool.AudioSourceHandler  _selectAudioSourceHandler;
+        public void PlaySelectSound()
+        {
+            if (AudioSourcePool == null)
+                return;
+            
+            if (_selectVolume == 0)
+                return;
+
+            if (_selectAudioSourceHandler != null && _selectAudioSourceHandler.GetAudioClip() == selectSound)
+                _selectAudioSourceHandler.Stop();
+
+            var allocated = AudioSourcePool.TryGetAudioSourceHandler(out _selectAudioSourceHandler);
+
+            if (!allocated)
+                return;
+
+            _selectAudioSourceHandler.SetClip(selectSound);
+            _selectAudioSourceHandler.SetVolume(_selectVolume);
+            _selectAudioSourceHandler.Stop();
+            _selectAudioSourceHandler.Play();
+        }
+
         public IEnumerator LoadAudioClip(string path, Action<AudioClip> onComplete, bool streamed = false,
             bool compressed = false)
         {
@@ -203,26 +231,33 @@ namespace Game
             onComplete?.Invoke(clip);
         }
 
-        public void LoadAllSoundEffects(SoundNameData soundEffectFileNameData)
+        public void LoadAllSoundEffects(GameSoundNameData gameSoundEffectFileNameData, UiSoundNameData uiSoundNameData)
         {
             _tapVolume = SettingsPool.GetValue("game.volume.tap") / 10f;
             _breakVolume = SettingsPool.GetValue("game.volume.break") / 10f;
             _slideVolume = SettingsPool.GetValue("game.volume.slide") / 10f;
-            SettingsController.OnSettingsChanged += (_, _) =>
+            /*SettingsController.OnSettingsChanged += (_, _) =>
             {
                 _tapVolume = SettingsPool.GetValue("game.volume.tap") / 10f;
                 _breakVolume = SettingsPool.GetValue("game.volume.break") / 10f;
                 _slideVolume = SettingsPool.GetValue("game.volume.slide") / 10f;
-            };
+            };*/
 
-            var soundPathData = soundEffectFileNameData.GetStreamingAssetsPrefixedPathData();
+            var gameSoundPathData = gameSoundEffectFileNameData.GetStreamingAssetsPrefixedPathData();
+            var uiSoundPathData = uiSoundNameData.GetStreamingAssetsPrefixedPathData();
+            
+            StartCoroutine(LoadAudioClip(uiSoundPathData.entrySoundPath, clip => { entrySound = clip; }));
+            StartCoroutine(LoadAudioClip(uiSoundPathData.rollSoundPath,
+                clip => { rollSound = clip; }));
+            StartCoroutine(LoadAudioClip(uiSoundPathData.selectSoundPath,
+                clip => { selectSound = clip; }));
 
-            StartCoroutine(LoadAudioClip(soundPathData.criticalSoundPath, clip => { criticalSound = clip; }));
-            StartCoroutine(LoadAudioClip(soundPathData.preparatoryBeatSoundPath,
+            StartCoroutine(LoadAudioClip(gameSoundPathData.criticalSoundPath, clip => { criticalSound = clip; }));
+            StartCoroutine(LoadAudioClip(gameSoundPathData.preparatoryBeatSoundPath,
                 clip => { preparatoryBeatSound = clip; }));
 
 #if !(UNITY_IOS && !UNITY_EDITOR)
-            StartCoroutine(LoadAudioClip(soundPathData.slideSoundPath,
+            StartCoroutine(LoadAudioClip(gameSoundPathData.slideSoundPath,
                 clip => { slideSound = clip; }));
 #endif
 
@@ -282,7 +317,28 @@ namespace Game
         }
 
         [Serializable]
-        public class SoundNameData
+        public class UiSoundNameData
+        {
+            public string rollSoundPath;
+            public string selectSoundPath;
+            public string entrySoundPath;
+
+            public UiSoundNameData GetStreamingAssetsPrefixedPathData(string prefix = "DefaultSFX/UserInterfaceSFX/")
+            {
+                return new UiSoundNameData()
+                {
+                    rollSoundPath = Path.Combine(Application.streamingAssetsPath,
+                        prefix + rollSoundPath),
+                    selectSoundPath = Path.Combine(Application.streamingAssetsPath,
+                        prefix + selectSoundPath),
+                    entrySoundPath = Path.Combine(Application.streamingAssetsPath,
+                        prefix + entrySoundPath)
+                };
+            }
+        }
+
+        [Serializable]
+        public class GameSoundNameData
         {
             public string perfectSoundPath;
             public string greatSoundPath;
@@ -294,28 +350,28 @@ namespace Game
             public string criticalSoundPath;
             public string preparatoryBeatSoundPath;
 
-            public SoundNameData GetStreamingAssetsPrefixedPathData()
+            public GameSoundNameData GetStreamingAssetsPrefixedPathData(string prefix = "DefaultSFX/GameSFX/")
             {
-                return new SoundNameData
+                return new GameSoundNameData
                 {
                     perfectSoundPath = Path.Combine(Application.streamingAssetsPath,
-                        "DefaultSFX/GameSFX/" + perfectSoundPath),
+                        prefix + perfectSoundPath),
                     greatSoundPath = Path.Combine(Application.streamingAssetsPath,
-                        "DefaultSFX/GameSFX/" + greatSoundPath),
+                        prefix + greatSoundPath),
                     goodSoundPath =
-                        Path.Combine(Application.streamingAssetsPath, "DefaultSFX/GameSFX/" + goodSoundPath),
+                        Path.Combine(Application.streamingAssetsPath, prefix + goodSoundPath),
                     breakExtraSoundPath = Path.Combine(Application.streamingAssetsPath,
-                        "DefaultSFX/GameSFX/" + breakExtraSoundPath),
+                        prefix + breakExtraSoundPath),
                     breakPerfectSoundPath = Path.Combine(Application.streamingAssetsPath,
-                        "DefaultSFX/GameSFX/" + breakPerfectSoundPath),
+                        prefix + breakPerfectSoundPath),
                     breakGreatSoundPath = Path.Combine(Application.streamingAssetsPath,
-                        "DefaultSFX/GameSFX/" + breakGreatSoundPath),
+                        prefix + breakGreatSoundPath),
                     slideSoundPath = Path.Combine(Application.streamingAssetsPath,
-                        "DefaultSFX/GameSFX/" + slideSoundPath),
+                        prefix + slideSoundPath),
                     criticalSoundPath = Path.Combine(Application.streamingAssetsPath,
-                        "DefaultSFX/GameSFX/" + criticalSoundPath),
+                        prefix + criticalSoundPath),
                     preparatoryBeatSoundPath = Path.Combine(Application.streamingAssetsPath,
-                        "DefaultSFX/GameSFX/" + preparatoryBeatSoundPath)
+                        prefix + preparatoryBeatSoundPath)
                 };
             }
         }
@@ -389,11 +445,6 @@ namespace Game
 
             public double ScheduledStartTime = -1;
 
-            public AudioClip GetAudioClip()
-            {
-                return _audioSource.clip;
-            }
-
             public AudioSourceHandler(AudioSource audioSource)
             {
                 _audioSource = audioSource;
@@ -413,6 +464,11 @@ namespace Game
 
                     return true;
                 }
+            }
+
+            public AudioClip GetAudioClip()
+            {
+                return _audioSource.clip;
             }
 
             public void Pause()

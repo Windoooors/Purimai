@@ -3465,7 +3465,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 492073450}
-  - component: {fileID: 492073451}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -3494,21 +3493,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0.5}
   m_SizeDelta: {x: 704.61, y: 228.63}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &492073451
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 492073449}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff321dad74205402a9c8fbd06536f437, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UI.ScoreIndicator.ScoreIndicator
-  scoreText: {fileID: 680488282}
-  titleText: {fileID: 183358043}
-  settingsIndex: 0
 --- !u!1 &515582281
 GameObject:
   m_ObjectHideFlags: 0
@@ -10896,7 +10880,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!331 &1946742936
 SpriteMask:
   m_ObjectHideFlags: 0
@@ -10904,7 +10888,7 @@ SpriteMask:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1946742935}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -10944,7 +10928,7 @@ SpriteMask:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 3286163911610860551, guid: a1a78226c02904f948cc70b1d95bdd5f,
+  m_Sprite: {fileID: -2413806693520163455, guid: 1b751b8c416ac8a4a92ea22e5d638905,
     type: 3}
   m_MaskAlphaCutoff: 0.2
   m_FrontSortingLayerID: 0

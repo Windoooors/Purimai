@@ -4,43 +4,23 @@ using Game;
 using TMPro;
 using UI.GameSettings;
 using UnityEngine;
+using UnityEngine.Serialization;
+using UnityEngine.UIElements;
 
 namespace UI
 {
-    [Serializable]
-    public class ButtonIcons
-    {
-        public Sprite upArrow;
-        public Sprite downArrow;
-        public Sprite play;
-        public Sprite settings;
-        public Sprite levelUp;
-        public Sprite levelDown;
-        public Sprite back;
-        public Sprite sheet;
-        public Sprite finale;
-        public Sprite dx;
-        public Sprite score;
-        public Sprite achievement;
-        public Sprite retry;
-    }
-
     public class UIManager : MonoBehaviour
     {
         private static UIManager _instance;
-
-        public CanvasGroup maskCanvasGroup;
-        public SoftMask mask;
-        public Canvas canvas;
-
+        
         public TMP_FontAsset mainFontAsset;
 
-        public ButtonIcons buttonIcons;
+        [FormerlySerializedAs("soundFileNameData")] public AudioManager.GameSoundNameData gameSoundFileNameData;
+        public AudioManager.UiSoundNameData  uiSoundFileNameData;
 
-        public VertexGradient fcGoldColorGradient;
-        public VertexGradient fcColorGradient;
-
-        public AudioManager.SoundNameData soundFileNameData;
+        public UIDocument uIDocument;
+        
+        public VisualTreeAsset scoreContentVisualTreeAsset;
 
         private void Awake()
         {
@@ -48,9 +28,9 @@ namespace UI
 
             ApplyResolution();
 
-            SettingsController.OnSettingsChanged += (_, _) => { ApplyResolution(); };
+            //SettingsController.OnSettingsChanged += (_, _) => { ApplyResolution(); };
 
-            AudioManager.GetInstance().LoadAllSoundEffects(soundFileNameData);
+            AudioManager.GetInstance().LoadAllSoundEffects(gameSoundFileNameData, uiSoundFileNameData);
         }
 
         private void Start()
@@ -75,14 +55,12 @@ namespace UI
 
         public void EnableUI()
         {
-            canvas.gameObject.SetActive(true);
-            maskCanvasGroup.alpha = 1;
+
         }
 
         public void DisableUI()
         {
-            canvas.gameObject.SetActive(false);
-            maskCanvasGroup.alpha = 0;
+
         }
 
         private void ApplyResolution()

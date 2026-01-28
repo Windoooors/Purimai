@@ -13,7 +13,9 @@ namespace Game
 {
     public class NoteGenerator : MonoBehaviour
     {
-        public static NoteGenerator Instance;
+        public static NoteGenerator GetInstance => _instance == null? FindObjectsByType<NoteGenerator>(FindObjectsInactive.Include, FindObjectsSortMode.None)[0] : _instance;
+        
+        private static NoteGenerator _instance;
 
         public Tap[] tapPrefabs;
         public Hold[] holdPrefabs;
@@ -50,7 +52,7 @@ namespace Game
         {
             _noteParent = new GameObject("Notes");
 
-            Instance = this;
+            _instance = this;
         }
 
         public void GenerateNotes(string chartString, float firstNoteTime)

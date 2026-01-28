@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem.EnhancedTouch;
@@ -14,7 +13,7 @@ namespace Game
         public static EventHandler<TouchEventArgs> OnHold;
         public static EventHandler<TouchEventArgs> OnLeave;
 
-        public static bool Enabled;
+        public static bool Enabled = true;
 
         public static readonly List<SimulatedSensor> Sensors = new();
 
@@ -43,11 +42,9 @@ namespace Game
         private void Update()
         {
             if (_activeFingers.Count > 0)
-            {
                 if (Enabled)
                     OnHold?.Invoke(this,
                         new TouchEventArgs(settings.sensorId));
-            }
         }
 
         private void OnDestroy()
@@ -67,7 +64,8 @@ namespace Game
                 return;
 
             _activeFingers.Add(finger);
-            if (Enabled) OnTap?.Invoke(this, new TouchEventArgs(settings.sensorId));
+            if (Enabled)
+                OnTap?.Invoke(this, new TouchEventArgs(settings.sensorId));
         }
 
         private void OnFingerUp(Finger finger)
@@ -77,9 +75,8 @@ namespace Game
             _activeFingers.Remove(finger);
 
             if (_activeFingers.Count == 0)
-            {
-                if (Enabled) OnLeave?.Invoke(this, new TouchEventArgs(settings.sensorId));
-            }
+                if (Enabled)
+                    OnLeave?.Invoke(this, new TouchEventArgs(settings.sensorId));
         }
 
         private void OnFingerMove(Finger finger)
@@ -97,10 +94,8 @@ namespace Game
             {
                 _activeFingers.Remove(finger);
                 if (_activeFingers.Count == 0)
-                {
-                    if (Enabled) OnLeave?.Invoke(this, new TouchEventArgs(settings.sensorId));
-                }
-                
+                    if (Enabled)
+                        OnLeave?.Invoke(this, new TouchEventArgs(settings.sensorId));
             }
         }
     }

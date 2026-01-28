@@ -129,7 +129,7 @@ namespace Game.Notes.Slides
 
             if (!activated)
                 return;
-            
+
             if (!_slideStarted)
             {
                 PlaySlideSound();
@@ -216,7 +216,7 @@ namespace Game.Notes.Slides
             var judgeSpriteNeedsChange =
                 judgeDisplaySpriteRenderer.transform.rotation.eulerAngles.z is >= 265 and <= 365 or >= -5 and <= 95;
 
-            judgeDisplaySpriteRenderer.sprite = NoteGenerator.Instance
+            judgeDisplaySpriteRenderer.sprite = NoteGenerator.GetInstance
                 .slideJudgeDisplaySprites[judgeDisplaySpriteGroupIndex]
                 .wifiSlideJudgeSprites[
                     judgeSpriteNeedsChange
