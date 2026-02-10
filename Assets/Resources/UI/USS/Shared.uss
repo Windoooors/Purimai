@@ -1,0 +1,45 @@
+.button {
+    background-image: url("project://database/Assets/Textures/UI/Shared/RoundedCornerRect.png?fileID=21300000&guid=5572f605bc32344f4b62167405b480e8&type=3#RoundedCornerRect");
+    background-color: rgba(255, 255, 255, 0);
+    border-width: 0;
+}
+
+.button:hover {
+    scale: 0.9 0.9;
+}
+
+.header {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.in-animation * {
+    transition: all ease-in-cubic 0.5s, display 0s 0.5s, visibility 0s 0.5s;
+}
+
+.in-out-animation * {
+    transition: all ease-in-out-cubic 1s, display 0s 1s, visibility 0s 1s;
+}
+
+.out-animation * {
+    transition: all ease-out-cubic 0.5s, display 0s 0.5s, visibility 0s 0.5s;
+}
+
+.out-animation {
+    transition: all ease-out-cubic 0.5s, display 0s 0.5s, visibility 0s 0.5s;
+}
+
+.safe-area {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
+.safe-area-ignore-bottom {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}

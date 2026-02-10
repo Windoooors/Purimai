@@ -1,0 +1,4 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd"
+         editor-extension-mode="False">
+    <UI.HoleMaskElement name="HoleMaskElement" Radius="295" enabled="true" style="background-color: rgba(0, 0, 0, 0);"/>
+</ui:UXML>

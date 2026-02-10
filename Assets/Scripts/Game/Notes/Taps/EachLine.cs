@@ -4,14 +4,16 @@ namespace Game.Notes.Taps
 {
     public class EachLine : TapBasedNote
     {
+        private TapOrLineTransform _tapOrLineTransform = new();
+
         private void Update()
         {
             if (!ChartPlayer.Instance.isPlaying)
                 return;
 
-            var tapOrLineTransform = GetTapOrLineTransform();
+            GetTapOrLineTransform(ref _tapOrLineTransform);
 
-            var shown = tapOrLineTransform.Shown && ChartPlayer.Instance.GetTime() < timing + 300;
+            var shown = _tapOrLineTransform.Shown && ChartPlayer.Instance.GetTime() < timing + 300;
 
             if (shown)
             {
@@ -25,7 +27,7 @@ namespace Game.Notes.Taps
 
             transform.localScale = (NoteGenerator.GetInstance.originCircleScale +
                                     (1 - NoteGenerator.GetInstance.originCircleScale) *
-                                    tapOrLineTransform.PositionInLane)
+                                    _tapOrLineTransform.PositionInLane)
                                    * Vector3.one;
         }
 

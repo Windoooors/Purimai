@@ -1,0 +1,146 @@
+.white-out-mask {
+    flex-grow: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: rgb(255, 255, 255);
+    opacity: 0;
+    display: none;
+}
+
+.get-back-button {
+    position: absolute;
+    right: -196px;
+    height: 101px;
+    width: 294px;
+    top: auto;
+    transition-duration: 0.2s;
+    transition-property: scale;
+    bottom: 12px;
+}
+
+.level-scene-loaded * {
+    display: none;
+}
+
+.level-scene-loaded .white-out-mask {
+    opacity: 1;
+    display: flex;
+}
+
+.stats-vertical-label {
+    margin-top: 3px;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    -unity-text-align: upper-right;
+    width: 50px;
+}
+
+.stats-horizontal-label {
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-right: 0;
+    -unity-text-align: upper-right;
+    padding-left: 38px;
+    padding-bottom: 0;
+    padding-top: 10px;
+    width: 90px;
+}
+
+.score-content-panel {
+    position: absolute;
+    top: 52%;
+    left: auto;
+    right: 205px;
+    margin-top: -85px;
+}
+
+.song-item-container {
+    position: absolute;
+    top: 65px;
+    left: -211px;
+    right: auto;
+}
+
+.stats-container {
+    flex-grow: 1;
+    position: absolute;
+    background-image: url("project://database/Assets/Textures/UI/Shared/RoundedCornerRect.png?fileID=21300000&guid=5572f605bc32344f4b62167405b480e8&type=3#RoundedCornerRect");
+    width: 597px;
+    height: 159px;
+    top: 313px;
+    left: -159px;
+    -unity-font-definition: resource('Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF');
+    padding-top: 20px;
+    padding-right: 23px;
+    padding-bottom: 29px;
+    padding-left: 23px;
+}
+
+.score-container {
+    flex-grow: 1;
+    position: absolute;
+    background-image: url("project://database/Assets/Textures/UI/Shared/RoundedCornerRect.png?fileID=21300000&guid=5572f605bc32344f4b62167405b480e8&type=3#RoundedCornerRect");
+    width: 596px;
+    height: 70px;
+    top: 466px;
+    left: -158px;
+    -unity-font-definition: resource('Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF');
+}
+
+.retry-button {
+    position: absolute;
+    right: 92px;
+    height: 101px;
+    width: 109px;
+    top: auto;
+    transition-duration: 0.2s;
+    transition-property: scale;
+    bottom: 12px;
+}
+
+.song-cover-parent {
+    flex-grow: 1;
+    position: relative;
+    right: auto;
+    top: 0;
+    left: 444px;
+    margin: 20px;
+    width: 600px;
+    height: 600px;
+}
+
+.song-cover {
+    background-color: rgb(255, 255, 255);
+    border-radius: 50px;
+    background-size: 110% 110%;
+}
+
+.result-panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: auto;
+}
+
+.white-out-mask-between {
+    background-color: rgb(255, 255, 255);
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    opacity: 0;
+    display: none;
+}

@@ -7,7 +7,7 @@ using Game;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-using UI.GameSettings;
+using UI.Settings;
 using UnityEngine;
 
 namespace UI
@@ -21,20 +21,11 @@ namespace UI
         private static readonly Regex FirstNoteTimeRegex = new(@"&first=((\-?)\d+.\d+|(\-?)\d+)");
         private static readonly Regex BpmRegex = new(@"&wholebpm=(\d+.\d+|\d+)");
 
-        private static readonly Regex UtageRegex =
+        private static readonly Regex UtageDifficultyRegex =
             new(@"([0-9]+\+?\?|[\u4E00-\u9FFF]\s?[0-9]+\+?\??|utage\s?[0-9]+\+?\??)");
 
-        private static readonly Regex[] LvRegexes =
-        {
-            new("&lv_0=(.*)"), new("&lv_1=(.*)"), new("&lv_2=(.*)"), new("&lv_3=(.*)"),
-            new("&lv_4=(.*)"), new("&lv_5=(.*)"), new("&lv_6=(.*)")
-        };
-
-        private static readonly Regex[] DesRegexes =
-        {
-            new("&des_0=(.*)"), new("&des_1=(.*)"), new("&des_2=(.*)"), new("&des_3=(.*)"),
-            new("&des_4=(.*)"), new("&des_5=(.*)"), new("&des_6=(.*)")
-        };
+        private static readonly Regex UtageTitleRegex =
+            new(@"^\[.*?\]");
 
         public static HashSet<char> UsedCharacters = new();
 
@@ -42,10 +33,6 @@ namespace UI
         public readonly string Artist;
 
         public readonly float Bpm;
-        public readonly string[] Charts;
-        public readonly string[] Designers;
-
-        public readonly string[] Difficulties;
 
         public readonly float FirstNoteTime;
         public readonly string Genre;
@@ -58,12 +45,16 @@ namespace UI
 
         public readonly string Title;
 
+        private bool _generatingBlurredCover;
+
         private bool _loadingCover;
+        private bool _loadingSong;
         public DecodedImage BlurredSongCoverAsBackgroundDecodedImage;
         public DecodedImage BlurredSongCoverDecodedImage;
         public bool BlurredSongCoverGenerated;
+
+        public Chart[] Charts;
         public bool CoverDataLoaded;
-        private bool _loadingSong;
 
         public AudioClip SongAudioClip;
 
@@ -86,58 +77,118 @@ namespace UI
             var firstNoteTimeMatch = FirstNoteTimeRegex.Match(maidata);
             var bpmMatch = BpmRegex.Match(maidata);
 
-            Title = titleMatch.Success ? titleMatch.Groups[1].Value : "未知";
-            Artist = artistMatch.Success ? artistMatch.Groups[1].Value : "未知";
-            MainChartDesigner = mainDesignerMatch.Success ? mainDesignerMatch.Groups[1].Value : "未知";
-            Genre = genreMatch.Success ? genreMatch.Groups[1].Value : "未知";
-            Bpm = bpmMatch.Success ? float.Parse(bpmMatch.Groups[1].Value) : 0;
+            Title = titleMatch.Success ? titleMatch.Groups[1].Value : "Unknown";
+            Artist = artistMatch.Success ? artistMatch.Groups[1].Value : "Unknown";
+            MainChartDesigner = mainDesignerMatch.Success ? mainDesignerMatch.Groups[1].Value : "Unknown";
+            Genre = genreMatch.Success ? genreMatch.Groups[1].Value : "Unknown";
+            Bpm = bpmMatch.Success ? float.Parse(bpmMatch.Groups[1].Value) : -1;
             FirstNoteTime = firstNoteTimeMatch.Success ? float.Parse(firstNoteTimeMatch.Groups[1].Value) : 0;
-
+            
             AddUsedCharacters(Title);
             AddUsedCharacters(Artist);
             AddUsedCharacters(MainChartDesigner);
             AddUsedCharacters(Genre);
 
-            var difficultyNameList = new List<string>();
-            var designerList = new List<string>();
-            var chartList = new List<string>();
+            var chartList = new List<Chart>();
 
-            for (var i = 1; i <= 6; i++)
+            var i = 0;
+
+            var found = TryGetChartString(maidata, i, out var chartString, out var isLast);
+
+            while (true)
             {
-                var levelRegex = LvRegexes[i];
-                var designerRegex = DesRegexes[i];
+                if (!found)
+                {
+                    i++;
+                    found = TryGetChartString(maidata, i, out chartString, out isLast);
 
-                var levelMatch = levelRegex.IsMatch(maidata) ? levelRegex.Match(maidata).Groups[1].Value : "";
-                var designerMatch = designerRegex.IsMatch(maidata)
-                    ? designerRegex.Match(maidata).Groups[1].Value
-                    : "";
-
-                difficultyNameList.Add(levelMatch.Trim());
-                designerList.Add(designerMatch.Trim());
-
-                AddUsedCharacters(levelMatch);
-                AddUsedCharacters(designerMatch);
-
-                if (designerList[^1] == "")
-                    designerList[^1] = MainChartDesigner;
-                chartList.Add(GetChartString(maidata, i).Trim());
-            }
-
-            Difficulties = difficultyNameList.ToArray();
-            Charts = chartList.ToArray();
-            Designers = designerList.ToArray();
-
-            IsUtage = true;
-
-            var index = -1;
-            foreach (var difficulty in Difficulties)
-            {
-                index++;
-                if (Charts[index] == "")
                     continue;
-                if (!UtageRegex.IsMatch(difficulty.ToLower()))
-                    IsUtage = false;
+                }
+
+                var chart = new Chart();
+
+                chart.ChartString = chartString;
+
+                if (!TryGetDesigner(maidata, i, out var designer))
+                    designer = MainChartDesigner;
+
+                chart.Designer = designer;
+
+                if (!TryGetLevel(maidata, i, out var level))
+                    level = "NaN";
+
+                chart.DifficultyString = level;
+
+                chart.DifficultyIndex = i;
+
+                if (UtageDifficultyRegex.IsMatch(level.ToLower()) || UtageTitleRegex.IsMatch(Title))
+                    IsUtage = true;
+
+                AddUsedCharacters(level);
+                AddUsedCharacters(designer);
+
+                chartList.Add(chart);
+
+                if (isLast)
+                    break;
+
+                i++;
+                found = TryGetChartString(maidata, i, out chartString, out isLast);
             }
+
+            if (chartList.Count == 0)
+            {
+                Charts = Array.Empty<Chart>();
+                return;
+            }
+
+            Charts = chartList.ToArray();
+
+            if (Bpm.CompareTo(-1) == 0 && Charts.Length > 0)
+            {
+                var splitResult = Charts[^1].ChartString.TrimStart().Split(")");
+                if (splitResult.Length < 1 || splitResult[0].Length < 2)
+                {
+                    Bpm = 0;
+                    return;
+                }
+
+                Bpm = float.TryParse(Charts[^1].ChartString.TrimStart().Split(")")[0].Substring(1),
+                    out var defaultBpm)
+                    ? defaultBpm
+                    : 0;
+            }
+        }
+
+        public bool TryGetLevel(string input, int index, out string level)
+        {
+            return TryGetField(input, $"&lv_{index}=", out level);
+        }
+
+        public bool TryGetDesigner(string input, int index, out string designer)
+        {
+            return TryGetField(input, $"&des_{index}=", out designer);
+        }
+
+        private bool TryGetField(string input, string prefix, out string value)
+        {
+            value = string.Empty;
+            if (string.IsNullOrEmpty(input)) return false;
+
+            var startIndex = input.IndexOf(prefix, StringComparison.Ordinal);
+            if (startIndex == -1) return false;
+
+            var valueStart = startIndex + prefix.Length;
+
+            var lineEndIndex = input.IndexOfAny(new[] { '\r', '\n' }, valueStart);
+
+            if (lineEndIndex == -1)
+                value = input.Substring(valueStart);
+            else
+                value = input.Substring(valueStart, lineEndIndex - valueStart);
+
+            value = value.Trim();
+            return true;
         }
 
         public void UnloadSongCover()
@@ -147,31 +198,40 @@ namespace UI
                 CoverDataLoaded = false;
                 return;
             }
-            
+
             SongCoverDecodedImage.Dispose();
             SongCoverDecodedImage = null;
             CoverDataLoaded = false;
+        }
+        
+        public void UnloadSong()
+        {
+            if (SongAudioClip)
+                MonoBehaviour.Destroy(SongAudioClip);
+            
+            SongAudioClip = null;
+            SongLoaded = false;
         }
 
         public void UnloadResources()
         {
             if (SongAudioClip)
                 MonoBehaviour.Destroy(SongAudioClip);
-            
+
             if (BlurredSongCoverAsBackgroundDecodedImage != null)
                 BlurredSongCoverAsBackgroundDecodedImage.Dispose();
-            
+
             if (BlurredSongCoverDecodedImage != null)
                 BlurredSongCoverDecodedImage.Dispose();
-            
+
             if (SongCoverDecodedImage != null)
                 SongCoverDecodedImage.Dispose();
-            
+
             BlurredSongCoverAsBackgroundDecodedImage = null;
             BlurredSongCoverDecodedImage = null;
             SongCoverDecodedImage = null;
             SongAudioClip = null;
-            
+
             BlurredSongCoverGenerated = false;
             CoverDataLoaded = false;
             SongLoaded = false;
@@ -182,67 +242,75 @@ namespace UI
             foreach (var character in usedCharacters) UsedCharacters.Add(character);
         }
 
-        private static string GetChartString(string maidataString, int i)
+        public static bool TryGetChartString(string maidataString, int i, out string chartString, out bool isLast)
         {
+            chartString = string.Empty;
+            isLast = false;
+
+            if (string.IsNullOrEmpty(maidataString)) return false;
+
             var startToken = $"&inote_{i}=";
             var startIndex = maidataString.IndexOf(startToken, StringComparison.Ordinal);
-            if (startIndex < 0)
-                return string.Empty;
+            if (startIndex < 0) return false;
 
             var contentStart = startIndex + startToken.Length;
             var endIndex = -1;
-
+            
             var eSearch = contentStart;
             while (true)
             {
-                var eIndex = maidataString.IndexOf('E', eSearch);
-                if (eIndex < 0)
-                    break;
-
+                var eIndex = maidataString.IndexOf("E", eSearch, StringComparison.Ordinal);
+                if (eIndex < 0) break;
+                
                 var nextPos = eIndex + 1;
-                if (nextPos >= maidataString.Length || maidataString[nextPos] == '\n')
+                if (nextPos >= maidataString.Length || maidataString[nextPos] == '\r' || maidataString[nextPos] == '\n')
                 {
                     endIndex = eIndex;
                     break;
                 }
 
-                eSearch = eIndex + 1;
+                eSearch = nextPos;
             }
-
-            if (endIndex < 0)
+            
+            if (endIndex == -1)
             {
-                var searchPos = contentStart;
-
-                while (true)
-                {
-                    var tokenPos = maidataString.IndexOf("&inote_", searchPos, StringComparison.Ordinal);
-                    if (tokenPos < 0)
-                        break;
-
-                    var numberStart = tokenPos + "&inote_".Length;
-                    var numberEnd = maidataString.IndexOf('=', numberStart);
-                    if (numberEnd < 0)
-                        break;
-
-                    if (int.TryParse(
-                            maidataString.Substring(numberStart, numberEnd - numberStart),
-                            out var foundIndex) &&
-                        foundIndex > i)
-                    {
-                        endIndex = tokenPos;
-                        break;
-                    }
-
-                    searchPos = numberEnd + 1;
-                }
+                var nextInotePos = FindNextHigherInote(maidataString, contentStart, i);
+                if (nextInotePos != -1) endIndex = nextInotePos;
+            }
+            
+            if (endIndex == -1)
+            {
+                chartString = maidataString.Substring(contentStart).Trim();
+                isLast = true;
+            }
+            else
+            {
+                chartString = maidataString.Substring(contentStart, endIndex - contentStart).Trim();
+                isLast = FindNextHigherInote(maidataString, endIndex, i) == -1;
             }
 
-            if (endIndex < 0)
-                endIndex = maidataString.Length;
+            return true;
 
-            return maidataString.Substring(contentStart, endIndex - contentStart);
+            static int FindNextHigherInote(string str, int startSearch, int currentIdx)
+            {
+                var pos = startSearch;
+                while ((pos = str.IndexOf("&inote_", pos, StringComparison.Ordinal)) != -1)
+                {
+                    var numStart = pos + "&inote_".Length;
+                    var eqIdx = str.IndexOf('=', numStart);
+
+                    if (eqIdx != -1)
+                        if (int.TryParse(str.AsSpan(numStart, eqIdx - numStart), out var foundIdx) &&
+                            foundIdx > currentIdx)
+                            return pos;
+
+                    pos++;
+                }
+
+                return -1;
+            }
         }
-
+        
         public void LoadSongCover()
         {
             if (_loadingCover)
@@ -279,10 +347,10 @@ namespace UI
         {
             if (_generatingBlurredCover)
                 return;
-            
+
             if (BlurredSongCoverDecodedImage != null && BlurredSongCoverAsBackgroundDecodedImage != null)
                 return;
-            
+
             _generatingBlurredCover = true;
 
             using var image = File.Exists(_songCoverPath)
@@ -293,14 +361,14 @@ namespace UI
 
             image.Mutate(x => { x.Resize(50, 50); });
 
-            var blurringLevel = SettingsPool.GetValue("game.blurred_cover");
+            var blurringLevel = SettingsPool.GetValue("graphics.blurred_cover");
 
             transparentImage.Mutate(x =>
             {
                 x.DrawImage(image, new Point(
                     12, 12
                 ), 1f);
-                x.GaussianBlur(5);
+                x.GaussianBlur(2);
             });
 
             BlurredSongCoverDecodedImage = new DecodedImage(transparentImage);
@@ -319,6 +387,12 @@ namespace UI
             _generatingBlurredCover = false;
         }
 
-        private bool _generatingBlurredCover;
+        public class Chart
+        {
+            public string ChartString;
+            public string Designer;
+            public int DifficultyIndex;
+            public string DifficultyString;
+        }
     }
 }

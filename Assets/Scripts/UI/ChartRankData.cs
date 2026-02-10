@@ -65,6 +65,16 @@ namespace UI
 
     public static class ChartRankDataManager
     {
+        private static readonly string SavePath = Path.Combine(Application.persistentDataPath, "player_scores.json");
+
+        private static List<ChartRankData> _dataList = Directory.Exists(Application.persistentDataPath)? (
+            !File.Exists(SavePath)
+                ? new List<ChartRankData>()
+                : JsonConvert.DeserializeObject<List<ChartRankData>>(
+                    File.ReadAllText(SavePath))) : new List<ChartRankData>();
+
+        private static HashSet<ChartRankData> _dataHashSet;
+
         public static string GetRankName(float achievement, int score, int totalScoreWithExtraScore,
             AchievementType achievementType)
         {
@@ -114,15 +124,6 @@ namespace UI
 
             return "Unknown";
         }
-        
-        private static readonly string SavePath = Path.Combine(Application.persistentDataPath, "player_scores.json");
-
-        private static List<ChartRankData> _dataList = !File.Exists(SavePath)
-            ? new List<ChartRankData>()
-            : JsonConvert.DeserializeObject<List<ChartRankData>>(
-                File.ReadAllText(SavePath));
-
-        private static HashSet<ChartRankData> _dataHashSet;
 
         public static ChartRankData GetChartRankData(string maidataPath)
         {

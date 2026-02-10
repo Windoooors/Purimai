@@ -53,6 +53,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -74,8 +76,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -789768153
-  m_SortingLayer: 3
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 57e073b06f82de348ab42249bc7d1730, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -102,7 +105,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 8249156734350729698}
   slideBasedNote: {fileID: 6885325233575427714}
-  svgAssetPath: Circle_8
+  wifiSvgAssetNameOverride: 
   duration: 5
 --- !u!1 &4771184315770581227
 GameObject:
@@ -150,6 +153,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be9e6a3d2cf84df59bf410b9b1adc99f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stars:
+  - {fileID: 4803622213277559352}
+  judgeDisplaySpriteRenderer: {fileID: 3118371756179004262}
+  svgAssetPath: Circle_8
+  slideArrowCount: 7
   slideType: 0
   fromLaneIndex: 0
   toLaneIndexes: 
@@ -160,35 +168,24 @@ MonoBehaviour:
   order: 0
   isWifi: 0
   suddenlyAppears: 0
-  stars:
-  - {fileID: 4803622213277559352}
-  slideArrowSpriteRenderers:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  judgeDisplaySpriteRenderer: {fileID: 3118371756179004262}
-  slideJudgeDisplaySpriteIndexes: 
-  svgAssetPath: Circle_8
   pathRotation: 0
   flipPathY: 0
-  objectRotationOffset: -18
-  pathStartPosition: {fileID: 9162106842812025199}
+  starObjectRotationOffset: -18
   segments:
   - mainSensor: A1
     slideSpriteRenderers: []
     slideSpriteRenderersWithinSensorArea: []
     slideSpriteRenderersOutsideSensorArea: []
+    touched: 0
+    arrowInBetweenConcealed: 0
     sensorsNearby: []
   - mainSensor: A2
     slideSpriteRenderers: []
     slideSpriteRenderersWithinSensorArea: []
     slideSpriteRenderersOutsideSensorArea: []
+    touched: 0
+    arrowInBetweenConcealed: 0
     sensorsNearby: []
-  slideArrowCount: 7
 --- !u!1 &7863992633820055641
 GameObject:
   m_ObjectHideFlags: 0
@@ -242,6 +239,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -263,8 +262,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 421743895
-  m_SortingLayer: 4
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_Sprite: {fileID: 79873041, guid: 34bb0d53ec9d249e3af1e6f4d5a73871, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

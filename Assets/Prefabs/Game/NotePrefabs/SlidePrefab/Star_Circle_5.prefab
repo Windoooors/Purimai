@@ -53,6 +53,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -74,8 +76,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 421743895
-  m_SortingLayer: 4
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_Sprite: {fileID: -1882703412, guid: 34bb0d53ec9d249e3af1e6f4d5a73871, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -156,6 +159,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be9e6a3d2cf84df59bf410b9b1adc99f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stars:
+  - {fileID: 5907539545815078899}
+  judgeDisplaySpriteRenderer: {fileID: 8560255861800153134}
+  svgAssetPath: Circle_5
+  slideArrowCount: 28
   slideType: 0
   fromLaneIndex: 0
   toLaneIndexes: 
@@ -166,74 +174,45 @@ MonoBehaviour:
   order: 0
   isWifi: 0
   suddenlyAppears: 0
-  stars:
-  - {fileID: 5907539545815078899}
-  slideArrowSpriteRenderers:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  judgeDisplaySpriteRenderer: {fileID: 8560255861800153134}
-  slideJudgeDisplaySpriteIndexes: 
-  svgAssetPath: Circle_5
   pathRotation: 0
   flipPathY: 0
-  objectRotationOffset: -18
-  pathStartPosition: {fileID: 9019763294593759527}
+  starObjectRotationOffset: -18
   segments:
   - mainSensor: A1
     slideSpriteRenderers: []
     slideSpriteRenderersWithinSensorArea: []
     slideSpriteRenderersOutsideSensorArea: []
+    touched: 0
+    arrowInBetweenConcealed: 0
     sensorsNearby: []
   - mainSensor: A2
     slideSpriteRenderers: []
     slideSpriteRenderersWithinSensorArea: []
     slideSpriteRenderersOutsideSensorArea: []
+    touched: 0
+    arrowInBetweenConcealed: 0
     sensorsNearby: []
   - mainSensor: A3
     slideSpriteRenderers: []
     slideSpriteRenderersWithinSensorArea: []
     slideSpriteRenderersOutsideSensorArea: []
+    touched: 0
+    arrowInBetweenConcealed: 0
     sensorsNearby: []
   - mainSensor: A4
     slideSpriteRenderers: []
     slideSpriteRenderersWithinSensorArea: []
     slideSpriteRenderersOutsideSensorArea: []
+    touched: 0
+    arrowInBetweenConcealed: 0
     sensorsNearby: []
   - mainSensor: A5
     slideSpriteRenderers: []
     slideSpriteRenderersWithinSensorArea: []
     slideSpriteRenderersOutsideSensorArea: []
+    touched: 0
+    arrowInBetweenConcealed: 0
     sensorsNearby: []
-  slideArrowCount: 31
 --- !u!1 &8418846349238727188
 GameObject:
   m_ObjectHideFlags: 0
@@ -287,6 +266,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -308,8 +289,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -789768153
-  m_SortingLayer: 3
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 57e073b06f82de348ab42249bc7d1730, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -336,5 +318,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 2796755687170384870}
   slideBasedNote: {fileID: 2939962257204936816}
-  svgAssetPath: Circle_5
+  wifiSvgAssetNameOverride: 
   duration: 5

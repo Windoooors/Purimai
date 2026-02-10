@@ -53,6 +53,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -74,8 +76,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -789768153
-  m_SortingLayer: 3
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 57e073b06f82de348ab42249bc7d1730, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -102,7 +105,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 4260685233983766363}
   slideBasedNote: {fileID: 2573439468934583005}
-  svgAssetPath: Circle_4
+  wifiSvgAssetNameOverride: 
   duration: 5
 --- !u!1 &5756437215818999019
 GameObject:
@@ -173,6 +176,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be9e6a3d2cf84df59bf410b9b1adc99f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stars:
+  - {fileID: 684596003690467860}
+  judgeDisplaySpriteRenderer: {fileID: 4472218338043966224}
+  svgAssetPath: Circle_4
+  slideArrowCount: 35
   slideType: 0
   fromLaneIndex: 0
   toLaneIndexes: 
@@ -183,87 +191,52 @@ MonoBehaviour:
   order: 0
   isWifi: 0
   suddenlyAppears: 0
-  stars:
-  - {fileID: 684596003690467860}
-  slideArrowSpriteRenderers:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  judgeDisplaySpriteRenderer: {fileID: 4472218338043966224}
-  slideJudgeDisplaySpriteIndexes: 
-  svgAssetPath: Circle_4
   pathRotation: 0
   flipPathY: 0
-  objectRotationOffset: -18
-  pathStartPosition: {fileID: 4551787795198304019}
+  starObjectRotationOffset: -18
   segments:
   - mainSensor: A1
     slideSpriteRenderers: []
     slideSpriteRenderersWithinSensorArea: []
     slideSpriteRenderersOutsideSensorArea: []
+    touched: 0
+    arrowInBetweenConcealed: 0
     sensorsNearby: []
   - mainSensor: A2
     slideSpriteRenderers: []
     slideSpriteRenderersWithinSensorArea: []
     slideSpriteRenderersOutsideSensorArea: []
+    touched: 0
+    arrowInBetweenConcealed: 0
     sensorsNearby: []
   - mainSensor: A3
     slideSpriteRenderers: []
     slideSpriteRenderersWithinSensorArea: []
     slideSpriteRenderersOutsideSensorArea: []
+    touched: 0
+    arrowInBetweenConcealed: 0
     sensorsNearby: []
   - mainSensor: A4
     slideSpriteRenderers: []
     slideSpriteRenderersWithinSensorArea: []
     slideSpriteRenderersOutsideSensorArea: []
+    touched: 0
+    arrowInBetweenConcealed: 0
     sensorsNearby: []
   - mainSensor: A5
     slideSpriteRenderers: []
     slideSpriteRenderersWithinSensorArea: []
     slideSpriteRenderersOutsideSensorArea: []
+    touched: 0
+    arrowInBetweenConcealed: 0
     sensorsNearby: []
   - mainSensor: A6
     slideSpriteRenderers: []
     slideSpriteRenderersWithinSensorArea: []
     slideSpriteRenderersOutsideSensorArea: []
+    touched: 0
+    arrowInBetweenConcealed: 0
     sensorsNearby: []
-  slideArrowCount: 39
 --- !u!1 &7627300705587594260
 GameObject:
   m_ObjectHideFlags: 0
@@ -317,6 +290,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -338,8 +313,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 421743895
-  m_SortingLayer: 4
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_Sprite: {fileID: -1882703412, guid: 34bb0d53ec9d249e3af1e6f4d5a73871, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

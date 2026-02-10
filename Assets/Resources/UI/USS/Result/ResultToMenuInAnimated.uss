@@ -1,0 +1,52 @@
+.result-panel * {
+    opacity: 0;
+}
+
+.safe-area {
+    opacity: 1;
+}
+
+.dont-fade-out .background {
+    transition: opacity 0s 0.5s;
+}
+
+.dont-fade-out .background-mask {
+    transition: opacity 0s 0.5s;
+}
+
+.dont-fade-out .song-cover-parent {
+    transition: opacity 0s 0.5s;
+}
+
+.song-item-container {
+    opacity: 1;
+    display: flex;
+    top: 241px;
+    left: -151px;
+}
+
+.score-content-panel {
+    opacity: 1;
+}
+
+.score-content-panel * {
+    opacity: 1;
+}
+
+.white-out-mask-between {
+    opacity: 1;
+    display: flex;
+}
+
+.song-item-container * {
+    opacity: 1;
+    display: flex;
+}
+
+.stats-container {
+    left: -459px;
+}
+
+.score-container {
+    left: -458px;
+}

@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5106528999854178087
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3032585352877444857}
+  - component: {fileID: 1436663412352395357}
+  m_Layer: 0
+  m_Name: SettingsManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3032585352877444857
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5106528999854178087}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.54776, y: 0.12116, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1436663412352395357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5106528999854178087}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdaa3e7a8a5a840d8968ae0626986b83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.Settings.SettingsController
+  settingsTreeAsset: {fileID: 9197481963319205126, guid: 2e6c5716d61b343b89a4e290d276978b,
+    type: 3}
+  tabContentTreeAsset: {fileID: 9197481963319205126, guid: d4e76fe41d88741798282e4c80cd125b,
+    type: 3}
+  switchBasedValueControllerTreeAsset: {fileID: 9197481963319205126, guid: 17186ba28c32c4961bf5b928c64b3c9b,
+    type: 3}
+  toggleBasedValueControllerTreeAsset: {fileID: 9197481963319205126, guid: b26a99a873d984193ac68abc399255af,
+    type: 3}
+  itemTreeAsset: {fileID: 9197481963319205126, guid: 2bd499a79806944ce85c51a9766b8b58,
+    type: 3}

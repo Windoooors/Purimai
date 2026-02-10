@@ -1,6 +1,6 @@
 using System;
 using Game.Notes.Taps;
-using UI.GameSettings;
+using UI.Settings;
 using UI.Result;
 using Unity.Mathematics;
 using UnityEngine;
@@ -62,7 +62,7 @@ namespace Game.Notes
 
         private void Start()
         {
-            IsAdxFlowSpeedStyle = SettingsPool.GetValue("game.flow_speed_type") == 0;
+            IsAdxFlowSpeedStyle = SettingsPool.GetValue("gameplay.flow_speed_type") == 0;
 
             if (IsAdxFlowSpeedStyle)
                 _timeOnScreenWithBasicSpeed = 2.8f;
@@ -155,7 +155,7 @@ namespace Game.Notes
 
             if (judgeState is not JudgeState.CriticalPerfect and not JudgeState.Miss)
             {
-                var settings = SettingsPool.GetValue("game.offset_display_level");
+                var settings = SettingsPool.GetValue("gameplay.offset_display_level");
 
                 switch (settings)
                 {
@@ -170,7 +170,6 @@ namespace Game.Notes
                             else
                                 Scoreboard.LateCount++;
                         }
-
                         break;
                     case 2:
                         OffsetDisplayAnimator.SetTrigger(isFast ? "ShowFast" : "ShowLate");
@@ -224,16 +223,24 @@ namespace Game.Notes
         {
         }
 
-        protected TapOrLineTransform GetTapOrLineTransform()
+        protected void GetTapOrLineTransform(ref TapOrLineTransform result)
         {
+            if (result == null)
+                return;
+
             var currentPosition = ChartPlayer.Instance.GetTime();
 
             var adjustedEmergingDuration = IsAdxFlowSpeedStyle ? OnScreenTime / 2 : OnScreenTime;
 
             var startEmergingTiming = timing - adjustedEmergingDuration - OnScreenTime;
+
             var startMovingTiming = timing - OnScreenTime;
 
-            var result = new TapOrLineTransform();
+            if (currentPosition < startEmergingTiming - 100 || currentPosition > timing + 200)
+            {
+                result.Shown = false;
+                return;
+            }
 
             if (currentPosition > startEmergingTiming && currentPosition < startMovingTiming)
             {
@@ -244,7 +251,7 @@ namespace Game.Notes
                 result.PositionInLane = 0;
                 result.Shown = true;
 
-                return result;
+                return;
             }
 
             if (currentPosition >= startMovingTiming)
@@ -256,15 +263,13 @@ namespace Game.Notes
                 result.PositionInLane = factor;
                 result.Shown = true;
 
-                return result;
+                return;
             }
 
             result.Scale = Vector3.zero;
             result.Alpha = 0;
             result.PositionInLane = 0;
             result.Shown = false;
-
-            return result;
         }
 
         protected (JudgeState, bool isFast, bool judged) GetJudgeState(float deltaTiming, JudgeSettings judgeSettings)

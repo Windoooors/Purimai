@@ -5,7 +5,7 @@ using Game.ChartManagement;
 using Game.Notes;
 using Game.Notes.Slides;
 using Game.Notes.Taps;
-using UI.GameSettings;
+using UI.Settings;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -13,8 +13,6 @@ namespace Game
 {
     public class NoteGenerator : MonoBehaviour
     {
-        public static NoteGenerator GetInstance => _instance == null? FindObjectsByType<NoteGenerator>(FindObjectsInactive.Include, FindObjectsSortMode.None)[0] : _instance;
-        
         private static NoteGenerator _instance;
 
         public Tap[] tapPrefabs;
@@ -46,6 +44,10 @@ namespace Game
 
         private int _slideOrder;
 
+        public static NoteGenerator GetInstance => _instance == null
+            ? FindObjectsByType<NoteGenerator>(FindObjectsInactive.Include, FindObjectsSortMode.None)[^1]
+            : _instance;
+
         public List<int> criticalTimeList { get; private set; }
 
         private void Awake()
@@ -63,7 +65,7 @@ namespace Game
 
             _slideOrder = 0;
 
-            var audioOffset = SettingsPool.GetValue("game.delay") / 1000f;
+            var audioOffset = SettingsPool.GetValue("gameplay.delay") / 1000f;
 
             var criticalTimeHashSet = new HashSet<int>();
 
@@ -93,7 +95,33 @@ namespace Game
 
             criticalTimeList = criticalTimeHashSet.ToList();
             criticalTimeList.Sort();
+            
+            Filter(criticalTimeList);
+
+            return;
+            
+            void Filter(List<int> list)
+            {
+                if (list == null || list.Count <= 1) return;
+
+                int writeIndex = 1;
+
+                for (int readIndex = 1; readIndex < list.Count; readIndex++)
+                {
+                    if (list[readIndex] - list[writeIndex - 1] >= 2)
+                    {
+                        list[writeIndex] = list[readIndex];
+                        writeIndex++;
+                    }
+                }
+
+                if (writeIndex < list.Count)
+                {
+                    list.RemoveRange(writeIndex, list.Count - writeIndex);
+                }
+            }
         }
+
 
         private void GenerateTaps(NoteDataObject noteDataObject, bool isEach, int order)
         {

@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Resources/UI/USS/SettingsItem.uss?fileID=7433441132597879392&amp;guid=1c3cd9bfbbb5549a4a0dd48764eee44a&amp;type=3#SettingsItem" />
+    <ui:VisualElement name="settings-item" style="flex-grow: 1; width: 100%; height: auto; background-color: rgba(255, 255, 255, 0); max-height: 125px; max-width: initial; min-height: 125px; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px; overflow: hidden;">
+        <ui:Label text="Settings Item Name" name="item-title" style="position: absolute; top: 17px; left: 7px; -unity-font-definition: resource(&apos;Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF&apos;); font-size: 24px; text-overflow: ellipsis;" />
+        <ui:Label text="Description" name="item-description" style="position: absolute; top: 46px; left: 7px; -unity-font-definition: resource(&apos;Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF&apos;); color: rgba(27, 27, 27, 0.53); font-size: 18px;" />
+        <ui:Label text="&lt;color=white&gt;&lt;gradient=&quot;level-item-watermark&quot;&gt;1234&lt;/gradient&gt;&lt;/color&gt;" enable-rich-text="true" picking-mode="Ignore" parse-escape-sequences="false" name="item-name-watermark" style="position: absolute; top: 61px; left: 6px; -unity-font-definition: resource(&apos;Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF&apos;); font-size: 36px; -unity-font-style: bold; color: rgba(27, 27, 27, 0.06);" />
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd"
+         editor-extension-mode="False">
+    <Style src="project://database/Assets/Resources/UI/USS/CategoryItem.uss?fileID=7433441132597879392&amp;guid=0edd42d685aed4455a713968cd22eda5&amp;type=3#CategoryItem"/>
+    <ui:VisualElement name="category-item"
+                      style="flex-grow: 1; height: auto; position: absolute; width: 100%; top: 0; left: 0;">
+        <ui:Label text="Label" name="category-name-label"
+                  style="-unity-font-definition: resource(&apos;Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF&apos;); font-size: 24px; -unity-text-align: middle-center;"/>
+    </ui:VisualElement>
+</ui:UXML>

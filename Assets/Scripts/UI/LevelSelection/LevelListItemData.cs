@@ -10,11 +10,12 @@ namespace UI.LevelSelection
     public class MaidataReferenceCountPair
     {
         public Maidata Maidata;
-        public int ReferenceCount;
+        public bool Referenced;
     }
 
     public class CategoryData
     {
         public string CategoryNameEntryString;
+        public LevelListItemData FirstItem;
     }
 }

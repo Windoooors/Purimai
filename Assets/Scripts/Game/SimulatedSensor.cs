@@ -56,7 +56,13 @@ namespace Game
             Sensors.Clear();
         }
 
-
+        public static void Clear()
+        {
+            OnTap = null;
+            OnHold = null;
+            OnLeave = null;
+        }
+        
         private void OnFingerDown(Finger finger)
         {
             Vector2 worldPos = _mainCamera.ScreenToWorldPoint(finger.screenPosition);

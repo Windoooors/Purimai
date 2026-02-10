@@ -1,0 +1,8 @@
+.result-panel * {
+    display: none;
+}
+
+.white-out-mask {
+    display: flex;
+    opacity: 0;
+}

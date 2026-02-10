@@ -1,0 +1,130 @@
+.item-background {
+    background-color: rgba(255, 255, 255, 0);
+    width: 650px;
+    height: 126px;
+    background-image: url("project://database/Assets/Textures/UI/Shared/RoundedCornerRect.png?fileID=21300000&guid=5572f605bc32344f4b62167405b480e8&type=3#RoundedCornerRect");
+}
+
+.cover {
+    width: 82px;
+    height: 82px;
+    position: absolute;
+    right: 22px;
+    top: 18px;
+    bottom: 23px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    background-color: rgb(0, 0, 0);
+    -unity-background-image-tint-color: rgb(0, 0, 0);
+    opacity: 1;
+}
+
+.show-cover .cover {
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+    background-color: rgb(255, 255, 255);
+    transition-property: -unity-background-image-tint-color, background-color;
+    transition-duration: 0.2s;
+}
+
+.unity-collection-view__item--selected .information {
+    right: 0;
+}
+
+.hide-selected .unity-collection-view__item--selected
+{
+    opacity: 0;
+}
+
+.no-opacity-transition .unity-collection-view__item--selected{
+    transition: opacity 0s;
+}
+
+.information {
+    flex-grow: 1;
+    position: absolute;
+    top: 0;
+    right: 96px;
+    bottom: 0;
+    left: 0;
+    opacity: 1;
+}
+
+.unity-collection-view__item--selected .cover {
+    opacity: 0;
+    right: -72px;
+}
+
+.song-item {
+}
+
+.watermark {
+    position: absolute;
+    top: auto;
+    left: 20px;
+    bottom: 10px;
+    font-size: 36px;
+    color: rgba(0, 0, 0, 0.12);
+    -unity-font-definition: resource('Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF');
+    text-overflow: ellipsis;
+    -unity-font-style: bold;
+    align-items: stretch;
+    -unity-text-align: upper-right;
+    overflow: hidden;
+    right: 110px;
+}
+
+.unity-collection-view__item {
+    transition-property: scale, opacity;
+    transition-duration: 0.2s;
+    transition-timing-function: ease;
+    scale: 1 1;
+}
+
+.unity-collection-view__item:hover {
+    background-color: rgba(255, 255, 255, 0);
+    scale: 0.9 0.9;
+}
+
+.unity-collection-view__item--selected {
+    opacity: 1;
+    background-color: rgba(255, 255, 255, 0);
+}
+
+.unity-collection-view__item--selected .watermark {
+    right: 20px;
+}
+
+.confirm-entry .unity-collection-view__item {
+    opacity: 0.2;
+}
+
+.confirm-entry .unity-collection-view__item--selected {
+    opacity: 1;
+}
+
+.enable-transition .watermark {
+    transition-property: right;
+    transition-duration: 0.2s;
+}
+
+.enable-transition .information {
+    transition-property: right;
+    transition-duration: 0.2s;
+}
+
+.enable-transition .cover {
+    transition-property: opacity, right;
+    transition-duration: 0.2s;
+}
+
+.confirm-entry .unity-collection-view__item:hover {
+    background-color: rgba(255, 255, 255, 0);
+    scale: 1 1;
+}
+
+.confirm-entry .unity-collection-view__item--selected:hover {
+    background-color: rgba(255, 255, 255, 0);
+    scale: 0.9 0.9;
+}

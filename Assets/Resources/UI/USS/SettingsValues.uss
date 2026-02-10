@@ -1,0 +1,99 @@
+:root {
+}
+
+.unity-base-field {
+    margin: 0;
+    padding: 0;
+}
+
+.slider {
+    -unity-font-definition: resource('Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF');
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    -unity-text-align: middle-left;
+}
+
+.unity-base-slider__tracker {
+    border-width: 0;
+    border-radius: 3px;
+    background-color: rgb(100, 100, 100);
+}
+
+.unity-base-slider__dragger {
+    border-width: 0;
+    border-radius: 7px;
+    background-color: rgb(150, 150, 150);
+    height: 15px;
+    width: 15px;
+    margin-top: -7.5px;
+    scale: 1 1;
+    transition: scale ease 0.2s;
+}
+
+.unity-base-slider__dragger:hover {
+    scale: 0.9 0.9;
+}
+
+.button {
+    transition: scale 200ms ease, opacity 200ms ease;
+}
+
+.button:hover {
+    scale: 0.75 0.75;
+}
+
+.unity-toggle__checkmark {
+    border-radius: 15px;
+    width: 43px;
+    height: 43px;
+    position: absolute;
+    right: 21.5px;
+    background-image: url("project://database/Assets/Textures/UI/Checkmark.png?fileID=2800000&guid=100cb950be88740029fad091236a6198&type=3#Checkmark");
+    background-size: 100% 100%;
+    background-color: rgba(192, 192, 192, 0);
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+    transition: right ease-out-cubic 0.2s;
+    background-position-x: center;
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+    scale: 1 1;
+    top: auto;
+}
+
+.unity-toggle__input:checked .unity-toggle__checkmark {
+    right: 1.5px;
+    top: auto;
+}
+
+.unity-toggle__label {
+    position: absolute;
+    color: black;
+    right: 0;
+    left: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.unity-toggle__label:hover {
+    color: black;
+}
+
+.unity-toggle__input {
+    background-image: url("project://database/Assets/Textures/UI/ToggleBackground.png?fileID=2800000&guid=d51572c7c94ba4d77bea75aacc0f69ff&type=3#ToggleBackground");
+    position: absolute;
+    right: 0;
+    width: 66px;
+    height: 47px;
+    -unity-background-image-tint-color: rgb(212, 212, 212);
+    transition: -unity-background-image-tint-color ease-out-cubic 0.2s;
+    top: 5px;
+}
+
+.unity-toggle__input:checked {
+    -unity-background-image-tint-color: rgb(94, 197, 0);
+}

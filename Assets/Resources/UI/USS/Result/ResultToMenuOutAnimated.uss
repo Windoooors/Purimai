@@ -1,0 +1,23 @@
+.result-panel * {
+    opacity: 0;
+}
+
+.stats-container {
+    left: -459px;
+}
+
+.score-container {
+    left: -458px;
+}
+
+.song-item-container {
+    opacity: 1;
+}
+
+.song-item-container * {
+    opacity: 1;
+}
+
+.safe-area {
+    opacity: 1;
+}

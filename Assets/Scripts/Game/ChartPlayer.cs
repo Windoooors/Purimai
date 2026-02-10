@@ -1,7 +1,8 @@
+using System.Linq;
 using Game.Notes;
 using LitMotion;
 using UI;
-using UI.GameSettings;
+using UI.Settings;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -46,13 +47,9 @@ namespace Game
         public JudgeSettings slideJudgeSettings;
         public JudgeSettings holdTailJudgeSettings;
 
-        private float _time;
-
         public bool isPlaying;
 
         public AudioClip songClip;
-
-        private float _dspTime;
 
         private readonly float _generalPlaybackDelayInSeconds = 3f;
 
@@ -66,21 +63,27 @@ namespace Game
 
         private float _criticalSoundVolume;
 
+        private float _dspTime;
+
         private bool _paused;
         private float _songLength;
         private AudioSourcePool.AudioSourceHandler _songPlaybackAudioSourceHandler;
 
         private float _songVolume;
+
+        private float _time;
         private VideoPlayer _videoPlayer;
         private RenderTexture _videoTexture;
+
+        public int levelDifficultyIndex;
 
         public void Awake()
         {
             Instance = this;
 
-            judgeDelay = SettingsPool.GetValue("game.judge_delay");
-            flowSpeed = SettingsPool.GetValue("game.flow_speed") * 0.25f + 1;
-            slideAppearanceDelay = (SettingsPool.GetValue("game.slide_delay") - 10) / 10f;
+            judgeDelay = SettingsPool.GetValue("gameplay.judge_delay");
+            flowSpeed = SettingsPool.GetValue("gameplay.flow_speed") * 0.25f + 1;
+            slideAppearanceDelay = (SettingsPool.GetValue("gameplay.slide_delay") - 10) / 10f;
 
             slideJudgeDisplayAnimationDuration = (int)(judgeDisplayAnimationClip.length * 1000);
 
@@ -91,8 +94,8 @@ namespace Game
 
             _time = -_generalPlaybackDelayInSeconds;
 
-            _criticalSoundVolume = SettingsPool.GetValue("game.volume.critical_sound") / 10f;
-            _songVolume = SettingsPool.GetValue("game.volume.song") / 10f;
+            _criticalSoundVolume = SettingsPool.GetValue("audio.volume.critical_sound") / 10f;
+            _songVolume = SettingsPool.GetValue("audio.volume.song") / 10f;
         }
 
         private void Update()
@@ -105,7 +108,9 @@ namespace Game
             {
                 _time += Time.deltaTime;
 
-                if (math.abs(_dspTime - _time) >= 0.02f)
+                _time = (float)math.lerp(_time, _dspTime, 0.3);
+
+                if (math.abs(_dspTime - _time) >= 0.05)
                     _time = _dspTime;
 
                 SetCriticalSoundChannel();
@@ -119,12 +124,10 @@ namespace Game
             }
         }
 
-        private void OnApplicationFocus(bool hasFocus)
+        private void ShowResult()
         {
-            /*if (!hasFocus)
-                Pause();
-            else
-                Resume();*/
+            isPlaying = false;
+            UIManager.GetInstance().ShowResult();
         }
 
         private void Pause()
@@ -138,10 +141,10 @@ namespace Game
             _paused = false;
         }
 
-        private void LoadVideo(string path)
+        private bool TryLoadVideo(string path)
         {
-            if (path == "" || SettingsPool.GetValue("game.background_video_playback") == 0)
-                return;
+            if (path == "" || SettingsPool.GetValue("graphics.background_video_playback") == 0)
+                return false;
 
             _chartHasVideo = true;
 
@@ -176,6 +179,8 @@ namespace Game
             };
 
             _videoPlayer.Prepare();
+
+            return true;
         }
 
         public float GetTime(bool getDspTime = false)
@@ -193,16 +198,20 @@ namespace Game
 
         private void InitializeCircleColor(int index, bool isUtage)
         {
-            judgeCircleSpriteRenderer.color = judgeCircleColors[isUtage ? 5 : index == 5 ? 4 : index];
-            judgeCircleGlowSpriteRenderer.color = judgeCircleColors[isUtage ? 5 : index == 5 ? 4 : index];
+            var targetIndex = isUtage ? 5 : index == 5 ? 4 : index;
+
+            if (judgeCircleColors.Length <= targetIndex || targetIndex < 0)
+                targetIndex = 5;
+
+            judgeCircleSpriteRenderer.color = judgeCircleColors[targetIndex];
+            judgeCircleGlowSpriteRenderer.color = judgeCircleColors[targetIndex];
         }
 
         private void OnPlayCompleted()
         {
             _songPlaybackAudioSourceHandler.Stop();
 
-            UIManager.GetInstance().EnableUI();
-            //ResultController.GetInstance().ShowResult();
+            ShowResult();
         }
 
         private void Play()
@@ -210,7 +219,11 @@ namespace Game
             LMotion.Create(_generalPlaybackDelayInSeconds * 1000f, 0, _generalPlaybackDelayInSeconds)
                 .WithEase(Ease.Linear).WithOnComplete(() =>
                 {
-                    if (_chartHasVideo) _videoPlayer.Play();
+                    if (_chartHasVideo)
+                    {
+                        _videoPlayer.Play();
+                        backgroundImage.color = Color.white;
+                    }
                 }).Bind(_ => { });
 
             isPlaying = true;
@@ -294,21 +307,38 @@ namespace Game
             }
         }
 
+        public Maidata Maidata;
+
         public void InitializeLevel(Maidata maidata, int difficultyIndex)
         {
-            NoteGenerator.GetInstance.GenerateNotes(maidata.Charts[difficultyIndex], maidata.FirstNoteTime);
+            Maidata = maidata;
+
+            levelDifficultyIndex = difficultyIndex;
             
+            var chart = maidata.Charts.ToList().Find(x => x.DifficultyIndex == difficultyIndex);
+
+            NoteGenerator.GetInstance.GenerateNotes(chart.ChartString, maidata.FirstNoteTime);
+
             songClip = maidata.SongAudioClip;
 
-            var useBlurredCover = SettingsPool.GetValue("game.blurred_cover") != 0;
-            
-            backgroundImage.texture = useBlurredCover? maidata.BlurredSongCoverAsBackgroundDecodedImage.GetTexture2D() : maidata.SongCoverDecodedImage.GetTexture2D();
+            var useBlurredCover = SettingsPool.GetValue("graphics.blurred_cover") != 0;
 
-            LoadVideo(maidata.PvPath);
-            
-            InitializeCircleColor(difficultyIndex, maidata.IsUtage);
-            
-            var darkness = SettingsPool.GetValue("game.background_brightness") switch
+            if (!TryLoadVideo(maidata.PvPath))
+            {
+                backgroundImage.color = Color.white;
+                backgroundImage.texture = useBlurredCover
+                    ? maidata.BlurredSongCoverAsBackgroundDecodedImage.GetTexture2D()
+                    : maidata.SongCoverDecodedImage.GetTexture2D();
+            }
+            else
+            {
+                backgroundImage.texture = null;
+                backgroundImage.color = Color.black;
+            }
+
+            InitializeCircleColor(difficultyIndex - 1, maidata.IsUtage);
+
+            var darkness = SettingsPool.GetValue("graphics.background_brightness") switch
             {
                 0 => 1f,
                 1 => 0.7f,
@@ -320,7 +350,7 @@ namespace Game
             };
 
             backgroundBrightnessCover.color = new Color(0, 0, 0, darkness);
-            
+
             Play();
         }
 
@@ -330,7 +360,9 @@ namespace Game
         public void Skip()
         {
             _time = math.max(_songLength, NoteGenerator.GetInstance.endingTime / 1000f + 0.5f);
-            _videoPlayer.Stop();
+            _songPlaybackAudioSourceHandler.Pause();
+            _videoPlayer?.Stop();
+            ShowResult();
         }
 #endif
     }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
-using UI.GameSettings;
+using UI.Settings;
 using UnityEngine;
 
 namespace Game.ChartManagement
@@ -33,7 +33,7 @@ namespace Game.ChartManagement
 
             _chartString = new Regex(@"\|\|.*").Replace(_chartString, string.Empty);
 
-            _firstNoteTime = firstNoteTime + SettingsPool.GetValue("game.delay") / 1000f;
+            _firstNoteTime = firstNoteTime + SettingsPool.GetValue("gameplay.delay") / 1000f;
 
             var noteList = new List<NoteDataObject>();
 

@@ -1,0 +1,9 @@
+.level-selection * {
+    opacity: 0;
+    transition: opacity 0s 0s;
+}
+
+.level-selection {
+    opacity: 0;
+    transition: opacity ease-out-cubic 0.5s;
+}

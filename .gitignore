@@ -137,3 +137,6 @@ apdisk
 # Nuget Packages
 /[Aa]ssets/[Pp]ackages/
 /[Aa]ssets/[Pp]ackages.meta
+
+# Native Audio
+/Packages/Asset Store/Native Audio/

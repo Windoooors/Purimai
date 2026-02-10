@@ -1,0 +1,27 @@
+:root {
+}
+
+.value-panel {
+    position: absolute;
+    width: auto;
+    top: 65px;
+    left: 0;
+    right: 0;
+    bottom: auto;
+}
+
+.unity-collection-view__item {
+    transition-property: scale, opacity;
+    transition-duration: 0.2s;
+    transition-timing-function: ease;
+    scale: 1 1;
+}
+
+.unity-collection-view__item:hover {
+    background-color: rgba(255, 255, 255, 0);
+}
+
+.unity-collection-view__item--selected {
+    background-color: rgba(255, 255, 255, 0);
+    color: black;
+}

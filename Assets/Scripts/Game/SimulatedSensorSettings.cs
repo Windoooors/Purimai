@@ -1,4 +1,4 @@
-using UI.GameSettings;
+using UI.Settings;
 using UnityEngine;
 
 namespace Game
@@ -17,12 +17,12 @@ namespace Game
 
             ChangeSensorScale();
 
-            //SettingsController.OnSettingsChanged += (_, _) => ChangeSensorScale();
+            SettingsManager.OnSettingsChanged += ChangeSensorScale;
         }
 
         private void ChangeSensorScale()
         {
-            var globalSettingsValue = SettingsPool.GetValue("game.sensor_radius");
+            var globalSettingsValue = SettingsPool.GetValue("gameplay.sensor_radius");
             var settingsValue = SettingsPool.GetValue(scaleSettingsIdentifier);
 
             transform.localScale = scale * (globalSettingsValue / 10f + 1f) * (settingsValue / 10f + 1f) * Vector3.one;

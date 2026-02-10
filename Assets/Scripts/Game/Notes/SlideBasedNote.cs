@@ -56,6 +56,8 @@ namespace Game.Notes
         private bool _slidedHalf;
 
         private int _slideJudgeTiming;
+
+        private SlideTransform _slideTransform = new();
         private bool _starMovingStarted;
 
         private bool _waitingStarted;
@@ -152,26 +154,38 @@ namespace Game.Notes
 
         private void Update()
         {
-            var slideTransform = GetSlideTransform();
+            GetSlideTransform(ref _slideTransform);
 
-            SlideContentRoot.SetActive(slideTransform.Shown);
+            SlideContentRoot.SetActive(_slideTransform.Shown);
+            if (!_slideTransform.Shown) return;
 
             foreach (var star in stars)
             {
-                star.Move(slideTransform.StarPosition);
-                star.spriteRenderer.color = new Color(1, 1, 1, slideTransform.StarAlpha);
-                star.transform.localScale = Vector3.one + Vector3.one * slideTransform.StarAlpha / 2;
+                star.Move(_slideTransform.StarPosition);
+                star.spriteRenderer.color = new Color(1, 1, 1, _slideTransform.StarAlpha);
+                star.transform.localScale = Vector3.one + Vector3.one * _slideTransform.StarAlpha / 2;
             }
 
             foreach (var segment in UniversalSegments)
             foreach (var arrowRenderer in segment.slideSpriteRenderers)
-                if ((!segment.touched && !Slided && !segment.arrowInBetweenConcealed) || slideTransform.ArrowAlpha == 0)
-                    arrowRenderer.color = new Color(1, 1, 1, slideTransform.ArrowAlpha);
+                if ((!segment.touched && !Slided && !segment.arrowInBetweenConcealed) ||
+                    _slideTransform.ArrowAlpha == 0)
+                    arrowRenderer.color = new Color(1, 1, 1, _slideTransform.ArrowAlpha);
 
             if (ChartPlayer.Instance.GetTime(true) >= timing + waitDuration + slideDuration && Slided && !_concealed)
             {
                 Scoreboard.SlideCount.Count(_judgeState);
 
+                if (_judgeState is not (JudgeState.CriticalPerfect or JudgeState.Miss))
+                {
+                    if (_isFast)
+                        Scoreboard.FastCount++;
+                    else
+                    {
+                        Scoreboard.LateCount++;
+                    }
+                }
+                
                 Scoreboard.Combo++;
 
                 PlayJudgeAnimation();
@@ -198,6 +212,7 @@ namespace Game.Notes
                     _judgeState = JudgeState.Good;
 
                     Scoreboard.SlideCount.Count(JudgeState.Good);
+                    Scoreboard.LateCount++;
                     Scoreboard.Combo++;
                 }
 
@@ -209,14 +224,20 @@ namespace Game.Notes
             }
         }
 
-        private SlideTransform GetSlideTransform()
+        private void GetSlideTransform(ref SlideTransform result)
         {
             var currentTime = ChartPlayer.Instance.GetTime();
 
-            var result = new SlideTransform();
-
             var startAppearingTime =
                 timing - (suddenlyAppears ? 0 : ChartPlayer.Instance.timeGapBeforeSlideStartsAppearing);
+
+            if (currentTime < startAppearingTime - 100 || currentTime >= timing + waitDuration + slideDuration +
+                ChartPlayer.Instance.slideJudgeSettings.lateGoodTiming +
+                ChartPlayer.Instance.slideJudgeDisplayAnimationDuration)
+            {
+                result.Shown = false;
+                return;
+            }
 
             if (currentTime >= startAppearingTime && currentTime < timing)
             {
@@ -263,11 +284,6 @@ namespace Game.Notes
                     result.ArrowAlpha = 0;
                 }
 
-                if (currentTime >= timing + waitDuration + slideDuration +
-                    ChartPlayer.Instance.slideJudgeSettings.lateGoodTiming +
-                    ChartPlayer.Instance.slideJudgeDisplayAnimationDuration)
-                    result.Shown = false;
-
                 if (currentTime >= timing + waitDuration + slideDuration && Slided)
                 {
                     result.StarAlpha = 0;
@@ -283,8 +299,6 @@ namespace Game.Notes
                     result.ArrowAlpha = 0;
                 }
             }
-
-            return result;
         }
 
         private void GenerateSlideArrowSpriteRenderers()
@@ -306,7 +320,11 @@ namespace Game.Notes
                     currentProgress -= 0.65f;
                 }
 
-                if ((int)slideType is 0 or 1 or 2) division -= 0.35f;
+                if ((int)slideType is 0 or 1 or 2)
+                {
+                    division -= 1.25f;
+                    currentProgress -= 0.60f;
+                }
 
                 var progress = currentProgress / division;
 
@@ -334,6 +352,8 @@ namespace Game.Notes
             _slideArrowSpriteRenderers = slideArrowList.Select(x => x.GetComponent<SpriteRenderer>()).ToArray();
         }
 
+        private bool _isFast = false;
+        
         protected void Judge()
         {
             if (Slided)
@@ -341,6 +361,8 @@ namespace Game.Notes
 
             var deltaTiming = _slideJudgeTiming - ChartPlayer.Instance.GetTime(true) + ChartPlayer.Instance.judgeDelay;
 
+            _isFast = deltaTiming > 0;
+            
             var absDeltaTiming = math.abs(deltaTiming);
 
             var judgeSettings = ChartPlayer.Instance.slideJudgeSettings;
@@ -433,7 +455,7 @@ namespace Game.Notes
 
         protected void ConcealSegment(int touchedSegmentsIndex, bool sensorJumpedForLastSegment)
         {
-            if (touchedSegmentsIndex >= UniversalSegments.Count / 2)
+            if (touchedSegmentsIndex >= UniversalSegments.Count - 2)
                 _slidedHalf = true;
 
             StartCoroutine(DelayedTrigger(() =>
@@ -585,7 +607,8 @@ namespace Game.Notes
             var judgeSpriteNeedsChange =
                 judgeDisplaySpriteRenderer.transform.rotation.eulerAngles.z is > 265 and <= 365 or > -5 and <= 95;
 
-            judgeDisplaySpriteRenderer.sprite = NoteGenerator.GetInstance.slideJudgeDisplaySprites[judgeSpriteGroupIndex]
+            judgeDisplaySpriteRenderer.sprite = NoteGenerator.GetInstance
+                .slideJudgeDisplaySprites[judgeSpriteGroupIndex]
                 .normalSlideJudgeSprites[
                     judgeSpriteNeedsChange
                         ? SlideJudgeDisplaySpriteIndexes[1]

@@ -1,0 +1,49 @@
+:root {
+}
+
+.score-content {
+    flex-grow: 1;
+    position: absolute;
+    width: 233px;
+    height: 132px;
+    background-image: url("project://database/Assets/Textures/UI/LevelSelection/Button.png?fileID=21300000&guid=5572f605bc32344f4b62167405b480e8&type=3#Button");
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+    align-items: flex-end;
+    justify-content: space-around;
+    top: 0;
+    left: 0;
+    transition: opacity ease 0.2s, scale ease 0.2s, left ease-out-cubic 0.5s;
+    scale: 1 1;
+}
+
+.chart-content {
+    flex-grow: 1;
+    position: absolute;
+    height: 70px;
+    width: 233px;
+    background-image: url("project://database/Assets/Textures/UI/LevelSelection/Button.png?fileID=21300000&guid=5572f605bc32344f4b62167405b480e8&type=3#Button");
+    top: 126px;
+    left: 0;
+    align-items: flex-end;
+    justify-content: space-around;
+    transition: opacity ease 0.2s, scale ease 0.2s, -unity-background-image-tint-color ease 0.2s, color ease 0.2s, left ease-out-cubic 0.5s;
+    scale: 1 1;
+}
+
+.chart-content:hover {
+    scale: 0.9 0.9 0.9;
+}
+
+.score-content:hover {
+    scale: 0.9 0.9;
+}
+
+.enter-level .score-content {
+    transition: opacity ease 0.2s, scale ease 0.2s, left ease-in-cubic 0.5s;
+    left: 268px;
+}
+
+.enter-level .chart-content {
+    transition: opacity ease 0.2s, scale ease 0.2s, left ease-in-cubic 0.5s;
+    left: 268px;
+}

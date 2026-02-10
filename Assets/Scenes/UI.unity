@@ -732,7 +732,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
+  m_BackGroundColor: {r: 1, g: 1, b: 1, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -4351,12 +4351,10 @@ GameObject:
   m_Component:
   - component: {fileID: 872429103}
   - component: {fileID: 872429102}
-  - component: {fileID: 872429104}
   - component: {fileID: 872429105}
   - component: {fileID: 872429106}
-  - component: {fileID: 872429107}
   m_Layer: 5
-  m_Name: UIDocument
+  m_Name: UIManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4376,8 +4374,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
   m_PanelSettings: {fileID: 11400000, guid: ff3463ac59eea40a8958ec4324edc467, type: 2}
   m_ParentUI: {fileID: 0}
-  sourceAsset: {fileID: 9197481963319205126, guid: 158650d1304654b1c97fcca9fee34a1e,
-    type: 3}
+  sourceAsset: {fileID: 0}
   m_SortingOrder: 0
   m_Position: 0
   m_WorldSpaceSizeMode: 1
@@ -4401,21 +4398,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &872429104
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 872429101}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01aa9aac7b2eb4617a992edee839889c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UI.LevelSelection.LevelListController
-  groupByRule: 0
-  itemTemplate: {fileID: 9197481963319205126, guid: b01da4bc8949941a6ae4e05510c4b2b3,
-    type: 3}
 --- !u!114 &872429105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4428,7 +4410,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae5735a9c58e4eccb2cbafb0d90545f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.UIManager
-  mainFontAsset: {fileID: 11400000, guid: 23db56e3884aa4cf5b4b3a62012a8232, type: 2}
+  mainFontAsset: {fileID: 11400000, guid: 402fd9e604f6445b2a32bc7140f536d4, type: 2}
   gameSoundFileNameData:
     perfectSoundPath: perfect.wav
     greatSoundPath: great.wav
@@ -4443,9 +4425,19 @@ MonoBehaviour:
     rollSoundPath: roll.wav
     selectSoundPath: select.wav
     entrySoundPath: entry.wav
-  uIDocument: {fileID: 872429102}
-  scoreContentVisualTreeAsset: {fileID: 9197481963319205126, guid: 420bd1e4c7f67499e89cf155cd28403c,
+  uiDocument: {fileID: 872429102}
+  levelSelectionPrefab: {fileID: 5311097112866425823, guid: 3d385c0fe6d5045b4a5243b61d0f17e4,
     type: 3}
+  settingsPrefab: {fileID: 1436663412352395357, guid: d496e0d14f1a244e69839ad8dde8929c,
+    type: 3}
+  resultPrefab: {fileID: 3951748454254864255, guid: 88acd35f2e8e74bfab90036693158733,
+    type: 3}
+  circleMaskPrefab: {fileID: 4228725156223193251, guid: 7f852274880a648179ca629db8506be8,
+    type: 3}
+  resultManager: {fileID: 0}
+  levelSelectionManager: {fileID: 0}
+  settingsManager: {fileID: 0}
+  circleMaskManager: {fileID: 0}
 --- !u!114 &872429106
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4464,18 +4456,6 @@ MonoBehaviour:
   criticalSound: {fileID: 0}
   preparatoryBeatSound: {fileID: 0}
   slideSound: {fileID: 0}
---- !u!114 &872429107
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 872429101}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7178cb29ace9499ebc55857e1c2eefaf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UI.LevelSelection.LevelLoader
 --- !u!1 &990677103
 GameObject:
   m_ObjectHideFlags: 0

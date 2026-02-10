@@ -1,0 +1,19 @@
+.score-content-panel {
+    right: -95px;
+}
+
+.song-item-container {
+    left: -461px;
+}
+
+.stats-container {
+    left: -459px;
+}
+
+.score-container {
+    left: -458px;
+}
+
+.result-panel {
+    opacity: 0;
+}

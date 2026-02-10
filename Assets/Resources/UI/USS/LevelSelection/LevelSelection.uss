@@ -1,0 +1,208 @@
+.unity-scroll-view__vertical-scroller {
+    width: 0;
+    visibility: hidden;
+    display: none;
+}
+
+.unity-scroll-view__horizontal-scroller {
+    height: 0;
+    display: none;
+}
+
+.scene-loaded * {
+    display: none;
+}
+
+.scene-loaded .white-out-mask {
+    display: flex;
+}
+
+.white-out-animation {
+    opacity: 0;
+    transition: opacity ease-out-cubic 0.5s;
+}
+
+.song-cover-parent {
+    flex-grow: 1;
+    position: absolute;
+    right: 0;
+    width: 600px;
+    height: 600px;
+}
+
+.song-cover-right-gradient {
+    left: 458px;
+    top: 12px;
+    bottom: -11px;
+    right: 19px;
+    background-image: url("project://database/Assets/Textures/UI/LevelSelection/SongCoverRightGradient.png?fileID=2800000&guid=d19f56dff8e3f4877b4f5f33111542e9&type=3#SongCoverRightGradient");
+    -unity-background-image-tint-color: rgb(246, 246, 246);
+}
+
+.song-cover-left-gradient {
+    left: 458px;
+    top: 12px;
+    bottom: -11px;
+    right: 19px;
+    background-image: url("project://database/Assets/Textures/UI/LevelSelection/SongCoverLeftGradientSlim.png?fileID=2800000&guid=afd2c76008daf4e9ab6048c0d8aa6a2e&type=3#SongCoverLeftGradientSlim");
+    -unity-background-image-tint-color: rgb(246, 246, 246);
+}
+
+.list-parent {
+    flex-grow: 1;
+    top: 0;
+    left: -51px;
+    right: auto;
+    width: 600px;
+    bottom: 0;
+    overflow: visible;
+    position: absolute;
+}
+
+.white-out-mask {
+    flex-grow: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    display: none;
+    background-color: rgb(255, 255, 255);
+    opacity: 0;
+}
+
+.sort-button-alphabetically .icon {
+    background-image: url("project://database/Assets/Textures/UI/LevelSelection/SortByAlphabet.png?fileID=2800000&guid=3acc4e6d6e91a40d5ad041be00d895dc&type=3#SortByAlphabet");
+    transition-property: opacity;
+    transition-duration: 0.2s;
+}
+
+.sort-button-difficulty .icon {
+    background-image: url("project://database/Assets/Textures/UI/LevelSelection/SortByDifficulty.png?fileID=2800000&guid=5355b034e8a30401382cf1f7d7c12e24&type=3#SortByDifficulty");
+    transition-property: opacity;
+    transition-duration: 0.2s;
+}
+
+.category-panel {
+    flex-grow: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 600px;
+    width: 90px;
+    opacity: 1;
+    display: flex;
+    transition-property: display, opacity, height;
+    transition-duration: 0.2s;
+}
+
+.confirm-entry .category-panel {
+    opacity: 0;
+    height: 0;
+}
+
+.confirm-entry .sort-button-alphabetically {
+    opacity: 0;
+    display: none;
+}
+
+.confirm-entry .sort-button-difficulty {
+    opacity: 0;
+    display: none;
+}
+
+.unity-disabled {
+    opacity: 1;
+}
+
+.settings-button {
+    position: absolute;
+    top: 7px;
+    left: 150px;
+    width: 69px;
+    height: 69px;
+}
+
+.confirm-entry .settings-button {
+    left: 5px;
+}
+
+.confirm-entry-background {
+    flex-grow: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(255, 255, 255, 0.78);
+    opacity: 0;
+    transition: opacity 200ms ease;
+}
+
+.confirm-entry .confirm-entry-background {
+    opacity: 1;
+    transition: opacity 200ms ease;
+}
+
+.play-button {
+    position: absolute;
+    width: 400px;
+    height: 101px;
+    top: auto;
+    left: auto;
+    right: -700px;
+    scale: 1 1;
+    transition-property: right, scale, opacity;
+    transition-duration: 0.5s, 0.2s, 0.2s;
+    transition-timing-function: ease-out-cubic, ease, ease;
+    transition-delay: 0s, 0s, 0s;
+    bottom: 12px;
+}
+
+.confirm-entry .play-button {
+    right: -199px;
+    transition-property: right, scale, opacity;
+    transition-duration: 0.5s, 0.2s, 0.2s;
+    transition-timing-function: ease-out-cubic, ease, ease;
+    transition-delay: 0s, 0s, 0s;
+}
+
+.background {
+    flex-grow: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
+.background-mask {
+    flex-grow: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-image: url("project://database/Assets/Textures/UI/LevelSelection/SongCoverLeftGradientSlim.png?fileID=2800000&guid=afd2c76008daf4e9ab6048c0d8aa6a2e&type=3#SongCoverLeftGradientSlim");
+    background-color: rgba(255, 255, 255, 0.78);
+}
+
+.control-panel {
+}
+
+.score-content-panel {
+    position: absolute;
+    top: 52%;
+    bottom: auto;
+    right: 205px;
+    align-items: flex-end;
+    margin-top: -85px;
+}
+
+.list-parent .unity-scroll-view__content-viewport {
+    overflow: visible;
+}
+
+.list-parent .unity-scroll-view__content-container {
+    overflow: visible;
+}

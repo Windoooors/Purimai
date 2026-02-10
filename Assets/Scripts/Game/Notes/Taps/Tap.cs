@@ -14,6 +14,8 @@ namespace Game.Notes.Taps
         public SpriteRenderer tapSpriteRenderer;
         public Transform tapTransform;
 
+        private TapOrLineTransform _tapOrLineTransform = new();
+
         private void Update()
         {
             if (!ChartPlayer.Instance.isPlaying)
@@ -21,6 +23,17 @@ namespace Game.Notes.Taps
 
             if (headJudged)
                 return;
+
+            GetTapOrLineTransform(ref _tapOrLineTransform);
+
+            if (!_tapOrLineTransform.Shown)
+            {
+                NoteContentRoot.SetActive(false);
+                return;
+            }
+
+            if (_tapOrLineTransform.Shown && !headJudged && !NoteContentRoot.activeSelf)
+                NoteContentRoot.SetActive(true);
 
             if (!headJudged && ChartPlayer.Instance.GetTime() >
                 timing + ChartPlayer.Instance.tapJudgeSettings.lateGoodTiming + ChartPlayer.Instance.judgeDelay)
@@ -42,24 +55,19 @@ namespace Game.Notes.Taps
                 NoteContentRoot.SetActive(false);
             }
 
-            var tapAndLineTransform = GetTapOrLineTransform();
-
-            if (tapAndLineTransform.Shown && !headJudged)
-                NoteContentRoot.SetActive(true);
-
             tapTransform.position = Lanes.Instance.startPoints[lane - 1].position +
                                     (Lanes.Instance.endPoints[lane - 1].position -
                                      Lanes.Instance.startPoints[lane - 1].position) *
-                                    tapAndLineTransform.PositionInLane;
-            tapTransform.localScale = tapAndLineTransform.Scale;
+                                    _tapOrLineTransform.PositionInLane;
+            tapTransform.localScale = _tapOrLineTransform.Scale;
 
-            var color = new Color(1, 1, 1, tapAndLineTransform.Alpha);
+            var color = new Color(1, 1, 1, _tapOrLineTransform.Alpha);
             tapSpriteRenderer.color = color;
             lineSpriteRenderer.color = color;
 
             lineTransform.localScale = (NoteGenerator.GetInstance.originCircleScale +
                                         (1 - NoteGenerator.GetInstance.originCircleScale) *
-                                        tapAndLineTransform.PositionInLane)
+                                        _tapOrLineTransform.PositionInLane)
                                        * Vector3.one;
 
             if (!isNoSpinningStarHead && (isStarHead || isBreak))

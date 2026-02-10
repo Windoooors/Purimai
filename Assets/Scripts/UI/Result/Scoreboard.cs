@@ -21,6 +21,23 @@ namespace UI.Result
         public int GoodCount { private set; get; }
         public int MissCount { private set; get; }
 
+        public SpecifiedNoteScoreboard(){}
+        
+        public SpecifiedNoteScoreboard(int totalCount, int criticalPerfectCount,
+            int semiCriticalPerfectCount, int perfectCount, int greatCount, int semiGreatCount, int quarterGreatCount,
+            int goodCount, int missCount)
+        {
+            TotalCount = totalCount;
+            CriticalPerfectCount = criticalPerfectCount;
+            SemiCriticalPerfectCount = semiCriticalPerfectCount;
+            PerfectCount = perfectCount;
+            GreatCount = greatCount;
+            SemiGreatCount = semiGreatCount;
+            QuarterGreatCount = quarterGreatCount;
+            GoodCount = goodCount;
+            MissCount = missCount;
+        }
+
         public void Count(JudgeState judgeState)
         {
             switch (judgeState)
@@ -80,31 +97,6 @@ namespace UI.Result
         public static SpecifiedNoteScoreboard BreakCount = new();
 
         public static int HighestCombo => Combo > _highestComboAfterReset ? Combo : _highestComboAfterReset;
-
-        public static LevelRankData GetLevelRankData()
-        {
-            var result = new LevelRankData();
-            result.Combo = HighestCombo;
-            result.FcState = GetFcState();
-            result.TotalScore = GetTotalScore();
-            result.LevelAchievements = new LevelAchievement
-            {
-                DxBestAchievement = new LevelAchievement.ScorePair
-                {
-                    DxAchievement = GetCurrentAchievement(AchievementType.Dx),
-                    FinaleAchievement = GetCurrentAchievement(AchievementType.Finale),
-                    Score = GetScore()
-                },
-                FinaleBestAchievement = new LevelAchievement.ScorePair
-                {
-                    DxAchievement = GetCurrentAchievement(AchievementType.Dx),
-                    FinaleAchievement = GetCurrentAchievement(AchievementType.Finale),
-                    Score = GetScore()
-                }
-            };
-
-            return result;
-        }
 
         public static FcState GetFcState()
         {

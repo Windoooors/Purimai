@@ -1,4 +1,4 @@
-using UI.GameSettings;
+using UI.Settings;
 using UI.Result;
 using Unity.Mathematics;
 using UnityEngine;
@@ -30,16 +30,30 @@ namespace Game.Notes.Taps
         private bool _holdDone;
 
         private JudgeState _holdTailJudgeState;
+
+        private HoldTransform _holdTransformData = new();
         private float _initialHoldLength;
         private bool _lineMoving;
         private bool _moving;
 
         private int _nowEmergingTimePosition;
+        private TapOrLineTransform _tapOrLineTransform = new();
 
         private void Update()
         {
             if (!ChartPlayer.Instance.isPlaying || holdJudged)
                 return;
+
+            GetHoldTransform(ref _holdTransformData);
+
+            if (!_holdTransformData.Shown)
+            {
+                NoteContentRoot.SetActive(false);
+                return;
+            }
+
+            if (_holdTransformData.Shown && !headJudged && !holdJudged && !NoteContentRoot.activeSelf)
+                NoteContentRoot.SetActive(true);
 
             if (ChartPlayer.Instance.GetTime() > timing + ChartPlayer.Instance.tapJudgeSettings.lateGoodTiming +
                 ChartPlayer.Instance.judgeDelay &&
@@ -91,39 +105,35 @@ namespace Game.Notes.Taps
                 SimulatedSensor.OnLeave -= OnLeave;
             }
 
-            var holdTransformData = GetHoldTransform();
-
-            if (holdTransformData.Shown && !headJudged && !holdJudged)
-                NoteContentRoot.SetActive(true);
-
             holdTransform.position = Lanes.Instance.startPoints[lane - 1].position +
                                      (Lanes.Instance.endPoints[lane - 1].position -
-                                      Lanes.Instance.startPoints[lane - 1].position) * holdTransformData.PositionInLane;
-            holdTransform.localScale = holdTransformData.Scale;
+                                      Lanes.Instance.startPoints[lane - 1].position) *
+                                     _holdTransformData.PositionInLane;
+            holdTransform.localScale = _holdTransformData.Scale;
 
-            var color = new Color(1, 1, 1, holdTransformData.Alpha);
+            var color = new Color(1, 1, 1, _holdTransformData.Alpha);
             holdSpriteRenderer.color = color;
             lineSpriteRenderer.color = color;
 
-            var tapOrLineTransform = GetTapOrLineTransform();
+            GetTapOrLineTransform(ref _tapOrLineTransform);
 
             lineTransform.localScale = (NoteGenerator.GetInstance.originCircleScale +
                                         (1 - NoteGenerator.GetInstance.originCircleScale) *
-                                        (holdTransformData.LinePositionInLane > 0
-                                            ? holdTransformData.LinePositionInLane
-                                            : tapOrLineTransform.PositionInLane))
+                                        (_holdTransformData.LinePositionInLane > 0
+                                            ? _holdTransformData.LinePositionInLane
+                                            : _tapOrLineTransform.PositionInLane))
                                        * Vector3.one;
 
-            holdSpriteRenderer.size = new Vector2(holdSpriteRenderer.size.x, holdTransformData.HoldSpriteLength);
+            holdSpriteRenderer.size = new Vector2(holdSpriteRenderer.size.x, _holdTransformData.HoldSpriteLength);
 
-            holdEndSpriteRenderer.enabled = holdTransformData.TailDotShown;
+            holdEndSpriteRenderer.enabled = _holdTransformData.TailDotShown;
             holdEndSpriteRenderer.transform.position = Lanes.Instance.startPoints[lane - 1].position +
                                                        (Lanes.Instance.endPoints[lane - 1].position -
                                                         Lanes.Instance.startPoints[lane - 1].position) *
-                                                       holdTransformData.TailDotPositionInLane;
+                                                       _holdTransformData.TailDotPositionInLane;
         }
 
-        private HoldTransform GetHoldTransform()
+        private void GetHoldTransform(ref HoldTransform result)
         {
             var currentPosition = ChartPlayer.Instance.GetTime();
 
@@ -132,7 +142,11 @@ namespace Game.Notes.Taps
             var startEmergingTiming = timing - adjustedEmergingDuration - OnScreenTime;
             var startMovingTiming = timing - OnScreenTime;
 
-            var result = new HoldTransform();
+            if (currentPosition < startEmergingTiming - 100 || currentPosition > timing + duration + 100)
+            {
+                result.Shown = false;
+                return;
+            }
 
             if (currentPosition > startEmergingTiming && currentPosition < startMovingTiming)
             {
@@ -145,7 +159,7 @@ namespace Game.Notes.Taps
                 result.Shown = true;
                 result.TailDotShown = false;
 
-                return result;
+                return;
             }
 
             result.Scale = Vector3.one;
@@ -224,8 +238,6 @@ namespace Game.Notes.Taps
                         1 + (currentPosition - timing - duration) / 1000f * Speed / laneLength;
                 }
             }
-
-            return result;
         }
 
         public override void RegisterTapEvent()
@@ -278,7 +290,7 @@ namespace Game.Notes.Taps
 
             if (_headJudgeState is not JudgeState.CriticalPerfect and not JudgeState.Miss)
             {
-                var settings = SettingsPool.GetValue("game.offset_display_level");
+                var settings = SettingsPool.GetValue("gameplay.offset_display_level");
 
                 switch (settings)
                 {
@@ -304,8 +316,6 @@ namespace Game.Notes.Taps
                         break;
                 }
             }
-
-            PlayJudgeSound(false, _headJudgeState);
 
             AreaARipple.AreaARipples.Find(x => x.sensorId == "A" + lane).CancelAnimation();
 

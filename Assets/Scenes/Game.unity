@@ -1827,8 +1827,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: ACHIEVEMENT
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: d961d3012624b44cfb4f55ac11f5154b, type: 2}
-  m_sharedMaterial: {fileID: 3843238189932187593, guid: d961d3012624b44cfb4f55ac11f5154b,
+  m_fontAsset: {fileID: 11400000, guid: 1b64a0170556b4b17bfd7817c16bbe75, type: 2}
+  m_sharedMaterial: {fileID: -804273049892174656, guid: 1b64a0170556b4b17bfd7817c16bbe75,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -3465,6 +3465,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 492073450}
+  - component: {fileID: 492073451}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -3493,6 +3494,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0.5}
   m_SizeDelta: {x: 704.61, y: 228.63}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &492073451
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 492073449}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d412b3427d1740158b905135e4f84e60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.InGame.ScoreIndicator
+  scoreText: {fileID: 680488282}
+  titleText: {fileID: 183358043}
+  settingsIndex: 0
 --- !u!1 &515582281
 GameObject:
   m_ObjectHideFlags: 0
@@ -5593,8 +5609,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 100
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: d961d3012624b44cfb4f55ac11f5154b, type: 2}
-  m_sharedMaterial: {fileID: 3843238189932187593, guid: d961d3012624b44cfb4f55ac11f5154b,
+  m_fontAsset: {fileID: 11400000, guid: 1b64a0170556b4b17bfd7817c16bbe75, type: 2}
+  m_sharedMaterial: {fileID: -804273049892174656, guid: 1b64a0170556b4b17bfd7817c16bbe75,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -6959,10 +6975,9 @@ MonoBehaviour:
     quarterGreatTiming: 433
     lateGoodTiming: 600
     fastGoodTiming: 600
-  _time: 0
   isPlaying: 0
   songClip: {fileID: 0}
-  _dspTime: 0
+  levelDifficultyIndex: 0
 --- !u!114 &1054234682
 MonoBehaviour:
   m_ObjectHideFlags: 0

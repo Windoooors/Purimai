@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using UI.GameSettings;
+using UI.Settings;
 using UnityEngine;
 using UnityEngine.Networking;
 #if ((UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR)
@@ -18,7 +18,7 @@ namespace Game
         public AudioClip entrySound;
         public AudioClip rollSound;
         public AudioClip selectSound;
-        
+
         public AudioClip criticalSound;
         public AudioClip preparatoryBeatSound;
 #if !(UNITY_IOS && !UNITY_EDITOR)
@@ -193,13 +193,14 @@ namespace Game
 #endif
         }
 
-        private float _selectVolume = 1;
-        private AudioSourcePool.AudioSourceHandler  _selectAudioSourceHandler;
+        private readonly float _selectVolume = 1;
+        private AudioSourcePool.AudioSourceHandler _selectAudioSourceHandler;
+
         public void PlaySelectSound()
         {
             if (AudioSourcePool == null)
                 return;
-            
+
             if (_selectVolume == 0)
                 return;
 
@@ -233,19 +234,19 @@ namespace Game
 
         public void LoadAllSoundEffects(GameSoundNameData gameSoundEffectFileNameData, UiSoundNameData uiSoundNameData)
         {
-            _tapVolume = SettingsPool.GetValue("game.volume.tap") / 10f;
-            _breakVolume = SettingsPool.GetValue("game.volume.break") / 10f;
-            _slideVolume = SettingsPool.GetValue("game.volume.slide") / 10f;
-            /*SettingsController.OnSettingsChanged += (_, _) =>
+            _tapVolume = SettingsPool.GetValue("audio.volume.tap") / 10f;
+            _breakVolume = SettingsPool.GetValue("audio.volume.break") / 10f;
+            _slideVolume = SettingsPool.GetValue("audio.volume.slide") / 10f;
+            SettingsManager.OnSettingsChanged += () =>
             {
-                _tapVolume = SettingsPool.GetValue("game.volume.tap") / 10f;
-                _breakVolume = SettingsPool.GetValue("game.volume.break") / 10f;
-                _slideVolume = SettingsPool.GetValue("game.volume.slide") / 10f;
-            };*/
+                _tapVolume = SettingsPool.GetValue("audio.volume.tap") / 10f;
+                _breakVolume = SettingsPool.GetValue("audio.volume.break") / 10f;
+                _slideVolume = SettingsPool.GetValue("audio.volume.slide") / 10f;
+            };
 
             var gameSoundPathData = gameSoundEffectFileNameData.GetStreamingAssetsPrefixedPathData();
             var uiSoundPathData = uiSoundNameData.GetStreamingAssetsPrefixedPathData();
-            
+
             StartCoroutine(LoadAudioClip(uiSoundPathData.entrySoundPath, clip => { entrySound = clip; }));
             StartCoroutine(LoadAudioClip(uiSoundPathData.rollSoundPath,
                 clip => { rollSound = clip; }));
@@ -264,42 +265,42 @@ namespace Game
 #if ((UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR)
             NativeAudio.Initialize();
 
-            StartCoroutine(LoadAudioClip(soundPathData.perfectSoundPath,
+            StartCoroutine(LoadAudioClip(gameSoundPathData.perfectSoundPath,
                 clip =>
                 {
                     clip.LoadAudioData();
                     _perfectSound = NativeAudio.Load(clip);
                 }));
 
-            StartCoroutine(LoadAudioClip(soundPathData.breakExtraSoundPath,
+            StartCoroutine(LoadAudioClip(gameSoundPathData.breakExtraSoundPath,
                 clip =>
                 {
                     clip.LoadAudioData();
                     _breakExtraSound = NativeAudio.Load(clip);
                 }));
 
-            StartCoroutine(LoadAudioClip(soundPathData.breakPerfectSoundPath,
+            StartCoroutine(LoadAudioClip(gameSoundPathData.breakPerfectSoundPath,
                 clip =>
                 {
                     clip.LoadAudioData();
                     _breakPerfectSound = NativeAudio.Load(clip);
                 }));
 
-            StartCoroutine(LoadAudioClip(soundPathData.breakGreatSoundPath,
+            StartCoroutine(LoadAudioClip(gameSoundPathData.breakGreatSoundPath,
                 clip =>
                 {
                     clip.LoadAudioData();
                     _breakGreatSound = NativeAudio.Load(clip);
                 }));
 
-            StartCoroutine(LoadAudioClip(soundPathData.greatSoundPath,
+            StartCoroutine(LoadAudioClip(gameSoundPathData.greatSoundPath,
                 clip =>
                 {
                     clip.LoadAudioData();
                     _greatSound = NativeAudio.Load(clip);
                 }));
 
-            StartCoroutine(LoadAudioClip(soundPathData.goodSoundPath,
+            StartCoroutine(LoadAudioClip(gameSoundPathData.goodSoundPath,
                 clip =>
                 {
                     clip.LoadAudioData();
@@ -307,7 +308,7 @@ namespace Game
                 }));
 #endif
 #if (UNITY_IOS && !UNITY_EDITOR)
-            StartCoroutine(LoadAudioClip(soundPathData.slideSoundPath,
+            StartCoroutine(LoadAudioClip(gameSoundPathData.slideSoundPath,
                 clip =>
                 {
                     clip.LoadAudioData();
@@ -325,7 +326,7 @@ namespace Game
 
             public UiSoundNameData GetStreamingAssetsPrefixedPathData(string prefix = "DefaultSFX/UserInterfaceSFX/")
             {
-                return new UiSoundNameData()
+                return new UiSoundNameData
                 {
                     rollSoundPath = Path.Combine(Application.streamingAssetsPath,
                         prefix + rollSoundPath),
@@ -435,6 +436,15 @@ namespace Game
 
             audioSourceHandler = null;
             return false;
+        }
+
+        public void Clear()
+        {
+            _pool.ForEach(x =>
+            {
+                x.ScheduledStartTime = -1;
+                x.Stop();
+            });
         }
 
         public class AudioSourceHandler
