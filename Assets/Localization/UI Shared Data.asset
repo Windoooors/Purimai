@@ -247,6 +247,22 @@ MonoBehaviour:
     m_Key: settings.false
     m_Metadata:
       m_Items: []
+  - m_Id: 33741378298044416
+    m_Key: ui.pause_panel.resume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33741522909257728
+    m_Key: ui.pause_panel.retry
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33741653641519104
+    m_Key: ui.pause_panel.levels
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33742021444231168
+    m_Key: ui.pause_panel.paused
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

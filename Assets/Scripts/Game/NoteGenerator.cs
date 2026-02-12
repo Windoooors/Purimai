@@ -95,30 +95,25 @@ namespace Game
 
             criticalTimeList = criticalTimeHashSet.ToList();
             criticalTimeList.Sort();
-            
+
             Filter(criticalTimeList);
 
             return;
-            
+
             void Filter(List<int> list)
             {
                 if (list == null || list.Count <= 1) return;
 
-                int writeIndex = 1;
+                var writeIndex = 1;
 
-                for (int readIndex = 1; readIndex < list.Count; readIndex++)
-                {
+                for (var readIndex = 1; readIndex < list.Count; readIndex++)
                     if (list[readIndex] - list[writeIndex - 1] >= 2)
                     {
                         list[writeIndex] = list[readIndex];
                         writeIndex++;
                     }
-                }
 
-                if (writeIndex < list.Count)
-                {
-                    list.RemoveRange(writeIndex, list.Count - writeIndex);
-                }
+                if (writeIndex < list.Count) list.RemoveRange(writeIndex, list.Count - writeIndex);
             }
         }
 

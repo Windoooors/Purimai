@@ -18,7 +18,8 @@ namespace UI.LevelSelection
         public enum SortingRules
         {
             Alphabet,
-            Difficulty
+            Difficulty,
+            Undefined
         }
 
         private const float ItemHeight = 126;
@@ -26,7 +27,9 @@ namespace UI.LevelSelection
 
         private static LevelSelectionManager _instance;
 
-        public SortingRules groupByRule;
+        private static readonly List<MaidataReferenceCountPair> _maidataList = new();
+
+        public SortingRules groupByRule = SortingRules.Undefined;
 
         public VisualTreeAsset itemTemplate;
 
@@ -34,14 +37,12 @@ namespace UI.LevelSelection
 
         public LevelLoader levelLoader;
 
-        private static readonly List<MaidataReferenceCountPair> _maidataList = new();
-
         private LevelListItemData[] _data;
         private VisualElement _largeSongCover;
 
         private CategoryData _lastCategoryData;
 
-        public VisualElement LevelSelectionTree;
+        private Maidata _lastPreviewedMaidata;
 
         private ListView _listView;
         private LevelListItemData[] _rawData;
@@ -52,7 +53,13 @@ namespace UI.LevelSelection
         private SnapScrollManipulator _snapManipulator;
         private SongCoverManipulator _songCoverManipulator;
 
+        private bool _songPlaying;
+
+        private AudioSourcePool.AudioSourceHandler _songPreviewAudioSourceHandler;
+
         private Button _sortButton;
+
+        public VisualElement LevelSelectionTree;
 
         private void Awake()
         {
@@ -67,12 +74,6 @@ namespace UI.LevelSelection
             UIManager.GetInstance().uiDocument.rootVisualElement.Add(LevelSelectionTree);
 
             _instance = this;
-            
-            groupByRule = SettingsPool.GetValue("song_list.group_rule") switch
-            {
-                0 => SortingRules.Alphabet,
-                _ => SortingRules.Difficulty
-            };
 
             if (_maidataList.Count == 0)
             {
@@ -139,7 +140,7 @@ namespace UI.LevelSelection
             foreach (var pair in _maidataList)
                 if (!pair.Referenced && pair.Maidata.CoverDataLoaded)
                     pair.Maidata.UnloadSongCover();
-            
+
             if (maidata.SongLoaded && !_songPlaying)
             {
                 _songPlaying = true;
@@ -147,23 +148,19 @@ namespace UI.LevelSelection
                 if (_songPreviewAudioSourceHandler == null)
                     AudioManager.GetInstance().AudioSourcePool
                         .TryGetAudioSourceHandler(out _songPreviewAudioSourceHandler);
-                
+
                 _songPreviewAudioSourceHandler.SetClip(maidata.SongAudioClip);
-                
+
                 _songPreviewAudioSourceHandler.Play();
-                
+
                 var volume = SettingsPool.GetValue("audio.volume.song") / 10f;
-                
+
                 _songPreviewAudioSourceHandler.SetVolume(volume);
             }
 
             if (_songPlaying && _songPreviewAudioSourceHandler?.IsPlaying() == false)
-            {
                 _songPreviewAudioSourceHandler.Play();
-            }
         }
-
-        private AudioSourcePool.AudioSourceHandler _songPreviewAudioSourceHandler;
 
         private void OnDestroy()
         {
@@ -172,15 +169,8 @@ namespace UI.LevelSelection
 
             _scrollView.RemoveManipulator(_snapManipulator);
             _largeSongCover.RemoveManipulator(_songCoverManipulator);
-            
-            UIManager.GetInstance().uiDocument?.rootVisualElement?.Remove(LevelSelectionTree);
-        }
 
-        private void ChangeVolume()
-        {
-            var volume = SettingsPool.GetValue("audio.volume.song") / 10f;
-                
-            _songPreviewAudioSourceHandler?.SetVolume(volume);
+            UIManager.GetInstance().uiDocument?.rootVisualElement?.Remove(LevelSelectionTree);
         }
 
         private void OnApplicationQuit()
@@ -188,6 +178,13 @@ namespace UI.LevelSelection
             var index = _listView.selectedIndex % _rawData.Length;
 
             PlayerPrefs.SetInt("LevelListIndex", index);
+        }
+
+        private void ChangeVolume()
+        {
+            var volume = SettingsPool.GetValue("audio.volume.song") / 10f;
+
+            _songPreviewAudioSourceHandler?.SetVolume(volume);
         }
 
         private static bool FileExistsIgnoreCase(string input, out string actualPath)
@@ -198,14 +195,14 @@ namespace UI.LevelSelection
 
             try
             {
-                string directory = Path.GetDirectoryName(input);
-                string fileName = Path.GetFileName(input);
+                var directory = Path.GetDirectoryName(input);
+                var fileName = Path.GetFileName(input);
 
                 if (string.IsNullOrEmpty(directory)) directory = Directory.GetCurrentDirectory();
 
                 if (!Directory.Exists(directory)) return false;
 
-                string[] matches = Directory.GetFiles(directory, fileName, new EnumerationOptions
+                var matches = Directory.GetFiles(directory, fileName, new EnumerationOptions
                 {
                     MatchCasing = MatchCasing.CaseInsensitive,
                     RecurseSubdirectories = false
@@ -257,7 +254,7 @@ namespace UI.LevelSelection
 
         private void Initialize()
         {
-            /*Initialize List*/
+            ScreenOrientationManager.Instance.DisablePortrait();
 
             var root = LevelSelectionTree;
             _listView = root.Q<VisualElement>("list-parent").Q<ListView>("list");
@@ -334,7 +331,8 @@ namespace UI.LevelSelection
 
             _largeSongCover = root.Q<VisualElement>("song-cover").Q<VisualElement>("song-cover-image");
 
-            _songCoverManipulator = new SongCoverManipulator(SongCoverManipulator.SongCoverLayoutPopulationMode.FixedHeight, 0);
+            _songCoverManipulator =
+                new SongCoverManipulator(SongCoverManipulator.SongCoverLayoutPopulationMode.FixedHeight, 0);
 
             _largeSongCover.AddManipulator(_songCoverManipulator);
 
@@ -351,7 +349,7 @@ namespace UI.LevelSelection
             _scrollView.verticalScroller.valueChanged += _ => { SetStyle(); };
 
             InitializeGroupingRule();
-            
+
             LoadSong(_listView.selectedIndex);
 
             _listView.selectionChanged += _ =>
@@ -372,7 +370,7 @@ namespace UI.LevelSelection
                         .Maidata.MaidataDirectoryName), groupByRule == SortingRules.Difficulty
                         ? _data[_listView.selectedIndex].DifficultyIndex
                         : _scoreContentPanel.AlphabeticallySelectedDifficultyIndex);
-                
+
                 //AudioManager.GetInstance().PlaySelectSound();
             };
 
@@ -395,26 +393,28 @@ namespace UI.LevelSelection
             if (_lastPreviewedMaidata != null && _lastPreviewedMaidata ==
                 _data[index].MaidataReferenceCountPair.Maidata)
                 return;
-            
+
             _lastPreviewedMaidata?.UnloadSong();
-                
+
             StartCoroutine(_data[index].MaidataReferenceCountPair.Maidata.LoadSongClip());
             _songPlaying = false;
 
             _lastPreviewedMaidata = _data[index].MaidataReferenceCountPair.Maidata;
         }
 
-        private Maidata _lastPreviewedMaidata;
-
-        private bool _songPlaying;
-
         private void InitializeGroupingRule()
         {
-            groupByRule = SettingsPool.GetValue("song_list.group_rule") switch
+            var newGroupByRule = SettingsPool.GetValue("song_list.group_rule") switch
             {
                 0 => SortingRules.Alphabet,
-                _ => SortingRules.Difficulty
+                1 => SortingRules.Difficulty,
+                _ => SortingRules.Undefined
             };
+
+            if (groupByRule == newGroupByRule)
+                return;
+
+            groupByRule = newGroupByRule;
 
             var currentData = _data?[_listView.selectedIndex];
 
@@ -525,7 +525,7 @@ namespace UI.LevelSelection
                 _snapManipulator.SnapToItem(index, _scrollView, true, true);
                 return;
             }
-            
+
             LevelSelectionTree.AddToClassList("confirm-entry");
 
             _scrollView.SetEnabled(false);
@@ -540,7 +540,8 @@ namespace UI.LevelSelection
 
             LevelSelectionTree.Q<Button>("play-button").clicked += () =>
             {
-                LevelSelectionTree.styleSheets.Add(Resources.Load<StyleSheet>("UI/USS/LevelSelection/LevelSelectionToGameInAnimated"));
+                LevelSelectionTree.styleSheets.Add(
+                    Resources.Load<StyleSheet>("UI/USS/LevelSelection/LevelSelectionToGameInAnimated"));
                 StartCoroutine(EnterLevel());
             };
 
@@ -549,34 +550,34 @@ namespace UI.LevelSelection
             IEnumerator EnterLevel()
             {
                 yield return new WaitForSeconds(0.5f);
-                
+
                 LevelLoader.GetInstance.SceneLoaded += () =>
                 {
                     LevelLoader.GetInstance.SceneLoaded = null;
 
                     StartCoroutine(PlayWhiteOutAnimation());
                 };
-            
+
                 CategoryListManager.GetInstance.enabled = false;
                 _listView.unbindItem = null;
 
                 _snapManipulator.OnSnapToItem = null;
-            
+
                 LevelLoader.GetInstance.EnterLevel(_data[_listView.selectedIndex].MaidataReferenceCountPair.Maidata,
                     groupByRule == SortingRules.Difficulty
                         ? _data[_listView.selectedIndex].DifficultyIndex
                         : _scoreContentPanel.AlphabeticallySelectedDifficultyIndex);
-
             }
 
             IEnumerator PlayWhiteOutAnimation()
             {
                 yield return new WaitForSeconds(0.1f);
 
-                LevelSelectionTree.styleSheets.Add(Resources.Load<StyleSheet>("UI/USS/LevelSelection/LevelSelectionToGameOutAnimated"));
+                LevelSelectionTree.styleSheets.Add(
+                    Resources.Load<StyleSheet>("UI/USS/LevelSelection/LevelSelectionToGameOutAnimated"));
 
                 yield return new WaitForSeconds(0.5f);
-                
+
                 RemoveThis();
             }
 
@@ -598,7 +599,7 @@ namespace UI.LevelSelection
         {
             Destroy(gameObject);
         }
-        
+
         private void SetStyle()
         {
             _listView.Query<TemplateContainer>().ForEach(SetSingleItemStyle);

@@ -1,10 +1,8 @@
 using System;
 using System.Collections;
-using System.Globalization;
 using Game;
 using UI.LevelSelection;
 using UnityEngine;
-using UnityEngine.Localization.Settings;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
@@ -14,17 +12,22 @@ namespace UI.Result
     {
         private static ResultManager _instance;
 
-        public static ResultManager GetInstance => _instance ??
-                                                  FindObjectsByType<ResultManager>(FindObjectsInactive.Include,
-                                                      FindObjectsSortMode.None)[^1];
+        public VisualTreeAsset resultVisualTreeAsset;
+
+        private SongCoverManipulator _backgroundSongCoverManipulator;
+        private SongCoverManipulator _coverManipulator;
 
         private Maidata _maidata;
 
-        public VisualTreeAsset resultVisualTreeAsset;
-        private SongCoverManipulator _coverManipulator;
+        private StyleSheet _preAnimatedStyleSheet;
+        private VisualElement _resultPanel;
 
         private VisualElement _resultRoot;
-        private VisualElement _resultPanel;
+        private StyleSheet _toRetryAnimatedStyleSheet;
+
+        public static ResultManager GetInstance => _instance ??
+                                                   FindObjectsByType<ResultManager>(FindObjectsInactive.Include,
+                                                       FindObjectsSortMode.None)[^1];
 
         private void Awake()
         {
@@ -43,6 +46,8 @@ namespace UI.Result
 
         private void Initialize()
         {
+            ScreenOrientationManager.Instance.DisablePortrait();
+
             _maidata = ChartPlayer.Instance.Maidata;
 
             _resultRoot = resultVisualTreeAsset.Instantiate();
@@ -54,9 +59,9 @@ namespace UI.Result
             _resultRoot.style.left = 0;
             _resultRoot.style.bottom = 0;
             _resultRoot.style.right = 0;
-            
+
             _preAnimatedStyleSheet = Resources.Load<StyleSheet>("UI/USS/Result/GameToResultPreAnimated");
-            
+
             _resultRoot.styleSheets.Add(_preAnimatedStyleSheet);
 
             _resultPanel = _resultRoot.Q("result-panel");
@@ -97,7 +102,7 @@ namespace UI.Result
             SetTotalScorePanelData();
             SetScoreContentPanelData();
             UpdateRankData();
-            
+
             Invoke(nameof(PlayInAnimation), 0.1f);
 
             var retryButton = _resultPanel.Q<Button>("retry-button");
@@ -105,11 +110,11 @@ namespace UI.Result
             retryButton.clicked += () =>
             {
                 _resultRoot.AddToClassList("in-animation");
-                
+
                 _resultRoot.styleSheets.Add(Resources.Load<StyleSheet>("UI/USS/Result/ResultToRetryInAnimated"));
 
                 SimulatedSensor.Clear();
-                
+
                 StartCoroutine(Retry());
             };
 
@@ -119,28 +124,30 @@ namespace UI.Result
             {
                 _resultPanel.AddToClassList("out-animation");
                 _resultRoot.AddToClassList("dont-fade-out");
-                
+
                 _resultRoot.styleSheets.Add(Resources.Load<StyleSheet>("UI/USS/Result/ResultToMenuInAnimated"));
 
                 SimulatedSensor.Clear();
-                
+
                 StartCoroutine(LoadEmptyScene());
             };
 
             return;
+
             IEnumerator Retry()
             {
                 yield return new WaitForSeconds(0.5f);
-            
+
                 LevelLoader.GetInstance.EnterLevel(_maidata, ChartPlayer.Instance.levelDifficultyIndex);
                 LevelLoader.GetInstance.SceneLoaded += () =>
                 {
                     StartCoroutine(PlayOutToRetryAnimation());
-                    
+
                     Destroy(UIManager.GetInstance().circleMaskManager.gameObject);
                 };
 
                 yield break;
+
                 IEnumerator PlayOutToRetryAnimation()
                 {
                     yield return new WaitForSeconds(0.1f);
@@ -150,7 +157,7 @@ namespace UI.Result
                     RemoveThis();
                 }
             }
-            
+
             IEnumerator LoadEmptyScene()
             {
                 yield return new WaitForSeconds(0.5f);
@@ -162,44 +169,48 @@ namespace UI.Result
         private void LoadMenu(Scene arg1, LoadSceneMode arg2)
         {
             SceneManager.sceneLoaded -= LoadMenu;
-            
+
             Destroy(UIManager.GetInstance().circleMaskManager.gameObject);
-            
+
             _maidata.UnloadResources();
-            
+
             AudioManager.GetInstance().AudioSourcePool.Clear();
-                    
+
             UIManager.GetInstance().ShowLevelSelector();
-            
+
             _resultRoot.BringToFront();
-            
+
             var levelSelectionPreAnimatedSheet =
                 Resources.Load<StyleSheet>("UI/USS/LevelSelection/ResultToLevelSelectionPreAnimated");
-            UIManager.GetInstance().levelSelectionManager.LevelSelectionTree.styleSheets.Add(levelSelectionPreAnimatedSheet);
+            UIManager.GetInstance().levelSelectionManager.LevelSelectionTree.styleSheets
+                .Add(levelSelectionPreAnimatedSheet);
 
             UIManager.GetInstance().levelSelectionManager.LevelSelectionTree.AddToClassList("hide-selected");
-            
+
             StartCoroutine(PlayOutToLevelMenuAnimation());
-            
+
             return;
-            
+
             IEnumerator PlayOutToLevelMenuAnimation()
             {
                 yield return new WaitForSeconds(0.1f);
                 _resultRoot.styleSheets.Add(Resources.Load<StyleSheet>("UI/USS/Result/ResultToMenuOutAnimated"));
-                
+
                 yield return new WaitForSeconds(0.5f);
-                UIManager.GetInstance().levelSelectionManager.LevelSelectionTree.styleSheets.Remove(levelSelectionPreAnimatedSheet);
+                UIManager.GetInstance().levelSelectionManager.LevelSelectionTree.styleSheets
+                    .Remove(levelSelectionPreAnimatedSheet);
                 UIManager.GetInstance().levelSelectionManager.LevelSelectionTree.AddToClassList("out-animation");
-                UIManager.GetInstance().levelSelectionManager.LevelSelectionTree.AddToClassList("no-opacity-transition");
-                
+                UIManager.GetInstance().levelSelectionManager.LevelSelectionTree
+                    .AddToClassList("no-opacity-transition");
+
                 yield return new WaitForSeconds(0.5f);
                 UIManager.GetInstance().levelSelectionManager.LevelSelectionTree.RemoveFromClassList("out-animation");
                 UIManager.GetInstance().levelSelectionManager.LevelSelectionTree.RemoveFromClassList("hide-selected");
                 _resultRoot.style.opacity = 0;
 
                 yield return new WaitForSeconds(0.1f);
-                UIManager.GetInstance().levelSelectionManager.LevelSelectionTree.RemoveFromClassList("no-opacity-transition");
+                UIManager.GetInstance().levelSelectionManager.LevelSelectionTree
+                    .RemoveFromClassList("no-opacity-transition");
                 RemoveThis();
             }
         }
@@ -219,33 +230,32 @@ namespace UI.Result
             early.text = Scoreboard.FastCount.ToString();
         }
 
-        private StyleSheet _preAnimatedStyleSheet;
-        
         private void PlayInAnimation()
         {
             _resultRoot.styleSheets.Remove(_preAnimatedStyleSheet);
-            
+
             _resultRoot.AddToClassList("out-animation");
 
             StartCoroutine(RemoveAnimationClass());
-            
+
             return;
+
             IEnumerator RemoveAnimationClass()
             {
                 yield return new WaitForSeconds(0.5f);
                 _resultRoot.RemoveFromClassList("out-animation");
             }
         }
-        
+
         private void SetSongData()
         {
             var element = _resultPanel.Q("song-item-container");
-            
+
             var informationElement = element.Q<VisualElement>("song-item").Q<VisualElement>("information");
 
             var songTitleWaterMark = element.Q<VisualElement>("song-item").Q<Label>("song-title-watermark");
             var songTitleLabel = informationElement.Q<Label>("song-title");
-            
+
             songTitleLabel.text = _maidata.Title;
 
             songTitleWaterMark.text =
@@ -258,14 +268,11 @@ namespace UI.Result
             bpmLabel.text = _maidata.Bpm.ToString("");
         }
 
-        private SongCoverManipulator _backgroundSongCoverManipulator;
-        private StyleSheet _toRetryAnimatedStyleSheet;
-
         private void SetStatsContainerData()
         {
             var statsContainer = _resultPanel.Q("stats-container");
 
-            for (int i = 1; i <= 5; i++)
+            for (var i = 1; i <= 5; i++)
             {
                 var row = statsContainer.Q($"row-{i}");
 
@@ -298,7 +305,7 @@ namespace UI.Result
                     _ => Scoreboard.TapCount
                 };
 
-                for (int j = 1; j <= 4; j++)
+                for (var j = 1; j <= 4; j++)
                 {
                     var label = row.Q<Label>($"label-{j}");
 
@@ -341,10 +348,11 @@ namespace UI.Result
             levelRankData.Combo = Scoreboard.HighestCombo;
             levelRankData.TotalScore = Scoreboard.GetTotalScore();
 
-            var scorePair = new LevelAchievement.ScorePair()
+            var scorePair = new LevelAchievement.ScorePair
             {
                 DxAchievement = Scoreboard.GetCurrentAchievement(AchievementType.Dx),
-                FinaleAchievement = Scoreboard.GetCurrentAchievement(AchievementType.Finale)
+                FinaleAchievement = Scoreboard.GetCurrentAchievement(AchievementType.Finale),
+                Score = Scoreboard.GetScore()
             };
 
             levelRankData.LevelAchievements.DxBestAchievement = scorePair;
@@ -363,14 +371,11 @@ namespace UI.Result
             var levelRankData = chartRankData.GetLevelRankData(ChartPlayer.Instance.levelDifficultyIndex) ??
                                 chartRankData.AddLevelRankData(ChartPlayer.Instance.levelDifficultyIndex);
 
-            if (Scoreboard.GetFcState() >= levelRankData.FcState)
-            {
-                levelRankData.FcState = Scoreboard.GetFcState();
-            }
+            if (Scoreboard.GetFcState() >= levelRankData.FcState) levelRankData.FcState = Scoreboard.GetFcState();
 
             var finaleAchievement = Scoreboard.GetCurrentAchievement(AchievementType.Finale);
             var dxAchievement = Scoreboard.GetCurrentAchievement(AchievementType.Dx);
-            
+
             if (finaleAchievement >=
                 levelRankData.LevelAchievements.FinaleBestAchievement.FinaleAchievement)
             {
@@ -378,8 +383,10 @@ namespace UI.Result
                     finaleAchievement;
                 levelRankData.LevelAchievements.FinaleBestAchievement.DxAchievement =
                     dxAchievement;
+
+                levelRankData.LevelAchievements.FinaleBestAchievement.Score = Scoreboard.GetScore();
             }
-            
+
             if (dxAchievement >=
                 levelRankData.LevelAchievements.DxBestAchievement.DxAchievement)
             {
@@ -387,13 +394,15 @@ namespace UI.Result
                     finaleAchievement;
                 levelRankData.LevelAchievements.DxBestAchievement.DxAchievement =
                     dxAchievement;
+
+                levelRankData.LevelAchievements.DxBestAchievement.Score = Scoreboard.GetScore();
             }
-            
+
             if (Scoreboard.HighestCombo >= levelRankData.Combo)
                 levelRankData.Combo = Scoreboard.HighestCombo;
 
             levelRankData.TotalScore = Scoreboard.GetTotalScore();
-            
+
             ChartRankDataManager.Save();
         }
     }

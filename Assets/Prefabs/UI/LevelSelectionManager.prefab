@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01aa9aac7b2eb4617a992edee839889c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.LevelSelection.LevelListController
-  groupByRule: 0
+  groupByRule: 2
   itemTemplate: {fileID: 9197481963319205126, guid: b01da4bc8949941a6ae4e05510c4b2b3,
     type: 3}
   levelSelectionTreeAsset: {fileID: 9197481963319205126, guid: 158650d1304654b1c97fcca9fee34a1e,

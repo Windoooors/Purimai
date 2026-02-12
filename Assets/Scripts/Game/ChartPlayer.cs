@@ -16,6 +16,7 @@ namespace Game
 {
     public class ChartPlayer : MonoBehaviour
     {
+        private const float DefaultLandscapeSize = 5.5f;
         public static ChartPlayer Instance;
 
         public RawImage backgroundImage;
@@ -51,11 +52,19 @@ namespace Game
 
         public AudioClip songClip;
 
+        [SerializeField] private float _dspTime;
+
+        [SerializeField] private float _time;
+
+        public int levelDifficultyIndex;
+
         private readonly float _generalPlaybackDelayInSeconds = 3f;
 
         private readonly int _maxScheduledCriticalSoundCount = 16;
 
         private double _audioDspTimeWhenPlaybackStarts;
+
+        private Camera _camera;
 
         private bool _chartHasVideo;
 
@@ -63,23 +72,23 @@ namespace Game
 
         private float _criticalSoundVolume;
 
-        private float _dspTime;
-
         private bool _paused;
         private float _songLength;
         private AudioSourcePool.AudioSourceHandler _songPlaybackAudioSourceHandler;
 
         private float _songVolume;
-
-        private float _time;
         private VideoPlayer _videoPlayer;
         private RenderTexture _videoTexture;
 
-        public int levelDifficultyIndex;
+        public Maidata Maidata;
 
         public void Awake()
         {
             Instance = this;
+
+            _camera = FindAnyObjectByType<Camera>();
+
+            ScreenOrientationManager.Instance.ScreenChanged += UpdateCameraSize;
 
             judgeDelay = SettingsPool.GetValue("gameplay.judge_delay");
             flowSpeed = SettingsPool.GetValue("gameplay.flow_speed") * 0.25f + 1;
@@ -96,6 +105,8 @@ namespace Game
 
             _criticalSoundVolume = SettingsPool.GetValue("audio.volume.critical_sound") / 10f;
             _songVolume = SettingsPool.GetValue("audio.volume.song") / 10f;
+
+            UpdateCameraSize();
         }
 
         private void Update()
@@ -124,20 +135,86 @@ namespace Game
             }
         }
 
+        private void OnDestroy()
+        {
+            ScreenOrientationManager.Instance.ScreenChanged -= UpdateCameraSize;
+        }
+
         private void ShowResult()
         {
             isPlaying = false;
             UIManager.GetInstance().ShowResult();
         }
 
-        private void Pause()
+        public void Pause(out bool succeed)
         {
+            if (!isPlaying)
+            {
+                succeed = false;
+                return;
+            }
+
+            AudioManager.GetInstance().AudioSourcePool.Pool.ForEach(x =>
+            {
+                if (x != _songPlaybackAudioSourceHandler)
+                    x.Stop();
+            });
+
+            _criticalSoundIndex = NoteGenerator.GetInstance.criticalTimeList.FindLastIndex(x =>
+                x < _time * 1000
+            );
+
+            if (_criticalSoundIndex < 0)
+                _criticalSoundIndex = 0;
+
             _songPlaybackAudioSourceHandler.Pause();
+
+            SimulatedSensor.Enabled = false;
+
+            _videoPlayer?.Pause();
+
             _paused = true;
+
+            succeed = true;
         }
 
-        private void Resume()
+        public void Resume()
         {
+            if (_time > 0)
+            {
+                _audioDspTimeWhenPlaybackStarts = AudioSettings.dspTime -
+                                                  _songPlaybackAudioSourceHandler.GetPosition() -
+                                                  _generalPlaybackDelayInSeconds;
+
+                _songPlaybackAudioSourceHandler.Play();
+            }
+            else
+            {
+                _audioDspTimeWhenPlaybackStarts = AudioSettings.dspTime -
+                                                  _time -
+                                                  _generalPlaybackDelayInSeconds;
+
+                _songPlaybackAudioSourceHandler.Stop();
+
+                AudioManager.GetInstance().AudioSourcePool.TryGetAudioSourceHandler(out var handler);
+
+                if (handler == null)
+                    return;
+
+                _songPlaybackAudioSourceHandler = handler;
+
+                _songPlaybackAudioSourceHandler.SetClip(Maidata.SongAudioClip);
+                _songPlaybackAudioSourceHandler.SetVolume(_songVolume);
+
+                _songPlaybackAudioSourceHandler.PlayScheduled(AudioSettings.dspTime - _time);
+            }
+
+            SetCriticalSoundChannel(true);
+
+            _videoPlayer?.Play();
+
+            SimulatedSensor.Enabled = true;
+
             _paused = false;
         }
 
@@ -231,6 +308,16 @@ namespace Game
             PlaySound();
         }
 
+        public void UpdateCameraSize()
+        {
+            var aspectRatio = (float)Screen.currentResolution.width / Screen.currentResolution.height;
+
+            if (aspectRatio >= 1.0f)
+                _camera.orthographicSize = DefaultLandscapeSize;
+            else
+                _camera.orthographicSize = DefaultLandscapeSize / aspectRatio;
+        }
+
         private void PlaySound()
         {
             _audioDspTimeWhenPlaybackStarts = AudioSettings.dspTime;
@@ -269,7 +356,7 @@ namespace Game
                     AudioManager.GetInstance().AudioSourcePool.TryGetAudioSourceHandler(out handler);
 
                     SetUpChannelDelay(handler);
-                    handler.SetVolume(_criticalSoundVolume);
+                    handler?.SetVolume(_criticalSoundVolume);
                 }
 
                 return;
@@ -283,14 +370,15 @@ namespace Game
                     return;
 
                 SetUpChannelDelay(handler);
-                handler.SetVolume(_criticalSoundVolume);
+                handler?.SetVolume(_criticalSoundVolume);
             }
 
             return;
 
             void SetUpChannelDelay(AudioSourcePool.AudioSourceHandler audioSourceHandler)
             {
-                if (_criticalSoundIndex >= NoteGenerator.GetInstance.criticalTimeList.Count)
+                if (_criticalSoundIndex >= NoteGenerator.GetInstance.criticalTimeList.Count ||
+                    audioSourceHandler == null)
                     return;
 
                 var delay = _generalPlaybackDelayInSeconds +
@@ -307,14 +395,12 @@ namespace Game
             }
         }
 
-        public Maidata Maidata;
-
         public void InitializeLevel(Maidata maidata, int difficultyIndex)
         {
             Maidata = maidata;
 
             levelDifficultyIndex = difficultyIndex;
-            
+
             var chart = maidata.Charts.ToList().Find(x => x.DifficultyIndex == difficultyIndex);
 
             NoteGenerator.GetInstance.GenerateNotes(chart.ChartString, maidata.FirstNoteTime);

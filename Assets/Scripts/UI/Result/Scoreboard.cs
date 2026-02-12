@@ -10,19 +10,10 @@ namespace UI.Result
 
     public class SpecifiedNoteScoreboard
     {
-        public int TotalCount { set; get; }
-        public int CurrentCount { private set; get; }
-        public int CriticalPerfectCount { private set; get; }
-        public int SemiCriticalPerfectCount { private set; get; }
-        public int PerfectCount { private set; get; }
-        public int GreatCount { private set; get; }
-        public int SemiGreatCount { private set; get; }
-        public int QuarterGreatCount { private set; get; }
-        public int GoodCount { private set; get; }
-        public int MissCount { private set; get; }
+        public SpecifiedNoteScoreboard()
+        {
+        }
 
-        public SpecifiedNoteScoreboard(){}
-        
         public SpecifiedNoteScoreboard(int totalCount, int criticalPerfectCount,
             int semiCriticalPerfectCount, int perfectCount, int greatCount, int semiGreatCount, int quarterGreatCount,
             int goodCount, int missCount)
@@ -37,6 +28,17 @@ namespace UI.Result
             GoodCount = goodCount;
             MissCount = missCount;
         }
+
+        public int TotalCount { set; get; }
+        public int CurrentCount { private set; get; }
+        public int CriticalPerfectCount { private set; get; }
+        public int SemiCriticalPerfectCount { private set; get; }
+        public int PerfectCount { private set; get; }
+        public int GreatCount { private set; get; }
+        public int SemiGreatCount { private set; get; }
+        public int QuarterGreatCount { private set; get; }
+        public int GoodCount { private set; get; }
+        public int MissCount { private set; get; }
 
         public void Count(JudgeState judgeState)
         {

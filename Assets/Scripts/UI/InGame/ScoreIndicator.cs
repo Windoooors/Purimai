@@ -1,6 +1,6 @@
 using TMPro;
-using UI.Settings;
 using UI.Result;
+using UI.Settings;
 using UnityEngine;
 
 namespace UI.InGame
@@ -10,10 +10,10 @@ namespace UI.InGame
         public TextMeshProUGUI scoreText;
         public TextMeshProUGUI titleText;
 
+        private AchievementType _achievementType;
+
         private int _settingsIndex;
 
-        private AchievementType _achievementType;
-            
         private void Start()
         {
             _achievementType = (AchievementType)SettingsPool.GetValue("scoring_methods.achievement_type");

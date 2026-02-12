@@ -67,11 +67,12 @@ namespace UI
     {
         private static readonly string SavePath = Path.Combine(Application.persistentDataPath, "player_scores.json");
 
-        private static List<ChartRankData> _dataList = Directory.Exists(Application.persistentDataPath)? (
-            !File.Exists(SavePath)
+        private static List<ChartRankData> _dataList = Directory.Exists(Application.persistentDataPath)
+            ? !File.Exists(SavePath)
                 ? new List<ChartRankData>()
                 : JsonConvert.DeserializeObject<List<ChartRankData>>(
-                    File.ReadAllText(SavePath))) : new List<ChartRankData>();
+                    File.ReadAllText(SavePath))
+            : new List<ChartRankData>();
 
         private static HashSet<ChartRankData> _dataHashSet;
 

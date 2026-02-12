@@ -1,0 +1,65 @@
+:root {
+}
+
+.pause-panel {
+    flex-grow: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    opacity: 1;
+}
+
+.pause-menu-button {
+    width: 280px;
+    height: 69px;
+    transition-duration: 0.2s;
+    -unity-font-definition: resource('Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF');
+    -unity-text-align: middle-center;
+    font-size: 18px;
+    padding-bottom: 16px;
+}
+
+.back-button {
+    position: absolute;
+    width: 69px;
+    height: 69px;
+    top: 7px;
+    left: 0;
+    transition-duration: 0.2s;
+}
+
+.pause-title {
+    -unity-font-definition: resource('Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF');
+    top: 50%;
+    position: absolute;
+    font-size: 48px;
+    padding-top: 40px;
+    padding-right: 40px;
+    padding-bottom: 40px;
+    padding-left: 40px;
+    margin-top: -70px;
+}
+
+.control-panel {
+    align-items: flex-start;
+    justify-content: center;
+    flex-wrap: nowrap;
+    flex-grow: 1;
+    flex-direction: column;
+    flex-shrink: 1;
+    left: 0;
+}
+
+.white-out-mask {
+    flex-grow: 1;
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    opacity: 0;
+    background-color: rgb(255, 255, 255);
+}

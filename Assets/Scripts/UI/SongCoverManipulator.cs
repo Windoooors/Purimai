@@ -1,24 +1,25 @@
 using System;
-using JetBrains.Annotations;
 using UnityEngine.UIElements;
 
 namespace UI
 {
     public class SongCoverManipulator : Manipulator
     {
+        public enum SongCoverLayoutPopulationMode
+        {
+            FixedHeight,
+            MinimalLeft
+        }
+
+        private readonly SongCoverLayoutPopulationMode _mode;
+        private readonly int _widthOffset;
+
         private VisualElement _cover;
 
         private StyleLength _originalWidth;
 
-        public enum SongCoverLayoutPopulationMode
-        {
-            FixedHeight,
-            MinimalLeft,
-        }
-        
-        private SongCoverLayoutPopulationMode _mode;
-        private int _widthOffset;
-        
+        public EventHandler<GeometryChangedEventArgs> OnGeometryChanged;
+
         public SongCoverManipulator(SongCoverLayoutPopulationMode mode, int widthOffset)
         {
             _mode = mode;
@@ -62,12 +63,13 @@ namespace UI
         private void MinimalLeft(GeometryChangedEvent evt)
         {
             var width = _cover.layout.width;
-            var freeWidth = UIManager.GetInstance().uiDocument.rootVisualElement.layout.width - _cover.layout.xMin + _widthOffset;
-            
+            var freeWidth = UIManager.GetInstance().uiDocument.rootVisualElement.layout.width - _cover.layout.xMin +
+                            _widthOffset;
+
             if (width <= freeWidth)
             {
                 _cover.style.width = freeWidth;
-                OnGeometryChanged?.Invoke(this, new GeometryChangedEventArgs()
+                OnGeometryChanged?.Invoke(this, new GeometryChangedEventArgs
                 {
                     NewBackgroundSize = new BackgroundSize(freeWidth, freeWidth)
                 });
@@ -94,8 +96,6 @@ namespace UI
             _cover.style.top = _cover.style.top.value.value - (width - originalHeight) / 2;
         }
 
-        public EventHandler<GeometryChangedEventArgs> OnGeometryChanged;
-        
         public class GeometryChangedEventArgs : EventArgs
         {
             public BackgroundSize NewBackgroundSize;

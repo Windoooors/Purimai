@@ -397,7 +397,7 @@ namespace Game
 
     public class AudioSourcePool
     {
-        private readonly List<AudioSourceHandler> _pool = new();
+        public readonly List<AudioSourceHandler> Pool = new();
 
         public readonly int Size;
 
@@ -410,7 +410,7 @@ namespace Game
                 var source = parentObject.AddComponent<AudioSource>();
                 var handler = new AudioSourceHandler(source);
 
-                _pool.Add(handler);
+                Pool.Add(handler);
             }
         }
 
@@ -418,7 +418,7 @@ namespace Game
         {
             var count = 0;
 
-            foreach (var handler in _pool)
+            foreach (var handler in Pool)
                 if (!handler.IsFree)
                     count++;
 
@@ -427,7 +427,7 @@ namespace Game
 
         public bool TryGetAudioSourceHandler(out AudioSourceHandler audioSourceHandler)
         {
-            foreach (var handler in _pool)
+            foreach (var handler in Pool)
                 if (handler.IsFree)
                 {
                     audioSourceHandler = handler;
@@ -440,10 +440,28 @@ namespace Game
 
         public void Clear()
         {
-            _pool.ForEach(x =>
+            Pool.ForEach(x =>
             {
                 x.ScheduledStartTime = -1;
                 x.Stop();
+            });
+        }
+
+        public void PauseAll()
+        {
+            Pool.ForEach(x =>
+            {
+                if (!x.IsFree)
+                    x.Pause();
+            });
+        }
+
+        public void PlayAll()
+        {
+            Pool.ForEach(x =>
+            {
+                if (!x.IsFree)
+                    x.Play();
             });
         }
 
@@ -474,6 +492,11 @@ namespace Game
 
                     return true;
                 }
+            }
+
+            public float GetPosition()
+            {
+                return _audioSource.time;
             }
 
             public AudioClip GetAudioClip()
@@ -511,11 +534,13 @@ namespace Game
             public void Play()
             {
                 _audioSource.Play();
+                _paused = false;
             }
 
             public void Stop()
             {
                 _audioSource.Stop();
+                _paused = false;
             }
 
             public void PlayScheduled(double delay)

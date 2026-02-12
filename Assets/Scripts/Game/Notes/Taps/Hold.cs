@@ -1,5 +1,5 @@
-using UI.Settings;
 using UI.Result;
+using UI.Settings;
 using Unity.Mathematics;
 using UnityEngine;
 

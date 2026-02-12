@@ -1,0 +1,23 @@
+:root {
+}
+
+.control-panel {
+    align-items: flex-start;
+    justify-content: center;
+    flex-wrap: nowrap;
+    flex-grow: 1;
+    flex-direction: column;
+    flex-shrink: 1;
+    left: -300px;
+    opacity: 0;
+}
+
+.pause-panel {
+    flex-grow: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    opacity: 0;
+}

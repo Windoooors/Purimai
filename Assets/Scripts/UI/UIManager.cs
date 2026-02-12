@@ -27,31 +27,69 @@ namespace UI
         public SettingsManager settingsPrefab;
         public ResultManager resultPrefab;
         public CircleMaskManager circleMaskPrefab;
+        public PauseManager pausePrefab;
 
         public ResultManager resultManager;
         public LevelSelectionManager levelSelectionManager;
         public SettingsManager settingsManager;
         public CircleMaskManager circleMaskManager;
-        
+        public PauseManager pauseManager;
+
+        public Vector2Int portraitReferenceResolution = new(600, 600);
+        public Vector2Int landscapeReferenceResolution = new(1024, 600);
+
+        private void Awake()
+        {
+            _instance = this;
+
+            ApplyResolution();
+
+            uiDocument.rootVisualElement.RegisterCallback<GeometryChangedEvent>(evt => { ApplySafeArea(); });
+
+            SettingsManager.OnSettingsChanged += ApplyResolution;
+
+            AudioManager.GetInstance().LoadAllSoundEffects(gameSoundFileNameData, uiSoundFileNameData);
+
+            ShowLevelSelector();
+
+            ScreenOrientationManager.Instance.ScreenChanged += ChangeLayoutConsideringOrientation;
+        }
+
+        private void Start()
+        {
+            DontDestroyOnLoad(gameObject);
+        }
+
+        private void OnApplicationQuit()
+        {
+            SettingsPool.Save();
+        }
+
         public void ShowResult()
         {
             resultManager = Instantiate(resultPrefab, transform);
             ApplySafeArea();
         }
-        
-        void ApplySafeArea()
+
+        public void ShowPausePanel()
+        {
+            pauseManager = Instantiate(pausePrefab, transform);
+            ApplySafeArea();
+        }
+
+        private void ApplySafeArea()
         {
             var root = uiDocument.rootVisualElement;
-            
-            Rect safeArea = Screen.safeArea;
-            
-            Vector2 screenSize = new Vector2(Screen.currentResolution.width, Screen.currentResolution.height);
-            
-            float left = safeArea.x / screenSize.x * 100f;
-            float right = (screenSize.x - safeArea.width - safeArea.x) / screenSize.x * 100f;
-            float top = (screenSize.y - safeArea.height - safeArea.y) / screenSize.y * 100f;
-            float bottom = safeArea.y / screenSize.y * 100f;
-            
+
+            var safeArea = Screen.safeArea;
+
+            var screenSize = new Vector2(Screen.currentResolution.width, Screen.currentResolution.height);
+
+            var left = safeArea.x / screenSize.x * 100f;
+            var right = (screenSize.x - safeArea.width - safeArea.x) / screenSize.x * 100f;
+            var top = (screenSize.y - safeArea.height - safeArea.y) / screenSize.y * 100f;
+            var bottom = safeArea.y / screenSize.y * 100f;
+
             root.Query<VisualElement>(className: "safe-area").ForEach(x =>
             {
                 x.style.left = Length.Percent(left);
@@ -59,7 +97,7 @@ namespace UI
                 x.style.right = Length.Percent(right);
                 x.style.bottom = Length.Percent(bottom);
             });
-            
+
             root.Query<VisualElement>(className: "safe-area-ignore-bottom").ForEach(x =>
             {
                 x.style.left = Length.Percent(left);
@@ -73,7 +111,7 @@ namespace UI
             levelSelectionManager = Instantiate(levelSelectionPrefab, transform);
             ApplySafeArea();
         }
-        
+
         public void ShowSettingsPanel()
         {
             settingsManager = Instantiate(settingsPrefab, transform);
@@ -86,32 +124,23 @@ namespace UI
             ApplySafeArea();
         }
 
-        private void Awake()
+        private void ChangeLayoutConsideringOrientation()
         {
-            _instance = this;
+            var orientation = Screen.orientation;
 
-            ApplyResolution();
-            
-            uiDocument.rootVisualElement.RegisterCallback<GeometryChangedEvent>(evt =>
+            switch (orientation)
             {
-                ApplySafeArea();
-            });
-            
-            SettingsManager.OnSettingsChanged += ApplyResolution;
-            
-            AudioManager.GetInstance().LoadAllSoundEffects(gameSoundFileNameData, uiSoundFileNameData);
-
-            ShowLevelSelector();
-        }
-
-        private void Start()
-        {
-            DontDestroyOnLoad(gameObject);
-        }
-
-        private void OnApplicationQuit()
-        {
-            SettingsPool.Save();
+                case ScreenOrientation.Portrait:
+                case ScreenOrientation.PortraitUpsideDown:
+                    uiDocument.panelSettings.match = 0;
+                    uiDocument.panelSettings.referenceResolution = portraitReferenceResolution;
+                    break;
+                case ScreenOrientation.LandscapeLeft:
+                case ScreenOrientation.LandscapeRight:
+                    uiDocument.panelSettings.match = 1;
+                    uiDocument.panelSettings.referenceResolution = landscapeReferenceResolution;
+                    break;
+            }
         }
 
         public static UIManager GetInstance()

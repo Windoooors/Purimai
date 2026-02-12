@@ -1,5 +1,4 @@
 using System.Linq;
-using UI.Settings;
 using UnityEngine.Localization;
 using UnityEngine.UIElements;
 
@@ -7,15 +6,15 @@ namespace UI.Settings
 {
     public class ToggleBasedValueManipulator : Manipulator
     {
-        private int _currentValue;
         private readonly string _identifier;
 
-        private LocalizedString _localizedString;
-
         private readonly SettingsItem _settingsItem;
+        private int _currentValue;
+
+        private LocalizedString _localizedString;
+        private Toggle _toggle;
 
         private Label _valueLabel;
-        private Toggle _toggle;
 
         public ToggleBasedValueManipulator(string identifier)
         {
@@ -28,11 +27,11 @@ namespace UI.Settings
         {
             _toggle = target.Q<Toggle>();
             _valueLabel = _toggle.Q<Label>();
-            
+
             _currentValue = SettingsPool.GetValue(_identifier);
 
             _toggle.value = _currentValue == 1;
-            
+
             _toggle.RegisterCallback<PointerUpEvent>(_ =>
             {
                 SettingsPool.SetValue(_identifier, _toggle.value ? 1 : 0);
@@ -42,10 +41,10 @@ namespace UI.Settings
 
             _localizedString = new LocalizedString("UI",
                 $"settings.{(_currentValue == 1 ? "true" : "false")}");
-            
+
             _localizedString.StringChanged += value => { _valueLabel.text = value; };
             _localizedString.RefreshString();
-            
+
             target.RegisterCallback<DetachFromPanelEvent>(_ => OnDetached());
         }
 

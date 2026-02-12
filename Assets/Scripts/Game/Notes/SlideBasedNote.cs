@@ -47,6 +47,8 @@ namespace Game.Notes
 
         private bool _concealed;
 
+        private bool _isFast;
+
 
         private Animator _judgeDisplayAnimator;
         private JudgeState _judgeState;
@@ -181,11 +183,9 @@ namespace Game.Notes
                     if (_isFast)
                         Scoreboard.FastCount++;
                     else
-                    {
                         Scoreboard.LateCount++;
-                    }
                 }
-                
+
                 Scoreboard.Combo++;
 
                 PlayJudgeAnimation();
@@ -352,8 +352,6 @@ namespace Game.Notes
             _slideArrowSpriteRenderers = slideArrowList.Select(x => x.GetComponent<SpriteRenderer>()).ToArray();
         }
 
-        private bool _isFast = false;
-        
         protected void Judge()
         {
             if (Slided)
@@ -362,7 +360,7 @@ namespace Game.Notes
             var deltaTiming = _slideJudgeTiming - ChartPlayer.Instance.GetTime(true) + ChartPlayer.Instance.judgeDelay;
 
             _isFast = deltaTiming > 0;
-            
+
             var absDeltaTiming = math.abs(deltaTiming);
 
             var judgeSettings = ChartPlayer.Instance.slideJudgeSettings;

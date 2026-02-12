@@ -34,7 +34,7 @@
     transition: opacity ease-in-cubic 0.5s;
 }
 
-.score-content-panel{
+.score-content-panel {
     right: -700px;
     transition: all ease-in-cubic 0.5s;
 }

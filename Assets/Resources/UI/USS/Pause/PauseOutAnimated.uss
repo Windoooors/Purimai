@@ -1,0 +1,29 @@
+:root {
+}
+
+.control-panel {
+    align-items: flex-start;
+    justify-content: center;
+    flex-wrap: nowrap;
+    flex-grow: 1;
+    flex-direction: column;
+    flex-shrink: 1;
+    left: -300px;
+    opacity: 0;
+}
+
+.white-out-mask {
+    flex-grow: 1;
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    opacity: 1;
+}
+
+.pause-panel {
+    -unity-background-image-tint-color: transparent;
+    transition: -unity-background-image-tint-color 0s 0.5s;
+}

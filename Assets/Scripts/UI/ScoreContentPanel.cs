@@ -24,7 +24,6 @@ namespace UI
         };
 
         private Label _achievementLabel;
-        private Label _fcLabel;
 
         private Label _achievementTitleLabel;
         private VisualElement _chartBackground;
@@ -36,19 +35,20 @@ namespace UI
         private Label _difficultyNameLabel;
 
         private Label _difficultyRateLabel;
+        private Label _fcLabel;
 
         private LevelSelectionManager.SortingRules _groupByRule;
         private VisualElement _noScoreContentPanel;
         private Label _rankLabel;
         private Label _rankTitleLabel;
-        
-        [UxmlAttribute("allow-difficulty-change")]
-        public bool AllowDifficultyChange = true;
 
         private VisualElement _scoreBackground;
 
         private VisualElement _scoreContentPanel;
         private Label _subAchievementLabel;
+
+        [UxmlAttribute("allow-difficulty-change")]
+        public bool AllowDifficultyChange = true;
 
         public int AlphabeticallySelectedDifficultyIndex;
 
@@ -213,7 +213,7 @@ namespace UI
             };
 
             _fcLabel.text = fcText;
-            
+
             _rankLabel.text = ChartRankDataManager.GetRankName(achievement, score, levelRankData.TotalScore,
                 useDxRatingSystem ? AchievementType.Dx : AchievementType.Finale);
         }
@@ -271,10 +271,10 @@ namespace UI
         {
             if (!AllowDifficultyChange)
                 return;
-            
+
             var targetChartIndex = 0;
             var currentChartIndex = 0;
-            
+
             var originalAlphabeticallySelectedDifficultyIndex = AlphabeticallySelectedDifficultyIndex;
 
             switch (_groupByRule)

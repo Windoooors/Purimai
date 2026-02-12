@@ -13,14 +13,12 @@ namespace UI.Settings
 
         private static readonly List<StorageItem> StorageItems =
             Directory.Exists(Application.persistentDataPath)
-                ? (File.Exists(SavePath)
+                ? File.Exists(SavePath)
                     ? JsonConvert.DeserializeObject<List<StorageItem>>(File.ReadAllText(SavePath))
-                    : new List<StorageItem>())
+                    : new List<StorageItem>()
                 : new List<StorageItem>();
 
         private static readonly List<(int original, int current, string id)> ChangeHistoryList = new();
-
-        public static Action SettingsChanged;
 
         public static int GetValue(string identifier)
         {
@@ -84,23 +82,15 @@ namespace UI.Settings
 
         public static void Save()
         {
-            foreach (var pair in ChangeHistoryList)
-                if (pair.original != pair.current)
-                {
-                    SettingsChanged?.Invoke();
-
-                    break;
-                }
-
-            ChangeHistoryList.Clear();
-
             File.WriteAllText(SavePath, JsonConvert.SerializeObject(StorageItems));
         }
 
         private class StorageItem
         {
             public readonly string Identifier;
-            public readonly bool IsSeparatedValue;
+
+            [NonSerialized] public readonly bool IsSeparatedValue;
+
             public int Value;
 
             public StorageItem(string identifier, int value, bool isSeparatedValue)

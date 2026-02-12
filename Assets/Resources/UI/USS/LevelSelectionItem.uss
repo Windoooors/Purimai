@@ -32,12 +32,11 @@
     right: 0;
 }
 
-.hide-selected .unity-collection-view__item--selected
-{
+.hide-selected .unity-collection-view__item--selected {
     opacity: 0;
 }
 
-.no-opacity-transition .unity-collection-view__item--selected{
+.no-opacity-transition .unity-collection-view__item--selected {
     transition: opacity 0s;
 }
 

@@ -59,12 +59,12 @@ Shader "UI/HoleMask"
                 diff.x *= _Aspect;
 
                 float dist = length(diff);
-                
+
                 if (dist < _Radius)
                 {
                     discard;
                 }
-                
+
                 return i.color;
             }
             ENDHLSL

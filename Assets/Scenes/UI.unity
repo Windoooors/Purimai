@@ -4353,6 +4353,7 @@ GameObject:
   - component: {fileID: 872429102}
   - component: {fileID: 872429105}
   - component: {fileID: 872429106}
+  - component: {fileID: 872429107}
   m_Layer: 5
   m_Name: UIManager
   m_TagString: Untagged
@@ -4434,10 +4435,15 @@ MonoBehaviour:
     type: 3}
   circleMaskPrefab: {fileID: 4228725156223193251, guid: 7f852274880a648179ca629db8506be8,
     type: 3}
+  pausePrefab: {fileID: 3296109719176517405, guid: 1790290ee8f03405991323e5d956fecc,
+    type: 3}
   resultManager: {fileID: 0}
   levelSelectionManager: {fileID: 0}
   settingsManager: {fileID: 0}
   circleMaskManager: {fileID: 0}
+  pauseManager: {fileID: 0}
+  portraitReferenceResolution: {x: 600, y: 600}
+  landscapeReferenceResolution: {x: 1024, y: 600}
 --- !u!114 &872429106
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4456,6 +4462,18 @@ MonoBehaviour:
   criticalSound: {fileID: 0}
   preparatoryBeatSound: {fileID: 0}
   slideSound: {fileID: 0}
+--- !u!114 &872429107
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 872429101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04e2f06f7eaf4c47b7ebaf384b6b0c8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.ScreenOrientationManager
 --- !u!1 &990677103
 GameObject:
   m_ObjectHideFlags: 0

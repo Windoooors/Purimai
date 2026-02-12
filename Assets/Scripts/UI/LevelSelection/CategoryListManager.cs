@@ -46,7 +46,7 @@ namespace UI.LevelSelection
 
         private void Update()
         {
-            _categoryList.Query<TemplateContainer>().ForEach(SetSingleItemStyle);
+            _categoryList?.Query<TemplateContainer>().ForEach(SetSingleItemStyle);
         }
 
         private void OnDestroy()
@@ -63,7 +63,7 @@ namespace UI.LevelSelection
 
         public void Initialize()
         {
-            _controlPanel = UIManager.GetInstance().uiDocument.rootVisualElement.Q<VisualElement>("control-panel");
+            _controlPanel = LevelSelectionManager.GetInstance().LevelSelectionTree.Q<VisualElement>("control-panel");
 
             _categoryPanel = _controlPanel.Q<VisualElement>("category-panel");
 

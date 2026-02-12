@@ -1,7 +1,7 @@
 using System;
 using Game.Notes.Taps;
-using UI.Settings;
 using UI.Result;
+using UI.Settings;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -170,6 +170,7 @@ namespace Game.Notes
                             else
                                 Scoreboard.LateCount++;
                         }
+
                         break;
                     case 2:
                         OffsetDisplayAnimator.SetTrigger(isFast ? "ShowFast" : "ShowLate");

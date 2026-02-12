@@ -1,14 +1,21 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/Resources/UI/USS/SettingsValues.uss?fileID=7433441132597879392&amp;guid=0d623f43b1d2b49d8b793f3fb5d32208&amp;type=3#SettingsValues" />
-    <ui:VisualElement name="selector-based-value-panel" class="value-panel" style="flex-grow: 1; width: 100%; align-content: auto; justify-content: center;">
-        <ui:Label text="Label" name="value-label" style="-unity-text-align: middle-center; font-size: 24px; -unity-font-definition: resource(&apos;Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF&apos;); margin-top: 0; min-height: 50px; max-height: 50px;" />
-        <ui:Button name="sub-button" class="button" style="background-image: none; position: absolute; width: 70px; height: 66px; background-color: rgba(188, 188, 188, 0); border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; left: -28px;">
-            <ui:VisualElement name="icon" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Textures/UI/Substract.png?fileID=2800000&amp;guid=5bcb9f616d5834f058a09d259378c455&amp;type=3#Substract&quot;); height: 26px; width: 26px; position: absolute; top: 16px; left: 22px; background-size: 125% 125%;" />
-            <ui:VisualElement name="cover" style="flex-grow: 1;" />
+<ui:UXML xmlns:ui="UnityEngine.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd"
+         editor-extension-mode="False">
+    <Style src="project://database/Assets/Resources/UI/USS/SettingsValues.uss?fileID=7433441132597879392&amp;guid=0d623f43b1d2b49d8b793f3fb5d32208&amp;type=3#SettingsValues"/>
+    <ui:VisualElement name="selector-based-value-panel" class="value-panel"
+                      style="flex-grow: 1; width: 100%; align-content: auto; justify-content: center;">
+        <ui:Label text="Label" name="value-label"
+                  style="-unity-text-align: middle-center; font-size: 24px; -unity-font-definition: resource(&apos;Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF&apos;); margin-top: 0; min-height: 50px; max-height: 50px;"/>
+        <ui:Button name="sub-button" class="button"
+                   style="background-image: none; position: absolute; width: 70px; height: 66px; background-color: rgba(188, 188, 188, 0); border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; left: -28px;">
+            <ui:VisualElement name="icon"
+                              style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Textures/UI/Substract.png?fileID=2800000&amp;guid=5bcb9f616d5834f058a09d259378c455&amp;type=3#Substract&quot;); height: 26px; width: 26px; position: absolute; top: 16px; left: 22px; background-size: 125% 125%;"/>
+            <ui:VisualElement name="cover" style="flex-grow: 1;"/>
         </ui:Button>
-        <ui:Button name="add-button" class="button" style="background-image: none; position: absolute; width: 70px; height: 66px; background-color: rgba(188, 188, 188, 0); border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; right: -18px;">
-            <ui:VisualElement name="icon" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Textures/UI/Add.png?fileID=2800000&amp;guid=e2892f112974a45d892d5a37a96a2736&amp;type=3#Add&quot;); height: 26px; width: 26px; position: absolute; top: 16px; left: 22px; background-size: 125% 125%;" />
-            <ui:VisualElement name="cover" style="flex-grow: 1; right: auto;" />
+        <ui:Button name="add-button" class="button"
+                   style="background-image: none; position: absolute; width: 70px; height: 66px; background-color: rgba(188, 188, 188, 0); border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; right: -18px;">
+            <ui:VisualElement name="icon"
+                              style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Textures/UI/Add.png?fileID=2800000&amp;guid=e2892f112974a45d892d5a37a96a2736&amp;type=3#Add&quot;); height: 26px; width: 26px; position: absolute; top: 16px; left: 22px; background-size: 125% 125%;"/>
+            <ui:VisualElement name="cover" style="flex-grow: 1; right: auto;"/>
         </ui:Button>
     </ui:VisualElement>
 </ui:UXML>

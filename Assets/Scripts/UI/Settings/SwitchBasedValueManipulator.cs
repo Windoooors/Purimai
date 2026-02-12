@@ -1,5 +1,4 @@
 using System.Linq;
-using UI.Settings;
 using UnityEngine.Localization;
 using UnityEngine.UIElements;
 
@@ -8,6 +7,9 @@ namespace UI.Settings
     public class SwitchBasedValueManipulator : Manipulator
     {
         private const int HoldingTimeThreshold = 500;
+        private readonly string _identifier;
+
+        private readonly SettingsItem _settingsItem;
         private Button _addButton;
 
         private int _currentValue;
@@ -15,14 +17,11 @@ namespace UI.Settings
         private bool _holding;
 
         private int _holdingTime;
-        private readonly string _identifier;
 
         private LocalizedString _localizedString;
 
         private IVisualElementScheduledItem _monitorTask;
         private bool _pressed;
-
-        private readonly SettingsItem _settingsItem;
         private Button _subButton;
 
         private Label _valueLabel;

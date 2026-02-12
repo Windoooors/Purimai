@@ -252,6 +252,22 @@ MonoBehaviour:
     m_Localized: Disabled
     m_Metadata:
       m_Items: []
+  - m_Id: 33741378298044416
+    m_Localized: Resume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33741522909257728
+    m_Localized: Retry
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33741653641519104
+    m_Localized: Levels
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33742021444231168
+    m_Localized: Paused
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

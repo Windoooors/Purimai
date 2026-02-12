@@ -1,5 +1,4 @@
 using System;
-using UI.Settings;
 using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Serialization;
@@ -16,7 +15,9 @@ namespace UI.Settings
         public VisualTreeAsset settingsTreeAsset;
         public VisualTreeAsset tabContentTreeAsset;
 
-        [FormerlySerializedAs("valueControllerTreeAsset")] public VisualTreeAsset switchBasedValueControllerTreeAsset;
+        [FormerlySerializedAs("valueControllerTreeAsset")]
+        public VisualTreeAsset switchBasedValueControllerTreeAsset;
+
         public VisualTreeAsset toggleBasedValueControllerTreeAsset;
         public VisualTreeAsset itemTreeAsset;
 
@@ -40,11 +41,6 @@ namespace UI.Settings
             UIManager.GetInstance().uiDocument?.rootVisualElement?.Remove(_settingsTree);
         }
 
-        private void InvokeEvent()
-        {
-            OnSettingsChanged?.Invoke();
-        }
-
         private void Initialize()
         {
             _root = UIManager.GetInstance().uiDocument.rootVisualElement;
@@ -65,11 +61,9 @@ namespace UI.Settings
 
             clickablePanel.RegisterCallback<PointerUpEvent>(e =>
             {
-                SettingsPool.SettingsChanged += InvokeEvent;
-
                 SettingsPool.Save();
 
-                SettingsPool.SettingsChanged = null;
+                OnSettingsChanged?.Invoke();
 
                 ClosePanel();
             });

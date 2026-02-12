@@ -1,93 +1,118 @@
-<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <ui:Template name="LevelItem" src="project://database/Assets/Resources/UI/UXML/LevelItem.uxml?fileID=9197481963319205126&amp;guid=b01da4bc8949941a6ae4e05510c4b2b3&amp;type=3#LevelItem" />
-    <Style src="project://database/Assets/Resources/UI/USS/Shared.uss?fileID=7433441132597879392&amp;guid=5933587f574ee4eefabbe2902975d699&amp;type=3#Shared" />
-    <Style src="project://database/Assets/Resources/UI/USS/Result/Result.uss?fileID=7433441132597879392&amp;guid=8f25d4f6e617849f093d311bac590938&amp;type=3#Result" />
+<ui:UXML xmlns:ui="UnityEngine.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd"
+         editor-extension-mode="False">
+    <ui:Template name="LevelItem"
+                 src="project://database/Assets/Resources/UI/UXML/LevelItem.uxml?fileID=9197481963319205126&amp;guid=b01da4bc8949941a6ae4e05510c4b2b3&amp;type=3#LevelItem"/>
+    <Style src="project://database/Assets/Resources/UI/USS/Shared.uss?fileID=7433441132597879392&amp;guid=5933587f574ee4eefabbe2902975d699&amp;type=3#Shared"/>
+    <Style src="project://database/Assets/Resources/UI/USS/Result/Result.uss?fileID=7433441132597879392&amp;guid=8f25d4f6e617849f093d311bac590938&amp;type=3#Result"/>
     <ui:VisualElement name="result-panel" class="result-panel">
-        <ui:VisualElement name="background" class="background" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0;" />
-        <ui:VisualElement name="background-mask" class="background-mask" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background-color: rgba(255, 255, 255, 0.78); background-image: url(&quot;project://database/Assets/Textures/UI/LevelSelection/SongCoverLeftGradientSlim.png?fileID=2800000&amp;guid=afd2c76008daf4e9ab6048c0d8aa6a2e&amp;type=3#SongCoverLeftGradientSlim&quot;);" />
+        <ui:VisualElement name="background" class="background"
+                          style="position: absolute; top: 0; left: 0; bottom: 0; right: 0;"/>
+        <ui:VisualElement name="background-mask" class="background-mask"
+                          style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background-color: rgba(255, 255, 255, 0.78); background-image: url(&quot;project://database/Assets/Textures/UI/LevelSelection/SongCoverLeftGradientSlim.png?fileID=2800000&amp;guid=afd2c76008daf4e9ab6048c0d8aa6a2e&amp;type=3#SongCoverLeftGradientSlim&quot;);"/>
         <ui:VisualElement name="song-cover-parent" class="song-cover-parent" style="width: 560px; height: 560px;">
-            <ui:VisualElement name="song-cover-shade" style="scale: 1 1; top: -190px; bottom: -210px; position: absolute; right: -35%; left: -30%;" />
-            <ui:VisualElement name="song-cover" class="song-cover" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0;" />
+            <ui:VisualElement name="song-cover-shade"
+                              style="scale: 1 1; top: -190px; bottom: -210px; position: absolute; right: -35%; left: -30%;"/>
+            <ui:VisualElement name="song-cover" class="song-cover"
+                              style="position: absolute; top: 0; left: 0; bottom: 0; right: 0;"/>
         </ui:VisualElement>
-        <ui:VisualElement name="early-late-panel" style="flex-grow: 1; position: absolute; top: 224px; left: 366px; -unity-font-definition: resource(&apos;Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF&apos;);">
-            <ui:Label text="Fast" name="early-title-label" class="stats-vertical-label" style="color: rgba(27, 27, 27, 0.5);" />
-            <ui:Label text="114514" name="early-label" class="stats-vertical-label" />
-            <ui:Label text="Late" name="late-title-label" class="stats-vertical-label" style="color: rgba(27, 27, 27, 0.5);" />
-            <ui:Label text="114514" name="late-label" class="stats-vertical-label" />
+        <ui:VisualElement name="early-late-panel"
+                          style="flex-grow: 1; position: absolute; top: 224px; left: 366px; -unity-font-definition: resource(&apos;Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF&apos;);">
+            <ui:Label text="Fast" name="early-title-label" class="stats-vertical-label"
+                      style="color: rgba(27, 27, 27, 0.5);"/>
+            <ui:Label text="114514" name="early-label" class="stats-vertical-label"/>
+            <ui:Label text="Late" name="late-title-label" class="stats-vertical-label"
+                      style="color: rgba(27, 27, 27, 0.5);"/>
+            <ui:Label text="114514" name="late-label" class="stats-vertical-label"/>
         </ui:VisualElement>
-        <ui:Label text="2026/2/8" name="player-name-label" style="color: rgba(27, 27, 27, 0.5); top: 533px; position: absolute; left: 31px; -unity-text-align: upper-right; -unity-font-definition: resource(&apos;Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF&apos;); text-overflow: ellipsis; width: 386px;" />
+        <ui:Label text="2026/2/8" name="player-name-label"
+                  style="color: rgba(27, 27, 27, 0.5); top: 533px; position: absolute; left: 31px; -unity-text-align: upper-right; -unity-font-definition: resource(&apos;Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF&apos;); text-overflow: ellipsis; width: 386px;"/>
         <ui:VisualElement name="safe-area" picking-mode="Ignore" class="safe-area" style="flex-grow: 1;">
             <ui:Button name="retry-button" class="button retry-button">
-                <ui:VisualElement style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Textures/UI/Result/RetryIcon.png?fileID=2800000&amp;guid=f8152c089e9a944bb9e5d869deae556a&amp;type=3#RetryIcon&quot;); position: absolute; width: 33px; height: 34px; top: 31px; left: 37px; display: flex; opacity: 1;" />
+                <ui:VisualElement
+                        style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Textures/UI/Result/RetryIcon.png?fileID=2800000&amp;guid=f8152c089e9a944bb9e5d869deae556a&amp;type=3#RetryIcon&quot;); position: absolute; width: 33px; height: 34px; top: 31px; left: 37px; display: flex; opacity: 1;"/>
             </ui:Button>
             <ui:Button name="get-back-button" class="button get-back-button">
-                <ui:VisualElement style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Textures/UI/Result/MenuIcon.png?fileID=2800000&amp;guid=57d904ed2c5c04c4b82de0ce3085b443&amp;type=3#MenuIcon&quot;); position: absolute; width: 33px; height: 34px; top: 31px; left: 39px; display: flex; opacity: 1;" />
+                <ui:VisualElement
+                        style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Textures/UI/Result/MenuIcon.png?fileID=2800000&amp;guid=57d904ed2c5c04c4b82de0ce3085b443&amp;type=3#MenuIcon&quot;); position: absolute; width: 33px; height: 34px; top: 31px; left: 39px; display: flex; opacity: 1;"/>
             </ui:Button>
             <ui:VisualElement name="stats-container" class="stats-container">
-                <ui:VisualElement name="vertical-header" style="flex-grow: 1; position: absolute; top: 34px; bottom: 0; left: 179px; width: 50px;">
-                    <ui:Label text="Total&#10;" name="label" class="stats-vertical-label header" />
-                    <ui:Label text="Tap" name="label" class="stats-vertical-label header" />
-                    <ui:Label text="Hold" name="label" class="stats-vertical-label header" />
-                    <ui:Label text="Slide&#10;" name="label" class="stats-vertical-label header" />
-                    <ui:Label text="Break&#10;" name="label" class="stats-vertical-label header" />
+                <ui:VisualElement name="vertical-header"
+                                  style="flex-grow: 1; position: absolute; top: 34px; bottom: 0; left: 179px; width: 50px;">
+                    <ui:Label text="Total&#10;" name="label" class="stats-vertical-label header"/>
+                    <ui:Label text="Tap" name="label" class="stats-vertical-label header"/>
+                    <ui:Label text="Hold" name="label" class="stats-vertical-label header"/>
+                    <ui:Label text="Slide&#10;" name="label" class="stats-vertical-label header"/>
+                    <ui:Label text="Break&#10;" name="label" class="stats-vertical-label header"/>
                 </ui:VisualElement>
-                <ui:VisualElement name="horizontal-header" style="flex-grow: 1; position: absolute; top: 5px; bottom: 119px; left: 148px; width: 427px; flex-direction: row-reverse;">
-                    <ui:Label text="MISS" name="label" class="stats-horizontal-label header" />
-                    <ui:Label text="GOOD" name="label" class="stats-horizontal-label header" />
-                    <ui:Label text="GREAT" name="label" class="stats-horizontal-label header" />
-                    <ui:Label text="PERFECT" name="label" class="stats-horizontal-label header" style="width: auto;" />
+                <ui:VisualElement name="horizontal-header"
+                                  style="flex-grow: 1; position: absolute; top: 5px; bottom: 119px; left: 148px; width: 427px; flex-direction: row-reverse;">
+                    <ui:Label text="MISS" name="label" class="stats-horizontal-label header"/>
+                    <ui:Label text="GOOD" name="label" class="stats-horizontal-label header"/>
+                    <ui:Label text="GREAT" name="label" class="stats-horizontal-label header"/>
+                    <ui:Label text="PERFECT" name="label" class="stats-horizontal-label header" style="width: auto;"/>
                 </ui:VisualElement>
-                <ui:VisualElement name="row-1" style="flex-grow: 1; position: absolute; top: 27px; bottom: 98px; left: 148px; width: 427px; flex-direction: row-reverse;">
-                    <ui:Label text="Total&#10;" name="label-1" class="stats-horizontal-label" />
-                    <ui:Label text="Tap" name="label-2" class="stats-horizontal-label" />
-                    <ui:Label text="Hold" name="label-3" class="stats-horizontal-label" />
-                    <ui:Label text="Slide&#10;" name="label-4" class="stats-horizontal-label" />
+                <ui:VisualElement name="row-1"
+                                  style="flex-grow: 1; position: absolute; top: 27px; bottom: 98px; left: 148px; width: 427px; flex-direction: row-reverse;">
+                    <ui:Label text="Total&#10;" name="label-1" class="stats-horizontal-label"/>
+                    <ui:Label text="Tap" name="label-2" class="stats-horizontal-label"/>
+                    <ui:Label text="Hold" name="label-3" class="stats-horizontal-label"/>
+                    <ui:Label text="Slide&#10;" name="label-4" class="stats-horizontal-label"/>
                 </ui:VisualElement>
-                <ui:VisualElement name="row-2" style="flex-grow: 1; position: absolute; top: 47.5px; bottom: 78px; left: 148px; width: 427px; flex-direction: row-reverse;">
-                    <ui:Label text="Total&#10;" name="label-1" class="stats-horizontal-label" />
-                    <ui:Label text="Tap" name="label-2" class="stats-horizontal-label" />
-                    <ui:Label text="Hold" name="label-3" class="stats-horizontal-label" />
-                    <ui:Label text="Slide&#10;" name="label-4" class="stats-horizontal-label" />
+                <ui:VisualElement name="row-2"
+                                  style="flex-grow: 1; position: absolute; top: 47.5px; bottom: 78px; left: 148px; width: 427px; flex-direction: row-reverse;">
+                    <ui:Label text="Total&#10;" name="label-1" class="stats-horizontal-label"/>
+                    <ui:Label text="Tap" name="label-2" class="stats-horizontal-label"/>
+                    <ui:Label text="Hold" name="label-3" class="stats-horizontal-label"/>
+                    <ui:Label text="Slide&#10;" name="label-4" class="stats-horizontal-label"/>
                 </ui:VisualElement>
-                <ui:VisualElement name="row-3" style="flex-grow: 1; position: absolute; top: 68px; bottom: auto; left: 148px; width: 427px; flex-direction: row-reverse; height: 30px;">
-                    <ui:Label text="Total&#10;" name="label-1" class="stats-horizontal-label" />
-                    <ui:Label text="Tap" name="label-2" class="stats-horizontal-label" />
-                    <ui:Label text="Hold" name="label-3" class="stats-horizontal-label" />
-                    <ui:Label text="Slide&#10;" name="label-4" class="stats-horizontal-label" />
+                <ui:VisualElement name="row-3"
+                                  style="flex-grow: 1; position: absolute; top: 68px; bottom: auto; left: 148px; width: 427px; flex-direction: row-reverse; height: 30px;">
+                    <ui:Label text="Total&#10;" name="label-1" class="stats-horizontal-label"/>
+                    <ui:Label text="Tap" name="label-2" class="stats-horizontal-label"/>
+                    <ui:Label text="Hold" name="label-3" class="stats-horizontal-label"/>
+                    <ui:Label text="Slide&#10;" name="label-4" class="stats-horizontal-label"/>
                 </ui:VisualElement>
-                <ui:VisualElement name="row-4" style="flex-grow: 1; position: absolute; top: 88.5px; bottom: auto; left: 148px; width: 427px; flex-direction: row-reverse; height: 30px;">
-                    <ui:Label text="Total&#10;" name="label-1" class="stats-horizontal-label" />
-                    <ui:Label text="Tap" name="label-2" class="stats-horizontal-label" />
-                    <ui:Label text="Hold" name="label-3" class="stats-horizontal-label" />
-                    <ui:Label text="Slide&#10;" name="label-4" class="stats-horizontal-label" />
+                <ui:VisualElement name="row-4"
+                                  style="flex-grow: 1; position: absolute; top: 88.5px; bottom: auto; left: 148px; width: 427px; flex-direction: row-reverse; height: 30px;">
+                    <ui:Label text="Total&#10;" name="label-1" class="stats-horizontal-label"/>
+                    <ui:Label text="Tap" name="label-2" class="stats-horizontal-label"/>
+                    <ui:Label text="Hold" name="label-3" class="stats-horizontal-label"/>
+                    <ui:Label text="Slide&#10;" name="label-4" class="stats-horizontal-label"/>
                 </ui:VisualElement>
-                <ui:VisualElement name="row-5" style="flex-grow: 1; position: absolute; top: 109px; bottom: 98px; left: 148px; width: 427px; flex-direction: row-reverse; height: 30px;">
-                    <ui:Label text="Total&#10;" name="label-1" class="stats-horizontal-label" />
-                    <ui:Label text="Tap" name="label-2" class="stats-horizontal-label" />
-                    <ui:Label text="Hold" name="label-3" class="stats-horizontal-label" />
-                    <ui:Label text="Slide&#10;" name="label-4" class="stats-horizontal-label" />
+                <ui:VisualElement name="row-5"
+                                  style="flex-grow: 1; position: absolute; top: 109px; bottom: 98px; left: 148px; width: 427px; flex-direction: row-reverse; height: 30px;">
+                    <ui:Label text="Total&#10;" name="label-1" class="stats-horizontal-label"/>
+                    <ui:Label text="Tap" name="label-2" class="stats-horizontal-label"/>
+                    <ui:Label text="Hold" name="label-3" class="stats-horizontal-label"/>
+                    <ui:Label text="Slide&#10;" name="label-4" class="stats-horizontal-label"/>
                 </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement name="total-score-container" class="score-container">
-                <ui:Label text="Total Score&#10;" name="score-title-label" class="header" style="position: absolute; top: 5px; left: 218.65px; -unity-text-align: upper-right;" />
-                <ui:Label text="114514" name="score-label" style="position: absolute; top: 24px; left: 179px; -unity-text-align: upper-right; width: 126px;" />
-                <ui:VisualElement name="horizontal-header" style="flex-grow: 1; position: absolute; top: 3px; bottom: 119px; left: 148px; width: 427px; flex-direction: row-reverse;">
-                    <ui:Label text="2500" name="label" class="stats-horizontal-label header" />
-                    <ui:Label text="2550" name="label" class="stats-horizontal-label header" />
-                    <ui:Label text="2600" name="label" class="stats-horizontal-label header" />
+                <ui:Label text="Total Score&#10;" name="score-title-label" class="header"
+                          style="position: absolute; top: 5px; left: 218.65px; -unity-text-align: upper-right;"/>
+                <ui:Label text="114514" name="score-label"
+                          style="position: absolute; top: 24px; left: 179px; -unity-text-align: upper-right; width: 126px;"/>
+                <ui:VisualElement name="horizontal-header"
+                                  style="flex-grow: 1; position: absolute; top: 3px; bottom: 119px; left: 148px; width: 427px; flex-direction: row-reverse;">
+                    <ui:Label text="2500" name="label" class="stats-horizontal-label header"/>
+                    <ui:Label text="2550" name="label" class="stats-horizontal-label header"/>
+                    <ui:Label text="2600" name="label" class="stats-horizontal-label header"/>
                 </ui:VisualElement>
-                <ui:VisualElement name="row-1" style="flex-grow: 1; position: absolute; top: 22px; bottom: 98px; left: 148px; width: 427px; flex-direction: row-reverse;">
-                    <ui:Label text="0" name="label-1" class="stats-horizontal-label" />
-                    <ui:Label text="1" name="label-2" class="stats-horizontal-label" />
-                    <ui:Label text="2" name="label-3" class="stats-horizontal-label" />
+                <ui:VisualElement name="row-1"
+                                  style="flex-grow: 1; position: absolute; top: 22px; bottom: 98px; left: 148px; width: 427px; flex-direction: row-reverse;">
+                    <ui:Label text="0" name="label-1" class="stats-horizontal-label"/>
+                    <ui:Label text="1" name="label-2" class="stats-horizontal-label"/>
+                    <ui:Label text="2" name="label-3" class="stats-horizontal-label"/>
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement name="white-out-mask-between" class="white-out-mask-between" />
+        <ui:VisualElement name="white-out-mask-between" class="white-out-mask-between"/>
         <ui:VisualElement name="safe-area" picking-mode="Ignore" class="safe-area" style="flex-grow: 1;">
-            <UI.ScoreContentPanel name="score-content-panel" AllowDifficultyChange="false" allow-difficulty-change="false" class="score-content-panel" />
-            <ui:Instance template="LevelItem" name="song-item-container" class="unity-collection-view__item--selected song-item-container" />
+            <UI.ScoreContentPanel name="score-content-panel" AllowDifficultyChange="false"
+                                  allow-difficulty-change="false" class="score-content-panel"/>
+            <ui:Instance template="LevelItem" name="song-item-container"
+                         class="unity-collection-view__item--selected song-item-container"/>
         </ui:VisualElement>
-        <ui:VisualElement name="white-out-mask" class="white-out-mask" />
+        <ui:VisualElement name="white-out-mask" class="white-out-mask"/>
     </ui:VisualElement>
 </ui:UXML>

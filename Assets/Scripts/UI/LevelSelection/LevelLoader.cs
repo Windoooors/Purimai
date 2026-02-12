@@ -19,6 +19,8 @@ namespace UI.LevelSelection
 
         public Action PlayerPrefsSavingProcedure;
 
+        public Action SceneLoaded;
+
         public static LevelLoader GetInstance =>
             _instance == null
                 ? FindObjectsByType<LevelLoader>(FindObjectsInactive.Include, FindObjectsSortMode.None)[^1]
@@ -57,35 +59,35 @@ namespace UI.LevelSelection
         public void EnterLevel(Maidata maidata, int difficultyIndex)
         {
             SimulatedSensor.Clear();
-            
+
             Scoreboard.Reset();
-            
+
             _maidata = maidata;
             _levelIndex = difficultyIndex;
 
             StartCoroutine(maidata.LoadSongClip());
             Task.Run(maidata.GenerateBlurredCover);
 
+            ScreenOrientationManager.Instance.EnablePortrait();
+
             PlayerPrefsSavingProcedure?.Invoke();
-            
+
             _enteringLevel = true;
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
-            
+
             AudioManager.GetInstance().AudioSourcePool.Clear();
 
             ChartPlayer.Instance.InitializeLevel(_maidata, _levelIndex);
-            
+
             Initialize();
-            
+
             SceneLoaded?.Invoke();
-            
+
             UIManager.GetInstance().ShowCircleMask();
         }
-
-        public Action SceneLoaded;
     }
 }

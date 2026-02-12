@@ -83,13 +83,19 @@ namespace UI
             Genre = genreMatch.Success ? genreMatch.Groups[1].Value : "Unknown";
             Bpm = bpmMatch.Success ? float.Parse(bpmMatch.Groups[1].Value) : -1;
             FirstNoteTime = firstNoteTimeMatch.Success ? float.Parse(firstNoteTimeMatch.Groups[1].Value) : 0;
-            
+
             AddUsedCharacters(Title);
             AddUsedCharacters(Artist);
             AddUsedCharacters(MainChartDesigner);
             AddUsedCharacters(Genre);
 
             var chartList = new List<Chart>();
+
+            if (!HasChart(maidata))
+            {
+                Charts = Array.Empty<Chart>();
+                return;
+            }
 
             var i = 0;
 
@@ -160,6 +166,48 @@ namespace UI
             }
         }
 
+        private bool HasChart(string maidataString)
+        {
+            if (string.IsNullOrEmpty(maidataString)) return false;
+
+            var span = maidataString.AsSpan();
+            var pos = 0;
+
+            // 循环查找关键字 "&inote_"
+            while ((pos = maidataString.IndexOf("&inote_", pos, StringComparison.Ordinal)) != -1)
+            {
+                var numStart = pos + 7; // "&inote_".Length
+
+                // 边界检查：确保关键字后至少还有一个字符（数字）
+                if (numStart < span.Length)
+                    // 模式匹配：[数字]+=
+                    // 1. 紧随其后的第一个字符必须是数字
+                    if (char.IsDigit(span[numStart]))
+                    {
+                        // 2. 寻找后续的 '='
+                        var eqIdx = maidataString.IndexOf('=', numStart);
+                        if (eqIdx != -1)
+                        {
+                            // 3. 验证数字与 '=' 之间是否全是数字 (符合 \d+)
+                            var isValidNumber = true;
+                            for (var j = numStart + 1; j < eqIdx; j++)
+                                if (!char.IsDigit(span[j]))
+                                {
+                                    isValidNumber = false;
+                                    break;
+                                }
+
+                            if (isValidNumber) return true; // 找到第一个符合条件的就立刻退出
+                        }
+                    }
+
+                // 未匹配成功，跳过当前前缀继续寻找下一个
+                pos += 7;
+            }
+
+            return false;
+        }
+
         public bool TryGetLevel(string input, int index, out string level)
         {
             return TryGetField(input, $"&lv_{index}=", out level);
@@ -203,12 +251,12 @@ namespace UI
             SongCoverDecodedImage = null;
             CoverDataLoaded = false;
         }
-        
+
         public void UnloadSong()
         {
             if (SongAudioClip)
                 MonoBehaviour.Destroy(SongAudioClip);
-            
+
             SongAudioClip = null;
             SongLoaded = false;
         }
@@ -255,13 +303,13 @@ namespace UI
 
             var contentStart = startIndex + startToken.Length;
             var endIndex = -1;
-            
+
             var eSearch = contentStart;
             while (true)
             {
                 var eIndex = maidataString.IndexOf("E", eSearch, StringComparison.Ordinal);
                 if (eIndex < 0) break;
-                
+
                 var nextPos = eIndex + 1;
                 if (nextPos >= maidataString.Length || maidataString[nextPos] == '\r' || maidataString[nextPos] == '\n')
                 {
@@ -271,13 +319,13 @@ namespace UI
 
                 eSearch = nextPos;
             }
-            
+
             if (endIndex == -1)
             {
                 var nextInotePos = FindNextHigherInote(maidataString, contentStart, i);
                 if (nextInotePos != -1) endIndex = nextInotePos;
             }
-            
+
             if (endIndex == -1)
             {
                 chartString = maidataString.Substring(contentStart).Trim();
@@ -310,7 +358,7 @@ namespace UI
                 return -1;
             }
         }
-        
+
         public void LoadSongCover()
         {
             if (_loadingCover)
