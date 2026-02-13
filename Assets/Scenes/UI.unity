@@ -169,7 +169,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   sensorId: B3
-  scaleSettingsIdentifier: game.sensor_radius.area.b
+  scaleSettingsIdentifier: sensor_radius.area.b
 --- !u!114 &1747444
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -475,7 +475,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   sensorId: A7
-  scaleSettingsIdentifier: game.sensor_radius.area.a
+  scaleSettingsIdentifier: sensor_radius.area.a
 --- !u!114 &41661429
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -890,7 +890,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   sensorId: A4
-  scaleSettingsIdentifier: game.sensor_radius.area.a
+  scaleSettingsIdentifier: sensor_radius.area.a
 --- !u!114 &78388206
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1950,7 +1950,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   sensorId: A5
-  scaleSettingsIdentifier: game.sensor_radius.area.a
+  scaleSettingsIdentifier: sensor_radius.area.a
 --- !u!114 &229685928
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3453,7 +3453,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   sensorId: B4
-  scaleSettingsIdentifier: game.sensor_radius.area.b
+  scaleSettingsIdentifier: sensor_radius.area.b
 --- !u!114 &472162250
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3807,7 +3807,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   sensorId: B8
-  scaleSettingsIdentifier: game.sensor_radius.area.b
+  scaleSettingsIdentifier: sensor_radius.area.b
 --- !u!114 &693175539
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4113,7 +4113,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   sensorId: A6
-  scaleSettingsIdentifier: game.sensor_radius.area.a
+  scaleSettingsIdentifier: sensor_radius.area.a
 --- !u!114 &803275085
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4814,7 +4814,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   sensorId: B5
-  scaleSettingsIdentifier: game.sensor_radius.area.b
+  scaleSettingsIdentifier: sensor_radius.area.b
 --- !u!114 &1039366672
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5382,7 +5382,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   sensorId: B2
-  scaleSettingsIdentifier: game.sensor_radius.area.b
+  scaleSettingsIdentifier: sensor_radius.area.b
 --- !u!114 &1226605925
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5978,7 +5978,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   sensorId: B6
-  scaleSettingsIdentifier: game.sensor_radius.area.b
+  scaleSettingsIdentifier: sensor_radius.area.b
 --- !u!114 &1318124534
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7126,7 +7126,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   sensorId: A8
-  scaleSettingsIdentifier: game.sensor_radius.area.a
+  scaleSettingsIdentifier: sensor_radius.area.a
 --- !u!114 &1476120032
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7402,7 +7402,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   sensorId: A3
-  scaleSettingsIdentifier: game.sensor_radius.area.a
+  scaleSettingsIdentifier: sensor_radius.area.a
 --- !u!114 &1528290482
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7680,7 +7680,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   sensorId: C
-  scaleSettingsIdentifier: game.sensor_radius.area.c
+  scaleSettingsIdentifier: sensor_radius.area.c
 --- !u!114 &1582672039
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7978,7 +7978,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   sensorId: B7
-  scaleSettingsIdentifier: game.sensor_radius.area.b
+  scaleSettingsIdentifier: sensor_radius.area.b
 --- !u!114 &1709129640
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8574,7 +8574,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   sensorId: B1
-  scaleSettingsIdentifier: game.sensor_radius.area.b
+  scaleSettingsIdentifier: sensor_radius.area.b
 --- !u!114 &1863957857
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9142,7 +9142,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   sensorId: A1
-  scaleSettingsIdentifier: game.sensor_radius.area.a
+  scaleSettingsIdentifier: sensor_radius.area.a
 --- !u!114 &1958122877
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9964,7 +9964,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 1
   sensorId: A2
-  scaleSettingsIdentifier: game.sensor_radius.area.a
+  scaleSettingsIdentifier: sensor_radius.area.a
 --- !u!114 &2094755289
 MonoBehaviour:
   m_ObjectHideFlags: 0

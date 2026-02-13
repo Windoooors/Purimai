@@ -16,7 +16,7 @@ namespace UI.InGame
 
         private void Start()
         {
-            _achievementType = (AchievementType)SettingsPool.GetValue("scoring_methods.achievement_type");
+            _achievementType = (AchievementType)SettingsPool.GetValue("achievement_type");
         }
 
         private void Update()
@@ -54,7 +54,7 @@ namespace UI.InGame
 
         private void OnEnable()
         {
-            _settingsIndex = SettingsPool.GetValue("scoring_methods.score_indicator_content");
+            _settingsIndex = SettingsPool.GetValue("score_indicator_content");
         }
     }
 }

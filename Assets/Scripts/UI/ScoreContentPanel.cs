@@ -129,7 +129,7 @@ namespace UI
             var chartButton = _chartBackground.Q<Button>();
             chartButton.clicked += ChangeDifficulty;
 
-            _groupByRule = SettingsPool.GetValue("song_list.group_rule") switch
+            _groupByRule = SettingsPool.GetValue("group_rule") switch
             {
                 0 => LevelSelectionManager.SortingRules.Alphabet,
                 _ => LevelSelectionManager.SortingRules.Difficulty
@@ -146,7 +146,7 @@ namespace UI
 
         public void SetScoreData(ChartRankData data, int difficultyIndex)
         {
-            _groupByRule = SettingsPool.GetValue("song_list.group_rule") switch
+            _groupByRule = SettingsPool.GetValue("group_rule") switch
             {
                 0 => LevelSelectionManager.SortingRules.Alphabet,
                 _ => LevelSelectionManager.SortingRules.Difficulty
@@ -167,8 +167,8 @@ namespace UI
 
             var levelAchievements = levelRankData.LevelAchievements;
 
-            var useDxRatingSystem = SettingsPool.GetValue("scoring_methods.achievement_type") == 0;
-            var useScore = SettingsPool.GetValue("scoring_methods.score_indicator_type") == 0;
+            var useDxRatingSystem = SettingsPool.GetValue("achievement_type") == 0;
+            var useScore = SettingsPool.GetValue("score_indicator_type") == 0;
 
             _scoreContentPanel.style.display = DisplayStyle.Flex;
             _scoreContentPanel.style.opacity = 1;
@@ -220,7 +220,7 @@ namespace UI
 
         public void SetChartInformationData(Maidata maidata, int difficultyIndex)
         {
-            _groupByRule = SettingsPool.GetValue("song_list.group_rule") switch
+            _groupByRule = SettingsPool.GetValue("group_rule") switch
             {
                 0 => LevelSelectionManager.SortingRules.Alphabet,
                 _ => LevelSelectionManager.SortingRules.Difficulty

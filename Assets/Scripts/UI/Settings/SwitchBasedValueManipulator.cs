@@ -29,7 +29,7 @@ namespace UI.Settings
         public SwitchBasedValueManipulator(string identifier)
         {
             _identifier = identifier;
-            var matchedCategory = SettingsItems.Settings.ToList().Find(x => identifier.StartsWith(x.Identifier));
+            var matchedCategory = SettingsItems.Settings.ToList().Find(x => x.Items.Exists(y => y.Identifier == identifier));
             _settingsItem = matchedCategory.Items.ToList().Find(x => x.Identifier == identifier);
         }
 

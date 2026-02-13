@@ -162,7 +162,7 @@ namespace UI
             var maxRefreshRate = Screen.currentResolution.refreshRateRatio;
 #endif
 
-            var refreshRateValue = SettingsPool.GetValue("graphics.framerate_limiter");
+            var refreshRateValue = SettingsPool.GetValue("framerate_limiter");
             //var vsyncValue = SettingsPool.GetValue("general.vsync");
 
             QualitySettings.vSyncCount = 0;

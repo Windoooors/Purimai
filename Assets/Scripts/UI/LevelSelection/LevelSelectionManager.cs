@@ -153,7 +153,7 @@ namespace UI.LevelSelection
 
                 _songPreviewAudioSourceHandler.Play();
 
-                var volume = SettingsPool.GetValue("audio.volume.song") / 10f;
+                var volume = SettingsPool.GetValue("volume.song") / 10f;
 
                 _songPreviewAudioSourceHandler.SetVolume(volume);
             }
@@ -182,7 +182,7 @@ namespace UI.LevelSelection
 
         private void ChangeVolume()
         {
-            var volume = SettingsPool.GetValue("audio.volume.song") / 10f;
+            var volume = SettingsPool.GetValue("volume.song") / 10f;
 
             _songPreviewAudioSourceHandler?.SetVolume(volume);
         }
@@ -404,7 +404,7 @@ namespace UI.LevelSelection
 
         private void InitializeGroupingRule()
         {
-            var newGroupByRule = SettingsPool.GetValue("song_list.group_rule") switch
+            var newGroupByRule = SettingsPool.GetValue("group_rule") switch
             {
                 0 => SortingRules.Alphabet,
                 1 => SortingRules.Difficulty,
@@ -503,13 +503,13 @@ namespace UI.LevelSelection
 
         private void ChangeGroupingRule()
         {
-            groupByRule = SettingsPool.GetValue("song_list.group_rule") switch
+            groupByRule = SettingsPool.GetValue("group_rule") switch
             {
                 0 => SortingRules.Alphabet,
                 _ => SortingRules.Difficulty
             };
 
-            SettingsPool.SetValue("song_list.group_rule", groupByRule is SortingRules.Alphabet ? 1 : 0);
+            SettingsPool.SetValue("group_rule", groupByRule is SortingRules.Alphabet ? 1 : 0);
 
             SettingsPool.Save();
 

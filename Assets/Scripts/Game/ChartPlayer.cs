@@ -90,9 +90,9 @@ namespace Game
 
             ScreenOrientationManager.Instance.ScreenChanged += UpdateCameraSize;
 
-            judgeDelay = SettingsPool.GetValue("gameplay.judge_delay");
-            flowSpeed = SettingsPool.GetValue("gameplay.flow_speed") * 0.25f + 1;
-            slideAppearanceDelay = (SettingsPool.GetValue("gameplay.slide_delay") - 10) / 10f;
+            judgeDelay = SettingsPool.GetValue("input_delay");
+            flowSpeed = SettingsPool.GetValue("flow_speed") * 0.25f + 1;
+            slideAppearanceDelay = (SettingsPool.GetValue("slide_appearance_delay") - 10) / 10f;
 
             slideJudgeDisplayAnimationDuration = (int)(judgeDisplayAnimationClip.length * 1000);
 
@@ -103,8 +103,8 @@ namespace Game
 
             _time = -_generalPlaybackDelayInSeconds;
 
-            _criticalSoundVolume = SettingsPool.GetValue("audio.volume.critical_sound") / 10f;
-            _songVolume = SettingsPool.GetValue("audio.volume.song") / 10f;
+            _criticalSoundVolume = SettingsPool.GetValue("volume.cue_sound") / 10f;
+            _songVolume = SettingsPool.GetValue("volume.song") / 10f;
 
             UpdateCameraSize();
         }
@@ -162,10 +162,10 @@ namespace Game
 
             _criticalSoundIndex = NoteGenerator.GetInstance.criticalTimeList.FindLastIndex(x =>
                 x < _time * 1000
-            );
+            ) + 1;
 
-            if (_criticalSoundIndex < 0)
-                _criticalSoundIndex = 0;
+            if (_criticalSoundIndex >= NoteGenerator.GetInstance.criticalTimeList.Count)
+                _criticalSoundIndex = NoteGenerator.GetInstance.criticalTimeList.Count;
 
             _songPlaybackAudioSourceHandler.Pause();
 
@@ -220,7 +220,7 @@ namespace Game
 
         private bool TryLoadVideo(string path)
         {
-            if (path == "" || SettingsPool.GetValue("graphics.background_video_playback") == 0)
+            if (path == "" || SettingsPool.GetValue("background_video_playback") == 0)
                 return false;
 
             _chartHasVideo = true;
@@ -407,7 +407,7 @@ namespace Game
 
             songClip = maidata.SongAudioClip;
 
-            var useBlurredCover = SettingsPool.GetValue("graphics.blurred_cover") != 0;
+            var useBlurredCover = SettingsPool.GetValue("blurred_cover") != 0;
 
             if (!TryLoadVideo(maidata.PvPath))
             {
@@ -424,7 +424,7 @@ namespace Game
 
             InitializeCircleColor(difficultyIndex - 1, maidata.IsUtage);
 
-            var darkness = SettingsPool.GetValue("graphics.background_brightness") switch
+            var darkness = SettingsPool.GetValue("background_brightness") switch
             {
                 0 => 1f,
                 1 => 0.7f,

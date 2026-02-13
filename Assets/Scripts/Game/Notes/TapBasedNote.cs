@@ -62,7 +62,7 @@ namespace Game.Notes
 
         private void Start()
         {
-            IsAdxFlowSpeedStyle = SettingsPool.GetValue("gameplay.flow_speed_type") == 0;
+            IsAdxFlowSpeedStyle = SettingsPool.GetValue("flow_speed_type") == 0;
 
             if (IsAdxFlowSpeedStyle)
                 _timeOnScreenWithBasicSpeed = 2.8f;
@@ -155,7 +155,7 @@ namespace Game.Notes
 
             if (judgeState is not JudgeState.CriticalPerfect and not JudgeState.Miss)
             {
-                var settings = SettingsPool.GetValue("gameplay.offset_display_level");
+                var settings = SettingsPool.GetValue("fast_late_display_level");
 
                 switch (settings)
                 {

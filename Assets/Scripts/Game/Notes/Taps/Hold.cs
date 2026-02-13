@@ -290,7 +290,7 @@ namespace Game.Notes.Taps
 
             if (_headJudgeState is not JudgeState.CriticalPerfect and not JudgeState.Miss)
             {
-                var settings = SettingsPool.GetValue("gameplay.offset_display_level");
+                var settings = SettingsPool.GetValue("fast_late_display_level");
 
                 switch (settings)
                 {

@@ -20,11 +20,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 203246526464
-    m_Key: settings.song_list.group_rule
-    m_Metadata:
-      m_Items: []
-  - m_Id: 246800179200
-    m_Key: settings.song_list.sort_rule
+    m_Key: settings.group_rule
     m_Metadata:
       m_Items: []
   - m_Id: 314827595776
@@ -32,195 +28,187 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 328744296448
-    m_Key: settings.gameplay.flow_speed_type
+    m_Key: settings.flow_speed_type
     m_Metadata:
       m_Items: []
   - m_Id: 361648611328
-    m_Key: settings.gameplay.flow_speed
+    m_Key: settings.flow_speed
     m_Metadata:
       m_Items: []
   - m_Id: 410050879488
-    m_Key: settings.gameplay.slide_delay
+    m_Key: settings.slide_appearance_delay
     m_Metadata:
       m_Items: []
   - m_Id: 17816471199744
-    m_Key: settings.gameplay.flow_speed_type.astro_dx
+    m_Key: settings.flow_speed_type.astro_dx
     m_Metadata:
       m_Items: []
   - m_Id: 17930619183104
-    m_Key: settings.gameplay.flow_speed_type.maimai
-    m_Metadata:
-      m_Items: []
-  - m_Id: 18156478259200
-    m_Key: settings.song_list.sort_rule.achievement
-    m_Metadata:
-      m_Items: []
-  - m_Id: 17963485749248
-    m_Key: settings.song_list.sort_rule.alphabet
+    m_Key: settings.flow_speed_type.maimai
     m_Metadata:
       m_Items: []
   - m_Id: 18914502238208
-    m_Key: settings.song_list.group_rule.difficulty
+    m_Key: settings.group_rule.difficulty
     m_Metadata:
       m_Items: []
   - m_Id: 19025345110016
-    m_Key: settings.song_list.group_rule.alphabet
+    m_Key: settings.group_rule.alphabet
     m_Metadata:
       m_Items: []
   - m_Id: 32093550665728
-    m_Key: settings.gameplay.delay
+    m_Key: settings.audio_delay
     m_Metadata:
       m_Items: []
   - m_Id: 280253732741120
-    m_Key: settings.gameplay.judge_delay
+    m_Key: settings.input_delay
     m_Metadata:
       m_Items: []
   - m_Id: 2200956375654400
-    m_Key: settings.graphics.blurred_cover
+    m_Key: settings.blurred_cover
     m_Metadata:
       m_Items: []
   - m_Id: 2201042975449088
-    m_Key: settings.graphics.blurred_cover.none
+    m_Key: settings.blurred_cover.none
     m_Metadata:
       m_Items: []
   - m_Id: 2201060729937920
-    m_Key: settings.graphics.blurred_cover.more_blurred
+    m_Key: settings.blurred_cover.more_blurred
     m_Metadata:
       m_Items: []
   - m_Id: 2491667327213568
-    m_Key: settings.scoring_methods.score_indicator_content
+    m_Key: settings.score_indicator_content
     m_Metadata:
       m_Items: []
   - m_Id: 2492051517071360
-    m_Key: settings.scoring_methods.score_indicator_content.none
+    m_Key: settings.score_indicator_content.none
     m_Metadata:
       m_Items: []
   - m_Id: 2492085209915392
-    m_Key: settings.scoring_methods.score_indicator_content.combo
+    m_Key: settings.score_indicator_content.combo
     m_Metadata:
       m_Items: []
   - m_Id: 2492269549576192
-    m_Key: settings.scoring_methods.score_indicator_content.achievement
+    m_Key: settings.score_indicator_content.achievement
     m_Metadata:
       m_Items: []
   - m_Id: 2506586365878272
-    m_Key: settings.scoring_methods.score_indicator_content.deducted_achievement
+    m_Key: settings.score_indicator_content.deducted_achievement
     m_Metadata:
       m_Items: []
   - m_Id: 5839053164371968
-    m_Key: settings.scoring_methods.score_indicator_content.score
+    m_Key: settings.score_indicator_content.score
     m_Metadata:
       m_Items: []
   - m_Id: 5838749295435776
-    m_Key: settings.scoring_methods.score_indicator_content.deducted_score
+    m_Key: settings.score_indicator_content.deducted_score
     m_Metadata:
       m_Items: []
   - m_Id: 3121485303504896
-    m_Key: settings.graphics.framerate_limiter
+    m_Key: settings.framerate_limiter
     m_Metadata:
       m_Items: []
   - m_Id: 4009813037015040
-    m_Key: settings.gameplay.sensor_radius
+    m_Key: settings.sensor_radius
     m_Metadata:
       m_Items: []
   - m_Id: 5837558100516864
-    m_Key: settings.gameplay.sensor_radius.area.a
+    m_Key: settings.sensor_radius.area.a
     m_Metadata:
       m_Items: []
   - m_Id: 5837577113296896
-    m_Key: settings.gameplay.sensor_radius.area.b
+    m_Key: settings.sensor_radius.area.b
     m_Metadata:
       m_Items: []
   - m_Id: 5837590254051328
-    m_Key: settings.gameplay.sensor_radius.area.c
+    m_Key: settings.sensor_radius.area.c
     m_Metadata:
       m_Items: []
   - m_Id: 7561223791960064
-    m_Key: settings.scoring_methods.achievement_type
+    m_Key: settings.achievement_type
     m_Metadata:
       m_Items: []
   - m_Id: 7623114899841024
-    m_Key: settings.scoring_methods.score_indicator_type
+    m_Key: settings.score_indicator_type
     m_Metadata:
       m_Items: []
   - m_Id: 7623446728007680
-    m_Key: settings.scoring_methods.score_indicator_type.achievement
+    m_Key: settings.score_indicator_type.achievement
     m_Metadata:
       m_Items: []
   - m_Id: 7623505725087744
-    m_Key: settings.scoring_methods.score_indicator_type.score
+    m_Key: settings.score_indicator_type.score
     m_Metadata:
       m_Items: []
   - m_Id: 12684111637372928
-    m_Key: settings.audio.volume.song
+    m_Key: settings.volume.song
     m_Metadata:
       m_Items: []
   - m_Id: 12684168176590848
-    m_Key: settings.audio.volume.tap
+    m_Key: settings.volume.tap
     m_Metadata:
       m_Items: []
   - m_Id: 12684299626078208
-    m_Key: settings.audio.volume.break
+    m_Key: settings.volume.break
     m_Metadata:
       m_Items: []
   - m_Id: 12684403716120576
-    m_Key: settings.audio.volume.slide
+    m_Key: settings.volume.slide
     m_Metadata:
       m_Items: []
   - m_Id: 12684929446961152
-    m_Key: settings.audio.volume.critical_sound
+    m_Key: settings.volume.cue_sound
     m_Metadata:
       m_Items: []
   - m_Id: 15599568048611328
-    m_Key: settings.graphics.background_video_playback
+    m_Key: settings.background_video_playback
     m_Metadata:
       m_Items: []
   - m_Id: 27093701846097920
-    m_Key: settings.gameplay.offset_display_level
+    m_Key: settings.fast_late_display_level
     m_Metadata:
       m_Items: []
   - m_Id: 27093840451067904
-    m_Key: settings.gameplay.offset_display_level.none
+    m_Key: settings.fast_late_display_level.none
     m_Metadata:
       m_Items: []
   - m_Id: 27093869765058560
-    m_Key: settings.gameplay.offset_display_level.non_perfect
+    m_Key: settings.fast_late_display_level.non_perfect
     m_Metadata:
       m_Items: []
   - m_Id: 27093955085590528
-    m_Key: settings.gameplay.offset_display_level.non_crit_perfect
+    m_Key: settings.fast_late_display_level.non_crit_perfect
     m_Metadata:
       m_Items: []
   - m_Id: 27109958230204416
-    m_Key: settings.graphics.blurred_cover.most_blurred
+    m_Key: settings.blurred_cover.most_blurred
     m_Metadata:
       m_Items: []
   - m_Id: 27110306596511744
-    m_Key: settings.graphics.background_brightness
+    m_Key: settings.background_brightness
     m_Metadata:
       m_Items: []
   - m_Id: 27110427027562496
-    m_Key: settings.graphics.background_brightness.darkest
+    m_Key: settings.background_brightness.darkest
     m_Metadata:
       m_Items: []
   - m_Id: 27110481939390464
-    m_Key: settings.graphics.background_brightness.darker
+    m_Key: settings.background_brightness.darker
     m_Metadata:
       m_Items: []
   - m_Id: 27110511689588736
-    m_Key: settings.graphics.background_brightness.dark
+    m_Key: settings.background_brightness.dark
     m_Metadata:
       m_Items: []
   - m_Id: 27110635220230144
-    m_Key: settings.graphics.background_brightness.bright
+    m_Key: settings.background_brightness.bright
     m_Metadata:
       m_Items: []
   - m_Id: 27110673069629440
-    m_Key: settings.graphics.background_brightness.brighter
+    m_Key: settings.background_brightness.brighter
     m_Metadata:
       m_Items: []
   - m_Id: 27110701209214976
-    m_Key: settings.graphics.background_brightness.brightest
+    m_Key: settings.background_brightness.brightest
     m_Metadata:
       m_Items: []
   - m_Id: 30143274743226368

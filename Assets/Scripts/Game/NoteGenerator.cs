@@ -65,7 +65,7 @@ namespace Game
 
             _slideOrder = 0;
 
-            var audioOffset = SettingsPool.GetValue("gameplay.delay") / 1000f;
+            var audioOffset = SettingsPool.GetValue("audio_delay") / 1000f;
 
             var criticalTimeHashSet = new HashSet<int>();
 

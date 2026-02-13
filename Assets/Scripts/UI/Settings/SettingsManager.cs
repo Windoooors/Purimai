@@ -102,6 +102,8 @@ namespace UI.Settings
 
                 scrollView.verticalScrollerVisibility = ScrollerVisibility.Hidden;
 
+                scrollView.touchScrollBehavior = ScrollView.TouchScrollBehavior.Elastic;
+
                 listView.bindItem += (element, i) =>
                 {
                     var userData = new ItemUserData();

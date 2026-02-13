@@ -23,11 +23,6 @@
     transition-delay: 0s, 0s, 0s;
 }
 
-.song-cover-parent {
-    right: -300px;
-    transition: all ease-in-cubic 0.5s;
-}
-
 .white-out-mask {
     display: flex;
     opacity: 1;
@@ -35,6 +30,6 @@
 }
 
 .score-content-panel {
-    right: -700px;
+    right: -400px;
     transition: all ease-in-cubic 0.5s;
 }

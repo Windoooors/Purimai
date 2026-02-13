@@ -201,7 +201,7 @@ MonoBehaviour:
     - line: '|     iPhone: 0'
     - line: '|     tvOS: 0'
     - line: '|   overrideDefaultApplicationIdentifier: 0'
-    - line: '|   AndroidBundleVersionCode: 24'
+    - line: '|   AndroidBundleVersionCode: 25'
     - line: '|   AndroidMinSdkVersion: 23'
     - line: '|   AndroidTargetSdkVersion: 36'
     - line: '|   AndroidPreferredInstallLocation: 1'

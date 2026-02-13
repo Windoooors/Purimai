@@ -1,0 +1,18 @@
+.list-parent {
+    flex-grow: 1;
+    top: 0;
+    left: -700px;
+    right: auto;
+    width: 600px;
+    bottom: 0;
+    overflow: visible;
+    position: absolute;
+}
+
+.song-cover-parent {
+    right: -300px;
+}
+
+.score-content-panel {
+    right: -400px;
+}

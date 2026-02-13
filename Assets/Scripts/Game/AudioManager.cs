@@ -234,14 +234,14 @@ namespace Game
 
         public void LoadAllSoundEffects(GameSoundNameData gameSoundEffectFileNameData, UiSoundNameData uiSoundNameData)
         {
-            _tapVolume = SettingsPool.GetValue("audio.volume.tap") / 10f;
-            _breakVolume = SettingsPool.GetValue("audio.volume.break") / 10f;
-            _slideVolume = SettingsPool.GetValue("audio.volume.slide") / 10f;
+            _tapVolume = SettingsPool.GetValue("volume.tap") / 10f;
+            _breakVolume = SettingsPool.GetValue("volume.break") / 10f;
+            _slideVolume = SettingsPool.GetValue("volume.slide") / 10f;
             SettingsManager.OnSettingsChanged += () =>
             {
-                _tapVolume = SettingsPool.GetValue("audio.volume.tap") / 10f;
-                _breakVolume = SettingsPool.GetValue("audio.volume.break") / 10f;
-                _slideVolume = SettingsPool.GetValue("audio.volume.slide") / 10f;
+                _tapVolume = SettingsPool.GetValue("volume.tap") / 10f;
+                _breakVolume = SettingsPool.GetValue("volume.break") / 10f;
+                _slideVolume = SettingsPool.GetValue("volume.slide") / 10f;
             };
 
             var gameSoundPathData = gameSoundEffectFileNameData.GetStreamingAssetsPrefixedPathData();

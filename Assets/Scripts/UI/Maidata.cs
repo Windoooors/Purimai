@@ -27,7 +27,7 @@ namespace UI
         private static readonly Regex UtageTitleRegex =
             new(@"^\[.*?\]");
 
-        public static HashSet<char> UsedCharacters = new();
+        public static readonly HashSet<char> UsedCharacters = new();
 
         private readonly string _songCoverPath;
         public readonly string Artist;
@@ -172,23 +172,17 @@ namespace UI
 
             var span = maidataString.AsSpan();
             var pos = 0;
-
-            // 循环查找关键字 "&inote_"
+            
             while ((pos = maidataString.IndexOf("&inote_", pos, StringComparison.Ordinal)) != -1)
             {
-                var numStart = pos + 7; // "&inote_".Length
+                var numStart = pos + 7;
 
-                // 边界检查：确保关键字后至少还有一个字符（数字）
                 if (numStart < span.Length)
-                    // 模式匹配：[数字]+=
-                    // 1. 紧随其后的第一个字符必须是数字
                     if (char.IsDigit(span[numStart]))
                     {
-                        // 2. 寻找后续的 '='
                         var eqIdx = maidataString.IndexOf('=', numStart);
                         if (eqIdx != -1)
                         {
-                            // 3. 验证数字与 '=' 之间是否全是数字 (符合 \d+)
                             var isValidNumber = true;
                             for (var j = numStart + 1; j < eqIdx; j++)
                                 if (!char.IsDigit(span[j]))
@@ -197,23 +191,22 @@ namespace UI
                                     break;
                                 }
 
-                            if (isValidNumber) return true; // 找到第一个符合条件的就立刻退出
+                            if (isValidNumber) return true;
                         }
                     }
 
-                // 未匹配成功，跳过当前前缀继续寻找下一个
                 pos += 7;
             }
 
             return false;
         }
 
-        public bool TryGetLevel(string input, int index, out string level)
+        private bool TryGetLevel(string input, int index, out string level)
         {
             return TryGetField(input, $"&lv_{index}=", out level);
         }
 
-        public bool TryGetDesigner(string input, int index, out string designer)
+        private bool TryGetDesigner(string input, int index, out string designer)
         {
             return TryGetField(input, $"&des_{index}=", out designer);
         }
@@ -266,14 +259,11 @@ namespace UI
             if (SongAudioClip)
                 MonoBehaviour.Destroy(SongAudioClip);
 
-            if (BlurredSongCoverAsBackgroundDecodedImage != null)
-                BlurredSongCoverAsBackgroundDecodedImage.Dispose();
+            BlurredSongCoverAsBackgroundDecodedImage?.Dispose();
 
-            if (BlurredSongCoverDecodedImage != null)
-                BlurredSongCoverDecodedImage.Dispose();
+            BlurredSongCoverDecodedImage?.Dispose();
 
-            if (SongCoverDecodedImage != null)
-                SongCoverDecodedImage.Dispose();
+            SongCoverDecodedImage?.Dispose();
 
             BlurredSongCoverAsBackgroundDecodedImage = null;
             BlurredSongCoverDecodedImage = null;
@@ -290,7 +280,7 @@ namespace UI
             foreach (var character in usedCharacters) UsedCharacters.Add(character);
         }
 
-        public static bool TryGetChartString(string maidataString, int i, out string chartString, out bool isLast)
+        private static bool TryGetChartString(string maidataString, int i, out string chartString, out bool isLast)
         {
             chartString = string.Empty;
             isLast = false;
@@ -409,7 +399,7 @@ namespace UI
 
             image.Mutate(x => { x.Resize(50, 50); });
 
-            var blurringLevel = SettingsPool.GetValue("graphics.blurred_cover");
+            var blurringLevel = SettingsPool.GetValue("blurred_cover");
 
             transparentImage.Mutate(x =>
             {
