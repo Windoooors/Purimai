@@ -21,7 +21,7 @@ namespace UI.LevelSelection
 
         public Action SceneLoaded;
 
-        public static LevelLoader GetInstance =>
+        public static LevelLoader Instance =>
             _instance == null
                 ? FindObjectsByType<LevelLoader>(FindObjectsInactive.Include, FindObjectsSortMode.None)[^1]
                 : _instance;
@@ -79,7 +79,7 @@ namespace UI.LevelSelection
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
 
-            AudioManager.GetInstance().AudioSourcePool.Clear();
+            AudioManager.Instance.AudioSourcePool.Clear();
 
             ChartPlayer.Instance.InitializeLevel(_maidata, _levelIndex);
 
@@ -87,7 +87,7 @@ namespace UI.LevelSelection
 
             SceneLoaded?.Invoke();
 
-            UIManager.GetInstance().ShowCircleMask();
+            UIManager.Instance.ShowCircleMask();
         }
     }
 }

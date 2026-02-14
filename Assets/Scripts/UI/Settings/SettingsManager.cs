@@ -26,7 +26,7 @@ namespace UI.Settings
         private VisualElement _settingsTree;
         private TabView _tabView;
 
-        public static SettingsManager GetInstance => _instance ??=
+        public static SettingsManager Instance => _instance ??=
             FindObjectsByType<SettingsManager>(FindObjectsInactive.Include, FindObjectsSortMode.None)[^1];
 
         private void Awake()
@@ -38,12 +38,12 @@ namespace UI.Settings
 
         private void OnDestroy()
         {
-            UIManager.GetInstance().uiDocument?.rootVisualElement?.Remove(_settingsTree);
+            UIManager.Instance.uiDocument?.rootVisualElement?.Remove(_settingsTree);
         }
 
         private void Initialize()
         {
-            _root = UIManager.GetInstance().uiDocument.rootVisualElement;
+            _root = UIManager.Instance.uiDocument.rootVisualElement;
 
             _settingsTree = settingsTreeAsset.Instantiate();
 

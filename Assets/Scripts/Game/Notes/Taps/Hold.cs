@@ -117,8 +117,8 @@ namespace Game.Notes.Taps
 
             GetTapOrLineTransform(ref _tapOrLineTransform);
 
-            lineTransform.localScale = (NoteGenerator.GetInstance.originCircleScale +
-                                        (1 - NoteGenerator.GetInstance.originCircleScale) *
+            lineTransform.localScale = (NoteGenerator.Instance.originCircleScale +
+                                        (1 - NoteGenerator.Instance.originCircleScale) *
                                         (_holdTransformData.LinePositionInLane > 0
                                             ? _holdTransformData.LinePositionInLane
                                             : _tapOrLineTransform.PositionInLane))
@@ -255,7 +255,7 @@ namespace Game.Notes.Taps
             if (touchedLane != lane)
                 return;
 
-            var noteGenerator = NoteGenerator.GetInstance;
+            var noteGenerator = NoteGenerator.Instance;
 
             if (indexInLane != 0 && !noteGenerator.LaneList[lane - 1][indexInLane - 1].headJudged)
                 return;
@@ -389,7 +389,7 @@ namespace Game.Notes.Taps
         {
             transform.position = Vector3.zero;
             holdTransform.localScale = Vector3.zero;
-            holdTransform.position *= NoteGenerator.GetInstance.originCircleScale;
+            holdTransform.position *= NoteGenerator.Instance.originCircleScale;
             holdSpriteRenderer.color = new Color(1, 1, 1, 0);
             holdEndSpriteRenderer.enabled = false;
             _initialHoldLength = holdSpriteRenderer.size.y;

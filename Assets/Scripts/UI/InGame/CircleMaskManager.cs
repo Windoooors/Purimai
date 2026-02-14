@@ -12,7 +12,7 @@ namespace UI.InGame
 
         private bool _paused;
 
-        public static CircleMaskManager GetInstance => _instance ?? FindAnyObjectByType<CircleMaskManager>();
+        public static CircleMaskManager Instance => _instance ?? FindAnyObjectByType<CircleMaskManager>();
 
         private void Awake()
         {
@@ -24,7 +24,7 @@ namespace UI.InGame
             _circleMaskTree.style.right = 0;
             _circleMaskTree.style.bottom = 0;
 
-            UIManager.GetInstance().uiDocument.rootVisualElement.Add(_circleMaskTree);
+            UIManager.Instance.uiDocument.rootVisualElement.Add(_circleMaskTree);
 
             _instance = this;
 
@@ -35,7 +35,7 @@ namespace UI.InGame
 
         private void OnDestroy()
         {
-            UIManager.GetInstance().uiDocument.rootVisualElement.Remove(_circleMaskTree);
+            UIManager.Instance.uiDocument.rootVisualElement.Remove(_circleMaskTree);
         }
 
         private void OnApplicationFocus(bool hasFocus)
@@ -58,7 +58,7 @@ namespace UI.InGame
 
             _circleMaskTree.AddToClassList("hide-button");
 
-            UIManager.GetInstance().ShowPausePanel();
+            UIManager.Instance.ShowPausePanel();
         }
 
         public void Resume()

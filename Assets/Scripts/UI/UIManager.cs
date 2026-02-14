@@ -48,7 +48,7 @@ namespace UI
 
             SettingsManager.OnSettingsChanged += ApplyResolution;
 
-            AudioManager.GetInstance().LoadAllSoundEffects(gameSoundFileNameData, uiSoundFileNameData);
+            AudioManager.Instance.LoadAllSoundEffects(gameSoundFileNameData, uiSoundFileNameData);
 
             ShowLevelSelector();
 
@@ -143,13 +143,7 @@ namespace UI
             }
         }
 
-        public static UIManager GetInstance()
-        {
-            if (_instance == null)
-                _instance = FindAnyObjectByType<UIManager>();
-            return _instance;
-        }
-
+        public static UIManager Instance => _instance ?? FindAnyObjectByType<UIManager>();
         public void UpdateTMPAtlas(char[] characters)
         {
             var characterString = new string(characters);

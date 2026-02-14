@@ -126,7 +126,7 @@ namespace Game
 
                 SetCriticalSoundChannel();
 
-                if (_time > math.max(NoteGenerator.GetInstance.endingTime / 1000f + 0.5f, _songLength))
+                if (_time > math.max(NoteGenerator.Instance.endingTime / 1000f + 0.5f, _songLength))
                 {
                     isPlaying = false;
                     LMotion.Create(_songVolume, 0, 0.5f).WithOnComplete(OnPlayCompleted)
@@ -143,7 +143,7 @@ namespace Game
         private void ShowResult()
         {
             isPlaying = false;
-            UIManager.GetInstance().ShowResult();
+            UIManager.Instance.ShowResult();
         }
 
         public void Pause(out bool succeed)
@@ -154,18 +154,18 @@ namespace Game
                 return;
             }
 
-            AudioManager.GetInstance().AudioSourcePool.Pool.ForEach(x =>
+            AudioManager.Instance.AudioSourcePool.Pool.ForEach(x =>
             {
                 if (x != _songPlaybackAudioSourceHandler)
                     x.Stop();
             });
 
-            _criticalSoundIndex = NoteGenerator.GetInstance.criticalTimeList.FindLastIndex(x =>
+            _criticalSoundIndex = NoteGenerator.Instance.criticalTimeList.FindLastIndex(x =>
                 x < _time * 1000
             ) + 1;
 
-            if (_criticalSoundIndex >= NoteGenerator.GetInstance.criticalTimeList.Count)
-                _criticalSoundIndex = NoteGenerator.GetInstance.criticalTimeList.Count;
+            if (_criticalSoundIndex >= NoteGenerator.Instance.criticalTimeList.Count)
+                _criticalSoundIndex = NoteGenerator.Instance.criticalTimeList.Count;
 
             _songPlaybackAudioSourceHandler.Pause();
 
@@ -196,7 +196,7 @@ namespace Game
 
                 _songPlaybackAudioSourceHandler.Stop();
 
-                AudioManager.GetInstance().AudioSourcePool.TryGetAudioSourceHandler(out var handler);
+                AudioManager.Instance.AudioSourcePool.TryGetAudioSourceHandler(out var handler);
 
                 if (handler == null)
                     return;
@@ -322,7 +322,7 @@ namespace Game
         {
             _audioDspTimeWhenPlaybackStarts = AudioSettings.dspTime;
 
-            AudioManager.GetInstance().AudioSourcePool.TryGetAudioSourceHandler(out _songPlaybackAudioSourceHandler);
+            AudioManager.Instance.AudioSourcePool.TryGetAudioSourceHandler(out _songPlaybackAudioSourceHandler);
 
             _songPlaybackAudioSourceHandler.SetClip(songClip);
 
@@ -344,7 +344,7 @@ namespace Game
 
         private void SetCriticalSoundChannel(bool initialSet = false)
         {
-            if (_criticalSoundIndex == NoteGenerator.GetInstance.criticalTimeList.Count)
+            if (_criticalSoundIndex == NoteGenerator.Instance.criticalTimeList.Count)
                 return;
 
             AudioSourcePool.AudioSourceHandler handler;
@@ -353,7 +353,7 @@ namespace Game
             {
                 for (var i = 0; i < _maxScheduledCriticalSoundCount; i++)
                 {
-                    AudioManager.GetInstance().AudioSourcePool.TryGetAudioSourceHandler(out handler);
+                    AudioManager.Instance.AudioSourcePool.TryGetAudioSourceHandler(out handler);
 
                     SetUpChannelDelay(handler);
                     handler?.SetVolume(_criticalSoundVolume);
@@ -362,9 +362,9 @@ namespace Game
                 return;
             }
 
-            if (AudioManager.GetInstance().AudioSourcePool.GetOccupiedCount() < _maxScheduledCriticalSoundCount)
+            if (AudioManager.Instance.AudioSourcePool.GetOccupiedCount() < _maxScheduledCriticalSoundCount)
             {
-                var channelAvailable = AudioManager.GetInstance().AudioSourcePool.TryGetAudioSourceHandler(out handler);
+                var channelAvailable = AudioManager.Instance.AudioSourcePool.TryGetAudioSourceHandler(out handler);
 
                 if (!channelAvailable)
                     return;
@@ -377,15 +377,15 @@ namespace Game
 
             void SetUpChannelDelay(AudioSourcePool.AudioSourceHandler audioSourceHandler)
             {
-                if (_criticalSoundIndex >= NoteGenerator.GetInstance.criticalTimeList.Count ||
+                if (_criticalSoundIndex >= NoteGenerator.Instance.criticalTimeList.Count ||
                     audioSourceHandler == null)
                     return;
 
                 var delay = _generalPlaybackDelayInSeconds +
-                            NoteGenerator.GetInstance.criticalTimeList[_criticalSoundIndex] /
+                            NoteGenerator.Instance.criticalTimeList[_criticalSoundIndex] /
                             1000f + _audioDspTimeWhenPlaybackStarts;
 
-                var audioClip = AudioManager.GetInstance().criticalSound;
+                var audioClip = AudioManager.Instance.criticalSound;
 
                 audioSourceHandler.SetClip(audioClip);
                 audioSourceHandler.PlayScheduled(delay);
@@ -403,7 +403,7 @@ namespace Game
 
             var chart = maidata.Charts.ToList().Find(x => x.DifficultyIndex == difficultyIndex);
 
-            NoteGenerator.GetInstance.GenerateNotes(chart.ChartString, maidata.FirstNoteTime);
+            NoteGenerator.Instance.GenerateNotes(chart.ChartString, maidata.FirstNoteTime);
 
             songClip = maidata.SongAudioClip;
 
@@ -445,7 +445,7 @@ namespace Game
         [InspectorButton("Skip Playback")]
         public void Skip()
         {
-            _time = math.max(_songLength, NoteGenerator.GetInstance.endingTime / 1000f + 0.5f);
+            _time = math.max(_songLength, NoteGenerator.Instance.endingTime / 1000f + 0.5f);
             _songPlaybackAudioSourceHandler.Pause();
             _videoPlayer?.Stop();
             ShowResult();

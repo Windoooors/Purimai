@@ -375,7 +375,7 @@ namespace UI
 
             _loadingSong = true;
 
-            yield return AudioManager.GetInstance().LoadAudioClip(SongPath, clip => SongAudioClip = clip, true);
+            yield return AudioManager.Instance.LoadAudioClip(SongPath, clip => SongAudioClip = clip, true);
 
             SongLoaded = true;
             _loadingSong = false;

@@ -71,7 +71,7 @@ namespace UI.LevelSelection
             LevelSelectionTree.style.bottom = 0;
             LevelSelectionTree.style.right = 0;
 
-            UIManager.GetInstance().uiDocument.rootVisualElement.Add(LevelSelectionTree);
+            UIManager.Instance.uiDocument.rootVisualElement.Add(LevelSelectionTree);
 
             _instance = this;
 
@@ -112,7 +112,7 @@ namespace UI.LevelSelection
                     });
                 }
 
-                UIManager.GetInstance().UpdateTMPAtlas(Maidata.UsedCharacters.ToArray());
+                UIManager.Instance.UpdateTMPAtlas(Maidata.UsedCharacters.ToArray());
             }
 
             levelLoader.PlayerPrefsSavingProcedure += () =>
@@ -146,7 +146,7 @@ namespace UI.LevelSelection
                 _songPlaying = true;
 
                 if (_songPreviewAudioSourceHandler == null)
-                    AudioManager.GetInstance().AudioSourcePool
+                    AudioManager.Instance.AudioSourcePool
                         .TryGetAudioSourceHandler(out _songPreviewAudioSourceHandler);
 
                 _songPreviewAudioSourceHandler.SetClip(maidata.SongAudioClip);
@@ -170,7 +170,7 @@ namespace UI.LevelSelection
             _scrollView.RemoveManipulator(_snapManipulator);
             _largeSongCover.RemoveManipulator(_songCoverManipulator);
 
-            UIManager.GetInstance().uiDocument?.rootVisualElement?.Remove(LevelSelectionTree);
+            UIManager.Instance.uiDocument?.rootVisualElement?.Remove(LevelSelectionTree);
         }
 
         private void OnApplicationQuit()
@@ -326,8 +326,8 @@ namespace UI.LevelSelection
                 element.style.visibility = Visibility.Hidden;
             };
 
-            CategoryListManager.GetInstance.Initialize();
-            CategoryListManager.GetInstance.OnCategoryTendsToChange += ChangeCategory;
+            CategoryListManager.Instance.Initialize();
+            CategoryListManager.Instance.OnCategoryTendsToChange += ChangeCategory;
 
             _largeSongCover = root.Q<VisualElement>("song-cover").Q<VisualElement>("song-cover-image");
 
@@ -342,7 +342,7 @@ namespace UI.LevelSelection
             SettingsManager.OnSettingsChanged += ChangeVolume;
 
             _settingsButton = root.Q<VisualElement>("control-panel").Q<Button>("settings-button");
-            _settingsButton.clicked += UIManager.GetInstance().ShowSettingsPanel;
+            _settingsButton.clicked += UIManager.Instance.ShowSettingsPanel;
 
             _snapManipulator = new SnapScrollManipulator(ItemHeight, 741);
             _scrollView.AddManipulator(_snapManipulator);
@@ -371,7 +371,7 @@ namespace UI.LevelSelection
                         ? _data[_listView.selectedIndex].DifficultyIndex
                         : _scoreContentPanel.AlphabeticallySelectedDifficultyIndex);
 
-                //AudioManager.GetInstance().PlaySelectSound();
+                //AudioManager.Instance.PlaySelectSound();
             };
 
             _snapManipulator.OnSnapToItem += (_, args) =>
@@ -382,7 +382,7 @@ namespace UI.LevelSelection
                     return;
 
                 if (_lastCategoryData != _data[args.TargetIndex].Category)
-                    CategoryListManager.GetInstance.ChangeCategoryPassively(_data[args.TargetIndex].Category);
+                    CategoryListManager.Instance.ChangeCategoryPassively(_data[args.TargetIndex].Category);
 
                 _lastCategoryData = _data[args.TargetIndex].Category;
             };
@@ -480,7 +480,7 @@ namespace UI.LevelSelection
                 ? "sort-button-alphabetically"
                 : "sort-button-difficulty");
 
-            CategoryListManager.GetInstance.ChangeData(pairedData.Item2);
+            CategoryListManager.Instance.ChangeData(pairedData.Item2);
 
             _listView.selectedIndex = targetIndex;
 
@@ -496,7 +496,7 @@ namespace UI.LevelSelection
                     : _scoreContentPanel.AlphabeticallySelectedDifficultyIndex);
 
             if (_lastCategoryData != _data[targetIndex].Category)
-                CategoryListManager.GetInstance.ChangeCategoryPassively(_data[targetIndex].Category);
+                CategoryListManager.Instance.ChangeCategoryPassively(_data[targetIndex].Category);
 
             _lastCategoryData = _data[targetIndex].Category;
         }
@@ -551,19 +551,19 @@ namespace UI.LevelSelection
             {
                 yield return new WaitForSeconds(0.5f);
 
-                LevelLoader.GetInstance.SceneLoaded += () =>
+                LevelLoader.Instance.SceneLoaded += () =>
                 {
-                    LevelLoader.GetInstance.SceneLoaded = null;
+                    LevelLoader.Instance.SceneLoaded = null;
 
                     StartCoroutine(PlayWhiteOutAnimation());
                 };
 
-                CategoryListManager.GetInstance.enabled = false;
+                CategoryListManager.Instance.enabled = false;
                 _listView.unbindItem = null;
 
                 _snapManipulator.OnSnapToItem = null;
 
-                LevelLoader.GetInstance.EnterLevel(_data[_listView.selectedIndex].MaidataReferenceCountPair.Maidata,
+                LevelLoader.Instance.EnterLevel(_data[_listView.selectedIndex].MaidataReferenceCountPair.Maidata,
                     groupByRule == SortingRules.Difficulty
                         ? _data[_listView.selectedIndex].DifficultyIndex
                         : _scoreContentPanel.AlphabeticallySelectedDifficultyIndex);
@@ -635,10 +635,7 @@ namespace UI.LevelSelection
             if (relativeY is < 750 and > 730) _listView.selectedIndex = (int)item.userData;
         }
 
-        public static LevelSelectionManager GetInstance()
-        {
-            return _instance ? _instance : FindAnyObjectByType<LevelSelectionManager>();
-        }
+        public static LevelSelectionManager Instance => _instance ?? FindAnyObjectByType<LevelSelectionManager>();
 
         private (LevelListItemData[], CategoryData[]) GetLevelListItemData(SortingRules rule)
         {

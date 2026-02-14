@@ -25,7 +25,7 @@ namespace UI.Result
         private VisualElement _resultRoot;
         private StyleSheet _toRetryAnimatedStyleSheet;
 
-        public static ResultManager GetInstance => _instance ??
+        public static ResultManager Instance => _instance ??
                                                    FindObjectsByType<ResultManager>(FindObjectsInactive.Include,
                                                        FindObjectsSortMode.None)[^1];
 
@@ -41,7 +41,7 @@ namespace UI.Result
                 _backgroundSongCoverManipulator);
             _coverManipulator.OnGeometryChanged = null;
             _resultPanel.Q("song-cover-parent").RemoveManipulator(_coverManipulator);
-            UIManager.GetInstance().uiDocument?.rootVisualElement?.Remove(_resultRoot);
+            UIManager.Instance.uiDocument?.rootVisualElement?.Remove(_resultRoot);
         }
 
         private void Initialize()
@@ -52,7 +52,7 @@ namespace UI.Result
 
             _resultRoot = resultVisualTreeAsset.Instantiate();
 
-            UIManager.GetInstance().uiDocument.rootVisualElement.Add(_resultRoot);
+            UIManager.Instance.uiDocument.rootVisualElement.Add(_resultRoot);
 
             _resultRoot.style.position = new StyleEnum<Position>(Position.Absolute);
             _resultRoot.style.top = 0;
@@ -138,12 +138,12 @@ namespace UI.Result
             {
                 yield return new WaitForSeconds(0.5f);
 
-                LevelLoader.GetInstance.EnterLevel(_maidata, ChartPlayer.Instance.levelDifficultyIndex);
-                LevelLoader.GetInstance.SceneLoaded += () =>
+                LevelLoader.Instance.EnterLevel(_maidata, ChartPlayer.Instance.levelDifficultyIndex);
+                LevelLoader.Instance.SceneLoaded += () =>
                 {
                     StartCoroutine(PlayOutToRetryAnimation());
 
-                    Destroy(UIManager.GetInstance().circleMaskManager.gameObject);
+                    Destroy(UIManager.Instance.circleMaskManager.gameObject);
                 };
 
                 yield break;
@@ -170,22 +170,22 @@ namespace UI.Result
         {
             SceneManager.sceneLoaded -= LoadMenu;
 
-            Destroy(UIManager.GetInstance().circleMaskManager.gameObject);
+            Destroy(UIManager.Instance.circleMaskManager.gameObject);
 
             _maidata.UnloadResources();
 
-            AudioManager.GetInstance().AudioSourcePool.Clear();
+            AudioManager.Instance.AudioSourcePool.Clear();
 
-            UIManager.GetInstance().ShowLevelSelector();
+            UIManager.Instance.ShowLevelSelector();
 
             _resultRoot.BringToFront();
 
             var levelSelectionPreAnimatedSheet =
                 Resources.Load<StyleSheet>("UI/USS/LevelSelection/ResultToLevelSelectionPreAnimated");
-            UIManager.GetInstance().levelSelectionManager.LevelSelectionTree.styleSheets
+            UIManager.Instance.levelSelectionManager.LevelSelectionTree.styleSheets
                 .Add(levelSelectionPreAnimatedSheet);
 
-            UIManager.GetInstance().levelSelectionManager.LevelSelectionTree.AddToClassList("hide-selected");
+            UIManager.Instance.levelSelectionManager.LevelSelectionTree.AddToClassList("hide-selected");
 
             StartCoroutine(PlayOutToLevelMenuAnimation());
 
@@ -197,19 +197,19 @@ namespace UI.Result
                 _resultRoot.styleSheets.Add(Resources.Load<StyleSheet>("UI/USS/Result/ResultToMenuOutAnimated"));
 
                 yield return new WaitForSeconds(0.5f);
-                UIManager.GetInstance().levelSelectionManager.LevelSelectionTree.styleSheets
+                UIManager.Instance.levelSelectionManager.LevelSelectionTree.styleSheets
                     .Remove(levelSelectionPreAnimatedSheet);
-                UIManager.GetInstance().levelSelectionManager.LevelSelectionTree.AddToClassList("out-animation");
-                UIManager.GetInstance().levelSelectionManager.LevelSelectionTree
+                UIManager.Instance.levelSelectionManager.LevelSelectionTree.AddToClassList("out-animation");
+                UIManager.Instance.levelSelectionManager.LevelSelectionTree
                     .AddToClassList("no-opacity-transition");
 
                 yield return new WaitForSeconds(0.5f);
-                UIManager.GetInstance().levelSelectionManager.LevelSelectionTree.RemoveFromClassList("out-animation");
-                UIManager.GetInstance().levelSelectionManager.LevelSelectionTree.RemoveFromClassList("hide-selected");
+                UIManager.Instance.levelSelectionManager.LevelSelectionTree.RemoveFromClassList("out-animation");
+                UIManager.Instance.levelSelectionManager.LevelSelectionTree.RemoveFromClassList("hide-selected");
                 _resultRoot.style.opacity = 0;
 
                 yield return new WaitForSeconds(0.1f);
-                UIManager.GetInstance().levelSelectionManager.LevelSelectionTree
+                UIManager.Instance.levelSelectionManager.LevelSelectionTree
                     .RemoveFromClassList("no-opacity-transition");
                 RemoveThis();
             }

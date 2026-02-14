@@ -76,7 +76,7 @@ namespace Game.Notes
             var distance = (endPoint.position - startPoint.position).magnitude;
             var speed = distance / _timeOnScreenWithBasicSpeed * ChartPlayer.Instance.flowSpeed;
 
-            LineExpansionSpeed = (1 - NoteGenerator.GetInstance.originCircleScale) / _timeOnScreenWithBasicSpeed *
+            LineExpansionSpeed = (1 - NoteGenerator.Instance.originCircleScale) / _timeOnScreenWithBasicSpeed *
                                  ChartPlayer.Instance.flowSpeed;
 
             var emergingDuration = _timeOnScreenWithBasicSpeed / ChartPlayer.Instance.flowSpeed;
@@ -113,37 +113,37 @@ namespace Game.Notes
                 case JudgeState.CriticalPerfect:
                     if (isBreak)
                     {
-                        AudioManager.GetInstance().PlayBreakPerfectSound();
-                        AudioManager.GetInstance().PlayBreakExtraScoreSound();
+                        AudioManager.Instance.PlayBreakPerfectSound();
+                        AudioManager.Instance.PlayBreakExtraScoreSound();
                     }
                     else
                     {
-                        AudioManager.GetInstance().PlayPerfectSound();
+                        AudioManager.Instance.PlayPerfectSound();
                     }
 
                     break;
                 case JudgeState.Perfect:
                 case JudgeState.SemiCriticalPerfect:
                     if (isBreak)
-                        AudioManager.GetInstance().PlayBreakPerfectSound();
+                        AudioManager.Instance.PlayBreakPerfectSound();
                     else
-                        AudioManager.GetInstance().PlayPerfectSound();
+                        AudioManager.Instance.PlayPerfectSound();
 
                     break;
                 case JudgeState.SemiGreat:
                 case JudgeState.QuarterGreat:
                 case JudgeState.Great:
                     if (isBreak)
-                        AudioManager.GetInstance().PlayBreakGreatSound();
+                        AudioManager.Instance.PlayBreakGreatSound();
                     else
-                        AudioManager.GetInstance().PlayGreatSound();
+                        AudioManager.Instance.PlayGreatSound();
 
                     break;
                 case JudgeState.Good:
                     if (isBreak)
-                        AudioManager.GetInstance().PlayBreakGreatSound();
+                        AudioManager.Instance.PlayBreakGreatSound();
                     else
-                        AudioManager.GetInstance().PlayGoodSound();
+                        AudioManager.Instance.PlayGoodSound();
 
                     break;
             }

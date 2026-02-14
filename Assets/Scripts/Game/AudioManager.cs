@@ -55,13 +55,8 @@ namespace Game
 #endif
         }
 
-        public static AudioManager GetInstance()
-        {
-            if (_instance == null)
-                return FindAnyObjectByType<AudioManager>();
-            return _instance;
-        }
-
+        public static AudioManager Instance => _instance ?? FindAnyObjectByType<AudioManager>();
+        
         public void PlayPerfectSound()
         {
 #if ((UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR)

@@ -27,7 +27,7 @@ namespace UI.LevelSelection
 
         public EventHandler<ChangeCategoryEventArgs> OnCategoryTendsToChange;
 
-        public static CategoryListManager GetInstance =>
+        public static CategoryListManager Instance =>
             _instance == null
                 ? FindObjectsByType<CategoryListManager>(FindObjectsInactive.Include, FindObjectsSortMode.None)[^1]
                 : _instance;
@@ -36,7 +36,7 @@ namespace UI.LevelSelection
         {
             _instance = this;
 
-            LevelLoader.GetInstance.PlayerPrefsSavingProcedure += () =>
+            LevelLoader.Instance.PlayerPrefsSavingProcedure += () =>
             {
                 var index = _categoryList.selectedIndex % _rawData.Length;
 
@@ -63,7 +63,7 @@ namespace UI.LevelSelection
 
         public void Initialize()
         {
-            _controlPanel = LevelSelectionManager.GetInstance().LevelSelectionTree.Q<VisualElement>("control-panel");
+            _controlPanel = LevelSelectionManager.Instance.LevelSelectionTree.Q<VisualElement>("control-panel");
 
             _categoryPanel = _controlPanel.Q<VisualElement>("category-panel");
 

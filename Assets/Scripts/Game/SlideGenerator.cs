@@ -10,7 +10,7 @@ namespace Game
     {
         public static SlideBasedNote GenerateCycleSlide(NoteDataObject.SlideDataObject slide)
         {
-            var cycleSlidePrefabs = NoteGenerator.GetInstance.slidePrefabs.cycleSlidePrefabs;
+            var cycleSlidePrefabs = NoteGenerator.Instance.slidePrefabs.cycleSlidePrefabs;
 
             var fromLane = slide.From;
             var toLane = slide.To[0];
@@ -47,7 +47,7 @@ namespace Game
 
             var pqInterval = SlideBasedNote.GetIntervalInBothWays(slide.From, slide.To[0]);
 
-            var pqSlidePrefabs = NoteGenerator.GetInstance.slidePrefabs.pqSlidePrefabs;
+            var pqSlidePrefabs = NoteGenerator.Instance.slidePrefabs.pqSlidePrefabs;
 
             var interval = slide.Type == NoteDataObject.SlideDataObject.SlideType.P
                 ? pqInterval.clockwiseInterval
@@ -81,7 +81,7 @@ namespace Game
 
             var interval = SlideBasedNote.GetIntervalInBothWays(slide.From, slide.To[0]).clockwiseInterval;
 
-            var vSlidePrefabs = NoteGenerator.GetInstance.slidePrefabs.vSlidePrefabs;
+            var vSlidePrefabs = NoteGenerator.Instance.slidePrefabs.vSlidePrefabs;
 
             var vSlideInstance = interval switch
             {
@@ -111,7 +111,7 @@ namespace Game
 
             var interval = SlideBasedNote.GetIntervalInBothWays(slide.From, slide.To[0]).clockwiseInterval;
 
-            var lineSlidePrefabs = NoteGenerator.GetInstance.slidePrefabs.lineSlidePrefabs;
+            var lineSlidePrefabs = NoteGenerator.Instance.slidePrefabs.lineSlidePrefabs;
 
             var lineSlideInstance = interval switch
             {
@@ -137,7 +137,7 @@ namespace Game
 
             var interval = SlideBasedNote.GetShortestInterval(slide.From, slide.To[1]);
 
-            var bigVSlidePrefabs = NoteGenerator.GetInstance.slidePrefabs.bigVSlidePrefabs;
+            var bigVSlidePrefabs = NoteGenerator.Instance.slidePrefabs.bigVSlidePrefabs;
 
             var bigVSlideInstance = interval switch
             {
@@ -163,7 +163,7 @@ namespace Game
 
             var bigPqInterval = SlideBasedNote.GetIntervalInBothWays(slide.From, slide.To[0]);
 
-            var bigPqSlidePrefabs = NoteGenerator.GetInstance.slidePrefabs.bigPqSlidePrefabs;
+            var bigPqSlidePrefabs = NoteGenerator.Instance.slidePrefabs.bigPqSlidePrefabs;
 
             var interval = slide.Type == NoteDataObject.SlideDataObject.SlideType.BigP
                 ? bigPqInterval.clockwiseInterval
@@ -195,7 +195,7 @@ namespace Game
             var fromLane = slide.From;
             var toLane = slide.To[0];
 
-            var zsSlideInstance = Instantiate(NoteGenerator.GetInstance.slidePrefabs.zsSlidePrefab);
+            var zsSlideInstance = Instantiate(NoteGenerator.Instance.slidePrefabs.zsSlidePrefab);
 
             zsSlideInstance.toLaneIndexes = new[] { toLane - 1 };
             zsSlideInstance.fromLaneIndex = fromLane - 1;
@@ -210,7 +210,7 @@ namespace Game
             var fromLane = slide.From;
             var toLane = slide.To[0];
 
-            var wifiSlideInstance = Instantiate(NoteGenerator.GetInstance.slidePrefabs.wifiSlidePrefab);
+            var wifiSlideInstance = Instantiate(NoteGenerator.Instance.slidePrefabs.wifiSlidePrefab);
 
             wifiSlideInstance.toLaneIndexes = new[] { toLane - 1 };
             wifiSlideInstance.fromLaneIndex = fromLane - 1;

@@ -44,7 +44,7 @@ namespace Game
 
         private int _slideOrder;
 
-        public static NoteGenerator GetInstance => _instance == null
+        public static NoteGenerator Instance => _instance == null
             ? FindObjectsByType<NoteGenerator>(FindObjectsInactive.Include, FindObjectsSortMode.None)[^1]
             : _instance;
 

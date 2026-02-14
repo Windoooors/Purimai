@@ -125,7 +125,7 @@ namespace Game.Notes
             foreach (var star in stars)
             {
                 if (isEach)
-                    star.spriteRenderer.sprite = NoteGenerator.GetInstance.eachStarSprite;
+                    star.spriteRenderer.sprite = NoteGenerator.Instance.eachStarSprite;
                 star.spriteRenderer.color = new Color(1, 1, 1, 0);
                 star.transform.localScale = Vector3.zero;
                 star.spriteRenderer.sortingOrder -= order;
@@ -322,7 +322,7 @@ namespace Game.Notes
 
                 if ((int)slideType is 0 or 1 or 2)
                 {
-                    division -= 1.25f;
+                    division -= 1.33f;
                     currentProgress -= 0.60f;
                 }
 
@@ -334,7 +334,7 @@ namespace Game.Notes
 
                 var pair = VectorGraphicsUtility.GetPositionRotationPair((float)progress);
 
-                var arrowObject = Instantiate(NoteGenerator.GetInstance.slideArrowPrefab, transform);
+                var arrowObject = Instantiate(NoteGenerator.Instance.slideArrowPrefab, transform);
 
                 arrowObject.GetComponent<SpriteRenderer>().sortingOrder = slideArrowOrder--;
 
@@ -439,11 +439,11 @@ namespace Game.Notes
             {
                 if (isWifi)
                     slideSpriteRenderer.sprite = isEach
-                        ? NoteGenerator.GetInstance.wifiSlideEachSprites[i]
-                        : NoteGenerator.GetInstance.wifiSlideSprites[i];
+                        ? NoteGenerator.Instance.wifiSlideEachSprites[i]
+                        : NoteGenerator.Instance.wifiSlideSprites[i];
                 else
                     slideSpriteRenderer.sprite =
-                        isEach ? NoteGenerator.GetInstance.slideEachSprite : NoteGenerator.GetInstance.slideSprite;
+                        isEach ? NoteGenerator.Instance.slideEachSprite : NoteGenerator.Instance.slideSprite;
 
                 i++;
 
@@ -577,7 +577,7 @@ namespace Game.Notes
 
             addedCollider.Overlap(filter, overlapResults);
 
-            addedCollider.enabled = false;
+            Destroy(addedCollider);
 
             var result = overlapResults.Contains(sensorCollider);
 
@@ -597,7 +597,7 @@ namespace Game.Notes
 
         protected void PlaySlideSound()
         {
-            AudioManager.GetInstance().PlaySlideSound();
+            AudioManager.Instance.PlaySlideSound();
         }
 
         protected virtual void UpdateJudgeDisplayDirection(int judgeSpriteGroupIndex)
@@ -605,7 +605,7 @@ namespace Game.Notes
             var judgeSpriteNeedsChange =
                 judgeDisplaySpriteRenderer.transform.rotation.eulerAngles.z is > 265 and <= 365 or > -5 and <= 95;
 
-            judgeDisplaySpriteRenderer.sprite = NoteGenerator.GetInstance
+            judgeDisplaySpriteRenderer.sprite = NoteGenerator.Instance
                 .slideJudgeDisplaySprites[judgeSpriteGroupIndex]
                 .normalSlideJudgeSprites[
                     judgeSpriteNeedsChange

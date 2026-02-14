@@ -63,7 +63,7 @@ namespace UI
         private void MinimalLeft(GeometryChangedEvent evt)
         {
             var width = _cover.layout.width;
-            var freeWidth = UIManager.GetInstance().uiDocument.rootVisualElement.layout.width - _cover.layout.xMin +
+            var freeWidth = UIManager.Instance.uiDocument.rootVisualElement.layout.width - _cover.layout.xMin +
                             _widthOffset;
 
             if (width <= freeWidth)
@@ -73,7 +73,7 @@ namespace UI
                 {
                     NewBackgroundSize = new BackgroundSize(freeWidth, freeWidth)
                 });
-                //_cover.style.top = (UIManager.GetInstance().uiDocument.rootVisualElement.layout.height - freeWidth) / 2;
+                //_cover.style.top = (UIManager.Instance.uiDocument.rootVisualElement.layout.height - freeWidth) / 2;
             }
         }
 

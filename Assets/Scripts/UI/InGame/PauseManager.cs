@@ -17,7 +17,7 @@ namespace UI.InGame
         {
             _pausePanelTree = pausePanelTreeAsset.Instantiate();
 
-            UIManager.GetInstance().uiDocument.rootVisualElement.Add(_pausePanelTree);
+            UIManager.Instance.uiDocument.rootVisualElement.Add(_pausePanelTree);
 
             _pausePanelTree.style.position = Position.Absolute;
             _pausePanelTree.style.top = 0;
@@ -34,7 +34,7 @@ namespace UI.InGame
 
         private void OnDestroy()
         {
-            UIManager.GetInstance().uiDocument.rootVisualElement.Remove(_pausePanelTree);
+            UIManager.Instance.uiDocument.rootVisualElement.Remove(_pausePanelTree);
         }
 
         private void GoToMenu()
@@ -55,13 +55,13 @@ namespace UI.InGame
 
                 SimulatedSensor.Enabled = true;
 
-                Destroy(UIManager.GetInstance().circleMaskManager.gameObject);
+                Destroy(UIManager.Instance.circleMaskManager.gameObject);
 
                 ChartPlayer.Instance.Maidata.UnloadResources();
 
                 SimulatedSensor.Clear();
 
-                AudioManager.GetInstance().AudioSourcePool.Clear();
+                AudioManager.Instance.AudioSourcePool.Clear();
 
                 SceneManager.LoadScene("Empty");
 
@@ -72,9 +72,9 @@ namespace UI.InGame
             {
                 SceneManager.sceneLoaded -= OnSceneLoaded;
 
-                UIManager.GetInstance().ShowLevelSelector();
+                UIManager.Instance.ShowLevelSelector();
                 
-                LevelSelectionManager.GetInstance().LevelSelectionTree.styleSheets.Add(levelSelectionPreAnimatedSheet);
+                LevelSelectionManager.Instance.LevelSelectionTree.styleSheets.Add(levelSelectionPreAnimatedSheet);
 
                 _pausePanelTree.BringToFront();
 
@@ -88,15 +88,15 @@ namespace UI.InGame
                 _pausePanelTree.RemoveFromClassList("in-animation");
                 _pausePanelTree.AddToClassList("out-animation");
                 
-                LevelSelectionManager.GetInstance().LevelSelectionTree.AddToClassList("out-animation");
+                LevelSelectionManager.Instance.LevelSelectionTree.AddToClassList("out-animation");
 
                 _pausePanelTree.styleSheets.Add(Resources.Load<StyleSheet>("UI/USS/Pause/PauseOutToGameAnimated"));
 
-                LevelSelectionManager.GetInstance().LevelSelectionTree.styleSheets.Remove(levelSelectionPreAnimatedSheet);
+                LevelSelectionManager.Instance.LevelSelectionTree.styleSheets.Remove(levelSelectionPreAnimatedSheet);
                 
                 yield return new WaitForSeconds(0.5f);
                 
-                LevelSelectionManager.GetInstance().LevelSelectionTree.RemoveFromClassList("out-animation");
+                LevelSelectionManager.Instance.LevelSelectionTree.RemoveFromClassList("out-animation");
 
                 RemoveSelf();
             }
@@ -132,7 +132,7 @@ namespace UI.InGame
 
                 yield return new WaitForSeconds(0.5f);
 
-                CircleMaskManager.GetInstance.Resume();
+                CircleMaskManager.Instance.Resume();
 
                 RemoveSelf();
             }
@@ -154,17 +154,17 @@ namespace UI.InGame
 
                 SimulatedSensor.Enabled = true;
 
-                Destroy(UIManager.GetInstance().circleMaskManager.gameObject);
+                Destroy(UIManager.Instance.circleMaskManager.gameObject);
 
-                LevelLoader.GetInstance.EnterLevel(ChartPlayer.Instance.Maidata,
+                LevelLoader.Instance.EnterLevel(ChartPlayer.Instance.Maidata,
                     ChartPlayer.Instance.levelDifficultyIndex);
 
-                LevelLoader.GetInstance.SceneLoaded += SceneLoaded;
+                LevelLoader.Instance.SceneLoaded += SceneLoaded;
             }
 
             void SceneLoaded()
             {
-                LevelLoader.GetInstance.SceneLoaded -= SceneLoaded;
+                LevelLoader.Instance.SceneLoaded -= SceneLoaded;
 
                 StartCoroutine(WaitAndDestroySelf());
 
