@@ -1,6 +1,6 @@
 using Game.ChartManagement;
 
-namespace Game.Notes.Slides
+namespace Game.Notes.SlideBasedNotes
 {
     public class CycleSlide : NormalSlide
     {

@@ -52,9 +52,9 @@ namespace Game
 
         public AudioClip songClip;
 
-        [SerializeField] private float _dspTime;
+        private float _dspTime;
 
-        [SerializeField] private float _time;
+        private float _time;
 
         public int levelDifficultyIndex;
 
@@ -115,24 +115,28 @@ namespace Game
                 _dspTime = (float)AudioSettings.dspTime - (float)_audioDspTimeWhenPlaybackStarts -
                            _generalPlaybackDelayInSeconds;
 
-            if (isPlaying && !_paused)
+            if (!isPlaying || _paused)
+                return;
+            
+            _time += Time.deltaTime;
+            
+            if (math.abs(_dspTime - _time) >= 0.5)
+                _time = _dspTime;
+            
+            SetCriticalSoundChannel();
+
+            if (_time > math.max(NoteGenerator.Instance.endingTime / 1000f + 0.5f, _songLength))
             {
-                _time += Time.deltaTime;
-
-                _time = (float)math.lerp(_time, _dspTime, 0.3);
-
-                if (math.abs(_dspTime - _time) >= 0.05)
-                    _time = _dspTime;
-
-                SetCriticalSoundChannel();
-
-                if (_time > math.max(NoteGenerator.Instance.endingTime / 1000f + 0.5f, _songLength))
-                {
-                    isPlaying = false;
-                    LMotion.Create(_songVolume, 0, 0.5f).WithOnComplete(OnPlayCompleted)
-                        .Bind(x => _songPlaybackAudioSourceHandler.SetVolume(x));
-                }
+                isPlaying = false;
+                LMotion.Create(_songVolume, 0, 0.5f).WithOnComplete(OnPlayCompleted)
+                    .Bind(x => _songPlaybackAudioSourceHandler.SetVolume(x));
             }
+            
+            NoteGenerator.Instance.notesList.ForEach(noteBase =>
+            {
+                if (_time + 0.1f >= noteBase.emergingTime / 1000f && noteBase.enabled)
+                    noteBase.ManualUpdate();
+            });
         }
 
         private void OnDestroy()
@@ -160,12 +164,12 @@ namespace Game
                     x.Stop();
             });
 
-            _criticalSoundIndex = NoteGenerator.Instance.criticalTimeList.FindLastIndex(x =>
+            _criticalSoundIndex = NoteGenerator.Instance.CriticalTimeList.FindLastIndex(x =>
                 x < _time * 1000
             ) + 1;
 
-            if (_criticalSoundIndex >= NoteGenerator.Instance.criticalTimeList.Count)
-                _criticalSoundIndex = NoteGenerator.Instance.criticalTimeList.Count;
+            if (_criticalSoundIndex >= NoteGenerator.Instance.CriticalTimeList.Count)
+                _criticalSoundIndex = NoteGenerator.Instance.CriticalTimeList.Count;
 
             _songPlaybackAudioSourceHandler.Pause();
 
@@ -344,7 +348,7 @@ namespace Game
 
         private void SetCriticalSoundChannel(bool initialSet = false)
         {
-            if (_criticalSoundIndex == NoteGenerator.Instance.criticalTimeList.Count)
+            if (_criticalSoundIndex == NoteGenerator.Instance.CriticalTimeList.Count)
                 return;
 
             AudioSourcePool.AudioSourceHandler handler;
@@ -377,12 +381,12 @@ namespace Game
 
             void SetUpChannelDelay(AudioSourcePool.AudioSourceHandler audioSourceHandler)
             {
-                if (_criticalSoundIndex >= NoteGenerator.Instance.criticalTimeList.Count ||
+                if (_criticalSoundIndex >= NoteGenerator.Instance.CriticalTimeList.Count ||
                     audioSourceHandler == null)
                     return;
 
                 var delay = _generalPlaybackDelayInSeconds +
-                            NoteGenerator.Instance.criticalTimeList[_criticalSoundIndex] /
+                            NoteGenerator.Instance.CriticalTimeList[_criticalSoundIndex] /
                             1000f + _audioDspTimeWhenPlaybackStarts;
 
                 var audioClip = AudioManager.Instance.criticalSound;

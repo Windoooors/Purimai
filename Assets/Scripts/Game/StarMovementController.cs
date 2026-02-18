@@ -1,5 +1,5 @@
 using Game.Notes;
-using Game.Notes.Slides;
+using Game.Notes.SlideBasedNotes;
 using UnityEngine;
 
 namespace Game

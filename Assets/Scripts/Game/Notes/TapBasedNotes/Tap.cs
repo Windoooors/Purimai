@@ -1,7 +1,7 @@
 using UI.Result;
 using UnityEngine;
 
-namespace Game.Notes.Taps
+namespace Game.Notes.TapBasedNotes
 {
     public class Tap : TapBasedNote
     {
@@ -16,15 +16,18 @@ namespace Game.Notes.Taps
 
         private TapOrLineTransform _tapOrLineTransform = new();
 
-        private void Update()
+        public override void ManualUpdate()
         {
             if (!ChartPlayer.Instance.isPlaying)
                 return;
-
-            if (headJudged)
-                return;
-
+            
             GetTapOrLineTransform(ref _tapOrLineTransform);
+            
+            if (headJudged)
+            {
+                enabled = false;
+                return;
+            }
 
             if (!_tapOrLineTransform.Shown)
             {

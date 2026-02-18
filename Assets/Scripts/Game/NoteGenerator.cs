@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.ChartManagement;
 using Game.Notes;
-using Game.Notes.Slides;
-using Game.Notes.Taps;
+using Game.Notes.SlideBasedNotes;
+using Game.Notes.TapBasedNotes;
 using UI.Settings;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -40,6 +40,8 @@ namespace Game
             new(), new(), new(), new()
         };
 
+        public readonly List<NoteBase> notesList = new ();
+
         private GameObject _noteParent;
 
         private int _slideOrder;
@@ -48,7 +50,7 @@ namespace Game
             ? FindObjectsByType<NoteGenerator>(FindObjectsInactive.Include, FindObjectsSortMode.None)[^1]
             : _instance;
 
-        public List<int> criticalTimeList { get; private set; }
+        public List<int> CriticalTimeList { get; private set; }
 
         private void Awake()
         {
@@ -93,10 +95,10 @@ namespace Game
                 for (var i = lane.Count - 1; i >= 0; i--)
                     lane[i].RegisterTapEvent();
 
-            criticalTimeList = criticalTimeHashSet.ToList();
-            criticalTimeList.Sort();
+            CriticalTimeList = criticalTimeHashSet.ToList();
+            CriticalTimeList.Sort();
 
-            Filter(criticalTimeList);
+            Filter(CriticalTimeList);
 
             return;
 
@@ -137,6 +139,8 @@ namespace Game
                     (false, true, true, true) => Instantiate(tapPrefabs[8]),
                     (_, _, _, _) => Instantiate(tapPrefabs[0])
                 };
+                
+                notesList.Add(tapObjectInstance);
 
                 tapObjectInstance.timing = noteDataObject.Timing;
                 tapObjectInstance.lane = tap.Lane;
@@ -188,6 +192,8 @@ namespace Game
                 4 => Instantiate(eachLinePrefabs[3]),
                 _ => Instantiate(eachLinePrefabs[0])
             };
+            
+            notesList.Add(eachLine);
 
             eachLine.timing = noteDataObject.Timing;
             eachLine.lane = smallestLane;
@@ -212,6 +218,8 @@ namespace Game
                 order--;
 
                 LaneList[laneIndex].Add(holdObjectInstance);
+                
+                notesList.Add(holdObjectInstance);
 
                 holdObjectInstance.indexInLane = LaneList[laneIndex].Count - 1;
 
@@ -277,6 +285,8 @@ namespace Game
 
                 if (slideBasedNoteObjectInstance)
                 {
+                    notesList.Add(slideBasedNoteObjectInstance);
+                    
                     slideBasedNoteObjectInstance.order = -_slideOrder;
                     slideBasedNoteObjectInstance.timing = noteDataObject.Timing;
                     slideBasedNoteObjectInstance.slideType = slide.Type;

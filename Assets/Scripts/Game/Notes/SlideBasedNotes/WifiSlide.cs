@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 
-namespace Game.Notes.Slides
+namespace Game.Notes.SlideBasedNotes
 {
     public class WifiSlide : SlideBasedNote
     {

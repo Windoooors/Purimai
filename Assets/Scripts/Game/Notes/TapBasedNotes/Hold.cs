@@ -3,7 +3,7 @@ using UI.Settings;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Game.Notes.Taps
+namespace Game.Notes.TapBasedNotes
 {
     public class Hold : TapBasedNote
     {
@@ -39,8 +39,13 @@ namespace Game.Notes.Taps
         private int _nowEmergingTimePosition;
         private TapOrLineTransform _tapOrLineTransform = new();
 
-        private void Update()
+        public override void ManualUpdate()
         {
+            if (holdJudged)
+            {
+                enabled = false;
+            }
+            
             if (!ChartPlayer.Instance.isPlaying || holdJudged)
                 return;
 

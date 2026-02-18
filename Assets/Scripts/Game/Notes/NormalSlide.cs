@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.ChartManagement;
-using Game.Notes.Slides;
+using Game.Notes.SlideBasedNotes;
 
 namespace Game.Notes
 {

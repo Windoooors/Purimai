@@ -1,12 +1,12 @@
 using UnityEngine;
 
-namespace Game.Notes.Taps
+namespace Game.Notes.TapBasedNotes
 {
     public class EachLine : TapBasedNote
     {
         private TapOrLineTransform _tapOrLineTransform = new();
 
-        private void Update()
+        public override void ManualUpdate()
         {
             if (!ChartPlayer.Instance.isPlaying)
                 return;
@@ -17,10 +17,14 @@ namespace Game.Notes.Taps
 
             if (shown)
             {
+                _haveShown = true;
                 NoteContentRoot.SetActive(true);
             }
             else
             {
+                if (_haveShown)
+                    enabled = false;
+                
                 NoteContentRoot.SetActive(false);
                 return;
             }
@@ -30,6 +34,8 @@ namespace Game.Notes.Taps
                                     _tapOrLineTransform.PositionInLane)
                                    * Vector3.one;
         }
+
+        private bool _haveShown;
 
         protected override void LateStart()
         {

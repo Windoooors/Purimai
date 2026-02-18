@@ -1,4 +1,4 @@
-namespace Game.Notes.Slides
+namespace Game.Notes.SlideBasedNotes
 {
     public class LittleVSlide : NormalSlide
     {

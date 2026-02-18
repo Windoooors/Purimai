@@ -1,5 +1,5 @@
 using System;
-using Game.Notes.Taps;
+using Game.Notes.TapBasedNotes;
 using UI.Result;
 using UI.Settings;
 using Unity.Mathematics;
@@ -33,7 +33,7 @@ namespace Game.Notes
         Miss
     }
 
-    public abstract class TapBasedNote : MonoBehaviour
+    public abstract class TapBasedNote : NoteBase
     {
         public int timing;
 
@@ -99,6 +99,8 @@ namespace Game.Notes
 
             foreach (var child in children) child.parent = NoteContentRoot.transform;
 
+            emergingTime = timing - OnScreenTime * 2;
+            
             NoteContentRoot.SetActive(false);
         }
 

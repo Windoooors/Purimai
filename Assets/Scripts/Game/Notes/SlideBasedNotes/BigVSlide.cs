@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Notes.Slides
+namespace Game.Notes.SlideBasedNotes
 {
     public class BigVSlide : NormalSlide
     {

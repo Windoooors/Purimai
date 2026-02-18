@@ -10,7 +10,7 @@ using UnityEngine.Serialization;
 
 namespace Game.Notes
 {
-    public abstract class SlideBasedNote : MonoBehaviour
+    public abstract class SlideBasedNote : NoteBase
     {
         public StarMovementController[] stars;
         public SpriteRenderer judgeDisplaySpriteRenderer;
@@ -152,14 +152,26 @@ namespace Game.Notes
             foreach (var child in children) child.parent = SlideContentRoot.transform;
 
             SlideContentRoot.SetActive(false);
+            
+            emergingTime = timing - (suddenlyAppears ? 0 : ChartPlayer.Instance.timeGapBeforeSlideStartsAppearing);
         }
 
-        private void Update()
+        private bool _haveShown;
+
+        public override void ManualUpdate()
         {
             GetSlideTransform(ref _slideTransform);
 
             SlideContentRoot.SetActive(_slideTransform.Shown);
-            if (!_slideTransform.Shown) return;
+            
+            if (!_slideTransform.Shown)
+            {
+                if (_haveShown)
+                    enabled = false;
+                return;
+            }
+
+            _haveShown = true;
 
             foreach (var star in stars)
             {
