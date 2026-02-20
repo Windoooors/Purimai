@@ -68,8 +68,6 @@ namespace UI.InGame
 
             _circleMaskTree.RemoveFromClassList("hide-button");
 
-            ChartPlayer.Instance.Resume();
-
             _paused = false;
         }
     }

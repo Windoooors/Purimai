@@ -135,7 +135,7 @@ namespace Game.Notes
                      or NoteDataObject.SlideDataObject.SlideType.RotateMinorArc)
                 interval = CycleSlide.GetCycleInterval(fromLaneIndex + 1, toLaneIndexes[0] + 1, slideType);
             else if (slideType is NoteDataObject.SlideDataObject.SlideType.BigV)
-                interval = GetShortestInterval(toLaneIndexes[0] + 1, toLaneIndexes[1] + 1);
+                interval = 1;
 
             if (interval is 2 or 1)
                 return false;

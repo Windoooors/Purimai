@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Linq;
 using Game.Notes;
 using LitMotion;
@@ -52,7 +53,7 @@ namespace Game
 
         public AudioClip songClip;
 
-        private float _dspTime;
+        private float _audioTime;
 
         private float _time;
 
@@ -61,9 +62,7 @@ namespace Game
         private readonly float _generalPlaybackDelayInSeconds = 3f;
 
         private readonly int _maxScheduledCriticalSoundCount = 16;
-
-        private double _audioDspTimeWhenPlaybackStarts;
-
+        
         private Camera _camera;
 
         private bool _chartHasVideo;
@@ -102,28 +101,40 @@ namespace Game
             SceneManager.sceneUnloaded += _ => { Destroy(_videoTexture); };
 
             _time = -_generalPlaybackDelayInSeconds;
+            _audioTime = -_generalPlaybackDelayInSeconds;
 
             _criticalSoundVolume = SettingsPool.GetValue("volume.cue_sound") / 10f;
             _songVolume = SettingsPool.GetValue("volume.song") / 10f;
 
+            AudioSettings.GetDSPBufferSize(out var dspBufferSize, out _);
+
+            var sampleRate = AudioSettings.outputSampleRate;
+
+            _dspDurationInSeconds = dspBufferSize / (double)sampleRate;
+
             UpdateCameraSize();
         }
 
+        private double _dspDurationInSeconds;
+
         private void Update()
         {
-            if (isPlaying)
-                _dspTime = (float)AudioSettings.dspTime - (float)_audioDspTimeWhenPlaybackStarts -
-                           _generalPlaybackDelayInSeconds;
-
             if (!isPlaying || _paused)
                 return;
             
             _time += Time.deltaTime;
+
+            _audioTime = (float)(AudioSettings.dspTime - _dspTimeWhenSongStartsPlaying);
             
-            if (math.abs(_dspTime - _time) >= 0.5)
-                _time = _dspTime;
+            if (math.abs(_audioTime - _time) >= (_dspDurationInSeconds + Time.deltaTime) * 1.5f)
+                _time = _audioTime;
+
+            if (math.abs(_audioTime - _time) >= (_dspDurationInSeconds + Time.deltaTime) * 0.5f)
+            {
+                _time = (float)math.lerp(_time, _audioTime, 0.5);
+            }
             
-            SetCriticalSoundChannel();
+            SetCueSoundChannel();
 
             if (_time > math.max(NoteGenerator.Instance.endingTime / 1000f + 0.5f, _songLength))
             {
@@ -150,6 +161,8 @@ namespace Game
             UIManager.Instance.ShowResult();
         }
 
+        private double _dspTimeWhenPausing;
+        
         public void Pause(out bool succeed)
         {
             if (!isPlaying)
@@ -157,6 +170,8 @@ namespace Game
                 succeed = false;
                 return;
             }
+
+            _audioTime = (float)(AudioSettings.dspTime - _dspTimeWhenSongStartsPlaying);
 
             AudioManager.Instance.AudioSourcePool.Pool.ForEach(x =>
             {
@@ -182,44 +197,59 @@ namespace Game
             succeed = true;
         }
 
+        private double _dspTimeWhenSongStartsPlaying;
+        
         public void Resume()
         {
-            if (_time > 0)
-            {
-                _audioDspTimeWhenPlaybackStarts = AudioSettings.dspTime -
-                                                  _songPlaybackAudioSourceHandler.GetPosition() -
-                                                  _generalPlaybackDelayInSeconds;
+            StartCoroutine(ResumeProcedure());
 
-                _songPlaybackAudioSourceHandler.Play();
-            }
-            else
+            return;
+            
+            IEnumerator ResumeProcedure()
             {
-                _audioDspTimeWhenPlaybackStarts = AudioSettings.dspTime -
-                                                  _time -
-                                                  _generalPlaybackDelayInSeconds;
-
+                double scheduledTime;
+                int samplesCount;
+                
+                if (_audioTime > 0)
+                {
+                    samplesCount = _songPlaybackAudioSourceHandler.GetTimeSamples();
+                    scheduledTime = AudioSettings.dspTime + 0.5;
+                    _dspTimeWhenSongStartsPlaying = scheduledTime - _audioTime;
+                }
+                else
+                {
+                    samplesCount = 0;
+                    scheduledTime = AudioSettings.dspTime - _audioTime + 0.5;
+                    _dspTimeWhenSongStartsPlaying = scheduledTime;
+                }
+                
                 _songPlaybackAudioSourceHandler.Stop();
 
                 AudioManager.Instance.AudioSourcePool.TryGetAudioSourceHandler(out var handler);
 
                 if (handler == null)
-                    return;
+                    yield break;
 
                 _songPlaybackAudioSourceHandler = handler;
 
                 _songPlaybackAudioSourceHandler.SetClip(Maidata.SongAudioClip);
                 _songPlaybackAudioSourceHandler.SetVolume(_songVolume);
+                _songPlaybackAudioSourceHandler.SetTimeSamples(samplesCount);
+                
+                _songPlaybackAudioSourceHandler.PlayScheduled(scheduledTime);
 
-                _songPlaybackAudioSourceHandler.PlayScheduled(AudioSettings.dspTime - _time);
+                SetCueSoundChannel(true);
+                
+                yield return new WaitForSeconds(0.5f);
+
+                _time = _audioTime;
+
+                _videoPlayer?.Play();
+
+                SimulatedSensor.Enabled = true;
+
+                _paused = false;
             }
-
-            SetCriticalSoundChannel(true);
-
-            _videoPlayer?.Play();
-
-            SimulatedSensor.Enabled = true;
-
-            _paused = false;
         }
 
         private bool TryLoadVideo(string path)
@@ -269,8 +299,7 @@ namespace Game
             if (_songPlaybackAudioSourceHandler != null)
                 return (getDspTime
                     ? _songPlaybackAudioSourceHandler.IsPlaying()
-                        ? (float)AudioSettings.dspTime - (float)_audioDspTimeWhenPlaybackStarts -
-                          _generalPlaybackDelayInSeconds
+                        ? (float)(AudioSettings.dspTime - _dspTimeWhenSongStartsPlaying)
                         : _time
                     : _time) * 1000;
 
@@ -309,10 +338,10 @@ namespace Game
 
             isPlaying = true;
 
-            PlaySound();
+            PlayAudio();
         }
 
-        public void UpdateCameraSize()
+        private void UpdateCameraSize()
         {
             var aspectRatio = (float)Screen.currentResolution.width / Screen.currentResolution.height;
 
@@ -322,20 +351,18 @@ namespace Game
                 _camera.orthographicSize = DefaultLandscapeSize / aspectRatio;
         }
 
-        private void PlaySound()
+        private void PlayAudio()
         {
-            _audioDspTimeWhenPlaybackStarts = AudioSettings.dspTime;
-
             AudioManager.Instance.AudioSourcePool.TryGetAudioSourceHandler(out _songPlaybackAudioSourceHandler);
 
             _songPlaybackAudioSourceHandler.SetClip(songClip);
+            
+            _dspTimeWhenSongStartsPlaying = AudioSettings.dspTime +
+                                            _generalPlaybackDelayInSeconds;
 
-            var delay = _audioDspTimeWhenPlaybackStarts +
-                        _generalPlaybackDelayInSeconds;
+            _songPlaybackAudioSourceHandler.PlayScheduled(_dspTimeWhenSongStartsPlaying);
 
-            _songPlaybackAudioSourceHandler.PlayScheduled(delay);
-
-            _songPlaybackAudioSourceHandler.ScheduledStartTime = delay;
+            _songPlaybackAudioSourceHandler.ScheduledStartTime = _dspTimeWhenSongStartsPlaying;
 
             _songPlaybackAudioSourceHandler.SetVolume(_songVolume);
 
@@ -343,10 +370,10 @@ namespace Game
 
             _songLength = songClip.length;
 
-            SetCriticalSoundChannel(true);
+            SetCueSoundChannel(true);
         }
 
-        private void SetCriticalSoundChannel(bool initialSet = false)
+        private void SetCueSoundChannel(bool initialSet = false, float delayInSeconds = 0)
         {
             if (_criticalSoundIndex == NoteGenerator.Instance.CriticalTimeList.Count)
                 return;
@@ -385,9 +412,9 @@ namespace Game
                     audioSourceHandler == null)
                     return;
 
-                var delay = _generalPlaybackDelayInSeconds +
+                var delay = _dspTimeWhenSongStartsPlaying +
                             NoteGenerator.Instance.CriticalTimeList[_criticalSoundIndex] /
-                            1000f + _audioDspTimeWhenPlaybackStarts;
+                            1000f + delayInSeconds;
 
                 var audioClip = AudioManager.Instance.criticalSound;
 

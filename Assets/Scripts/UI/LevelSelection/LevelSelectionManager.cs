@@ -370,8 +370,6 @@ namespace UI.LevelSelection
                         .Maidata.MaidataDirectoryName), groupByRule == SortingRules.Difficulty
                         ? _data[_listView.selectedIndex].DifficultyIndex
                         : _scoreContentPanel.AlphabeticallySelectedDifficultyIndex);
-
-                //AudioManager.Instance.PlaySelectSound();
             };
 
             _snapManipulator.OnSnapToItem += (_, args) =>
@@ -396,7 +394,7 @@ namespace UI.LevelSelection
 
             _lastPreviewedMaidata?.UnloadSong();
 
-            StartCoroutine(_data[index].MaidataReferenceCountPair.Maidata.LoadSongClip());
+            StartCoroutine(_data[index].MaidataReferenceCountPair.Maidata.LoadSongClip(true));
             _songPlaying = false;
 
             _lastPreviewedMaidata = _data[index].MaidataReferenceCountPair.Maidata;

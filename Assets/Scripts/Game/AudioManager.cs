@@ -473,6 +473,11 @@ namespace Game
                 _audioSource = audioSource;
             }
 
+            public void SetPosition(float position)
+            {
+                _audioSource.time = position;
+            }
+
             public bool IsFree
             {
                 get
@@ -492,6 +497,16 @@ namespace Game
             public float GetPosition()
             {
                 return _audioSource.time;
+            }
+
+            public int GetTimeSamples()
+            {
+                return _audioSource.timeSamples;
+            }
+
+            public void SetTimeSamples(int timeSamples)
+            {
+                _audioSource.timeSamples = timeSamples;
             }
 
             public AudioClip GetAudioClip()
@@ -538,9 +553,9 @@ namespace Game
                 _paused = false;
             }
 
-            public void PlayScheduled(double delay)
+            public void PlayScheduled(double time)
             {
-                _audioSource.PlayScheduled(delay);
+                _audioSource.PlayScheduled(time);
             }
         }
     }

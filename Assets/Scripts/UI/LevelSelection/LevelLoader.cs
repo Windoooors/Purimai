@@ -65,7 +65,9 @@ namespace UI.LevelSelection
             _maidata = maidata;
             _levelIndex = difficultyIndex;
 
-            StartCoroutine(maidata.LoadSongClip());
+            maidata.UnloadSong();
+            
+            StartCoroutine(maidata.LoadSongClip(false));
             Task.Run(maidata.GenerateBlurredCover);
 
             ScreenOrientationManager.Instance.EnablePortrait();

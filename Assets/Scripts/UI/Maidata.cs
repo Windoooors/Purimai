@@ -365,7 +365,7 @@ namespace UI
             _loadingCover = false;
         }
 
-        public IEnumerator LoadSongClip()
+        public IEnumerator LoadSongClip(bool streamed)
         {
             if (_loadingSong)
                 yield break;
@@ -375,7 +375,7 @@ namespace UI
 
             _loadingSong = true;
 
-            yield return AudioManager.Instance.LoadAudioClip(SongPath, clip => SongAudioClip = clip, true);
+            yield return AudioManager.Instance.LoadAudioClip(SongPath, clip => SongAudioClip = clip, streamed);
 
             SongLoaded = true;
             _loadingSong = false;

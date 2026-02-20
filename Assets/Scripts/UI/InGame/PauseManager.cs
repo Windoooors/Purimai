@@ -129,6 +129,8 @@ namespace UI.InGame
             {
                 _pausePanelTree.styleSheets.Add(Resources.Load<StyleSheet>("UI/USS/Pause/GameToPausePreAnimated"));
                 _pausePanelTree.AddToClassList("out-animation");
+                
+                ChartPlayer.Instance.Resume();
 
                 yield return new WaitForSeconds(0.5f);
 
