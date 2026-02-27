@@ -28,6 +28,49 @@ namespace Game.Notes.SlideBasedNotes
             UniversalSegments.AddRange(segments);
         }
 
+        public override void AddAutoPlayKeyFrame()
+        {
+            foreach (var segment in segments)
+            {
+                var index = segments.ToList().IndexOf(segment);
+
+                float tapTime;
+                float leaveTime;
+
+                if (index == segments.Length - 1)
+                {
+                    tapTime = SlideJudgeTiming;
+                    leaveTime = SlideJudgeTiming;
+                }
+                else
+                {
+                    tapTime = index / (float)segments.Length * slideDuration + timing + waitDuration;
+                    leaveTime = (index + 1) / (float)segments.Length * slideDuration + timing + waitDuration;
+                }
+
+                var lList = AutoPlayer.KeyFrameManager.GetKeyFrames(segment.sensorsL[0]);
+
+                lList.Add(new AutoPlayKeyFrame(AutoPlayKeyFrame.Type.Hold, (int)tapTime));
+                lList.Add(new AutoPlayKeyFrame(AutoPlayKeyFrame.Type.PressDown, (int)tapTime));
+                lList.Add(new AutoPlayKeyFrame(AutoPlayKeyFrame.Type.PressUp, (int)leaveTime));
+                lList.Add(new AutoPlayKeyFrame(AutoPlayKeyFrame.Type.Hold, (int)leaveTime));
+
+                var mList = AutoPlayer.KeyFrameManager.GetKeyFrames(segment.sensorsM[0]);
+
+                mList.Add(new AutoPlayKeyFrame(AutoPlayKeyFrame.Type.Hold, (int)tapTime));
+                mList.Add(new AutoPlayKeyFrame(AutoPlayKeyFrame.Type.PressDown, (int)tapTime));
+                mList.Add(new AutoPlayKeyFrame(AutoPlayKeyFrame.Type.PressUp, (int)leaveTime));
+                mList.Add(new AutoPlayKeyFrame(AutoPlayKeyFrame.Type.Hold, (int)leaveTime));
+
+                var rList = AutoPlayer.KeyFrameManager.GetKeyFrames(segment.sensorsR[0]);
+
+                rList.Add(new AutoPlayKeyFrame(AutoPlayKeyFrame.Type.Hold, (int)tapTime));
+                rList.Add(new AutoPlayKeyFrame(AutoPlayKeyFrame.Type.PressDown, (int)tapTime));
+                rList.Add(new AutoPlayKeyFrame(AutoPlayKeyFrame.Type.PressUp, (int)leaveTime));
+                rList.Add(new AutoPlayKeyFrame(AutoPlayKeyFrame.Type.Hold, (int)leaveTime));
+            }
+        }
+
         private bool SensorContained(int segmentIndex, string sensorId, int pathIndex)
         {
             return pathIndex switch

@@ -98,6 +98,14 @@ namespace Game.Notes.TapBasedNotes
             SimulatedSensor.OnTap += Judge;
         }
 
+        public override void AddAutoPlayKeyFrame()
+        {
+            var list = AutoPlayer.KeyFrameManager.GetKeyFrames($"A{lane}");
+
+            list.Add(new AutoPlayKeyFrame(AutoPlayKeyFrame.Type.PressDown, timing));
+            //list.Add(new AutoPlayKeyFrame(AutoPlayKeyFrame.Type.PressUp, timing));
+        }
+
         private void Judge(object sender, TouchEventArgs e)
         {
             var parsed = int.TryParse(e.SensorId.Replace("A", ""), out var touchedLane);

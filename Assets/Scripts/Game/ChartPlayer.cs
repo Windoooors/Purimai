@@ -81,6 +81,8 @@ namespace Game
         private float _songLength;
         private AudioSourcePool.AudioSourceHandler _songPlaybackAudioSourceHandler;
 
+        private float _songPositionWhenCalibrationThresholdChanged;
+
         private float _songVolume;
 
         private bool _startCalibrated;
@@ -100,7 +102,7 @@ namespace Game
             _camera = FindAnyObjectByType<Camera>();
 
             _needCalibrationThreshold = PlayerPrefs.GetFloat("CalibrationThreshold", 1f);
-            
+
             ScreenOrientationManager.Instance.ScreenChanged = null;
             ScreenOrientationManager.Instance.ScreenChanged += UpdateCameraSize;
 
@@ -151,8 +153,6 @@ namespace Game
             });
         }
 
-        private float _songPositionWhenCalibrationThresholdChanged;
-        
         private void CalibrateTime()
         {
             var songPosition = _songPlaybackAudioSourceHandler.GetPosition();
@@ -170,12 +170,13 @@ namespace Game
                 _calibrationTimes++;
                 _time = songPosition;
 
-                if (_calibrationTimes / (songPosition - _songPositionWhenCalibrationThresholdChanged) > _maxCalibrationRate)
+                if (_calibrationTimes / (songPosition - _songPositionWhenCalibrationThresholdChanged) >
+                    _maxCalibrationRate)
                 {
                     _calibrationTimes = 0;
                     _songPositionWhenCalibrationThresholdChanged = songPosition;
                     _needCalibrationThreshold += 0.05f;
-                    
+
                     PlayerPrefs.SetFloat("CalibrationThreshold", _needCalibrationThreshold);
                 }
             }
@@ -267,7 +268,8 @@ namespace Game
 
                 _videoPlayer?.Play();
 
-                SimulatedSensor.Enabled = true;
+                if (SettingsPool.GetValue("auto_play") != 1)
+                    SimulatedSensor.Enabled = true;
 
                 _paused = false;
             }

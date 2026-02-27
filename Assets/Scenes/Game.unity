@@ -6719,6 +6719,7 @@ GameObject:
   - component: {fileID: 1054234681}
   - component: {fileID: 1054234680}
   - component: {fileID: 1054234684}
+  - component: {fileID: 1054234685}
   m_Layer: 0
   m_Name: Chart Manager
   m_TagString: Untagged
@@ -7102,6 +7103,18 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1054234685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1054234679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a3ac8f569274625bb6678388154881b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.AutoPlayer
 --- !u!1 &1071052371
 GameObject:
   m_ObjectHideFlags: 0

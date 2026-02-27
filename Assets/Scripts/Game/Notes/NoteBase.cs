@@ -20,5 +20,7 @@ namespace Game.Notes
 
             targetObject.layer = layer;
         }
+
+        public abstract void AddAutoPlayKeyFrame();
     }
 }

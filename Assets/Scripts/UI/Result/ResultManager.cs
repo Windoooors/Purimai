@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Game;
 using UI.LevelSelection;
+using UI.Settings;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
@@ -366,6 +367,11 @@ namespace UI.Result
 
         private void UpdateRankData()
         {
+            var autoEnabled = SettingsPool.GetValue("auto_play") == 1;
+
+            if (autoEnabled)
+                return;
+
             var chartRankData = ChartRankDataManager.GetChartRankData(_maidata.MaidataDirectoryName) ??
                                 ChartRankDataManager.AddChartRankData(_maidata.MaidataDirectoryName);
             var levelRankData = chartRankData.GetLevelRankData(ChartPlayer.Instance.levelDifficultyIndex) ??

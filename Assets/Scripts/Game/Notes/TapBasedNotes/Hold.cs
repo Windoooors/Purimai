@@ -249,6 +249,20 @@ namespace Game.Notes.TapBasedNotes
             SimulatedSensor.OnLeave += OnLeave;
         }
 
+        public override void AddAutoPlayKeyFrame()
+        {
+            var list = AutoPlayer.KeyFrameManager.GetKeyFrames($"A{lane}");
+
+            list.Add(new AutoPlayKeyFrame(AutoPlayKeyFrame.Type.PressDown, timing)
+            {
+                HoldNote = true
+            });
+            list.Add(new AutoPlayKeyFrame(AutoPlayKeyFrame.Type.PressUp, timing + (duration < 20 ? 20 : duration))
+            {
+                HoldNote = true
+            });
+        }
+
         private void JudgeHead(object sender, TouchEventArgs e)
         {
             var parsed = int.TryParse(e.SensorId.Replace("A", ""), out var touchedLane);

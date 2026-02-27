@@ -22,8 +22,10 @@ namespace UI
         private static readonly Regex GenreRegex = new("&genre=(.*)");
         private static readonly Regex FirstNoteTimeRegex = new(@"&first=((\-?)\d+.\d+|(\-?)\d+)");
         private static readonly Regex BpmRegex = new(@"&wholebpm=(\d+.\d+|\d+)");
+
         private static readonly Regex UtageDifficultyRegex =
             new(@"([0-9]+\+?\?|[\u4E00-\u9FFF]\s?[0-9]+\+?\??|utage\s?[0-9]+\+?\??)");
+
         private static readonly Regex UtageTitleRegex =
             new(@"^\[.*?\]");
 
@@ -31,7 +33,7 @@ namespace UI
 
         private readonly string _songCoverPath;
         private readonly string _songPath;
-        
+
         public readonly string Artist;
         public readonly float Bpm;
         public readonly Chart[] Charts;
@@ -45,11 +47,11 @@ namespace UI
         private bool _generatingBlurredCover;
         private bool _loadingCover;
         private bool _loadingSong;
-
-        public DecodedImage BlurredSongCoverWithConstantRadiusDecodedImage;
         public DecodedImage BlurredSongCoverAsBackgroundDecodedImage;
         public DecodedImage BlurredSongCoverDecodedImage;
         public bool BlurredSongCoverGenerated;
+
+        public DecodedImage BlurredSongCoverWithConstantRadiusDecodedImage;
         public bool CoverDataLoaded;
         public AudioClip SongAudioClip;
         public DecodedImage SongCoverDecodedImage;
@@ -63,7 +65,7 @@ namespace UI
             _songCoverPath = songCoverPath;
 
             var maidataString = File.ReadAllText(maidataPath);
-            maidataString = new Regex(@"\|\|.*$").Replace(maidataString, string.Empty);
+            maidataString = new Regex(@"\|\|.*").Replace(maidataString, "");
 
             var titleMatch = TitleRegex.Match(maidataString);
             var artistMatch = ArtistRegex.Match(maidataString);
@@ -86,25 +88,19 @@ namespace UI
 
             var chartList = new List<Chart>();
 
-            if (!HasChart(maidataString))
+            var levelIndexArray = GetAllInoteIndexes(maidataString);
+
+            if (levelIndexArray.Length == 0)
             {
                 Charts = Array.Empty<Chart>();
                 return;
             }
 
-            var i = 0;
-
-            var found = TryGetChartString(maidataString, i, out var chartString, out var isLast);
-
-            while (true)
+            foreach (var i in levelIndexArray)
             {
-                if (!found)
-                {
-                    i++;
-                    found = TryGetChartString(maidataString, i, out chartString, out isLast);
+                var found = TryGetChartString(maidataString, i, out var chartString);
 
-                    continue;
-                }
+                if (!found) continue;
 
                 if (!TryGetDesigner(maidataString, i, out var designer))
                     designer = mainChartDesigner;
@@ -127,12 +123,6 @@ namespace UI
                 AddUsedCharacters(designer);
 
                 chartList.Add(chart);
-
-                if (isLast)
-                    break;
-
-                i++;
-                found = TryGetChartString(maidataString, i, out chartString, out isLast);
             }
 
             if (chartList.Count == 0)
@@ -159,39 +149,36 @@ namespace UI
             }
         }
 
-        private bool HasChart(string maidataString)
+        public static int[] GetAllInoteIndexes(string maidataString)
         {
-            if (string.IsNullOrEmpty(maidataString)) return false;
+            if (string.IsNullOrEmpty(maidataString)) return new int[0];
 
-            var span = maidataString.AsSpan();
-            var pos = 0;
+            var indexList = new List<int>();
+            var searchPos = 0;
+            var tagStart = "&inote_";
 
-            while ((pos = maidataString.IndexOf("&inote_", pos, StringComparison.Ordinal)) != -1)
+            while (true)
             {
-                var numStart = pos + 7;
+                var foundPos = maidataString.IndexOf(tagStart, searchPos);
+                if (foundPos == -1) break;
 
-                if (numStart < span.Length)
-                    if (char.IsDigit(span[numStart]))
-                    {
-                        var eqIdx = maidataString.IndexOf('=', numStart);
-                        if (eqIdx != -1)
-                        {
-                            var isValidNumber = true;
-                            for (var j = numStart + 1; j < eqIdx; j++)
-                                if (!char.IsDigit(span[j]))
-                                {
-                                    isValidNumber = false;
-                                    break;
-                                }
+                var numStart = foundPos + tagStart.Length;
+                var equalPos = maidataString.IndexOf('=', numStart);
 
-                            if (isValidNumber) return true;
-                        }
-                    }
+                if (equalPos != -1)
+                {
+                    var numStr = maidataString.Substring(numStart, equalPos - numStart);
+                    if (int.TryParse(numStr, out var i)) indexList.Add(i);
 
-                pos += 7;
+                    searchPos = equalPos + 1;
+                }
+                else
+                {
+                    searchPos = numStart;
+                }
             }
 
-            return false;
+            return indexList.ToArray();
         }
 
         private bool TryGetLevel(string input, int index, out string level)
@@ -275,31 +262,44 @@ namespace UI
             foreach (var character in usedCharacters) UsedCharacters.Add(character);
         }
 
-        private bool TryGetChartString(string maidataString, int i, out string chartString, out bool isLast)
+        private static bool TryGetChartString(string maidataString, int i, out string chartString)
         {
             chartString = null;
-            isLast = false;
+            if (string.IsNullOrEmpty(maidataString)) return false;
 
-            var currentMarker = $"&inote_{i}=";
-            var startIndex = maidataString.IndexOf(currentMarker, StringComparison.InvariantCulture);
-
+            var startTag = $"&inote_{i}=";
+            var startIndex = maidataString.IndexOf(startTag, StringComparison.InvariantCulture);
             if (startIndex == -1) return false;
 
-            var contentStart = startIndex + currentMarker.Length;
+            var contentStart = startIndex + startTag.Length;
+            var endIndex = maidataString.Length;
 
-            var nextMarkerIndex = maidataString.IndexOf("&inote_", contentStart, StringComparison.InvariantCulture);
+            var ePos = maidataString.IndexOf('E', contentStart);
+            if (ePos != -1) endIndex = ePos;
 
-            if (nextMarkerIndex == -1)
+            var searchPos = contentStart;
+            while (true)
             {
-                chartString = maidataString.Substring(contentStart);
-                isLast = true;
-            }
-            else
-            {
-                chartString = maidataString.Substring(contentStart, nextMarkerIndex - contentStart);
-                isLast = false;
+                var tagPos = maidataString.IndexOf("&inote_", searchPos, StringComparison.InvariantCulture);
+                if (tagPos == -1 || tagPos >= endIndex) break;
+
+                var numStart = tagPos + 7;
+                var eqPos = maidataString.IndexOf('=', numStart);
+
+                if (eqPos != -1)
+                {
+                    var numStr = maidataString.Substring(numStart, eqPos - numStart);
+                    if (int.TryParse(numStr, out var k) && k > i)
+                    {
+                        endIndex = tagPos;
+                        break;
+                    }
+                }
+
+                searchPos = tagPos + 7;
             }
 
+            chartString = maidataString.Substring(contentStart, endIndex - contentStart);
             return true;
         }
 
@@ -374,7 +374,7 @@ namespace UI
                     2 => 5,
                     _ => 2
                 }));
-            
+
             copiedImage.Mutate(x => x.GaussianBlur(5));
 
             BlurredSongCoverAsBackgroundDecodedImage = new DecodedImage(image);

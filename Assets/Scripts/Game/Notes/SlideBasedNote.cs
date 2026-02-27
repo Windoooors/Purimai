@@ -59,8 +59,6 @@ namespace Game.Notes
 
         private bool _slidedHalf;
 
-        private int _slideJudgeTiming;
-
         private SlideTransform _slideTransform = new();
         private bool _starMovingStarted;
 
@@ -72,6 +70,8 @@ namespace Game.Notes
 
         protected bool Slided;
         protected int[] SlideJudgeDisplaySpriteIndexes;
+
+        protected int SlideJudgeTiming;
 
         [HideInInspector] public VectorGraphicsUtility VectorGraphicsUtility;
 
@@ -370,7 +370,7 @@ namespace Game.Notes
             if (Slided)
                 return;
 
-            var deltaTiming = _slideJudgeTiming - ChartPlayer.Instance.TimeInMilliseconds +
+            var deltaTiming = SlideJudgeTiming - ChartPlayer.Instance.TimeInMilliseconds +
                               ChartPlayer.Instance.judgeDelay;
 
             _isFast = deltaTiming > 0;
@@ -560,9 +560,9 @@ namespace Game.Notes
             }
 
             var lastSegmentArrowCount = UniversalSegments[^1].slideSpriteRenderersWithinSensorArea.Length;
-            _slideJudgeTiming = (int)((float)(_slideArrowSpriteRenderers.Length - lastSegmentArrowCount) /
-                                      _slideArrowSpriteRenderers.Length * slideDuration
-                                      + timing + waitDuration);
+            SlideJudgeTiming = (int)((float)(_slideArrowSpriteRenderers.Length - lastSegmentArrowCount) /
+                                     _slideArrowSpriteRenderers.Length * slideDuration
+                                     + timing + waitDuration);
         }
 
         private bool ArrowOverlapsOnSensor(int index, Collider2D sensorCollider)

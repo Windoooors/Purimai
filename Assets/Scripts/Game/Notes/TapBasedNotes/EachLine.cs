@@ -36,6 +36,10 @@ namespace Game.Notes.TapBasedNotes
                                    * Vector3.one;
         }
 
+        public override void AddAutoPlayKeyFrame()
+        {
+        }
+
         protected override void LateStart()
         {
             var laneIndex = lane - 1;

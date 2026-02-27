@@ -81,6 +81,8 @@ namespace UI.LevelSelection
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
 
+            SimulatedSensor.Enabled = true;
+
             AudioManager.Instance.AudioSourcePool.Clear();
 
             ChartPlayer.Instance.InitializeLevel(_maidata, _levelIndex);

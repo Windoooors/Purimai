@@ -44,6 +44,35 @@ namespace Game.Notes
             }
         }
 
+        public override void AddAutoPlayKeyFrame()
+        {
+            foreach (var segment in segments)
+            {
+                var index = segments.ToList().IndexOf(segment);
+
+                float tapTime;
+                float leaveTime;
+
+                if (index == segments.Length - 1)
+                {
+                    tapTime = SlideJudgeTiming;
+                    leaveTime = SlideJudgeTiming;
+                }
+                else
+                {
+                    tapTime = index / (float)segments.Length * slideDuration + timing + waitDuration;
+                    leaveTime = (index + 1) / (float)segments.Length * slideDuration + timing + waitDuration;
+                }
+
+                var list = AutoPlayer.KeyFrameManager.GetKeyFrames(segment.mainSensor);
+
+                list.Add(new AutoPlayKeyFrame(AutoPlayKeyFrame.Type.Hold, (int)tapTime));
+                list.Add(new AutoPlayKeyFrame(AutoPlayKeyFrame.Type.PressDown, (int)tapTime));
+                list.Add(new AutoPlayKeyFrame(AutoPlayKeyFrame.Type.PressUp, (int)leaveTime));
+                list.Add(new AutoPlayKeyFrame(AutoPlayKeyFrame.Type.Hold, (int)leaveTime));
+            }
+        }
+
         protected override void OnSensorHold(TouchEventArgs e)
         {
             JudgeSegment(e.SensorId, true);
