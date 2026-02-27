@@ -42,6 +42,11 @@
                     <ui:VisualElement name="icon"
                                       style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Textures/UI/LevelSelection/Settings.png?fileID=2800000&amp;guid=3579417acd9c342baa1ebed319f07759&amp;type=3#Settings&quot;); position: absolute; width: 32px; height: 32px; top: 50%; left: 50%; margin-top: -20px; margin-right: 0; margin-left: -16px;"/>
                 </ui:Button>
+                <ui:Button name="mods-button" class="button mods-button"
+                           style="transition-property: scale, opacity, left; transition-duration: 0.2s, 0.2s, 0.5s; transition-timing-function: ease, ease, ease-out-cubic; transition-delay: 0s, 0s, 0s;">
+                    <ui:VisualElement name="icon"
+                                      style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Textures/UI/LevelSelection/Mods.png?fileID=2800000&amp;guid=ad78a8295c9764b549c9fb9f7fb36df9&amp;type=3#Mods&quot;); position: absolute; width: 32px; height: 32px; top: 50%; left: 50%; margin-top: -20px; margin-right: 0; margin-left: -16px;"/>
+                </ui:Button>
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="white-out-mask" class="white-out-mask"/>

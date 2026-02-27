@@ -31,8 +31,6 @@ namespace Game.ChartManagement
         {
             _chartString = chartString.Trim().Replace("\n", "").Replace(" ", "");
 
-            _chartString = new Regex(@"\|\|.*").Replace(_chartString, string.Empty);
-
             _firstNoteTime = firstNoteTime + SettingsPool.GetValue("audio_delay") / 1000f;
 
             var noteList = new List<NoteDataObject>();

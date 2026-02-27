@@ -3,6 +3,7 @@ using UI.InGame;
 using UI.LevelSelection;
 using UI.Result;
 using UI.Settings;
+using UI.Settings.Managers;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.TextCore.Text;
@@ -28,15 +29,19 @@ namespace UI
         public ResultManager resultPrefab;
         public CircleMaskManager circleMaskPrefab;
         public PauseManager pausePrefab;
+        public ModsManager modsPrefab;
 
         public ResultManager resultManager;
         public LevelSelectionManager levelSelectionManager;
         public SettingsManager settingsManager;
         public CircleMaskManager circleMaskManager;
         public PauseManager pauseManager;
+        public ModsManager modsManager;
 
         public Vector2Int portraitReferenceResolution = new(600, 600);
         public Vector2Int landscapeReferenceResolution = new(1024, 600);
+
+        public static UIManager Instance => _instance ?? FindAnyObjectByType<UIManager>();
 
         private void Awake()
         {
@@ -47,8 +52,6 @@ namespace UI
             uiDocument.rootVisualElement.RegisterCallback<GeometryChangedEvent>(evt => { ApplySafeArea(); });
 
             SettingsManager.OnSettingsChanged += ApplyResolution;
-
-            AudioManager.Instance.LoadAllSoundEffects(gameSoundFileNameData, uiSoundFileNameData);
 
             ShowLevelSelector();
 
@@ -112,6 +115,12 @@ namespace UI
             ApplySafeArea();
         }
 
+        public void ShowModsPanel()
+        {
+            modsManager = Instantiate(modsPrefab, transform);
+            ApplySafeArea();
+        }
+
         public void ShowSettingsPanel()
         {
             settingsManager = Instantiate(settingsPrefab, transform);
@@ -143,7 +152,6 @@ namespace UI
             }
         }
 
-        public static UIManager Instance => _instance ?? FindAnyObjectByType<UIManager>();
         public void UpdateTMPAtlas(char[] characters)
         {
             var characterString = new string(characters);

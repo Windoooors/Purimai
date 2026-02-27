@@ -41,11 +41,8 @@ namespace Game.Notes.TapBasedNotes
 
         public override void ManualUpdate()
         {
-            if (holdJudged)
-            {
-                enabled = false;
-            }
-            
+            if (holdJudged) enabled = false;
+
             if (!ChartPlayer.Instance.isPlaying || holdJudged)
                 return;
 
@@ -53,14 +50,15 @@ namespace Game.Notes.TapBasedNotes
 
             if (!_holdTransformData.Shown)
             {
-                NoteContentRoot.SetActive(false);
+                SetActive(false, NoteContentRoot);
                 return;
             }
 
-            if (_holdTransformData.Shown && !headJudged && !holdJudged && !NoteContentRoot.activeSelf)
-                NoteContentRoot.SetActive(true);
+            if (_holdTransformData.Shown && !headJudged && !holdJudged && NoteContentRoot.layer != ShownLayer)
+                SetActive(true, NoteContentRoot);
 
-            if (ChartPlayer.Instance.GetTime() > timing + ChartPlayer.Instance.tapJudgeSettings.lateGoodTiming +
+            if (ChartPlayer.Instance.TimeInMilliseconds > timing +
+                ChartPlayer.Instance.tapJudgeSettings.lateGoodTiming +
                 ChartPlayer.Instance.judgeDelay &&
                 !headJudged)
             {
@@ -80,15 +78,15 @@ namespace Game.Notes.TapBasedNotes
                 SimulatedSensor.OnTap -= JudgeHead;
                 SimulatedSensor.OnLeave -= OnLeave;
 
-                NoteContentRoot.SetActive(false);
+                SetActive(false, NoteContentRoot);
             }
 
-            if (ChartPlayer.Instance.GetTime() >
+            if (ChartPlayer.Instance.TimeInMilliseconds >
                 timing + duration &&
                 headJudged && !holdJudged)
                 ChartPlayer.Instance.holdRippleAnimators[lane - 1].SetTrigger("Reset");
 
-            if (ChartPlayer.Instance.GetTime() >
+            if (ChartPlayer.Instance.TimeInMilliseconds >
                 timing + duration + ChartPlayer.Instance.holdTailJudgeSettings.greatTiming +
                 ChartPlayer.Instance.judgeDelay &&
                 headJudged && !holdJudged)
@@ -105,7 +103,7 @@ namespace Game.Notes.TapBasedNotes
 
                 _glowAnimator.SetTrigger("Reset");
 
-                NoteContentRoot.SetActive(false);
+                SetActive(false, NoteContentRoot);
 
                 SimulatedSensor.OnLeave -= OnLeave;
             }
@@ -116,9 +114,11 @@ namespace Game.Notes.TapBasedNotes
                                      _holdTransformData.PositionInLane;
             holdTransform.localScale = _holdTransformData.Scale;
 
-            var color = new Color(1, 1, 1, _holdTransformData.Alpha);
+            var color = new Color(0.5f + 0.5f * _tapOrLineTransform.Alpha, 0.5f + 0.5f * _tapOrLineTransform.Alpha,
+                0.5f + 0.5f * _tapOrLineTransform.Alpha);
+            var alphaColor = new Color(1, 1, 1, _tapOrLineTransform.Alpha);
             holdSpriteRenderer.color = color;
-            lineSpriteRenderer.color = color;
+            lineSpriteRenderer.color = alphaColor;
 
             GetTapOrLineTransform(ref _tapOrLineTransform);
 
@@ -140,11 +140,9 @@ namespace Game.Notes.TapBasedNotes
 
         private void GetHoldTransform(ref HoldTransform result)
         {
-            var currentPosition = ChartPlayer.Instance.GetTime();
+            var currentPosition = ChartPlayer.Instance.TimeInMilliseconds;
 
-            var adjustedEmergingDuration = IsAdxFlowSpeedStyle ? OnScreenTime / 2 : OnScreenTime;
-
-            var startEmergingTiming = timing - adjustedEmergingDuration - OnScreenTime;
+            var startEmergingTiming = timing - 2 * OnScreenTime;
             var startMovingTiming = timing - OnScreenTime;
 
             if (currentPosition < startEmergingTiming - 100 || currentPosition > timing + duration + 100)
@@ -155,7 +153,7 @@ namespace Game.Notes.TapBasedNotes
 
             if (currentPosition > startEmergingTiming && currentPosition < startMovingTiming)
             {
-                var factor = 1 - (startMovingTiming - currentPosition) / adjustedEmergingDuration;
+                var factor = 1 - (startMovingTiming - currentPosition) / OnScreenTime;
 
                 result.Scale = factor * Vector3.one;
                 result.Alpha = factor;
@@ -265,7 +263,7 @@ namespace Game.Notes.TapBasedNotes
             if (indexInLane != 0 && !noteGenerator.LaneList[lane - 1][indexInLane - 1].headJudged)
                 return;
 
-            var deltaTiming = timing - ChartPlayer.Instance.GetTime(true) + ChartPlayer.Instance.judgeDelay;
+            var deltaTiming = timing - ChartPlayer.Instance.TimeInMilliseconds + ChartPlayer.Instance.judgeDelay;
 
             var judgeSettings = ChartPlayer.Instance.tapJudgeSettings;
 
@@ -341,7 +339,7 @@ namespace Game.Notes.TapBasedNotes
             if (!headJudged)
                 return;
 
-            var time = ChartPlayer.Instance.GetTime(true);
+            var time = ChartPlayer.Instance.TimeInMilliseconds;
 
             if (time < timing || time > timing + duration +
                 ChartPlayer.Instance.holdTailJudgeSettings.greatTiming + ChartPlayer.Instance.judgeDelay)
@@ -387,7 +385,7 @@ namespace Game.Notes.TapBasedNotes
 
             holdJudged = true;
 
-            NoteContentRoot.SetActive(false);
+            SetActive(false, NoteContentRoot);
         }
 
         protected override void LateStart()

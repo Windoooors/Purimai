@@ -1,0 +1,45 @@
+:root {
+}
+
+.list-view {
+    top: 0;
+    position: absolute;
+    bottom: 0;
+    width: 500px;
+    display: flex;
+    left: auto;
+    right: auto;
+    flex-direction: row;
+    align-items: stretch;
+    -unity-font-definition: resource("Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF");
+    font-size: 18px;
+    margin-right: 0;
+    margin-left: 10px;
+}
+
+
+.unity-scroll-view__content-viewport {
+    overflow: visible;
+}
+
+
+.parent {
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    left: -600px;
+    bottom: 0;
+    right: 0;
+}
+
+.shown .parent {
+    transition: left ease-out-cubic 0.5s, opacity ease-out-cubic 0.5s;
+    opacity: 1;
+    left: 0;
+}
+
+.hidden .parent {
+    transition: left ease-out-cubic 0.5s, opacity ease-out-cubic 0.5s;
+    opacity: 0;
+    left: -600px;
+}

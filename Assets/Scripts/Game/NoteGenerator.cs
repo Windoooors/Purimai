@@ -40,7 +40,7 @@ namespace Game
             new(), new(), new(), new()
         };
 
-        public readonly List<NoteBase> notesList = new ();
+        public readonly List<NoteBase> notesList = new();
 
         private GameObject _noteParent;
 
@@ -139,7 +139,7 @@ namespace Game
                     (false, true, true, true) => Instantiate(tapPrefabs[8]),
                     (_, _, _, _) => Instantiate(tapPrefabs[0])
                 };
-                
+
                 notesList.Add(tapObjectInstance);
 
                 tapObjectInstance.timing = noteDataObject.Timing;
@@ -192,7 +192,7 @@ namespace Game
                 4 => Instantiate(eachLinePrefabs[3]),
                 _ => Instantiate(eachLinePrefabs[0])
             };
-            
+
             notesList.Add(eachLine);
 
             eachLine.timing = noteDataObject.Timing;
@@ -218,7 +218,7 @@ namespace Game
                 order--;
 
                 LaneList[laneIndex].Add(holdObjectInstance);
-                
+
                 notesList.Add(holdObjectInstance);
 
                 holdObjectInstance.indexInLane = LaneList[laneIndex].Count - 1;
@@ -286,7 +286,7 @@ namespace Game
                 if (slideBasedNoteObjectInstance)
                 {
                     notesList.Add(slideBasedNoteObjectInstance);
-                    
+
                     slideBasedNoteObjectInstance.order = -_slideOrder;
                     slideBasedNoteObjectInstance.timing = noteDataObject.Timing;
                     slideBasedNoteObjectInstance.slideType = slide.Type;

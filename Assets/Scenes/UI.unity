@@ -4429,7 +4429,7 @@ MonoBehaviour:
   uiDocument: {fileID: 872429102}
   levelSelectionPrefab: {fileID: 5311097112866425823, guid: 3d385c0fe6d5045b4a5243b61d0f17e4,
     type: 3}
-  settingsPrefab: {fileID: 1436663412352395357, guid: d496e0d14f1a244e69839ad8dde8929c,
+  settingsPrefab: {fileID: 9000317558035482581, guid: d496e0d14f1a244e69839ad8dde8929c,
     type: 3}
   resultPrefab: {fileID: 3951748454254864255, guid: 88acd35f2e8e74bfab90036693158733,
     type: 3}
@@ -4437,11 +4437,14 @@ MonoBehaviour:
     type: 3}
   pausePrefab: {fileID: 3296109719176517405, guid: 1790290ee8f03405991323e5d956fecc,
     type: 3}
+  modsPrefab: {fileID: 8677279359261807040, guid: 80d7b9bd5e0af4ef480f944dc4fa0786,
+    type: 3}
   resultManager: {fileID: 0}
   levelSelectionManager: {fileID: 0}
   settingsManager: {fileID: 0}
   circleMaskManager: {fileID: 0}
   pauseManager: {fileID: 0}
+  modsManager: {fileID: 0}
   portraitReferenceResolution: {x: 600, y: 600}
   landscapeReferenceResolution: {x: 1024, y: 600}
 --- !u!114 &872429106

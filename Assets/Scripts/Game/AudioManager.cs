@@ -2,7 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using UI;
 using UI.Settings;
+using UI.Settings.Managers;
 using UnityEngine;
 using UnityEngine.Networking;
 #if ((UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR)
@@ -31,11 +33,46 @@ namespace Game
 
         public AudioSourcePool AudioSourcePool;
 
+        public double DSPDurationInSeconds { private set; get; }
+
+        private double _lastDspTime;
+        private double _lastRealTime;
+
+        public double EstimatedDspTime
+        {
+            get
+            {
+                var currentDsp = AudioSettings.dspTime;
+                var currentReal = Time.realtimeSinceStartupAsDouble;
+
+                if (currentDsp > _lastDspTime)
+                {
+                    _lastDspTime = currentDsp;
+                    _lastRealTime = currentReal;
+                }
+
+                var elapsedSinceUpdate = currentReal - _lastRealTime;
+                return _lastDspTime + elapsedSinceUpdate;
+            }
+        }
+
+        private void Update()
+        {
+            var dummy = EstimatedDspTime;
+        }
+
         private void Awake()
         {
             _instance = this;
 
             AudioSourcePool = new AudioSourcePool(32, gameObject);
+
+            AudioSettings.GetDSPBufferSize(out var bufferSize, out _);
+            var sampleRate = AudioSettings.outputSampleRate;
+
+            DSPDurationInSeconds = bufferSize / (double)sampleRate;
+
+            LoadAllSoundEffects(UIManager.Instance.gameSoundFileNameData, UIManager.Instance.uiSoundFileNameData);
         }
 
         public void OnApplicationQuit()
@@ -56,7 +93,7 @@ namespace Game
         }
 
         public static AudioManager Instance => _instance ?? FindAnyObjectByType<AudioManager>();
-        
+
         public void PlayPerfectSound()
         {
 #if ((UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR)
@@ -473,25 +510,27 @@ namespace Game
                 _audioSource = audioSource;
             }
 
-            public void SetPosition(float position)
-            {
-                _audioSource.time = position;
-            }
-
             public bool IsFree
             {
                 get
                 {
                     if (_audioSource.isPlaying || _paused) return false;
 
-                    if (ScheduledStartTime >= 0 && AudioSettings.dspTime < ScheduledStartTime) return false;
+                    if (ScheduledStartTime >= 0 && AudioManager.Instance.EstimatedDspTime < ScheduledStartTime)
+                        return false;
 
-                    if (ScheduledStartTime >= 0 && AudioSettings.dspTime >= ScheduledStartTime) ScheduledStartTime = -1;
+                    if (ScheduledStartTime >= 0 && AudioManager.Instance.EstimatedDspTime >= ScheduledStartTime)
+                        ScheduledStartTime = -1;
 
                     _audioSource.Stop();
 
                     return true;
                 }
+            }
+
+            public void SetPosition(float position)
+            {
+                _audioSource.time = position;
             }
 
             public float GetPosition()

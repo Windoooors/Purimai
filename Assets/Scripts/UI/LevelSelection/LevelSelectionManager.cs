@@ -8,6 +8,7 @@ using Game;
 using GihanSoft.String;
 using TinyPinyin;
 using UI.Settings;
+using UI.Settings.Managers;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -45,6 +46,7 @@ namespace UI.LevelSelection
         private Maidata _lastPreviewedMaidata;
 
         private ListView _listView;
+        private Button _modsButton;
         private LevelListItemData[] _rawData;
         private ScoreContentPanel _scoreContentPanel;
         private ScrollView _scrollView;
@@ -60,6 +62,8 @@ namespace UI.LevelSelection
         private Button _sortButton;
 
         public VisualElement LevelSelectionTree;
+
+        public static LevelSelectionManager Instance => _instance ?? FindAnyObjectByType<LevelSelectionManager>();
 
         private void Awake()
         {
@@ -259,6 +263,8 @@ namespace UI.LevelSelection
             var root = LevelSelectionTree;
             _listView = root.Q<VisualElement>("list-parent").Q<ListView>("list");
 
+            _listView.TrySetTouchDraggingAllowed(true);
+
             _scrollView = _listView.Q<ScrollView>();
 
             _scoreContentPanel = root.Q<ScoreContentPanel>();
@@ -343,6 +349,9 @@ namespace UI.LevelSelection
 
             _settingsButton = root.Q<VisualElement>("control-panel").Q<Button>("settings-button");
             _settingsButton.clicked += UIManager.Instance.ShowSettingsPanel;
+
+            _modsButton = root.Q<VisualElement>("control-panel").Q<Button>("mods-button");
+            _modsButton.clicked += UIManager.Instance.ShowModsPanel;
 
             _snapManipulator = new SnapScrollManipulator(ItemHeight, 741);
             _scrollView.AddManipulator(_snapManipulator);
@@ -632,8 +641,6 @@ namespace UI.LevelSelection
 
             if (relativeY is < 750 and > 730) _listView.selectedIndex = (int)item.userData;
         }
-
-        public static LevelSelectionManager Instance => _instance ?? FindAnyObjectByType<LevelSelectionManager>();
 
         private (LevelListItemData[], CategoryData[]) GetLevelListItemData(SortingRules rule)
         {

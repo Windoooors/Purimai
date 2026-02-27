@@ -123,6 +123,10 @@
     background-color: rgb(255, 255, 255);
     border-radius: 50px;
     background-size: 110% 110%;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
 }
 
 .result-panel {

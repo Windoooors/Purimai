@@ -1,4 +1,3 @@
-using System.Linq;
 using UnityEngine.Localization;
 using UnityEngine.UIElements;
 
@@ -16,11 +15,10 @@ namespace UI.Settings
 
         private Label _valueLabel;
 
-        public ToggleBasedValueManipulator(string identifier)
+        public ToggleBasedValueManipulator(SettingsItem item)
         {
-            _identifier = identifier;
-            var matchedCategory = SettingsItems.Settings.ToList().Find(x => x.Items.Exists(y => y.Identifier == identifier));
-            _settingsItem = matchedCategory.Items.ToList().Find(x => x.Identifier == identifier);
+            _identifier = item.Identifier;
+            _settingsItem = item;
         }
 
         protected override void RegisterCallbacksOnTarget()

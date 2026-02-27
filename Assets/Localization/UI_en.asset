@@ -256,6 +256,14 @@ MonoBehaviour:
     m_Localized: Scoring
     m_Metadata:
       m_Items: []
+  - m_Id: 36905093159706624
+    m_Localized: DSP Buffer Size
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38333775027888128
+    m_Localized: Auto Play
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

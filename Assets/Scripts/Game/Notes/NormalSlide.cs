@@ -56,7 +56,7 @@ namespace Game.Notes
 
         private void JudgeSegment(string sensorId, bool isFromHold)
         {
-            if (ChartPlayer.Instance.GetTime(true) < timing || !SlideContentRoot.activeSelf)
+            if (ChartPlayer.Instance.TimeInMilliseconds < timing || SlideContentRoot.layer != ShownLayer)
                 return;
 
             for (var i = _lastTouchedSegmentIndex + 1; i < segments.Length; i++)

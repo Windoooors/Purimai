@@ -251,6 +251,14 @@ MonoBehaviour:
     m_Key: ui.pause_panel.paused
     m_Metadata:
       m_Items: []
+  - m_Id: 36905093159706624
+    m_Key: settings.dsp_buffer_size
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38333775027888128
+    m_Key: settings.auto_play
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

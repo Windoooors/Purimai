@@ -20,9 +20,9 @@ namespace Game.Notes.TapBasedNotes
         {
             if (!ChartPlayer.Instance.isPlaying)
                 return;
-            
+
             GetTapOrLineTransform(ref _tapOrLineTransform);
-            
+
             if (headJudged)
             {
                 enabled = false;
@@ -31,14 +31,14 @@ namespace Game.Notes.TapBasedNotes
 
             if (!_tapOrLineTransform.Shown)
             {
-                NoteContentRoot.SetActive(false);
+                SetActive(false, NoteContentRoot);
                 return;
             }
 
-            if (_tapOrLineTransform.Shown && !headJudged && !NoteContentRoot.activeSelf)
-                NoteContentRoot.SetActive(true);
+            if (_tapOrLineTransform.Shown && !headJudged && NoteContentRoot.layer != ShownLayer)
+                SetActive(true, NoteContentRoot);
 
-            if (!headJudged && ChartPlayer.Instance.GetTime() >
+            if (!headJudged && ChartPlayer.Instance.TimeInMilliseconds >
                 timing + ChartPlayer.Instance.tapJudgeSettings.lateGoodTiming + ChartPlayer.Instance.judgeDelay)
             {
                 headJudged = true;
@@ -55,7 +55,7 @@ namespace Game.Notes.TapBasedNotes
 
                 SimulatedSensor.OnTap -= Judge;
 
-                NoteContentRoot.SetActive(false);
+                SetActive(false, NoteContentRoot);
             }
 
             tapTransform.position = Lanes.Instance.startPoints[lane - 1].position +
@@ -64,9 +64,11 @@ namespace Game.Notes.TapBasedNotes
                                     _tapOrLineTransform.PositionInLane;
             tapTransform.localScale = _tapOrLineTransform.Scale;
 
-            var color = new Color(1, 1, 1, _tapOrLineTransform.Alpha);
+            var color = new Color(0.3f + 0.7f * _tapOrLineTransform.Alpha, 0.3f + 0.7f * _tapOrLineTransform.Alpha,
+                0.3f + 0.7f * _tapOrLineTransform.Alpha);
+            var alphaColor = new Color(1, 1, 1, _tapOrLineTransform.Alpha);
             tapSpriteRenderer.color = color;
-            lineSpriteRenderer.color = color;
+            lineSpriteRenderer.color = alphaColor;
 
             lineTransform.localScale = (NoteGenerator.Instance.originCircleScale +
                                         (1 - NoteGenerator.Instance.originCircleScale) *
@@ -110,7 +112,7 @@ namespace Game.Notes.TapBasedNotes
             if (indexInLane != 0 && !noteGenerator.LaneList[lane - 1][indexInLane - 1].headJudged)
                 return;
 
-            var deltaTiming = timing - ChartPlayer.Instance.GetTime(true) + ChartPlayer.Instance.judgeDelay;
+            var deltaTiming = timing - ChartPlayer.Instance.TimeInMilliseconds + ChartPlayer.Instance.judgeDelay;
 
             var judgeSettings = ChartPlayer.Instance.tapJudgeSettings;
 
@@ -140,7 +142,7 @@ namespace Game.Notes.TapBasedNotes
 
             SimulatedSensor.OnTap -= Judge;
 
-            NoteContentRoot.SetActive(false);
+            SetActive(false, NoteContentRoot);
         }
     }
 }

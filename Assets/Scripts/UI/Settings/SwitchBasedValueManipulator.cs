@@ -1,4 +1,3 @@
-using System.Linq;
 using UnityEngine.Localization;
 using UnityEngine.UIElements;
 
@@ -26,11 +25,10 @@ namespace UI.Settings
 
         private Label _valueLabel;
 
-        public SwitchBasedValueManipulator(string identifier)
+        public SwitchBasedValueManipulator(SettingsItem item)
         {
-            _identifier = identifier;
-            var matchedCategory = SettingsItems.Settings.ToList().Find(x => x.Items.Exists(y => y.Identifier == identifier));
-            _settingsItem = matchedCategory.Items.ToList().Find(x => x.Identifier == identifier);
+            _identifier = item.Identifier;
+            _settingsItem = item;
         }
 
         private void Add()

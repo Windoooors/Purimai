@@ -48,10 +48,6 @@ namespace Game.Notes
         [FormerlySerializedAs("judged")] public bool headJudged;
 
         private Animator _judgeDisplayAnimator;
-        private float _timeOnScreenWithBasicSpeed = 2.8f;
-
-        protected bool IsAdxFlowSpeedStyle;
-        protected float LineExpansionSpeed;
 
         protected GameObject NoteContentRoot;
         protected Animator OffsetDisplayAnimator;
@@ -62,27 +58,17 @@ namespace Game.Notes
 
         private void Start()
         {
-            IsAdxFlowSpeedStyle = SettingsPool.GetValue("flow_speed_type") == 0;
-
-            if (IsAdxFlowSpeedStyle)
-                _timeOnScreenWithBasicSpeed = 2.8f;
-            else
-                _timeOnScreenWithBasicSpeed = 1.5961f + (ChartPlayer.Instance.flowSpeed - 1) * 0.0705f;
-
             var laneIndex = lane - 1;
             var endPoint = Lanes.Instance.endPoints[laneIndex];
             var startPoint = Lanes.Instance.startPoints[laneIndex];
 
+            var onScreenTimeInSeconds = 4 / (((ChartPlayer.Instance.flowSpeed - 1) * 100 + 200) / 60);
+
             var distance = (endPoint.position - startPoint.position).magnitude;
-            var speed = distance / _timeOnScreenWithBasicSpeed * ChartPlayer.Instance.flowSpeed;
-
-            LineExpansionSpeed = (1 - NoteGenerator.Instance.originCircleScale) / _timeOnScreenWithBasicSpeed *
-                                 ChartPlayer.Instance.flowSpeed;
-
-            var emergingDuration = _timeOnScreenWithBasicSpeed / ChartPlayer.Instance.flowSpeed;
+            var speed = distance / onScreenTimeInSeconds;
 
             Speed = speed;
-            OnScreenTime = (int)(emergingDuration * 1000);
+            OnScreenTime = (int)(onScreenTimeInSeconds * 1000);
 
             transform.position = Vector3.zero;
             transform.rotation = Lanes.Instance.startPoints[laneIndex].rotation;
@@ -100,8 +86,8 @@ namespace Game.Notes
             foreach (var child in children) child.parent = NoteContentRoot.transform;
 
             emergingTime = timing - OnScreenTime * 2;
-            
-            NoteContentRoot.SetActive(false);
+
+            SetActive(false, NoteContentRoot);
         }
 
         public virtual void RegisterTapEvent()
@@ -231,11 +217,9 @@ namespace Game.Notes
             if (result == null)
                 return;
 
-            var currentPosition = ChartPlayer.Instance.GetTime();
+            var currentPosition = ChartPlayer.Instance.TimeInMilliseconds;
 
-            var adjustedEmergingDuration = IsAdxFlowSpeedStyle ? OnScreenTime / 2 : OnScreenTime;
-
-            var startEmergingTiming = timing - adjustedEmergingDuration - OnScreenTime;
+            var startEmergingTiming = timing - 2 * OnScreenTime;
 
             var startMovingTiming = timing - OnScreenTime;
 
@@ -247,7 +231,7 @@ namespace Game.Notes
 
             if (currentPosition > startEmergingTiming && currentPosition < startMovingTiming)
             {
-                var factor = 1 - (startMovingTiming - currentPosition) / adjustedEmergingDuration;
+                var factor = 1 - (startMovingTiming - currentPosition) / OnScreenTime;
 
                 result.Scale = factor * Vector3.one;
                 result.Alpha = factor;

@@ -68,6 +68,9 @@ namespace UI.LevelSelection
             _categoryPanel = _controlPanel.Q<VisualElement>("category-panel");
 
             _categoryList = _categoryPanel.Q<ListView>("category-list");
+
+            _categoryList.TrySetTouchDraggingAllowed(true);
+
             _scrollView = _categoryList.Q<ScrollView>();
 
             _categoryList.fixedItemHeight = 44;
@@ -107,6 +110,9 @@ namespace UI.LevelSelection
 
         private void ChangeCategoryActively(int index)
         {
+            if (_rawData == null)
+                return;
+
             var targetIndex = index % _rawData.Length;
 
             var e = new ChangeCategoryEventArgs

@@ -39,10 +39,11 @@ namespace UI.InGame
 
         private void GoToMenu()
         {
-            var levelSelectionPreAnimatedSheet = Resources.Load<StyleSheet>("UI/USS/LevelSelection/PauseToLevelSelectionPreAnimated");
+            var levelSelectionPreAnimatedSheet =
+                Resources.Load<StyleSheet>("UI/USS/LevelSelection/PauseToLevelSelectionPreAnimated");
 
             StartCoroutine(StartGoToMenuAnimation());
-            
+
             return;
 
             IEnumerator StartGoToMenuAnimation()
@@ -67,13 +68,13 @@ namespace UI.InGame
 
                 SceneManager.sceneLoaded += OnSceneLoaded;
             }
-            
+
             void OnSceneLoaded(Scene scene, LoadSceneMode mode)
             {
                 SceneManager.sceneLoaded -= OnSceneLoaded;
 
                 UIManager.Instance.ShowLevelSelector();
-                
+
                 LevelSelectionManager.Instance.LevelSelectionTree.styleSheets.Add(levelSelectionPreAnimatedSheet);
 
                 _pausePanelTree.BringToFront();
@@ -87,15 +88,15 @@ namespace UI.InGame
 
                 _pausePanelTree.RemoveFromClassList("in-animation");
                 _pausePanelTree.AddToClassList("out-animation");
-                
+
                 LevelSelectionManager.Instance.LevelSelectionTree.AddToClassList("out-animation");
 
                 _pausePanelTree.styleSheets.Add(Resources.Load<StyleSheet>("UI/USS/Pause/PauseOutToGameAnimated"));
 
                 LevelSelectionManager.Instance.LevelSelectionTree.styleSheets.Remove(levelSelectionPreAnimatedSheet);
-                
+
                 yield return new WaitForSeconds(0.5f);
-                
+
                 LevelSelectionManager.Instance.LevelSelectionTree.RemoveFromClassList("out-animation");
 
                 RemoveSelf();
@@ -129,7 +130,7 @@ namespace UI.InGame
             {
                 _pausePanelTree.styleSheets.Add(Resources.Load<StyleSheet>("UI/USS/Pause/GameToPausePreAnimated"));
                 _pausePanelTree.AddToClassList("out-animation");
-                
+
                 ChartPlayer.Instance.Resume();
 
                 yield return new WaitForSeconds(0.5f);

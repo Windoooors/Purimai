@@ -47,6 +47,8 @@ namespace Game.Notes
 
         private bool _concealed;
 
+        private bool _haveShown;
+
         private bool _isFast;
 
 
@@ -151,19 +153,17 @@ namespace Game.Notes
 
             foreach (var child in children) child.parent = SlideContentRoot.transform;
 
-            SlideContentRoot.SetActive(false);
-            
+            SetActive(false, SlideContentRoot);
+
             emergingTime = timing - (suddenlyAppears ? 0 : ChartPlayer.Instance.timeGapBeforeSlideStartsAppearing);
         }
-
-        private bool _haveShown;
 
         public override void ManualUpdate()
         {
             GetSlideTransform(ref _slideTransform);
 
-            SlideContentRoot.SetActive(_slideTransform.Shown);
-            
+            SetActive(_slideTransform.Shown, SlideContentRoot);
+
             if (!_slideTransform.Shown)
             {
                 if (_haveShown)
@@ -186,7 +186,8 @@ namespace Game.Notes
                     _slideTransform.ArrowAlpha == 0)
                     arrowRenderer.color = new Color(1, 1, 1, _slideTransform.ArrowAlpha);
 
-            if (ChartPlayer.Instance.GetTime(true) >= timing + waitDuration + slideDuration && Slided && !_concealed)
+            if (ChartPlayer.Instance.TimeInMilliseconds >= timing + waitDuration + slideDuration && Slided &&
+                !_concealed)
             {
                 Scoreboard.SlideCount.Count(_judgeState);
 
@@ -205,7 +206,7 @@ namespace Game.Notes
                 _concealed = true;
             }
 
-            if (ChartPlayer.Instance.GetTime(true) >=
+            if (ChartPlayer.Instance.TimeInMilliseconds >=
                 timing + waitDuration + slideDuration +
                 ChartPlayer.Instance.slideJudgeSettings.fastGoodTiming + ChartPlayer.Instance.judgeDelay
                 && !_concealed && !Slided)
@@ -238,7 +239,7 @@ namespace Game.Notes
 
         private void GetSlideTransform(ref SlideTransform result)
         {
-            var currentTime = ChartPlayer.Instance.GetTime();
+            var currentTime = ChartPlayer.Instance.TimeInMilliseconds;
 
             var startAppearingTime =
                 timing - (suddenlyAppears ? 0 : ChartPlayer.Instance.timeGapBeforeSlideStartsAppearing);
@@ -257,12 +258,12 @@ namespace Game.Notes
 
                 var slideFadeInDuration = suddenlyAppears ? 0 : ChartPlayer.Instance.slideFadeInDuration;
 
-                if (currentTime - startAppearingTime < slideFadeInDuration)
-                    result.ArrowAlpha = (currentTime - startAppearingTime) / slideFadeInDuration / 1.5f;
+                if (currentTime < 200 + startAppearingTime)
+                    result.ArrowAlpha = (currentTime - startAppearingTime) / 200 / 2f;
+                else if (currentTime > 200 + startAppearingTime)
+                    result.ArrowAlpha = 0.5f;
                 else if (startAppearingTime + slideFadeInDuration - currentTime <= 0)
                     result.ArrowAlpha = 1f;
-                else
-                    result.ArrowAlpha = 0.67f;
 
                 result.StarAlpha = 0;
                 result.StarPosition = 0;
@@ -369,7 +370,8 @@ namespace Game.Notes
             if (Slided)
                 return;
 
-            var deltaTiming = _slideJudgeTiming - ChartPlayer.Instance.GetTime(true) + ChartPlayer.Instance.judgeDelay;
+            var deltaTiming = _slideJudgeTiming - ChartPlayer.Instance.TimeInMilliseconds +
+                              ChartPlayer.Instance.judgeDelay;
 
             _isFast = deltaTiming > 0;
 

@@ -115,6 +115,14 @@
     opacity: 1;
 }
 
+.mods-button {
+    position: absolute;
+    top: 7px;
+    left: 218px;
+    width: 69px;
+    height: 69px;
+}
+
 .settings-button {
     position: absolute;
     top: 7px;
@@ -205,4 +213,8 @@
 
 .list-parent .unity-scroll-view__content-container {
     overflow: visible;
+}
+
+.confirm-entry .mods-button {
+    left: 73px;
 }

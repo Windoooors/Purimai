@@ -26,8 +26,8 @@ namespace UI.Result
         private StyleSheet _toRetryAnimatedStyleSheet;
 
         public static ResultManager Instance => _instance ??
-                                                   FindObjectsByType<ResultManager>(FindObjectsInactive.Include,
-                                                       FindObjectsSortMode.None)[^1];
+                                                FindObjectsByType<ResultManager>(FindObjectsInactive.Include,
+                                                    FindObjectsSortMode.None)[^1];
 
         private void Awake()
         {
@@ -87,7 +87,7 @@ namespace UI.Result
 
             var background = _resultPanel.Q("background");
 
-            background.style.backgroundImage = _maidata.SongCoverDecodedImage.GetTexture2D();
+            background.style.backgroundImage = _maidata.BlurredSongCoverAsBackgroundDecodedImage.GetTexture2D();
 
             _backgroundSongCoverManipulator =
                 new SongCoverManipulator(SongCoverManipulator.SongCoverLayoutPopulationMode.FixedHeight, 0);

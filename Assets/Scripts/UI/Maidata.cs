@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Game;
 using SixLabors.ImageSharp;
@@ -9,6 +10,7 @@ using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using UI.Settings;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace UI
 {
@@ -20,78 +22,71 @@ namespace UI
         private static readonly Regex GenreRegex = new("&genre=(.*)");
         private static readonly Regex FirstNoteTimeRegex = new(@"&first=((\-?)\d+.\d+|(\-?)\d+)");
         private static readonly Regex BpmRegex = new(@"&wholebpm=(\d+.\d+|\d+)");
-
         private static readonly Regex UtageDifficultyRegex =
             new(@"([0-9]+\+?\?|[\u4E00-\u9FFF]\s?[0-9]+\+?\??|utage\s?[0-9]+\+?\??)");
-
         private static readonly Regex UtageTitleRegex =
             new(@"^\[.*?\]");
 
         public static readonly HashSet<char> UsedCharacters = new();
 
         private readonly string _songCoverPath;
+        private readonly string _songPath;
+        
         public readonly string Artist;
-
         public readonly float Bpm;
-
+        public readonly Chart[] Charts;
         public readonly float FirstNoteTime;
         public readonly string Genre;
-
         public readonly bool IsUtage;
         public readonly string MaidataDirectoryName;
-        public readonly string MainChartDesigner;
         public readonly string PvPath;
-        public readonly string SongPath;
-
         public readonly string Title;
 
         private bool _generatingBlurredCover;
-
         private bool _loadingCover;
         private bool _loadingSong;
+
+        public DecodedImage BlurredSongCoverWithConstantRadiusDecodedImage;
         public DecodedImage BlurredSongCoverAsBackgroundDecodedImage;
         public DecodedImage BlurredSongCoverDecodedImage;
         public bool BlurredSongCoverGenerated;
-
-        public Chart[] Charts;
         public bool CoverDataLoaded;
-
         public AudioClip SongAudioClip;
-
         public DecodedImage SongCoverDecodedImage;
         public bool SongLoaded;
 
         public Maidata(string maidataPath, string songPath, string pvPath, string songCoverPath)
         {
             MaidataDirectoryName = Path.GetFileNameWithoutExtension(Path.GetDirectoryName(maidataPath));
-            SongPath = songPath;
+            _songPath = songPath;
             PvPath = pvPath;
             _songCoverPath = songCoverPath;
 
-            var maidata = File.ReadAllText(maidataPath);
+            var maidataString = File.ReadAllText(maidataPath);
+            maidataString = new Regex(@"\|\|.*$").Replace(maidataString, string.Empty);
 
-            var titleMatch = TitleRegex.Match(maidata);
-            var artistMatch = ArtistRegex.Match(maidata);
-            var mainDesignerMatch = MainDesignerRegex.Match(maidata);
-            var genreMatch = GenreRegex.Match(maidata);
-            var firstNoteTimeMatch = FirstNoteTimeRegex.Match(maidata);
-            var bpmMatch = BpmRegex.Match(maidata);
+            var titleMatch = TitleRegex.Match(maidataString);
+            var artistMatch = ArtistRegex.Match(maidataString);
+            var mainDesignerMatch = MainDesignerRegex.Match(maidataString);
+            var genreMatch = GenreRegex.Match(maidataString);
+            var firstNoteTimeMatch = FirstNoteTimeRegex.Match(maidataString);
+            var bpmMatch = BpmRegex.Match(maidataString);
 
             Title = titleMatch.Success ? titleMatch.Groups[1].Value : "Unknown";
             Artist = artistMatch.Success ? artistMatch.Groups[1].Value : "Unknown";
-            MainChartDesigner = mainDesignerMatch.Success ? mainDesignerMatch.Groups[1].Value : "Unknown";
+            var mainChartDesigner = mainDesignerMatch.Success ? mainDesignerMatch.Groups[1].Value : "Unknown";
             Genre = genreMatch.Success ? genreMatch.Groups[1].Value : "Unknown";
             Bpm = bpmMatch.Success ? float.Parse(bpmMatch.Groups[1].Value) : -1;
             FirstNoteTime = firstNoteTimeMatch.Success ? float.Parse(firstNoteTimeMatch.Groups[1].Value) : 0;
 
             AddUsedCharacters(Title);
             AddUsedCharacters(Artist);
-            AddUsedCharacters(MainChartDesigner);
+            AddUsedCharacters(mainChartDesigner);
             AddUsedCharacters(Genre);
 
             var chartList = new List<Chart>();
 
-            if (!HasChart(maidata))
+            if (!HasChart(maidataString))
             {
                 Charts = Array.Empty<Chart>();
                 return;
@@ -99,33 +94,31 @@ namespace UI
 
             var i = 0;
 
-            var found = TryGetChartString(maidata, i, out var chartString, out var isLast);
+            var found = TryGetChartString(maidataString, i, out var chartString, out var isLast);
 
             while (true)
             {
                 if (!found)
                 {
                     i++;
-                    found = TryGetChartString(maidata, i, out chartString, out isLast);
+                    found = TryGetChartString(maidataString, i, out chartString, out isLast);
 
                     continue;
                 }
 
-                var chart = new Chart();
+                if (!TryGetDesigner(maidataString, i, out var designer))
+                    designer = mainChartDesigner;
 
-                chart.ChartString = chartString;
-
-                if (!TryGetDesigner(maidata, i, out var designer))
-                    designer = MainChartDesigner;
-
-                chart.Designer = designer;
-
-                if (!TryGetLevel(maidata, i, out var level))
+                if (!TryGetLevel(maidataString, i, out var level))
                     level = "NaN";
 
-                chart.DifficultyString = level;
-
-                chart.DifficultyIndex = i;
+                var chart = new Chart
+                {
+                    ChartString = chartString,
+                    Designer = designer,
+                    DifficultyString = level,
+                    DifficultyIndex = i
+                };
 
                 if (UtageDifficultyRegex.IsMatch(level.ToLower()) || UtageTitleRegex.IsMatch(Title))
                     IsUtage = true;
@@ -139,7 +132,7 @@ namespace UI
                     break;
 
                 i++;
-                found = TryGetChartString(maidata, i, out chartString, out isLast);
+                found = TryGetChartString(maidataString, i, out chartString, out isLast);
             }
 
             if (chartList.Count == 0)
@@ -148,7 +141,7 @@ namespace UI
                 return;
             }
 
-            Charts = chartList.ToArray();
+            Charts = chartList.Where(x => x.ChartString.Trim() != "").Select(x => x).ToArray();
 
             if (Bpm.CompareTo(-1) == 0 && Charts.Length > 0)
             {
@@ -172,7 +165,7 @@ namespace UI
 
             var span = maidataString.AsSpan();
             var pos = 0;
-            
+
             while ((pos = maidataString.IndexOf("&inote_", pos, StringComparison.Ordinal)) != -1)
             {
                 var numStart = pos + 7;
@@ -223,12 +216,12 @@ namespace UI
 
             var lineEndIndex = input.IndexOfAny(new[] { '\r', '\n' }, valueStart);
 
-            if (lineEndIndex == -1)
-                value = input.Substring(valueStart);
-            else
-                value = input.Substring(valueStart, lineEndIndex - valueStart);
+            value = lineEndIndex == -1
+                ? input.Substring(valueStart)
+                : input.Substring(valueStart, lineEndIndex - valueStart);
 
             value = value.Trim();
+
             return true;
         }
 
@@ -248,7 +241,7 @@ namespace UI
         public void UnloadSong()
         {
             if (SongAudioClip)
-                MonoBehaviour.Destroy(SongAudioClip);
+                Object.Destroy(SongAudioClip);
 
             SongAudioClip = null;
             SongLoaded = false;
@@ -257,14 +250,16 @@ namespace UI
         public void UnloadResources()
         {
             if (SongAudioClip)
-                MonoBehaviour.Destroy(SongAudioClip);
+                Object.Destroy(SongAudioClip);
 
             BlurredSongCoverAsBackgroundDecodedImage?.Dispose();
+            BlurredSongCoverWithConstantRadiusDecodedImage?.Dispose();
 
             BlurredSongCoverDecodedImage?.Dispose();
 
             SongCoverDecodedImage?.Dispose();
 
+            BlurredSongCoverWithConstantRadiusDecodedImage = null;
             BlurredSongCoverAsBackgroundDecodedImage = null;
             BlurredSongCoverDecodedImage = null;
             SongCoverDecodedImage = null;
@@ -280,73 +275,32 @@ namespace UI
             foreach (var character in usedCharacters) UsedCharacters.Add(character);
         }
 
-        private static bool TryGetChartString(string maidataString, int i, out string chartString, out bool isLast)
+        private bool TryGetChartString(string maidataString, int i, out string chartString, out bool isLast)
         {
-            chartString = string.Empty;
+            chartString = null;
             isLast = false;
 
-            if (string.IsNullOrEmpty(maidataString)) return false;
+            var currentMarker = $"&inote_{i}=";
+            var startIndex = maidataString.IndexOf(currentMarker, StringComparison.InvariantCulture);
 
-            var startToken = $"&inote_{i}=";
-            var startIndex = maidataString.IndexOf(startToken, StringComparison.Ordinal);
-            if (startIndex < 0) return false;
+            if (startIndex == -1) return false;
 
-            var contentStart = startIndex + startToken.Length;
-            var endIndex = -1;
+            var contentStart = startIndex + currentMarker.Length;
 
-            var eSearch = contentStart;
-            while (true)
+            var nextMarkerIndex = maidataString.IndexOf("&inote_", contentStart, StringComparison.InvariantCulture);
+
+            if (nextMarkerIndex == -1)
             {
-                var eIndex = maidataString.IndexOf("E", eSearch, StringComparison.Ordinal);
-                if (eIndex < 0) break;
-
-                var nextPos = eIndex + 1;
-                if (nextPos >= maidataString.Length || maidataString[nextPos] == '\r' || maidataString[nextPos] == '\n')
-                {
-                    endIndex = eIndex;
-                    break;
-                }
-
-                eSearch = nextPos;
-            }
-
-            if (endIndex == -1)
-            {
-                var nextInotePos = FindNextHigherInote(maidataString, contentStart, i);
-                if (nextInotePos != -1) endIndex = nextInotePos;
-            }
-
-            if (endIndex == -1)
-            {
-                chartString = maidataString.Substring(contentStart).Trim();
+                chartString = maidataString.Substring(contentStart);
                 isLast = true;
             }
             else
             {
-                chartString = maidataString.Substring(contentStart, endIndex - contentStart).Trim();
-                isLast = FindNextHigherInote(maidataString, endIndex, i) == -1;
+                chartString = maidataString.Substring(contentStart, nextMarkerIndex - contentStart);
+                isLast = false;
             }
 
             return true;
-
-            static int FindNextHigherInote(string str, int startSearch, int currentIdx)
-            {
-                var pos = startSearch;
-                while ((pos = str.IndexOf("&inote_", pos, StringComparison.Ordinal)) != -1)
-                {
-                    var numStart = pos + "&inote_".Length;
-                    var eqIdx = str.IndexOf('=', numStart);
-
-                    if (eqIdx != -1)
-                        if (int.TryParse(str.AsSpan(numStart, eqIdx - numStart), out var foundIdx) &&
-                            foundIdx > currentIdx)
-                            return pos;
-
-                    pos++;
-                }
-
-                return -1;
-            }
         }
 
         public void LoadSongCover()
@@ -375,7 +329,7 @@ namespace UI
 
             _loadingSong = true;
 
-            yield return AudioManager.Instance.LoadAudioClip(SongPath, clip => SongAudioClip = clip, streamed);
+            yield return AudioManager.Instance.LoadAudioClip(_songPath, clip => SongAudioClip = clip, streamed);
 
             SongLoaded = true;
             _loadingSong = false;
@@ -411,6 +365,8 @@ namespace UI
 
             BlurredSongCoverDecodedImage = new DecodedImage(transparentImage);
 
+            using var copiedImage = image.Clone();
+
             image.Mutate(x => x.GaussianBlur(blurringLevel
                 switch
                 {
@@ -418,8 +374,11 @@ namespace UI
                     2 => 5,
                     _ => 2
                 }));
+            
+            copiedImage.Mutate(x => x.GaussianBlur(5));
 
             BlurredSongCoverAsBackgroundDecodedImage = new DecodedImage(image);
+            BlurredSongCoverWithConstantRadiusDecodedImage = new DecodedImage(copiedImage);
             BlurredSongCoverGenerated = true;
 
             _generatingBlurredCover = false;

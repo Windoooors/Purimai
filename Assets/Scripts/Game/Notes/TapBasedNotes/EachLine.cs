@@ -4,6 +4,7 @@ namespace Game.Notes.TapBasedNotes
 {
     public class EachLine : TapBasedNote
     {
+        private bool _haveShown;
         private TapOrLineTransform _tapOrLineTransform = new();
 
         public override void ManualUpdate()
@@ -13,19 +14,19 @@ namespace Game.Notes.TapBasedNotes
 
             GetTapOrLineTransform(ref _tapOrLineTransform);
 
-            var shown = _tapOrLineTransform.Shown && ChartPlayer.Instance.GetTime() < timing + 300;
+            var shown = _tapOrLineTransform.Shown && ChartPlayer.Instance.TimeInMilliseconds < timing + 300;
 
             if (shown)
             {
                 _haveShown = true;
-                NoteContentRoot.SetActive(true);
+                SetActive(true, NoteContentRoot);
             }
             else
             {
                 if (_haveShown)
                     enabled = false;
-                
-                NoteContentRoot.SetActive(false);
+
+                SetActive(false, NoteContentRoot);
                 return;
             }
 
@@ -34,8 +35,6 @@ namespace Game.Notes.TapBasedNotes
                                     _tapOrLineTransform.PositionInLane)
                                    * Vector3.one;
         }
-
-        private bool _haveShown;
 
         protected override void LateStart()
         {
