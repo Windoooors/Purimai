@@ -50,7 +50,7 @@ MonoBehaviour:
     type: 3}
   itemTreeAsset: {fileID: 9197481963319205126, guid: 2bd499a79806944ce85c51a9766b8b58,
     type: 3}
-  itemHeight: 125
+  itemHeight: 70
   settingsTreeAsset: {fileID: 9197481963319205126, guid: 2e6c5716d61b343b89a4e290d276978b,
     type: 3}
   tabContentTreeAsset: {fileID: 9197481963319205126, guid: d4e76fe41d88741798282e4c80cd125b,

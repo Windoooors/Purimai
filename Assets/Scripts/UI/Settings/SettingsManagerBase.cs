@@ -10,13 +10,13 @@ namespace UI.Settings
         public VisualTreeAsset toggleBasedValueControllerTreeAsset;
         public VisualTreeAsset itemTreeAsset;
 
-        public float itemHeight = 125;
+        public float itemHeight = 65;
 
         protected void SetUpList(ListView listView, SettingsItem[] items)
         {
-            listView.makeItem += () => itemTreeAsset.Instantiate();
-
             listView.fixedItemHeight = itemHeight;
+            
+            listView.makeItem += () => itemTreeAsset.Instantiate();
 
             listView.pickingMode = PickingMode.Ignore;
 

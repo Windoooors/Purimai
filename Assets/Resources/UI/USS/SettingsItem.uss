@@ -4,8 +4,8 @@
 .value-panel {
     position: absolute;
     width: auto;
-    top: 65px;
-    left: 0;
+    top: 8px;
+    left: 210px;
     right: 0;
     bottom: auto;
 }

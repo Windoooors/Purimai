@@ -22,8 +22,8 @@ namespace UI.Settings
             },
             new()
             {
-                Identifier = "gameplay",
-                Items = new List<SettingsItem>
+                Identifier = "delay",
+                Items = new List<SettingsItem>()
                 {
                     new("audio_delay", new SuccessiveIntegerValueSet
                     {
@@ -36,7 +36,14 @@ namespace UI.Settings
                         DefaultValue = 0,
                         ValueUpperLimit = 1000,
                         ValueLowerLimit = -1000
-                    }),
+                    })
+                }
+            },
+            new()
+            {
+                Identifier = "gameplay",
+                Items = new List<SettingsItem>
+                {
                     new("flow_speed", 26, new[]
                     {
                         "1", "1.25", "1.5", "1.75",
@@ -56,7 +63,18 @@ namespace UI.Settings
                         "-0.5", "-0.4", "-0.3", "-0.2", "-0.1", "0", "0.1", "0.2", "0.3", "0.4", "0.5",
                         "0.6", "0.7", "0.8", "0.9", "1"
                     }, false),
-                    new("sensor_radius", 3, new[]
+                    new("fast_late_display_level", 0, new[]
+                    {
+                        "none", "non_perfect", "non_crit_perfect"
+                    })
+                }
+            },
+            new()
+            {
+                Identifier = "sensor_radius",
+                Items = new List<SettingsItem>()
+                {
+                    new("sensor_radius.global", 3, new[]
                     {
                         "1", "1.1", "1.2", "1.3", "1.4",
                         "1.5", "1.6", "1.7", "1.8", "1.9", "2", "2.1", "2.2", "2.3", "2.4", "2.5", "2.6", "2.7", "2.8",
@@ -84,11 +102,6 @@ namespace UI.Settings
                         "2.9", "3",
                         "3.1", "3.2", "3.3", "3.4", "3.5", "3.6", "3.7", "3.8", "3.9", "4"
                     }, false),
-
-                    new("fast_late_display_level", 0, new[]
-                    {
-                        "none", "non_perfect", "non_crit_perfect"
-                    })
                 }
             },
             new()
@@ -108,19 +121,26 @@ namespace UI.Settings
                 Identifier = "graphics",
                 Items = new List<SettingsItem>
                 {
+                    new("framerate_limiter", new BoolValueSet())
+                }
+            },
+            new()
+            {
+                Identifier = "background",
+                Items = new List<SettingsItem>()
+                {
                     new("blurred_cover", 0, new[] { "none", "more_blurred", "most_blurred" }),
                     new("background_brightness", 2,
                         new[] { "darkest", "darker", "dark", "bright", "brighter", "brightest" }),
                     new("background_video_playback", new BoolValueSet
                     {
                         DefaultValue = true
-                    }),
-                    new("framerate_limiter", new BoolValueSet())
+                    })
                 }
             },
             new()
             {
-                Identifier = "audio",
+                Identifier = "volume",
                 Items = new List<SettingsItem>
                 {
                     new("volume.song", 10, new[]

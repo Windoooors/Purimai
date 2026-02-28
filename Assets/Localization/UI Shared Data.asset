@@ -108,7 +108,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 4009813037015040
-    m_Key: settings.sensor_radius
+    m_Key: settings.sensor_radius.global
     m_Metadata:
       m_Items: []
   - m_Id: 5837558100516864
@@ -224,7 +224,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 30143575059587072
-    m_Key: settings.audio
+    m_Key: settings.volume
     m_Metadata:
       m_Items: []
   - m_Id: 30842896037961728
@@ -257,6 +257,34 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 38333775027888128
     m_Key: settings.auto_play
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39837943458684928
+    m_Key: settings.sensor_radius
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39839580021579776
+    m_Key: settings.delay
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39840916377165824
+    m_Key: settings.background
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39844706861965312
+    m_Key: settings.title_watermark
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39847452688244736
+    m_Key: settings.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39853897643188224
+    m_Key: mods.title_watermark
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39853996729425920
+    m_Key: mods.title
     m_Metadata:
       m_Items: []
   m_Metadata:

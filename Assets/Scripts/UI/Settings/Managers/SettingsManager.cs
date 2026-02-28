@@ -94,7 +94,7 @@ namespace UI.Settings.Managers
             }
 
             _settingsTree.style.display = DisplayStyle.None;
-
+            
             StartCoroutine(Show());
         }
 

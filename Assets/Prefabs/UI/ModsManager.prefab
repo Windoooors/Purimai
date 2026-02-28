@@ -50,6 +50,6 @@ MonoBehaviour:
     type: 3}
   itemTreeAsset: {fileID: 9197481963319205126, guid: 2bd499a79806944ce85c51a9766b8b58,
     type: 3}
-  itemHeight: 125
+  itemHeight: 70
   modsTreeAsset: {fileID: 9197481963319205126, guid: 838f95eaf54444dfc88dd6d6094277c5,
     type: 3}

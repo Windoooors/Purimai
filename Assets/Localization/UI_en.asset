@@ -31,11 +31,11 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 361648611328
-    m_Localized: Note Speed
+    m_Localized: Ring Speed
     m_Metadata:
       m_Items: []
   - m_Id: 410050879488
-    m_Localized: Slide Appearance Delay
+    m_Localized: Slide Fade-in Delay
     m_Metadata:
       m_Items: []
   - m_Id: 17816471199744
@@ -63,7 +63,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 2200956375654400
-    m_Localized: Blurred Background
+    m_Localized: Image Blurriness
     m_Metadata:
       m_Items: []
   - m_Id: 2201042975449088
@@ -71,7 +71,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 2201060729937920
-    m_Localized: Blurred
+    m_Localized: Blurrer
     m_Metadata:
       m_Items: []
   - m_Id: 2491667327213568
@@ -87,19 +87,19 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 2492269549576192
-    m_Localized: Achievement (0%+)
+    m_Localized: 0%+
     m_Metadata:
       m_Items: []
   - m_Id: 2506586365878272
-    m_Localized: Achievement (100.00%+)
+    m_Localized: 100.00%+
     m_Metadata:
       m_Items: []
   - m_Id: 5839053164371968
-    m_Localized: Score (0+)
+    m_Localized: 0+
     m_Metadata:
       m_Items: []
   - m_Id: 5838749295435776
-    m_Localized: Score (Max Base Score+)
+    m_Localized: 100+
     m_Metadata:
       m_Items: []
   - m_Id: 3121485303504896
@@ -107,19 +107,19 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 4009813037015040
-    m_Localized: Global Touch Sensor Size
+    m_Localized: Global
     m_Metadata:
       m_Items: []
   - m_Id: 5837558100516864
-    m_Localized: Touch Sensor Size (Type A)
+    m_Localized: Type A
     m_Metadata:
       m_Items: []
   - m_Id: 5837577113296896
-    m_Localized: Touch Sensor Size (Type B)
+    m_Localized: Type B
     m_Metadata:
       m_Items: []
   - m_Id: 5837590254051328
-    m_Localized: Touch Sensor Size (Type C)
+    m_Localized: Type C
     m_Metadata:
       m_Items: []
   - m_Id: 7561223791960064
@@ -131,31 +131,31 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 12684111637372928
-    m_Localized: Song Volume
+    m_Localized: Song
     m_Metadata:
       m_Items: []
   - m_Id: 12684168176590848
-    m_Localized: Tap Answer Sound Volume
+    m_Localized: Tap Answer
     m_Metadata:
       m_Items: []
   - m_Id: 12684299626078208
-    m_Localized: Break Answer Sound Volume
+    m_Localized: Break Answer
     m_Metadata:
       m_Items: []
   - m_Id: 12684403716120576
-    m_Localized: Slide Answer Sound Volume
+    m_Localized: Slide Answer
     m_Metadata:
       m_Items: []
   - m_Id: 12684929446961152
-    m_Localized: Cue Sound Volume
+    m_Localized: Cue Sound
     m_Metadata:
       m_Items: []
   - m_Id: 15599568048611328
-    m_Localized: Background Video Playback
+    m_Localized: Video
     m_Metadata:
       m_Items: []
   - m_Id: 27093701846097920
-    m_Localized: Fast / Late Indicator
+    m_Localized: Show Fast / Late
     m_Metadata:
       m_Items: []
   - m_Id: 27093840451067904
@@ -163,11 +163,11 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 27093869765058560
-    m_Localized: Non-perfect
+    m_Localized: 50ms
     m_Metadata:
       m_Items: []
   - m_Id: 7623446728007680
-    m_Localized: Achievement
+    m_Localized: Achiv.
     m_Metadata:
       m_Items: []
   - m_Id: 7623114899841024
@@ -175,15 +175,15 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 27093955085590528
-    m_Localized: Non-critical-perfect
+    m_Localized: 16.67ms
     m_Metadata:
       m_Items: []
   - m_Id: 27109958230204416
-    m_Localized: More Blurred
+    m_Localized: Blurrest
     m_Metadata:
       m_Items: []
   - m_Id: 27110306596511744
-    m_Localized: Background Brightness
+    m_Localized: Brightness
     m_Metadata:
       m_Items: []
   - m_Id: 27110427027562496
@@ -245,7 +245,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 30143575059587072
-    m_Localized: Audio
+    m_Localized: Volume
     m_Metadata:
       m_Items: []
   - m_Id: 30143542914441216
@@ -262,6 +262,34 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 38333775027888128
     m_Localized: Auto Play
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39837943458684928
+    m_Localized: Sensor Size
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39839580021579776
+    m_Localized: Delay
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39840916377165824
+    m_Localized: Background
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39844706861965312
+    m_Localized: <color=white><gradient="level-item-watermark">Settings</gradient></color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39847452688244736
+    m_Localized: Settings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39853897643188224
+    m_Localized: <color=white><gradient="level-item-watermark">Mods</gradient></color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39853996729425920
+    m_Localized: Mods
     m_Metadata:
       m_Items: []
   references:

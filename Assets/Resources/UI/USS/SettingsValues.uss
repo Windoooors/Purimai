@@ -39,10 +39,13 @@
 
 .button {
     transition: scale 200ms ease, opacity 200ms ease;
+    background-image: url("project://database/Assets/Textures/UI/Shared/RoundedCornerRect.png?fileID=21300000&guid=5572f605bc32344f4b62167405b480e8&type=3#RoundedCornerRect");
+    background-color: rgba(0, 0, 0, 0);
+    scale: 0.75 0.75;
 }
 
 .button:hover {
-    scale: 0.75 0.75;
+    scale: 0.5 0.5;
 }
 
 .unity-toggle__checkmark {
@@ -51,7 +54,7 @@
     height: 43px;
     position: absolute;
     right: 21.5px;
-    background-image: url("project://database/Assets/Textures/UI/Checkmark.png?fileID=2800000&guid=100cb950be88740029fad091236a6198&type=3#Checkmark");
+    background-image: url("project://database/Assets/Textures/UI/Settings/Checkmark.png?fileID=2800000&guid=100cb950be88740029fad091236a6198&type=3#Checkmark");
     background-size: 100% 100%;
     background-color: rgba(192, 192, 192, 0);
     -unity-background-image-tint-color: rgb(255, 255, 255);
@@ -73,10 +76,15 @@
 .unity-toggle__label {
     position: absolute;
     color: black;
-    right: 0;
+    right: 65px;
     left: 0;
-    top: 0;
+    top: 4px;
     bottom: 0;
+    -unity-text-align: upper-right;
+    min-width: auto;
+    font-size: 18px;
+    overflow: visible;
+    display: none;
 }
 
 .unity-toggle__label:hover {
@@ -84,7 +92,7 @@
 }
 
 .unity-toggle__input {
-    background-image: url("project://database/Assets/Textures/UI/ToggleBackground.png?fileID=2800000&guid=d51572c7c94ba4d77bea75aacc0f69ff&type=3#ToggleBackground");
+    background-image: url("project://database/Assets/Textures/UI/Settings/ToggleBackground.png?fileID=2800000&guid=d51572c7c94ba4d77bea75aacc0f69ff&type=3#ToggleBackground");
     position: absolute;
     right: 0;
     width: 66px;

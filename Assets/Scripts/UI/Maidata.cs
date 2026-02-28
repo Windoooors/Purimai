@@ -267,42 +267,65 @@ namespace UI
             chartString = null;
             if (string.IsNullOrEmpty(maidataString)) return false;
 
-            var startTag = $"&inote_{i}=";
-            var startIndex = maidataString.IndexOf(startTag, StringComparison.InvariantCulture);
+            string startTag = $"&inote_{i}=";
+            int startIndex = maidataString.IndexOf(startTag, StringComparison.InvariantCulture);
             if (startIndex == -1) return false;
 
-            var contentStart = startIndex + startTag.Length;
-            var endIndex = maidataString.Length;
+            int contentStart = startIndex + startTag.Length;
 
-            var ePos = maidataString.IndexOf('E', contentStart);
-            if (ePos != -1) endIndex = ePos;
-
-            var searchPos = contentStart;
+            int nextTagPos = maidataString.Length;
+            int searchPos = contentStart;
             while (true)
             {
-                var tagPos = maidataString.IndexOf("&inote_", searchPos, StringComparison.InvariantCulture);
-                if (tagPos == -1 || tagPos >= endIndex) break;
+                int tagPos = maidataString.IndexOf("&inote_", searchPos, StringComparison.InvariantCulture);
+                if (tagPos == -1) break;
 
-                var numStart = tagPos + 7;
-                var eqPos = maidataString.IndexOf('=', numStart);
-
+                int numStart = tagPos + 7; // "&inote_".Length
+                int eqPos = maidataString.IndexOf('=', numStart);
                 if (eqPos != -1)
                 {
-                    var numStr = maidataString.Substring(numStart, eqPos - numStart);
-                    if (int.TryParse(numStr, out var k) && k > i)
+                    string numStr = maidataString.Substring(numStart, eqPos - numStart);
+                    if (int.TryParse(numStr, out int k) && k > i)
                     {
-                        endIndex = tagPos;
+                        nextTagPos = tagPos;
                         break;
                     }
                 }
 
                 searchPos = tagPos + 7;
             }
+            
+            int finalEndIndex = nextTagPos;
+            int eSearchPos = contentStart;
+            while (true)
+            {
+                int ePos = maidataString.IndexOf('E', eSearchPos);
 
-            chartString = maidataString.Substring(contentStart, endIndex - contentStart);
+                if (ePos == -1 || ePos >= nextTagPos) break;
+
+                if (IsOnlyWhitespace(maidataString, ePos + 1, nextTagPos))
+                {
+                    finalEndIndex = ePos;
+                    break;
+                }
+
+                eSearchPos = ePos + 1;
+            }
+            
+            chartString = maidataString.Substring(contentStart, finalEndIndex - contentStart);
             return true;
-        }
 
+            static bool IsOnlyWhitespace(string s, int start, int end)
+            {
+                for (int idx = start; idx < end; idx++)
+                {
+                    if (!char.IsWhiteSpace(s[idx])) return false;
+                }
+
+                return true;
+            }
+        }
+        
         public void LoadSongCover()
         {
             if (_loadingCover)
