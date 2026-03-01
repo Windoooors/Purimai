@@ -15,10 +15,13 @@ namespace UI.Settings
 
         private Label _valueLabel;
 
-        public ToggleBasedValueManipulator(SettingsItem item)
+        private readonly string _localizationTableName;
+
+        public ToggleBasedValueManipulator(SettingsItem item, string localizationTableName)
         {
             _identifier = item.Identifier;
             _settingsItem = item;
+            _localizationTableName = localizationTableName;
         }
 
         protected override void RegisterCallbacksOnTarget()
@@ -37,7 +40,7 @@ namespace UI.Settings
                 UpdateValueDisplay();
             });
 
-            _localizedString = new LocalizedString("UI",
+            _localizedString = new LocalizedString(_localizationTableName,
                 $"settings.{(_currentValue == 1 ? "true" : "false")}");
 
             _localizedString.StringChanged += value => { _valueLabel.text = value; };

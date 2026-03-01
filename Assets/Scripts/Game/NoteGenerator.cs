@@ -34,6 +34,9 @@ namespace Game
 
         public float endingTime;
 
+        private bool _flipVertically;
+        private bool _flipHorizontally;
+
         public readonly List<TapBasedNote>[] LaneList =
         {
             new(), new(), new(), new(),
@@ -56,12 +59,17 @@ namespace Game
         {
             _noteParent = new GameObject("Notes");
 
+            _flipHorizontally = SettingsPool.GetValue("flip_horizontally") == 1;
+            _flipVertically = SettingsPool.GetValue("flip_vertically") == 1;
+
             _instance = this;
         }
 
         public void GenerateNotes(string chartString, float firstNoteTime)
         {
             var noteDataObjects = ChartLoader.Instance.Parse(chartString, firstNoteTime);
+
+            MirrorNotes(noteDataObjects);
 
             var order = 0;
 
@@ -119,6 +127,80 @@ namespace Game
             }
         }
 
+        private void MirrorNotes(NoteDataObject[] noteDataObjects)
+        {
+            foreach (var note in noteDataObjects)
+            {
+                foreach (var noteTapDataObject in note.TapDataObjects)
+                {
+                    noteTapDataObject.Lane = GetModifiedLane(noteTapDataObject.Lane);
+                }
+
+                foreach (var noteHoldDataObject in note.HoldDataObjects)
+                {
+                    noteHoldDataObject.Lane = GetModifiedLane(noteHoldDataObject.Lane);
+                }
+
+                foreach (var noteSlideDataObject in note.SlideDataObjects)
+                {
+                    if (_flipHorizontally)
+                    {
+                        noteSlideDataObject.Type = noteSlideDataObject.Type switch
+                        {
+                            NoteDataObject.SlideDataObject.SlideType.RotateLeft => NoteDataObject.SlideDataObject
+                                .SlideType.RotateRight,
+                            NoteDataObject.SlideDataObject.SlideType.RotateRight => NoteDataObject.SlideDataObject
+                                .SlideType.RotateLeft,
+                            NoteDataObject.SlideDataObject.SlideType.Z => NoteDataObject.SlideDataObject.SlideType.S,
+                            NoteDataObject.SlideDataObject.SlideType.S => NoteDataObject.SlideDataObject.SlideType.Z,
+                            NoteDataObject.SlideDataObject.SlideType.P => NoteDataObject.SlideDataObject.SlideType.Q,
+                            NoteDataObject.SlideDataObject.SlideType.Q => NoteDataObject.SlideDataObject.SlideType.P,
+                            NoteDataObject.SlideDataObject.SlideType.BigP => NoteDataObject.SlideDataObject.SlideType
+                                .BigQ,
+                            NoteDataObject.SlideDataObject.SlideType.BigQ => NoteDataObject.SlideDataObject.SlideType
+                                .BigP,
+                            _ => noteSlideDataObject.Type
+                        };
+                    }
+                    
+                    if (_flipVertically)
+                    {
+                        noteSlideDataObject.Type = noteSlideDataObject.Type switch
+                        {
+                            NoteDataObject.SlideDataObject.SlideType.Z => NoteDataObject.SlideDataObject.SlideType.S,
+                            NoteDataObject.SlideDataObject.SlideType.S => NoteDataObject.SlideDataObject.SlideType.Z,
+                            NoteDataObject.SlideDataObject.SlideType.P => NoteDataObject.SlideDataObject.SlideType.Q,
+                            NoteDataObject.SlideDataObject.SlideType.Q => NoteDataObject.SlideDataObject.SlideType.P,
+                            NoteDataObject.SlideDataObject.SlideType.BigP => NoteDataObject.SlideDataObject.SlideType
+                                .BigQ,
+                            NoteDataObject.SlideDataObject.SlideType.BigQ => NoteDataObject.SlideDataObject.SlideType
+                                .BigP,
+                            _ => noteSlideDataObject.Type
+                        };
+                    }
+
+                    noteSlideDataObject.From = GetModifiedLane(noteSlideDataObject.From);
+                    for (var i = 0; i < noteSlideDataObject.To.Length; i++)
+                    {
+                        noteSlideDataObject.To[i] = GetModifiedLane(noteSlideDataObject.To[i]);
+                    }
+                }
+            }
+
+            return;
+
+            int GetModifiedLane(int inputLane)
+            {
+                var result = inputLane;
+
+                if (_flipHorizontally)
+                    result = GetHorizontallyFlippedLane(result);
+                if (_flipVertically)
+                    result = GetVerticallyFlippedLane(result);
+
+                return result;
+            }
+        }
 
         private void GenerateTaps(NoteDataObject noteDataObject, bool isEach, int order)
         {
@@ -323,6 +405,38 @@ namespace Game
             public Sprite[] normalSlideJudgeSprites;
             public Sprite[] circleSlideJudgeSprites;
             public Sprite[] wifiSlideJudgeSprites;
+        }
+        
+        private int GetVerticallyFlippedLane(int inputLane)
+        {
+            return inputLane switch
+            {
+                1 => 4,
+                2 => 3,
+                3 => 2,
+                4 => 1,
+                5 => 8,
+                6 => 7,
+                7 => 6,
+                8 => 5,
+                _ => inputLane
+            };
+        }
+
+        private int GetHorizontallyFlippedLane(int inputLane)
+        {
+            return inputLane switch
+            {
+                1 => 8,
+                2 => 7,
+                3 => 6,
+                4 => 5,
+                5 => 4,
+                6 => 3,
+                7 => 2,
+                8 => 1,
+                _ => inputLane
+            };
         }
     }
 }

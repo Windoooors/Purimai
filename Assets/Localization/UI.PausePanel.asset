@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5be51871efa6c3e4eae1703925c8f5ac, type: 3}
-  m_Name: UI
+  m_Name: UI.PausePanel
   m_EditorClassIdentifier: Unity.Localization.Editor::UnityEditor.Localization.StringTableCollection
-  m_SharedTableData: {fileID: 11400000, guid: c0eaca1764ba046fe82091c205c793a3, type: 2}
+  m_SharedTableData: {fileID: 11400000, guid: 87d3c149bd8d74754a116c01a70f08b8, type: 2}
   m_Tables:
-  - {fileID: 11400000, guid: 71ffc7372bc944fadb80d784da4ed75a, type: 2}
-  - {fileID: 11400000, guid: 2e841055a8b1a4d63b569d72e1bbd1de, type: 2}
+  - {fileID: 11400000, guid: a6413581d05844ad1b651ff41922ba83, type: 2}
+  - {fileID: 11400000, guid: d3aae6488acc44854a9a03da50c72e6d, type: 2}
   m_Extensions: []
   m_Group: String Table
   references:

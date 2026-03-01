@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: UI.PausePanel_zh-Hans
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.StringTable
+  m_LocaleId:
+    m_Code: zh-Hans
+  m_SharedData: {fileID: 11400000, guid: 87d3c149bd8d74754a116c01a70f08b8, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 33741653641519104
+    m_Localized: "\u9009\u62E9\u6B4C\u66F2"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33742021444231168
+    m_Localized: "\u5DF2\u6682\u505C"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33741378298044416
+    m_Localized: "\u7EE7\u7EED"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33741522909257728
+    m_Localized: "\u91CD\u8BD5"
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

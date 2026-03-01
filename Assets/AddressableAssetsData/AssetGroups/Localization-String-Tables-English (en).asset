@@ -16,7 +16,31 @@ MonoBehaviour:
   m_GUID: a8f356505fb074ac0aec1ab1d7d865ed
   m_SerializeEntries:
   - m_GUID: 2e841055a8b1a4d63b569d72e1bbd1de
-    m_Address: UI_en
+    m_Address: UI.Settings_en
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-en
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cb50afc361c1344899935bf7ce13d6ce
+    m_Address: UI.Mods_en
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-en
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d3aae6488acc44854a9a03da50c72e6d
+    m_Address: UI.PausePanel_en
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-en
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dcd42da9714ad496691c6e99d57f1c0a
+    m_Address: UI.Mods.Descriptions_en
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-en
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f5d34bc256955492d8b6f232bf15ee95
+    m_Address: UI.Settings.Descriptions_en
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale-en

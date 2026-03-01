@@ -101,37 +101,36 @@ namespace Game.Notes
                 case JudgeState.CriticalPerfect:
                     if (isBreak)
                     {
-                        AudioManager.Instance.PlayBreakPerfectSound();
-                        AudioManager.Instance.PlayBreakExtraScoreSound();
+                        SfxManager.Instance.PlayBreakCriticalPerfectSound();
                     }
                     else
                     {
-                        AudioManager.Instance.PlayPerfectSound();
+                        SfxManager.Instance.PlayPerfectSound();
                     }
 
                     break;
                 case JudgeState.Perfect:
                 case JudgeState.SemiCriticalPerfect:
                     if (isBreak)
-                        AudioManager.Instance.PlayBreakPerfectSound();
+                        SfxManager.Instance.PlayBreakPerfectSound();
                     else
-                        AudioManager.Instance.PlayPerfectSound();
+                        SfxManager.Instance.PlayPerfectSound();
 
                     break;
                 case JudgeState.SemiGreat:
                 case JudgeState.QuarterGreat:
                 case JudgeState.Great:
                     if (isBreak)
-                        AudioManager.Instance.PlayBreakGreatSound();
+                        SfxManager.Instance.PlayBreakGreatSound();
                     else
-                        AudioManager.Instance.PlayGreatSound();
+                        SfxManager.Instance.PlayGreatSound();
 
                     break;
                 case JudgeState.Good:
                     if (isBreak)
-                        AudioManager.Instance.PlayBreakGreatSound();
+                        SfxManager.Instance.PlayBreakGreatSound();
                     else
-                        AudioManager.Instance.PlayGoodSound();
+                        SfxManager.Instance.PlayGoodSound();
 
                     break;
             }

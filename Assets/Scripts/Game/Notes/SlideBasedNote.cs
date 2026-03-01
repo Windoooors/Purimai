@@ -611,7 +611,7 @@ namespace Game.Notes
 
         protected void PlaySlideSound()
         {
-            AudioManager.Instance.PlaySlideSound();
+            SfxManager.Instance.PlaySlideSound();
         }
 
         protected virtual void UpdateJudgeDisplayDirection(int judgeSpriteGroupIndex)

@@ -1,48 +1,34 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd"
-         editor-extension-mode="False">
-    <Style src="project://database/Assets/Resources/UI/USS/Shared.uss?fileID=7433441132597879392&amp;guid=5933587f574ee4eefabbe2902975d699&amp;type=3#Shared"/>
-    <Style src="project://database/Assets/Resources/UI/USS/Pause/Pause.uss?fileID=7433441132597879392&amp;guid=553c543034d884df8a8e89807a364b69&amp;type=3#Pause"/>
-    <ui:VisualElement name="pause-panel" class="pause-panel"
-                      style="background-image: url(&quot;project://database/Assets/Textures/UI/LevelSelection/SongCoverLeftGradientSlim.png?fileID=2800000&amp;guid=afd2c76008daf4e9ab6048c0d8aa6a2e&amp;type=3#SongCoverLeftGradientSlim&quot;);">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Resources/UI/USS/Shared.uss?fileID=7433441132597879392&amp;guid=5933587f574ee4eefabbe2902975d699&amp;type=3#Shared" />
+    <Style src="project://database/Assets/Resources/UI/USS/Pause/Pause.uss?fileID=7433441132597879392&amp;guid=553c543034d884df8a8e89807a364b69&amp;type=3#Pause" />
+    <ui:VisualElement name="pause-panel" class="pause-panel" style="background-image: url(&quot;project://database/Assets/Textures/UI/LevelSelection/SongCoverLeftGradientSlim.png?fileID=2800000&amp;guid=afd2c76008daf4e9ab6048c0d8aa6a2e&amp;type=3#SongCoverLeftGradientSlim&quot;);">
         <ui:VisualElement name="safe-area" picking-mode="Ignore" class="safe-area" style="flex-grow: 1;">
             <ui:VisualElement name="control-panel" class="control-panel">
-                <ui:Label text="Label"
-                          style="padding-top: 0; padding-right: 25px; padding-bottom: 5px; padding-left: 25px; -unity-font-definition: resource(&apos;Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF&apos;); font-size: 24px; -unity-font-style: normal;">
+                <ui:Label text="Label" style="padding-top: 0; padding-right: 25px; padding-bottom: 5px; padding-left: 25px; -unity-font-definition: resource(&apos;Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF&apos;); font-size: 24px; -unity-font-style: normal;">
                     <Bindings>
-                        <UnityEngine.Localization.LocalizedString property="text"
-                                                                  table="GUID:c0eaca1764ba046fe82091c205c793a3"
-                                                                  entry="Id(33742021444231168)"/>
+                        <UnityEngine.Localization.LocalizedString property="text" table="GUID:87d3c149bd8d74754a116c01a70f08b8" entry="Id(33742021444231168)" />
                     </Bindings>
                 </ui:Label>
                 <ui:Button name="back-button" text="Resume" class="button pause-menu-button">
-                    <ui:VisualElement name="icon"
-                                      style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Textures/UI/Shared/PlayIcon.png?fileID=2800000&amp;guid=2a3b021954248420ca431c76ea955b9e&amp;type=3#PlayIcon&quot;); position: absolute; width: 33px; height: 34px; top: 14px; left: 18px;"/>
+                    <ui:VisualElement name="icon" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Textures/UI/Shared/PlayIcon.png?fileID=2800000&amp;guid=2a3b021954248420ca431c76ea955b9e&amp;type=3#PlayIcon&quot;); position: absolute; width: 33px; height: 34px; top: 14px; left: 18px;" />
                     <Bindings>
-                        <UnityEngine.Localization.LocalizedString property="text"
-                                                                  table="GUID:c0eaca1764ba046fe82091c205c793a3"
-                                                                  entry="Id(33741378298044416)"/>
+                        <UnityEngine.Localization.LocalizedString property="text" table="GUID:87d3c149bd8d74754a116c01a70f08b8" entry="Id(33741378298044416)" />
                     </Bindings>
                 </ui:Button>
                 <ui:Button name="retry-button" text="Retry" class="button pause-menu-button">
-                    <ui:VisualElement name="icon"
-                                      style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Textures/UI/Result/RetryIcon.png?fileID=2800000&amp;guid=f8152c089e9a944bb9e5d869deae556a&amp;type=3#RetryIcon&quot;); position: absolute; width: 33px; height: 34px; top: 14px; left: 18px;"/>
+                    <ui:VisualElement name="icon" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Textures/UI/Result/RetryIcon.png?fileID=2800000&amp;guid=f8152c089e9a944bb9e5d869deae556a&amp;type=3#RetryIcon&quot;); position: absolute; width: 33px; height: 34px; top: 14px; left: 18px;" />
                     <Bindings>
-                        <UnityEngine.Localization.LocalizedString property="text"
-                                                                  table="GUID:c0eaca1764ba046fe82091c205c793a3"
-                                                                  entry="Id(33741522909257728)"/>
+                        <UnityEngine.Localization.LocalizedString property="text" table="GUID:87d3c149bd8d74754a116c01a70f08b8" entry="Id(33741522909257728)" />
                     </Bindings>
                 </ui:Button>
                 <ui:Button name="level-selection-button" text="Levels" class="button pause-menu-button">
-                    <ui:VisualElement name="icon"
-                                      style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Textures/UI/Result/MenuIcon.png?fileID=2800000&amp;guid=57d904ed2c5c04c4b82de0ce3085b443&amp;type=3#MenuIcon&quot;); position: absolute; width: 33px; height: 34px; top: 14px; left: 18px;"/>
+                    <ui:VisualElement name="icon" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Textures/UI/Result/MenuIcon.png?fileID=2800000&amp;guid=57d904ed2c5c04c4b82de0ce3085b443&amp;type=3#MenuIcon&quot;); position: absolute; width: 33px; height: 34px; top: 14px; left: 18px;" />
                     <Bindings>
-                        <UnityEngine.Localization.LocalizedString property="text"
-                                                                  table="GUID:c0eaca1764ba046fe82091c205c793a3"
-                                                                  entry="Id(33741653641519104)"/>
+                        <UnityEngine.Localization.LocalizedString property="text" table="GUID:87d3c149bd8d74754a116c01a70f08b8" entry="Id(33741653641519104)" />
                     </Bindings>
                 </ui:Button>
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement name="white-out-mask" class="white-out-mask"/>
+        <ui:VisualElement name="white-out-mask" class="white-out-mask" />
     </ui:VisualElement>
 </ui:UXML>

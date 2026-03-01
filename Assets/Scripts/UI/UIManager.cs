@@ -16,12 +16,7 @@ namespace UI
         private static UIManager _instance;
 
         public FontAsset mainFontAsset;
-
-        [FormerlySerializedAs("soundFileNameData")]
-        public AudioManager.GameSoundNameData gameSoundFileNameData;
-
-        public AudioManager.UiSoundNameData uiSoundFileNameData;
-
+        
         [FormerlySerializedAs("uIDocument")] public UIDocument uiDocument;
 
         public LevelSelectionManager levelSelectionPrefab;

@@ -15,8 +15,32 @@ MonoBehaviour:
   m_GroupName: Localization-String-Tables-Chinese (Simplified) (zh-Hans)
   m_GUID: 2e2664d8be3f745ad834aa2dff20c997
   m_SerializeEntries:
+  - m_GUID: 6c64db074fb2d4e86b6333fd849d0d4a
+    m_Address: UI.Settings.Descriptions_zh-Hans
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-zh-Hans
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 71ffc7372bc944fadb80d784da4ed75a
-    m_Address: UI_zh-Hans
+    m_Address: UI.Settings_zh-Hans
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-zh-Hans
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 85ba172373f66431f93712bc67adc985
+    m_Address: UI.Mods.Descriptions_zh-Hans
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-zh-Hans
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a6413581d05844ad1b651ff41922ba83
+    m_Address: UI.PausePanel_zh-Hans
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-zh-Hans
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f3c1e73bb38a84453a60970bbbe2b451
+    m_Address: UI.Mods_zh-Hans
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale-zh-Hans

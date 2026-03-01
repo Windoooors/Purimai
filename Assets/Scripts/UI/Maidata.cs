@@ -53,7 +53,7 @@ namespace UI
 
         public DecodedImage BlurredSongCoverWithConstantRadiusDecodedImage;
         public bool CoverDataLoaded;
-        public AudioClip SongAudioClip;
+        public AudioClipHandler SongAudioClip;
         public DecodedImage SongCoverDecodedImage;
         public bool SongLoaded;
 
@@ -227,8 +227,7 @@ namespace UI
 
         public void UnloadSong()
         {
-            if (SongAudioClip)
-                Object.Destroy(SongAudioClip);
+            SongAudioClip?.Dispose();
 
             SongAudioClip = null;
             SongLoaded = false;
@@ -236,8 +235,7 @@ namespace UI
 
         public void UnloadResources()
         {
-            if (SongAudioClip)
-                Object.Destroy(SongAudioClip);
+            SongAudioClip?.Dispose();
 
             BlurredSongCoverAsBackgroundDecodedImage?.Dispose();
             BlurredSongCoverWithConstantRadiusDecodedImage?.Dispose();
@@ -352,7 +350,9 @@ namespace UI
 
             _loadingSong = true;
 
-            yield return AudioManager.Instance.LoadAudioClip(_songPath, clip => SongAudioClip = clip, streamed);
+            yield return AudioManager.Instance.LoadAudioClip(_songPath,
+                clip => SongAudioClip = new AudioClipHandler(clip)
+                , streamed);
 
             SongLoaded = true;
             _loadingSong = false;

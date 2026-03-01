@@ -1,0 +1,117 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: UI.Settings.Descriptions_en
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.StringTable
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: 8b40c76da529544e4a551c6df75e4578, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 7561223791960064
+    m_Localized: Choices between FiNALE and DX
+    m_Metadata:
+      m_Items: []
+  - m_Id: 32093550665728
+    m_Localized: Compensation for audio delay caused by the device
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27110306596511744
+    m_Localized: Brightness of the background
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15599568048611328
+    m_Localized: Video playback (if video exists)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2200956375654400
+    m_Localized: Blurriness of the background
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27093701846097920
+    m_Localized: Lower bound for Fast/Late timing error
+    m_Metadata:
+      m_Items: []
+  - m_Id: 361648611328
+    m_Localized: How fast the notes will go
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3121485303504896
+    m_Localized: Limits the framerate to 60FPS
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30143274743226368
+    m_Localized: 'Gameplay
+
+'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 203246526464
+    m_Localized: The way how songs in the song list will be arranged
+    m_Metadata:
+      m_Items: []
+  - m_Id: 280253732741120
+    m_Localized: Compensation for input delay caused by the device
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2491667327213568
+    m_Localized: Choose the information displayed on center
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7623114899841024
+    m_Localized: How scores will be measured
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5837558100516864
+    m_Localized: Sensor size (type A)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5837577113296896
+    m_Localized: Sensor size (type B)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5837590254051328
+    m_Localized: Sensor size (type C)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4009813037015040
+    m_Localized: Sensor size (global)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 410050879488
+    m_Localized: Delay in the slide fade-in time
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12684299626078208
+    m_Localized: Break answer sound volume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12684929446961152
+    m_Localized: Cue sound volume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12684403716120576
+    m_Localized: Slide answer sound volume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12684111637372928
+    m_Localized: Song volume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12684168176590848
+    m_Localized: Tap answer sound volume
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

@@ -20,6 +20,8 @@ namespace UI.Settings.Managers
         private void Awake()
         {
             _instance = this;
+            
+            LocalizationTableName = "UI.Mods";
 
             Initialize();
         }

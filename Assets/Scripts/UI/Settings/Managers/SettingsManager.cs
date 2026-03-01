@@ -27,6 +27,8 @@ namespace UI.Settings.Managers
         {
             _instance = this;
 
+            LocalizationTableName = "UI.Settings";
+
             Initialize();
         }
 
@@ -66,7 +68,7 @@ namespace UI.Settings.Managers
             {
                 var tab = new Tab();
 
-                var titleLocalizedString = new LocalizedString("UI", $"settings.{category.Identifier}");
+                var titleLocalizedString = new LocalizedString(LocalizationTableName, $"settings.{category.Identifier}");
 
                 titleLocalizedString.StringChanged += value => { tab.label = value; };
 

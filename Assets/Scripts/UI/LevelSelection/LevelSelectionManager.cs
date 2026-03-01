@@ -28,7 +28,7 @@ namespace UI.LevelSelection
 
         private static LevelSelectionManager _instance;
 
-        private static readonly List<MaidataReferenceCountPair> _maidataList = new();
+        private static readonly List<MaidataReferenceCountPair> MaidataList = new();
 
         public SortingRules groupByRule = SortingRules.Undefined;
 
@@ -57,7 +57,7 @@ namespace UI.LevelSelection
 
         private bool _songPlaying;
 
-        private AudioSourcePool.AudioSourceHandler _songPreviewAudioSourceHandler;
+        private AudioSourceHandler _songPreviewAudioSourceHandler;
 
         private Button _sortButton;
 
@@ -79,7 +79,7 @@ namespace UI.LevelSelection
 
             _instance = this;
 
-            if (_maidataList.Count == 0)
+            if (MaidataList.Count == 0)
             {
                 var path = Path.Combine(Application.persistentDataPath, "Charts/");
 
@@ -109,7 +109,7 @@ namespace UI.LevelSelection
                         aviExists ? actualPvPathAvi : actualPvPathMp4,
                         pngExists ? actualBgPathPng : actualBgPathJpg);
 
-                    _maidataList.Add(new MaidataReferenceCountPair
+                    MaidataList.Add(new MaidataReferenceCountPair
                     {
                         Maidata = maidata,
                         Referenced = false
@@ -141,7 +141,7 @@ namespace UI.LevelSelection
             if (maidata.CoverDataLoaded && _largeSongCover != null)
                 _largeSongCover.style.backgroundImage = maidata.SongCoverDecodedImage.GetTexture2D();
 
-            foreach (var pair in _maidataList)
+            foreach (var pair in MaidataList)
                 if (!pair.Referenced && pair.Maidata.CoverDataLoaded)
                     pair.Maidata.UnloadSongCover();
 
@@ -150,8 +150,11 @@ namespace UI.LevelSelection
                 _songPlaying = true;
 
                 if (_songPreviewAudioSourceHandler == null)
+                {
                     AudioManager.Instance.AudioSourcePool
-                        .TryGetAudioSourceHandler(out _songPreviewAudioSourceHandler);
+                        .TryGetAudioSourceHandler(out var songPreviewAudioSourceHandler);
+                    _songPreviewAudioSourceHandler = (AudioSourceHandler)songPreviewAudioSourceHandler;
+                }
 
                 _songPreviewAudioSourceHandler.SetClip(maidata.SongAudioClip);
 
@@ -651,7 +654,7 @@ namespace UI.LevelSelection
                 case SortingRules.Difficulty:
                     var difficultyStringHashSet = new HashSet<string>();
 
-                    foreach (var maidata in _maidataList)
+                    foreach (var maidata in MaidataList)
                     foreach (var chart in maidata.Maidata.Charts)
                     {
                         var difficultyName = chart.DifficultyString;
@@ -670,7 +673,7 @@ namespace UI.LevelSelection
                 case SortingRules.Alphabet:
                     var groupNames = new HashSet<string>();
 
-                    foreach (var maidata in _maidataList)
+                    foreach (var maidata in MaidataList)
                     {
                         var firstCharacterIsLetterOrDigit = char.IsLetterOrDigit(maidata.Maidata.Title[0]);
                         var firstCharacterIsInChinese =
@@ -740,11 +743,11 @@ namespace UI.LevelSelection
                 {
                     var alphabetGroup = key switch
                     {
-                        "Misc" => _maidataList.Where(x =>
+                        "Misc" => MaidataList.Where(x =>
                             !char.IsLetterOrDigit(x.Maidata.Title[0])
                         ).Select(x => (x, 0)).ToList(),
                         _ =>
-                            _maidataList.Where(x =>
+                            MaidataList.Where(x =>
                                 x.Maidata.Title.ToUpper()[0].ToString() == key ||
                                 PinyinHelper.GetPinyin(x.Maidata.Title[0]).ToUpper()[0]
                                     .ToString() ==
@@ -769,7 +772,7 @@ namespace UI.LevelSelection
                         new List<(MaidataReferenceCountPair, int
                             )>(); // _maidataList.Where(x => x.DifficultyNames.Contains(difficulty)).ToList();
 
-                    foreach (var maidata in _maidataList)
+                    foreach (var maidata in MaidataList)
                     foreach (var chart in maidata.Maidata.Charts)
                         if (chart.DifficultyString == difficultyName)
                             difficultyGroup.Add((maidata, chart.DifficultyIndex));

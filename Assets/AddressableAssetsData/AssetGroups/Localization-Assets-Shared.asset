@@ -15,6 +15,21 @@ MonoBehaviour:
   m_GroupName: Localization-Assets-Shared
   m_GUID: 3640d569a5b0c41aa85315aaa687c440
   m_SerializeEntries:
+  - m_GUID: 12892f1e192544246a07bfe096ec50f7
+    m_Address: Assets/Localization/UI.Mods Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 87d3c149bd8d74754a116c01a70f08b8
+    m_Address: Assets/Localization/UI.PausePanel Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8b40c76da529544e4a551c6df75e4578
+    m_Address: Assets/Localization/UI.Settings.Descriptions Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b9091faf48fdd424586a3f33a712b402
     m_Address: Assets/Localization/Chinese Shared Data.asset
     m_ReadOnly: 1
@@ -22,6 +37,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c0eaca1764ba046fe82091c205c793a3
     m_Address: Assets/Localization/UI Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e38c1ce35c6b5477ba462b6926e5456a
+    m_Address: Assets/Localization/UI.Mods.Descriptions Shared Data.asset
     m_ReadOnly: 1
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

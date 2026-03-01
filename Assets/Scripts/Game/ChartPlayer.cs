@@ -51,7 +51,7 @@ namespace Game
 
         public bool isPlaying;
 
-        public AudioClip songClip;
+        public AudioClipHandler songClip;
 
         public int levelDifficultyIndex;
 
@@ -79,7 +79,7 @@ namespace Game
         private bool _paused;
 
         private float _songLength;
-        private AudioSourcePool.AudioSourceHandler _songPlaybackAudioSourceHandler;
+        private AudioSourceHandler _songPlaybackAudioSourceHandler;
 
         private float _songPositionWhenCalibrationThresholdChanged;
 
@@ -254,7 +254,7 @@ namespace Game
                 if (handler == null)
                     yield break;
 
-                _songPlaybackAudioSourceHandler = handler;
+                _songPlaybackAudioSourceHandler = (AudioSourceHandler)handler;
 
                 _songPlaybackAudioSourceHandler.SetClip(Maidata.SongAudioClip);
                 _songPlaybackAudioSourceHandler.SetVolume(_songVolume);
@@ -369,8 +369,10 @@ namespace Game
 
         private void PlayAudio()
         {
-            AudioManager.Instance.AudioSourcePool.TryGetAudioSourceHandler(out _songPlaybackAudioSourceHandler);
+            AudioManager.Instance.AudioSourcePool.TryGetAudioSourceHandler(out var songPlaybackAudioSourceHandler);
 
+            _songPlaybackAudioSourceHandler = (AudioSourceHandler)songPlaybackAudioSourceHandler;
+            
             _songPlaybackAudioSourceHandler.SetClip(songClip);
 
             _dspTimeWhenSongStartsPlaying = AudioManager.Instance.EstimatedDspTime +
@@ -384,7 +386,7 @@ namespace Game
 
             isPlaying = true;
 
-            _songLength = songClip.length;
+            _songLength = songClip.clip.length;
 
             SetCueSoundChannel(true);
         }
@@ -394,14 +396,16 @@ namespace Game
             if (_criticalSoundIndex == NoteGenerator.Instance.CriticalTimeList.Count)
                 return;
 
-            AudioSourcePool.AudioSourceHandler handler;
+            AudioSourceHandler handler;
 
             if (initialSet)
             {
                 for (var i = 0; i < _maxScheduledCriticalSoundCount; i++)
                 {
-                    AudioManager.Instance.AudioSourcePool.TryGetAudioSourceHandler(out handler);
+                    AudioManager.Instance.AudioSourcePool.TryGetAudioSourceHandler(out var audioHandler);
 
+                    handler = (AudioSourceHandler)audioHandler;
+                    
                     SetUpChannelDelay(handler);
                     handler?.SetVolume(_criticalSoundVolume);
                 }
@@ -411,8 +415,10 @@ namespace Game
 
             if (AudioManager.Instance.AudioSourcePool.GetOccupiedCount() < _maxScheduledCriticalSoundCount)
             {
-                var channelAvailable = AudioManager.Instance.AudioSourcePool.TryGetAudioSourceHandler(out handler);
+                var channelAvailable = AudioManager.Instance.AudioSourcePool.TryGetAudioSourceHandler(out var audioHandler);
 
+                handler = (AudioSourceHandler)audioHandler;
+                
                 if (!channelAvailable)
                     return;
 
@@ -422,7 +428,7 @@ namespace Game
 
             return;
 
-            void SetUpChannelDelay(AudioSourcePool.AudioSourceHandler audioSourceHandler)
+            void SetUpChannelDelay(AudioSourceHandler audioSourceHandler)
             {
                 if (_criticalSoundIndex >= NoteGenerator.Instance.CriticalTimeList.Count ||
                     audioSourceHandler == null)
@@ -432,7 +438,7 @@ namespace Game
                             NoteGenerator.Instance.CriticalTimeList[_criticalSoundIndex] /
                             1000f;
 
-                var audioClip = AudioManager.Instance.criticalSound;
+                var audioClip = SfxManager.Instance.CriticalSoundClip;
 
                 audioSourceHandler.SetClip(audioClip);
                 audioSourceHandler.PlayScheduled(delay);

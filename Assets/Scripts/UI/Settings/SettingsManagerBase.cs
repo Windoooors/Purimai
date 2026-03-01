@@ -1,14 +1,18 @@
 using UnityEngine;
 using UnityEngine.Localization;
+using UnityEngine.Serialization;
 using UnityEngine.UIElements;
 
 namespace UI.Settings
 {
     public class SettingsManagerBase : MonoBehaviour
     {
-        public VisualTreeAsset switchBasedValueControllerTreeAsset;
+        public VisualTreeAsset numberBasedValueControllerTreeAsset;
+        public VisualTreeAsset selectorBasedValueControllerTreeAsset;
         public VisualTreeAsset toggleBasedValueControllerTreeAsset;
         public VisualTreeAsset itemTreeAsset;
+
+        protected string LocalizationTableName;
 
         public float itemHeight = 65;
 
@@ -36,7 +40,7 @@ namespace UI.Settings
 
                 var elementRoot = element.Q<VisualElement>("settings-item");
 
-                var itemTitleLocalizedString = new LocalizedString("UI", $"settings.{itemData.Identifier}");
+                var itemTitleLocalizedString = new LocalizedString(LocalizationTableName, $"settings.{itemData.Identifier}");
 
                 itemTitleLocalizedString.StringChanged += value =>
                 {
@@ -44,7 +48,14 @@ namespace UI.Settings
                     elementRoot.Q<Label>("item-name-watermark").text =
                         $"<color=white><gradient=\"level-item-watermark\">{value}</gradient></color>";
                 };
+                
+                var itemDescriptionLocalizedString = new LocalizedString( $"{ LocalizationTableName }.Descriptions", $"settings.{itemData.Identifier}");
 
+                itemDescriptionLocalizedString.StringChanged += value =>
+                {
+                    elementRoot.Q<Label>("item-description").text = value;
+                };
+                
                 itemTitleLocalizedString.RefreshString();
 
                 userData.LocalizedString = itemTitleLocalizedString;
@@ -53,17 +64,34 @@ namespace UI.Settings
 
                 switch (itemData.ValueSet)
                 {
-                    case SeparatedValueSet:
+                    case SeparatedValueSet set:
+                        if (set.IsNumberBased)
+                        {
+                            valuePanel = numberBasedValueControllerTreeAsset.Instantiate();
+                            elementRoot.Add(valuePanel);
+                            userData.ValueManipulator =
+                                new SwitchBasedValueManipulator(itemData, LocalizationTableName);
+                            valuePanel.Q("number-based-value-panel").AddManipulator(userData.ValueManipulator);
+                        }
+                        else
+                        {
+                            valuePanel = selectorBasedValueControllerTreeAsset.Instantiate();
+                            elementRoot.Add(valuePanel);
+                            userData.ValueManipulator =
+                                new SwitchBasedValueManipulator(itemData, LocalizationTableName);
+                            valuePanel.Q("selector-based-value-panel").AddManipulator(userData.ValueManipulator);
+                        }
+                        break;
                     case SuccessiveIntegerValueSet:
-                        valuePanel = switchBasedValueControllerTreeAsset.Instantiate();
+                        valuePanel = numberBasedValueControllerTreeAsset.Instantiate();
                         elementRoot.Add(valuePanel);
-                        userData.ValueManipulator = new SwitchBasedValueManipulator(itemData);
-                        valuePanel.Q("selector-based-value-panel").AddManipulator(userData.ValueManipulator);
+                        userData.ValueManipulator = new SwitchBasedValueManipulator(itemData, LocalizationTableName);
+                        valuePanel.Q("number-based-value-panel").AddManipulator(userData.ValueManipulator);
                         break;
                     case BoolValueSet:
                         valuePanel = toggleBasedValueControllerTreeAsset.Instantiate();
                         elementRoot.Add(valuePanel);
-                        userData.ValueManipulator = new ToggleBasedValueManipulator(itemData);
+                        userData.ValueManipulator = new ToggleBasedValueManipulator(itemData, LocalizationTableName);
                         valuePanel.Q("toggle-based-value-panel").AddManipulator(userData.ValueManipulator);
                         break;
                 }
@@ -81,9 +109,13 @@ namespace UI.Settings
 
                 switch (itemData.ValueSet)
                 {
-                    case SeparatedValueSet:
+                    case SeparatedValueSet set:
+                        userData.ValuePanel
+                            .Q(set.IsNumberBased ? "number-based-value-panel" : "selector-based-value-panel")
+                            .RemoveManipulator(userData.ValueManipulator);
+                        break;
                     case SuccessiveIntegerValueSet:
-                        userData.ValuePanel.Q("selector-based-value-panel")
+                        userData.ValuePanel.Q("number-based-value-panel")
                             .RemoveManipulator(userData.ValueManipulator);
                         break;
                     case BoolValueSet:

@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: UI.PausePanel Shared Data
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.SharedTableData
+  m_TableCollectionName: UI.PausePanel
+  m_TableCollectionNameGuidString: 87d3c149bd8d74754a116c01a70f08b8
+  m_Entries:
+  - m_Id: 33741653641519104
+    m_Key: pause_panel.levels
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33742021444231168
+    m_Key: pause_panel.paused
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33741378298044416
+    m_Key: pause_panel.resume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33741522909257728
+    m_Key: pause_panel.retry
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 2816708646323617936
+  references:
+    version: 2
+    RefIds:
+    - rid: 2816708646323617936
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables,
+        asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1772304431935

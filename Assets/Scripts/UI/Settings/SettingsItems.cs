@@ -6,7 +6,9 @@ namespace UI.Settings
     {
         public static SettingsItem[] ModItems =
         {
-            new("auto_play", new BoolValueSet())
+            new("auto_play", new BoolValueSet()),
+            new("flip_horizontally", new BoolValueSet()),
+            new("flip_vertically", new BoolValueSet())
         };
 
         public static SettingsCategory[] Settings =
@@ -16,9 +18,8 @@ namespace UI.Settings
                 Identifier = "song_list",
                 Items = new List<SettingsItem>
                 {
-                    new("group_rule", 0, new[] { "alphabet", "difficulty" })
-                },
-                VisibleFromSettingsPanel = false
+                    new("group_rule", 0, new[] { "alphabet", "difficulty" }, true, false)
+                }
             },
             new()
             {
@@ -66,7 +67,7 @@ namespace UI.Settings
                     new("fast_late_display_level", 0, new[]
                     {
                         "none", "non_perfect", "non_crit_perfect"
-                    })
+                    }, true, false)
                 }
             },
             new()
@@ -110,10 +111,10 @@ namespace UI.Settings
                 Items = new List<SettingsItem>
                 {
                     new("score_indicator_content", 1,
-                        new[] { "none", "combo", "achievement", "deducted_achievement", "score", "deducted_score" }),
+                        new[] { "none", "combo", "achievement", "deducted_achievement", "score", "deducted_score" }, true, false),
                     new("score_indicator_type", 1,
-                        new[] { "score", "achievement" }),
-                    new("achievement_type", 1, new[] { "DX", "FiNALE" }, false)
+                        new[] { "score", "achievement" }, true, false),
+                    new("achievement_type", 1, new[] { "DX", "FiNALE" }, false, false)
                 }
             },
             new()
@@ -129,9 +130,9 @@ namespace UI.Settings
                 Identifier = "background",
                 Items = new List<SettingsItem>()
                 {
-                    new("blurred_cover", 0, new[] { "none", "more_blurred", "most_blurred" }),
+                    new("blurred_cover", 0, new[] { "none", "more_blurred", "most_blurred" }, true, false),
                     new("background_brightness", 2,
-                        new[] { "darkest", "darker", "dark", "bright", "brighter", "brightest" }),
+                        new[] { "darkest", "darker", "dark", "bright", "brighter", "brightest" }, true, false),
                     new("background_video_playback", new BoolValueSet
                     {
                         DefaultValue = true
@@ -181,13 +182,14 @@ namespace UI.Settings
         public readonly ValueSet ValueSet;
 
         public SettingsItem(string identifier, int defaultValue, string[] availableValues,
-            bool managedValueLocalization = true)
+            bool managedValueLocalization = true, bool numberBased = true)
         {
             Identifier = identifier;
             ValueSet = new SeparatedValueSet
             {
                 DefaultValueIndex = defaultValue,
-                AvailableValues = availableValues
+                AvailableValues = availableValues,
+                IsNumberBased = numberBased
             };
             ManagedValueLocalization = managedValueLocalization;
         }
@@ -215,6 +217,7 @@ namespace UI.Settings
     {
         public string[] AvailableValues;
         public int DefaultValueIndex;
+        public bool IsNumberBased;
     }
 
     public class BoolValueSet : ValueSet

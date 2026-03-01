@@ -2,7 +2,7 @@
     <Style src="project://database/Assets/Resources/UI/USS/Settings.uss?fileID=7433441132597879392&amp;guid=83def88c0e91045508a7aefd863f511a&amp;type=3#Settings" />
     <ui:VisualElement name="safe-area" picking-mode="Ignore" class="safe-area" style="flex-grow: 1;">
         <ui:VisualElement name="transparent-panel" class="parent">
-            <ui:VisualElement name="background" style="flex-grow: 1; width: 880px; background-image: url(&quot;project://database/Assets/Textures/UI/LevelSelection/SongCoverLeftGradient.png?fileID=2800000&amp;guid=77a57ea2f1631488cb32a49596229e5c&amp;type=3#SongCoverLeftGradient&quot;); -unity-background-image-tint-color: rgb(255, 255, 255); left: -200px;" />
+            <ui:VisualElement name="background" style="flex-grow: 1; width: 950px; background-image: url(&quot;project://database/Assets/Textures/UI/LevelSelection/SongCoverLeftGradient.png?fileID=2800000&amp;guid=77a57ea2f1631488cb32a49596229e5c&amp;type=3#SongCoverLeftGradient&quot;); -unity-background-image-tint-color: rgb(255, 255, 255); left: -200px;" />
             <ui:TabView name="tab-view" class="left-tab-view" style="top: 60px;" />
             <ui:VisualElement name="title-background" style="flex-grow: 1; height: 60px; position: absolute; width: 500px; background-image: url(&quot;project://database/Assets/Textures/UI/LevelSelection/SongCoverLeftGradient.png?fileID=2800000&amp;guid=77a57ea2f1631488cb32a49596229e5c&amp;type=3#SongCoverLeftGradient&quot;);">
                 <ui:Label text="Label" style="font-size: 64px; -unity-font-definition: resource(&apos;Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF&apos;); top: -30px; left: -20px; -unity-font-style: bold; color: rgba(27, 27, 27, 0.5); opacity: 0.25;">

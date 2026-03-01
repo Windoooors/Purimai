@@ -24,11 +24,14 @@ namespace UI.Settings
         private Button _subButton;
 
         private Label _valueLabel;
+        
+        private readonly string _localizationTableName;
 
-        public SwitchBasedValueManipulator(SettingsItem item)
+        public SwitchBasedValueManipulator(SettingsItem item, string localizationTableName)
         {
             _identifier = item.Identifier;
             _settingsItem = item;
+            _localizationTableName = localizationTableName;
         }
 
         private void Add()
@@ -107,7 +110,7 @@ namespace UI.Settings
                     }
                     else
                     {
-                        _localizedString = new LocalizedString("UI",
+                        _localizedString = new LocalizedString(_localizationTableName,
                             $"settings.{_identifier}.{separatedValueSet.AvailableValues[_currentValue]}");
 
                         _localizedString.StringChanged += value => { _valueLabel.text = value; };

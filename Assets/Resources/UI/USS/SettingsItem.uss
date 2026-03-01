@@ -4,10 +4,12 @@
 .value-panel {
     position: absolute;
     width: auto;
-    top: 8px;
-    left: 210px;
+    top: 5px;
+    left: auto;
     right: 0;
     bottom: auto;
+    max-width: 160px;
+    min-width: 160px;
 }
 
 .unity-collection-view__item {
