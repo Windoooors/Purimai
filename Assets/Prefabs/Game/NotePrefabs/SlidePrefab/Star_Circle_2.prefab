@@ -153,6 +153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be9e6a3d2cf84df59bf410b9b1adc99f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  emergingTime: 0
   stars:
   - {fileID: 4803622213277559352}
   judgeDisplaySpriteRenderer: {fileID: 3118371756179004262}
@@ -178,6 +179,7 @@ MonoBehaviour:
     slideSpriteRenderersOutsideSensorArea: []
     touched: 0
     arrowInBetweenConcealed: 0
+    canBeSkipped: 1
     sensorsNearby: []
   - mainSensor: A2
     slideSpriteRenderers: []
@@ -185,6 +187,7 @@ MonoBehaviour:
     slideSpriteRenderersOutsideSensorArea: []
     touched: 0
     arrowInBetweenConcealed: 0
+    canBeSkipped: 1
     sensorsNearby: []
 --- !u!1 &7863992633820055641
 GameObject:

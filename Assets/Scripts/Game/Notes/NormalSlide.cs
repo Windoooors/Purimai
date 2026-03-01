@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Game.ChartManagement;
-using Game.Notes.SlideBasedNotes;
 
 namespace Game.Notes
 {
@@ -101,13 +99,12 @@ namespace Game.Notes
                     _slideStarted = true;
                 }
 
-                var jumpAllowed = IsJumpedTouchingSequenceAllowed();
-
                 if (isFromHold)
                 {
-                    if (i - 1 >= 0 && (jumpAllowed || segments[i - 1].touched))
+                    if (i - 1 >= 0 && (segments[i - 1].canBeSkipped || segments[i - 1].tapped))
                     {
                         segments[i - 1].touched = true;
+                        segments[i].tapped = true;
 
                         ConcealSegment(i - 1, false);
                         _lastTouchedSegmentIndex = i - 1;
@@ -133,10 +130,8 @@ namespace Game.Notes
                         _lastSegmentTouchedOnLeaveIndex = i;
                     }
 
-                    if (!jumpAllowed && touchingSequenceJumped)
-                        break;
-
-                    if (i != 0 && !segments[i - 1].touched)
+                    if (i != 0 &&
+                        (!segments[i - 1].touched || (!segments[i - 1].canBeSkipped && touchingSequenceJumped)))
                         break;
 
                     segments[i].touched = true;
@@ -151,25 +146,6 @@ namespace Game.Notes
         {
             return segment.mainSensor == sensorId ||
                    segment.sensorsNearby.Contains(sensorId);
-        }
-
-        private bool IsJumpedTouchingSequenceAllowed()
-        {
-            var interval = 0;
-
-            if (slideType is NoteDataObject.SlideDataObject.SlideType.Line)
-                interval = GetShortestInterval(fromLaneIndex + 1, toLaneIndexes[0] + 1);
-            else if (slideType is NoteDataObject.SlideDataObject.SlideType.RotateLeft
-                     or NoteDataObject.SlideDataObject.SlideType.RotateRight
-                     or NoteDataObject.SlideDataObject.SlideType.RotateMinorArc)
-                interval = CycleSlide.GetCycleInterval(fromLaneIndex + 1, toLaneIndexes[0] + 1, slideType);
-            else if (slideType is NoteDataObject.SlideDataObject.SlideType.BigV)
-                interval = 1;
-
-            if (interval is 2 or 1)
-                return false;
-
-            return true;
         }
     }
 

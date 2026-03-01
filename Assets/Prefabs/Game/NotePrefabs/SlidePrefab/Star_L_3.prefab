@@ -159,6 +159,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9b34c1e63d04083b83202aaf7938ef0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  emergingTime: 0
   stars:
   - {fileID: 6891955203768125345}
   judgeDisplaySpriteRenderer: {fileID: 7695333405540159895}
@@ -184,6 +185,7 @@ MonoBehaviour:
     slideSpriteRenderersOutsideSensorArea: []
     touched: 0
     arrowInBetweenConcealed: 0
+    canBeSkipped: 1
     sensorsNearby: []
   - mainSensor: A8
     slideSpriteRenderers: []
@@ -191,6 +193,7 @@ MonoBehaviour:
     slideSpriteRenderersOutsideSensorArea: []
     touched: 0
     arrowInBetweenConcealed: 0
+    canBeSkipped: 0
     sensorsNearby:
     - B8
   - mainSensor: A7
@@ -199,6 +202,7 @@ MonoBehaviour:
     slideSpriteRenderersOutsideSensorArea: []
     touched: 0
     arrowInBetweenConcealed: 0
+    canBeSkipped: 1
     sensorsNearby: []
   - mainSensor: B7
     slideSpriteRenderers: []
@@ -206,6 +210,7 @@ MonoBehaviour:
     slideSpriteRenderersOutsideSensorArea: []
     touched: 0
     arrowInBetweenConcealed: 0
+    canBeSkipped: 1
     sensorsNearby: []
   - mainSensor: C
     slideSpriteRenderers: []
@@ -213,6 +218,7 @@ MonoBehaviour:
     slideSpriteRenderersOutsideSensorArea: []
     touched: 0
     arrowInBetweenConcealed: 0
+    canBeSkipped: 1
     sensorsNearby: []
   - mainSensor: B3
     slideSpriteRenderers: []
@@ -220,6 +226,7 @@ MonoBehaviour:
     slideSpriteRenderersOutsideSensorArea: []
     touched: 0
     arrowInBetweenConcealed: 0
+    canBeSkipped: 1
     sensorsNearby: []
   - mainSensor: A3
     slideSpriteRenderers: []
@@ -227,6 +234,7 @@ MonoBehaviour:
     slideSpriteRenderersOutsideSensorArea: []
     touched: 0
     arrowInBetweenConcealed: 0
+    canBeSkipped: 1
     sensorsNearby: []
 --- !u!1 &7573131034854235601
 GameObject:

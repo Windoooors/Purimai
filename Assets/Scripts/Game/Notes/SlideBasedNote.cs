@@ -155,7 +155,7 @@ namespace Game.Notes
 
             SetActive(false, SlideContentRoot);
 
-            emergingTime = timing - (suddenlyAppears ? 0 : ChartPlayer.Instance.timeGapBeforeSlideStartsAppearing);
+            emergingTime = timing - ChartPlayer.Instance.timeGapBeforeSlideStartsAppearing;
         }
 
         public override void ManualUpdate()
@@ -242,7 +242,7 @@ namespace Game.Notes
             var currentTime = ChartPlayer.Instance.TimeInMilliseconds;
 
             var startAppearingTime =
-                timing - (suddenlyAppears ? 0 : ChartPlayer.Instance.timeGapBeforeSlideStartsAppearing);
+                timing - ChartPlayer.Instance.timeGapBeforeSlideStartsAppearing;
 
             if (currentTime < startAppearingTime - 100 || currentTime >= timing + waitDuration + slideDuration +
                 ChartPlayer.Instance.slideJudgeSettings.lateGoodTiming +
@@ -256,7 +256,7 @@ namespace Game.Notes
             {
                 result.Shown = true;
 
-                var slideFadeInDuration = suddenlyAppears ? 0 : ChartPlayer.Instance.slideFadeInDuration;
+                var slideFadeInDuration = ChartPlayer.Instance.slideFadeInDuration;
 
                 if (currentTime < 200 + startAppearingTime)
                     result.ArrowAlpha = (currentTime - startAppearingTime) / 200 / 2f;
@@ -271,7 +271,7 @@ namespace Game.Notes
             else if (currentTime >= timing && currentTime < timing + waitDuration)
             {
                 result.Shown = true;
-                result.StarAlpha = (currentTime - timing) / waitDuration;
+                result.StarAlpha = suddenlyAppears ? 0 : (currentTime - timing) / waitDuration;
                 result.ArrowAlpha = 1;
                 result.StarPosition = 0;
             }
@@ -697,7 +697,10 @@ namespace Game.Notes
         public SpriteRenderer[] slideSpriteRenderersWithinSensorArea;
         public SpriteRenderer[] slideSpriteRenderersOutsideSensorArea;
 
+        public bool tapped;
         public bool touched;
         public bool arrowInBetweenConcealed;
+
+        public bool canBeSkipped = true;
     }
 }

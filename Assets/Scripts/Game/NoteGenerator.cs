@@ -81,7 +81,8 @@ namespace Game
 
             foreach (var noteDataObject in noteDataObjects)
             {
-                criticalTimeHashSet.Add((int)((noteDataObject.TimingInSeconds - audioOffset) * 1000));
+                if (noteDataObject.HoldDataObjects.Length + noteDataObject.TapDataObjects.Length >= 1)
+                    criticalTimeHashSet.Add((int)((noteDataObject.TimingInSeconds - audioOffset) * 1000));
 
                 foreach (var hold in noteDataObject.HoldDataObjects)
                     criticalTimeHashSet.Add(
