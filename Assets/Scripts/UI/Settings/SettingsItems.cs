@@ -24,7 +24,7 @@ namespace UI.Settings
             new()
             {
                 Identifier = "delay",
-                Items = new List<SettingsItem>()
+                Items = new List<SettingsItem>
                 {
                     new("audio_delay", new SuccessiveIntegerValueSet
                     {
@@ -73,7 +73,7 @@ namespace UI.Settings
             new()
             {
                 Identifier = "sensor_radius",
-                Items = new List<SettingsItem>()
+                Items = new List<SettingsItem>
                 {
                     new("sensor_radius.global", 3, new[]
                     {
@@ -102,7 +102,7 @@ namespace UI.Settings
                         "1.5", "1.6", "1.7", "1.8", "1.9", "2", "2.1", "2.2", "2.3", "2.4", "2.5", "2.6", "2.7", "2.8",
                         "2.9", "3",
                         "3.1", "3.2", "3.3", "3.4", "3.5", "3.6", "3.7", "3.8", "3.9", "4"
-                    }, false),
+                    }, false)
                 }
             },
             new()
@@ -111,7 +111,8 @@ namespace UI.Settings
                 Items = new List<SettingsItem>
                 {
                     new("score_indicator_content", 1,
-                        new[] { "none", "combo", "achievement", "deducted_achievement", "score", "deducted_score" }, true, false),
+                        new[] { "none", "combo", "achievement", "deducted_achievement", "score", "deducted_score" },
+                        true, false),
                     new("score_indicator_type", 1,
                         new[] { "score", "achievement" }, true, false),
                     new("achievement_type", 1, new[] { "DX", "FiNALE" }, false, false)
@@ -128,7 +129,7 @@ namespace UI.Settings
             new()
             {
                 Identifier = "background",
-                Items = new List<SettingsItem>()
+                Items = new List<SettingsItem>
                 {
                     new("blurred_cover", 0, new[] { "none", "more_blurred", "most_blurred" }, true, false),
                     new("background_brightness", 2,

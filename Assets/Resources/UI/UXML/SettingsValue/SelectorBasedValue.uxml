@@ -1,15 +1,23 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/Resources/UI/USS/SettingsValues.uss?fileID=7433441132597879392&amp;guid=0d623f43b1d2b49d8b793f3fb5d32208&amp;type=3#SettingsValues" />
-    <ui:VisualElement name="selector-based-value-panel" class="value-panel" style="flex-grow: 1; width: auto; align-content: auto; justify-content: center;">
-        <ui:VisualElement name="switch" style="flex-grow: 1; justify-content: center; min-height: 50px; max-height: 50px;">
-            <ui:Label text="Label" name="value-label" style="-unity-text-align: middle-center; font-size: 14px; -unity-font-definition: resource(&apos;Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF&apos;); margin-top: 0; min-height: 50px; max-height: 50px; right: 50px; left: 44px; position: absolute; flex-wrap: wrap; -unity-font-style: normal;" />
-            <ui:Button name="sub-button" class="button" style="position: absolute; width: 70px; height: 66px; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; left: -28px;">
-                <ui:VisualElement name="icon" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Textures/UI/Settings/LeftArrow.png?fileID=2800000&amp;guid=51b1d889d8eee4c5391e0fe8802ae25a&amp;type=3#LeftArrow&quot;); height: 26px; width: 26px; position: absolute; top: 16px; left: 22px; background-size: 125% 125%;" />
-                <ui:VisualElement name="cover" style="flex-grow: 1;" />
+<ui:UXML xmlns:ui="UnityEngine.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd"
+         editor-extension-mode="False">
+    <Style src="project://database/Assets/Resources/UI/USS/SettingsValues.uss?fileID=7433441132597879392&amp;guid=0d623f43b1d2b49d8b793f3fb5d32208&amp;type=3#SettingsValues"/>
+    <ui:VisualElement name="selector-based-value-panel" class="value-panel"
+                      style="flex-grow: 1; width: auto; align-content: auto; justify-content: center;">
+        <ui:VisualElement name="switch"
+                          style="flex-grow: 1; justify-content: center; min-height: 50px; max-height: 50px;">
+            <ui:Label text="Label" name="value-label"
+                      style="-unity-text-align: middle-center; font-size: 14px; -unity-font-definition: resource(&apos;Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF&apos;); margin-top: 0; min-height: 50px; max-height: 50px; right: 50px; left: 44px; position: absolute; flex-wrap: wrap; -unity-font-style: normal;"/>
+            <ui:Button name="sub-button" class="button"
+                       style="position: absolute; width: 70px; height: 66px; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; left: -28px;">
+                <ui:VisualElement name="icon"
+                                  style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Textures/UI/Settings/LeftArrow.png?fileID=2800000&amp;guid=51b1d889d8eee4c5391e0fe8802ae25a&amp;type=3#LeftArrow&quot;); height: 26px; width: 26px; position: absolute; top: 16px; left: 22px; background-size: 125% 125%;"/>
+                <ui:VisualElement name="cover" style="flex-grow: 1;"/>
             </ui:Button>
-            <ui:Button name="add-button" class="button" style="position: absolute; width: 70px; height: 66px; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; right: -18px;">
-                <ui:VisualElement name="icon" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Textures/UI/Settings/RightArrow.png?fileID=2800000&amp;guid=2ba2aa15873d24904be369bf3c51efd6&amp;type=3#RightArrow&quot;); height: 26px; width: 26px; position: absolute; top: 16px; left: 22px; background-size: 125% 125%;" />
-                <ui:VisualElement name="cover" style="flex-grow: 1; right: auto;" />
+            <ui:Button name="add-button" class="button"
+                       style="position: absolute; width: 70px; height: 66px; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; right: -18px;">
+                <ui:VisualElement name="icon"
+                                  style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Textures/UI/Settings/RightArrow.png?fileID=2800000&amp;guid=2ba2aa15873d24904be369bf3c51efd6&amp;type=3#RightArrow&quot;); height: 26px; width: 26px; position: absolute; top: 16px; left: 22px; background-size: 125% 125%;"/>
+                <ui:VisualElement name="cover" style="flex-grow: 1; right: auto;"/>
             </ui:Button>
         </ui:VisualElement>
     </ui:VisualElement>

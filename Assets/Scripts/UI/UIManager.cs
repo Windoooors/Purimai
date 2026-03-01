@@ -1,4 +1,3 @@
-using Game;
 using UI.InGame;
 using UI.LevelSelection;
 using UI.Result;
@@ -16,7 +15,7 @@ namespace UI
         private static UIManager _instance;
 
         public FontAsset mainFontAsset;
-        
+
         [FormerlySerializedAs("uIDocument")] public UIDocument uiDocument;
 
         public LevelSelectionManager levelSelectionPrefab;

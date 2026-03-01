@@ -34,9 +34,6 @@ namespace Game
 
         public float endingTime;
 
-        private bool _flipVertically;
-        private bool _flipHorizontally;
-
         public readonly List<TapBasedNote>[] LaneList =
         {
             new(), new(), new(), new(),
@@ -44,6 +41,9 @@ namespace Game
         };
 
         public readonly List<NoteBase> notesList = new();
+        private bool _flipHorizontally;
+
+        private bool _flipVertically;
 
         private GameObject _noteParent;
 
@@ -132,19 +132,14 @@ namespace Game
             foreach (var note in noteDataObjects)
             {
                 foreach (var noteTapDataObject in note.TapDataObjects)
-                {
                     noteTapDataObject.Lane = GetModifiedLane(noteTapDataObject.Lane);
-                }
 
                 foreach (var noteHoldDataObject in note.HoldDataObjects)
-                {
                     noteHoldDataObject.Lane = GetModifiedLane(noteHoldDataObject.Lane);
-                }
 
                 foreach (var noteSlideDataObject in note.SlideDataObjects)
                 {
                     if (_flipHorizontally)
-                    {
                         noteSlideDataObject.Type = noteSlideDataObject.Type switch
                         {
                             NoteDataObject.SlideDataObject.SlideType.RotateLeft => NoteDataObject.SlideDataObject
@@ -161,10 +156,8 @@ namespace Game
                                 .BigP,
                             _ => noteSlideDataObject.Type
                         };
-                    }
-                    
+
                     if (_flipVertically)
-                    {
                         noteSlideDataObject.Type = noteSlideDataObject.Type switch
                         {
                             NoteDataObject.SlideDataObject.SlideType.Z => NoteDataObject.SlideDataObject.SlideType.S,
@@ -177,13 +170,10 @@ namespace Game
                                 .BigP,
                             _ => noteSlideDataObject.Type
                         };
-                    }
 
                     noteSlideDataObject.From = GetModifiedLane(noteSlideDataObject.From);
                     for (var i = 0; i < noteSlideDataObject.To.Length; i++)
-                    {
                         noteSlideDataObject.To[i] = GetModifiedLane(noteSlideDataObject.To[i]);
-                    }
                 }
             }
 
@@ -386,27 +376,6 @@ namespace Game
             }
         }
 
-        [Serializable]
-        public class SlidePrefabDataObject
-        {
-            public CycleSlide[] cycleSlidePrefabs;
-            public PqSlide[] pqSlidePrefabs;
-            public LittleVSlide[] vSlidePrefabs;
-            public LineSlide[] lineSlidePrefabs;
-            public BigVSlide[] bigVSlidePrefabs;
-            public BigPqSlide[] bigPqSlidePrefabs;
-            public ZsSlide zsSlidePrefab;
-            public WifiSlide wifiSlidePrefab;
-        }
-
-        [Serializable]
-        public class SlideJudgeDisplayDataObject
-        {
-            public Sprite[] normalSlideJudgeSprites;
-            public Sprite[] circleSlideJudgeSprites;
-            public Sprite[] wifiSlideJudgeSprites;
-        }
-        
         private int GetVerticallyFlippedLane(int inputLane)
         {
             return inputLane switch
@@ -437,6 +406,27 @@ namespace Game
                 8 => 1,
                 _ => inputLane
             };
+        }
+
+        [Serializable]
+        public class SlidePrefabDataObject
+        {
+            public CycleSlide[] cycleSlidePrefabs;
+            public PqSlide[] pqSlidePrefabs;
+            public LittleVSlide[] vSlidePrefabs;
+            public LineSlide[] lineSlidePrefabs;
+            public BigVSlide[] bigVSlidePrefabs;
+            public BigPqSlide[] bigPqSlidePrefabs;
+            public ZsSlide zsSlidePrefab;
+            public WifiSlide wifiSlidePrefab;
+        }
+
+        [Serializable]
+        public class SlideJudgeDisplayDataObject
+        {
+            public Sprite[] normalSlideJudgeSprites;
+            public Sprite[] circleSlideJudgeSprites;
+            public Sprite[] wifiSlideJudgeSprites;
         }
     }
 }

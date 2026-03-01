@@ -1,6 +1,9 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/Resources/UI/USS/SettingsValues.uss?fileID=7433441132597879392&amp;guid=0d623f43b1d2b49d8b793f3fb5d32208&amp;type=3#SettingsValues" />
-    <ui:VisualElement name="toggle-based-value-panel" class="value-panel" style="flex-grow: 1; width: auto; align-content: auto; justify-content: center;">
-        <ui:Toggle label="Toggle" style="-unity-font-definition: resource(&apos;Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF&apos;); -unity-text-align: upper-center; font-size: 24px; align-items: center; overflow: visible; min-height: 50px; max-height: 50px;" />
+<ui:UXML xmlns:ui="UnityEngine.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd"
+         editor-extension-mode="False">
+    <Style src="project://database/Assets/Resources/UI/USS/SettingsValues.uss?fileID=7433441132597879392&amp;guid=0d623f43b1d2b49d8b793f3fb5d32208&amp;type=3#SettingsValues"/>
+    <ui:VisualElement name="toggle-based-value-panel" class="value-panel"
+                      style="flex-grow: 1; width: auto; align-content: auto; justify-content: center;">
+        <ui:Toggle label="Toggle"
+                   style="-unity-font-definition: resource(&apos;Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF&apos;); -unity-text-align: upper-center; font-size: 24px; align-items: center; overflow: visible; min-height: 50px; max-height: 50px;"/>
     </ui:VisualElement>
 </ui:UXML>

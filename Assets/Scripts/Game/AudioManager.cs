@@ -1,9 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using E7.Native;
 using UnityEngine;
 using UnityEngine.Networking;
-using E7.Native;
+using Object = UnityEngine.Object;
 
 namespace Game
 {
@@ -11,13 +12,13 @@ namespace Game
     {
         private static AudioManager _instance;
 
-        public AudioSourcePool AudioSourcePool;
-        public AudioSourcePool NativeSourcePool;
-        
-        public double DSPDurationInSeconds { private set; get; }
-
         private double _lastDspTime;
         private double _lastRealTime;
+
+        public AudioSourcePool AudioSourcePool;
+        public AudioSourcePool NativeSourcePool;
+
+        public double DSPDurationInSeconds { private set; get; }
 
         public double EstimatedDspTime
         {
@@ -37,10 +38,7 @@ namespace Game
             }
         }
 
-        private void Update()
-        {
-            var dummy = EstimatedDspTime;
-        }
+        public static AudioManager Instance => _instance ?? FindAnyObjectByType<AudioManager>();
 
         private void Awake()
         {
@@ -57,12 +55,15 @@ namespace Game
             DSPDurationInSeconds = bufferSize / (double)sampleRate;
         }
 
+        private void Update()
+        {
+            var dummy = EstimatedDspTime;
+        }
+
         public void OnApplicationQuit()
         {
             NativeAudio.Dispose();
         }
-
-        public static AudioManager Instance => _instance ?? FindAnyObjectByType<AudioManager>();
 
         public IEnumerator LoadAudioClip(string path, Action<AudioClip> onComplete, bool streamed = false,
             bool compressed = false)
@@ -82,7 +83,7 @@ namespace Game
     public interface IAudioSourceHandler
     {
         public int SerialCount { get; }
-        
+
         public bool IsFree { get; }
 
         public void Play();
@@ -123,10 +124,7 @@ namespace Game
 
             var sourceCount = NativeAudio.GetNativeSourceCount();
 
-            for (int i = 0; i < sourceCount; i++)
-            {
-                Pool.Add(new NativeAudioSourceHandler(i));
-            }
+            for (var i = 0; i < sourceCount; i++) Pool.Add(new NativeAudioSourceHandler(i));
         }
 
         public int GetOccupiedCount()
@@ -144,9 +142,7 @@ namespace Game
             bool forced = false)
         {
             if (clipHandler != null)
-            {
                 foreach (var handler in Pool)
-                {
                     if (clipHandler == handler.GetClip())
                     {
                         audioSourceHandler = handler;
@@ -155,8 +151,6 @@ namespace Game
                         audioSourceHandler.Clear();
                         return true;
                     }
-                }
-            }
 
             foreach (var handler in Pool)
                 if (handler.IsFree)
@@ -174,7 +168,7 @@ namespace Game
                 audioSourceHandler = Pool[0];
                 audioSourceHandler.SerialTick();
                 audioSourceHandler.Clear();
-                
+
                 return true;
             }
 
@@ -215,43 +209,45 @@ namespace Game
     {
         public AudioClip clip;
 
-        public override void Dispose()
-        {
-            UnityEngine.Object.Destroy(clip);
-            clip = null;
-        }
-
         public AudioClipHandler(AudioClip clip)
         {
             this.clip = clip;
+        }
+
+        public override void Dispose()
+        {
+            Object.Destroy(clip);
+            clip = null;
         }
     }
 
     public class NativePointerHandler : ClipHandler
     {
         public NativeAudioPointer clipPointer;
-        
+
+        public NativePointerHandler(NativeAudioPointer clipPointer)
+        {
+            this.clipPointer = clipPointer;
+        }
+
         public override void Dispose()
         {
             clipPointer.Unload();
             clipPointer = null;
         }
-        
-        public NativePointerHandler(NativeAudioPointer clipPointer)
-        {
-            this.clipPointer = clipPointer;
-        }
     }
 
     public class NativeAudioSourceHandler : IAudioSourceHandler
     {
-        private NativeSource _nativeSource;
+        private static int _globalSerialCount;
 
         private NativePointerHandler _clipHandler;
+        private NativeSource _nativeSource;
 
-        private int _serialCount;
-        
-        private static int _globalSerialCount;
+        public NativeAudioSourceHandler(int nativeSourceIndex)
+        {
+            _nativeSource = NativeAudio.GetNativeSource(nativeSourceIndex);
+        }
 
         public void SetVolume(float volume)
         {
@@ -261,26 +257,16 @@ namespace Game
         public void SerialTick()
         {
             _globalSerialCount++;
-            _serialCount = _globalSerialCount;
+            SerialCount = _globalSerialCount;
         }
 
-        public int SerialCount => _serialCount;
-
-        public NativeAudioSourceHandler(int nativeSourceIndex)
-        {
-            _nativeSource = NativeAudio.GetNativeSource(nativeSourceIndex);
-        }
+        public int SerialCount { get; private set; }
 
         public bool IsFree => _nativeSource.GetPlaybackTime() == 0;
 
         public void Stop()
         {
             _nativeSource.Stop();
-        }
-
-        public void SetClip(ClipHandler clipHandler)
-        {
-            _clipHandler = (NativePointerHandler)clipHandler;
         }
 
         public ClipHandler GetClip()
@@ -303,15 +289,28 @@ namespace Game
             _nativeSource.Stop();
             _clipHandler = null;
         }
+
+        public void SetClip(ClipHandler clipHandler)
+        {
+            _clipHandler = (NativePointerHandler)clipHandler;
+        }
     }
 
     public class AudioSourceHandler : IAudioSourceHandler
     {
+        private static int _globalSerialCount;
         private readonly AudioSource _audioSource;
 
         private bool _paused;
 
+        private ClipHandler clipHandler;
+
         public double ScheduledStartTime = -1;
+
+        public AudioSourceHandler(AudioSource audioSource)
+        {
+            _audioSource = audioSource;
+        }
 
         public void Clear()
         {
@@ -320,22 +319,13 @@ namespace Game
             Stop();
         }
 
-        public AudioSourceHandler(AudioSource audioSource)
-        {
-            _audioSource = audioSource;
-        }
-
-        private int _serialCount;
-        
-        private static int _globalSerialCount;
-
         public void SerialTick()
         {
             _globalSerialCount++;
-            _serialCount = _globalSerialCount;
+            SerialCount = _globalSerialCount;
         }
 
-        public int SerialCount => _serialCount;
+        public int SerialCount { get; private set; }
 
         public bool IsFree
         {
@@ -355,6 +345,34 @@ namespace Game
             }
         }
 
+        public void Pause()
+        {
+            _audioSource.Pause();
+            _paused = true;
+        }
+
+        public void SetVolume(float volume)
+        {
+            _audioSource.volume = volume;
+        }
+
+        public ClipHandler GetClip()
+        {
+            return clipHandler;
+        }
+
+        public void Play()
+        {
+            _audioSource.Play();
+            _paused = false;
+        }
+
+        public void Stop()
+        {
+            _audioSource.Stop();
+            _paused = false;
+        }
+
         public void SetPosition(float position)
         {
             _audioSource.time = position;
@@ -370,50 +388,20 @@ namespace Game
             return _audioSource.clip;
         }
 
-        public void Pause()
-        {
-            _audioSource.Pause();
-            _paused = true;
-        }
-
         public void Resume()
         {
             _audioSource.UnPause();
             _paused = false;
         }
 
-        public void SetVolume(float volume)
-        {
-            _audioSource.volume = volume;
-        }
-
-        private ClipHandler clipHandler;
-
         public void SetClip(ClipHandler clip)
         {
             _audioSource.clip = ((AudioClipHandler)clip).clip;
         }
 
-        public ClipHandler GetClip()
-        {
-            return clipHandler;
-        }
-
         public bool IsPlaying()
         {
             return _audioSource.isPlaying;
-        }
-
-        public void Play()
-        {
-            _audioSource.Play();
-            _paused = false;
-        }
-
-        public void Stop()
-        {
-            _audioSource.Stop();
-            _paused = false;
         }
 
         public void PlayScheduled(double time)

@@ -9,8 +9,6 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using UI.Settings;
-using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace UI
 {
@@ -265,25 +263,25 @@ namespace UI
             chartString = null;
             if (string.IsNullOrEmpty(maidataString)) return false;
 
-            string startTag = $"&inote_{i}=";
-            int startIndex = maidataString.IndexOf(startTag, StringComparison.InvariantCulture);
+            var startTag = $"&inote_{i}=";
+            var startIndex = maidataString.IndexOf(startTag, StringComparison.InvariantCulture);
             if (startIndex == -1) return false;
 
-            int contentStart = startIndex + startTag.Length;
+            var contentStart = startIndex + startTag.Length;
 
-            int nextTagPos = maidataString.Length;
-            int searchPos = contentStart;
+            var nextTagPos = maidataString.Length;
+            var searchPos = contentStart;
             while (true)
             {
-                int tagPos = maidataString.IndexOf("&inote_", searchPos, StringComparison.InvariantCulture);
+                var tagPos = maidataString.IndexOf("&inote_", searchPos, StringComparison.InvariantCulture);
                 if (tagPos == -1) break;
 
-                int numStart = tagPos + 7; // "&inote_".Length
-                int eqPos = maidataString.IndexOf('=', numStart);
+                var numStart = tagPos + 7; // "&inote_".Length
+                var eqPos = maidataString.IndexOf('=', numStart);
                 if (eqPos != -1)
                 {
-                    string numStr = maidataString.Substring(numStart, eqPos - numStart);
-                    if (int.TryParse(numStr, out int k) && k > i)
+                    var numStr = maidataString.Substring(numStart, eqPos - numStart);
+                    if (int.TryParse(numStr, out var k) && k > i)
                     {
                         nextTagPos = tagPos;
                         break;
@@ -292,12 +290,12 @@ namespace UI
 
                 searchPos = tagPos + 7;
             }
-            
-            int finalEndIndex = nextTagPos;
-            int eSearchPos = contentStart;
+
+            var finalEndIndex = nextTagPos;
+            var eSearchPos = contentStart;
             while (true)
             {
-                int ePos = maidataString.IndexOf('E', eSearchPos);
+                var ePos = maidataString.IndexOf('E', eSearchPos);
 
                 if (ePos == -1 || ePos >= nextTagPos) break;
 
@@ -309,21 +307,20 @@ namespace UI
 
                 eSearchPos = ePos + 1;
             }
-            
+
             chartString = maidataString.Substring(contentStart, finalEndIndex - contentStart);
             return true;
 
             static bool IsOnlyWhitespace(string s, int start, int end)
             {
-                for (int idx = start; idx < end; idx++)
-                {
-                    if (!char.IsWhiteSpace(s[idx])) return false;
-                }
+                for (var idx = start; idx < end; idx++)
+                    if (!char.IsWhiteSpace(s[idx]))
+                        return false;
 
                 return true;
             }
         }
-        
+
         public void LoadSongCover()
         {
             if (_loadingCover)

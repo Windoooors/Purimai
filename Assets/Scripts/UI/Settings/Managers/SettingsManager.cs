@@ -68,7 +68,8 @@ namespace UI.Settings.Managers
             {
                 var tab = new Tab();
 
-                var titleLocalizedString = new LocalizedString(LocalizationTableName, $"settings.{category.Identifier}");
+                var titleLocalizedString =
+                    new LocalizedString(LocalizationTableName, $"settings.{category.Identifier}");
 
                 titleLocalizedString.StringChanged += value => { tab.label = value; };
 
@@ -96,7 +97,7 @@ namespace UI.Settings.Managers
             }
 
             _settingsTree.style.display = DisplayStyle.None;
-            
+
             StartCoroutine(Show());
         }
 

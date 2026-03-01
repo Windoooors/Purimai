@@ -51,8 +51,6 @@ namespace Game
 
         public bool isPlaying;
 
-        public AudioClipHandler songClip;
-
         public int levelDifficultyIndex;
 
         private readonly float _generalPlaybackDelayInSeconds = 3f;
@@ -92,6 +90,8 @@ namespace Game
         private RenderTexture _videoTexture;
 
         public Maidata Maidata;
+
+        public AudioClipHandler songClip;
 
         public float TimeInMilliseconds => _time * 1000f;
 
@@ -372,7 +372,7 @@ namespace Game
             AudioManager.Instance.AudioSourcePool.TryGetAudioSourceHandler(out var songPlaybackAudioSourceHandler);
 
             _songPlaybackAudioSourceHandler = (AudioSourceHandler)songPlaybackAudioSourceHandler;
-            
+
             _songPlaybackAudioSourceHandler.SetClip(songClip);
 
             _dspTimeWhenSongStartsPlaying = AudioManager.Instance.EstimatedDspTime +
@@ -405,7 +405,7 @@ namespace Game
                     AudioManager.Instance.AudioSourcePool.TryGetAudioSourceHandler(out var audioHandler);
 
                     handler = (AudioSourceHandler)audioHandler;
-                    
+
                     SetUpChannelDelay(handler);
                     handler?.SetVolume(_criticalSoundVolume);
                 }
@@ -415,10 +415,11 @@ namespace Game
 
             if (AudioManager.Instance.AudioSourcePool.GetOccupiedCount() < _maxScheduledCriticalSoundCount)
             {
-                var channelAvailable = AudioManager.Instance.AudioSourcePool.TryGetAudioSourceHandler(out var audioHandler);
+                var channelAvailable =
+                    AudioManager.Instance.AudioSourcePool.TryGetAudioSourceHandler(out var audioHandler);
 
                 handler = (AudioSourceHandler)audioHandler;
-                
+
                 if (!channelAvailable)
                     return;
 

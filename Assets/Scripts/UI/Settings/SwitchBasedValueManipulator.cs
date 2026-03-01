@@ -8,6 +8,8 @@ namespace UI.Settings
         private const int HoldingTimeThreshold = 500;
         private readonly string _identifier;
 
+        private readonly string _localizationTableName;
+
         private readonly SettingsItem _settingsItem;
         private Button _addButton;
 
@@ -24,8 +26,6 @@ namespace UI.Settings
         private Button _subButton;
 
         private Label _valueLabel;
-        
-        private readonly string _localizationTableName;
 
         public SwitchBasedValueManipulator(SettingsItem item, string localizationTableName)
         {

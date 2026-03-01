@@ -100,13 +100,9 @@ namespace Game.Notes
             {
                 case JudgeState.CriticalPerfect:
                     if (isBreak)
-                    {
                         SfxManager.Instance.PlayBreakCriticalPerfectSound();
-                    }
                     else
-                    {
                         SfxManager.Instance.PlayPerfectSound();
-                    }
 
                     break;
                 case JudgeState.Perfect:

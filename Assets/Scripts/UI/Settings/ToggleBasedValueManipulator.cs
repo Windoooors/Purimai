@@ -7,6 +7,8 @@ namespace UI.Settings
     {
         private readonly string _identifier;
 
+        private readonly string _localizationTableName;
+
         private readonly SettingsItem _settingsItem;
         private int _currentValue;
 
@@ -14,8 +16,6 @@ namespace UI.Settings
         private Toggle _toggle;
 
         private Label _valueLabel;
-
-        private readonly string _localizationTableName;
 
         public ToggleBasedValueManipulator(SettingsItem item, string localizationTableName)
         {

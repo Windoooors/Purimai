@@ -1,38 +1,37 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-#if (UNITY_IOS || UNITY_ANDROID) && !UNITY_EDITOR
-using E7.Native;
-#endif
 using UI.Settings;
 using UI.Settings.Managers;
 using UnityEngine;
+#if (UNITY_IOS || UNITY_ANDROID) && !UNITY_EDITOR
+using E7.Native;
+#endif
 
 namespace Game
 {
     public class SfxManager : MonoBehaviour
     {
+        private static SfxManager _instance;
         public UiSoundNameData uiSoundNameData;
         public GameSoundNameData gameSoundNameData;
-        
-        private readonly Dictionary<string, ClipHandler> _clipHandlers = new Dictionary<string, ClipHandler>();
-        private readonly Dictionary<string, float> _volumes = new Dictionary<string, float>();
-        
+
+        private readonly Dictionary<string, ClipHandler> _clipHandlers = new();
+        private readonly Dictionary<string, float> _volumes = new();
+
         public ClipHandler CriticalSoundClip => _clipHandlers[gameSoundNameData.criticalSoundPath];
         public ClipHandler PreparatorySoundClip => _clipHandlers[gameSoundNameData.preparatoryBeatSoundPath];
-        
-        private static SfxManager _instance;
 
         public static SfxManager Instance => _instance ?? FindAnyObjectByType<SfxManager>();
 
         private void Awake()
         {
             _instance = this;
-            
+
             LoadAllSoundData();
-            
+
             UpdateVolume();
-            
+
             SettingsManager.OnSettingsChanged += UpdateVolume;
         }
 
@@ -58,6 +57,7 @@ namespace Game
             UpdatePair("slide", SettingsPool.GetValue("volume.slide") / 10f);
 
             return;
+
             void UpdatePair(string key, float value)
             {
                 if (!_volumes.TryAdd(key, value))
@@ -78,13 +78,13 @@ namespace Game
             sound = _clipHandlers[gameSoundNameData.breakExtraSoundPath];
             PlaySound(sound, _volumes["break"]);
         }
-        
+
         public void PlayBreakPerfectSound()
         {
             var sound = _clipHandlers[gameSoundNameData.breakPerfectSoundPath];
             PlaySound(sound, _volumes["break"]);
         }
-        
+
         public void PlayBreakGreatSound()
         {
             var sound = _clipHandlers[gameSoundNameData.breakGreatSoundPath];
@@ -96,13 +96,13 @@ namespace Game
             var sound = _clipHandlers[gameSoundNameData.perfectSoundPath];
             PlaySound(sound, _volumes["tap"]);
         }
-        
+
         public void PlayGreatSound()
         {
             var sound = _clipHandlers[gameSoundNameData.greatSoundPath];
             PlaySound(sound, _volumes["tap"]);
         }
-        
+
         public void PlayGoodSound()
         {
             var sound = _clipHandlers[gameSoundNameData.goodSoundPath];
@@ -115,11 +115,13 @@ namespace Game
             {
                 case AudioClipHandler audioClipHandler:
                 {
-                    var succeed = AudioManager.Instance.AudioSourcePool.TryGetAudioSourceHandler(out var handler, audioClipHandler, true);
+                    var succeed =
+                        AudioManager.Instance.AudioSourcePool.TryGetAudioSourceHandler(out var handler,
+                            audioClipHandler, true);
 
                     if (!succeed)
                         return;
-                    
+
                     var audioSourceHandler = (AudioSourceHandler)handler;
                     audioSourceHandler.SetClip(audioClipHandler);
                     audioSourceHandler.SetVolume(volume);
@@ -129,10 +131,11 @@ namespace Game
 
                 case NativePointerHandler pointerHandler:
                 {
-                    AudioManager.Instance.NativeSourcePool.TryGetAudioSourceHandler(out var handler, pointerHandler, true);
+                    AudioManager.Instance.NativeSourcePool.TryGetAudioSourceHandler(out var handler, pointerHandler,
+                        true);
 
                     var nativeHandler = (NativeAudioSourceHandler)handler;
-                    
+
                     nativeHandler.SetClip(pointerHandler);
                     nativeHandler.Play();
                     nativeHandler.SetVolume(volume);
@@ -141,7 +144,7 @@ namespace Game
             }
         }
 
-        private void LoadSingleSoundData(string path,string soundName, bool useNative = false)
+        private void LoadSingleSoundData(string path, string soundName, bool useNative = false)
         {
             ClipHandler clipHandler;
 

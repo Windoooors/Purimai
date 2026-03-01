@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.Localization;
-using UnityEngine.Serialization;
 using UnityEngine.UIElements;
 
 namespace UI.Settings
@@ -12,14 +11,14 @@ namespace UI.Settings
         public VisualTreeAsset toggleBasedValueControllerTreeAsset;
         public VisualTreeAsset itemTreeAsset;
 
-        protected string LocalizationTableName;
-
         public float itemHeight = 65;
+
+        protected string LocalizationTableName;
 
         protected void SetUpList(ListView listView, SettingsItem[] items)
         {
             listView.fixedItemHeight = itemHeight;
-            
+
             listView.makeItem += () => itemTreeAsset.Instantiate();
 
             listView.pickingMode = PickingMode.Ignore;
@@ -40,7 +39,8 @@ namespace UI.Settings
 
                 var elementRoot = element.Q<VisualElement>("settings-item");
 
-                var itemTitleLocalizedString = new LocalizedString(LocalizationTableName, $"settings.{itemData.Identifier}");
+                var itemTitleLocalizedString =
+                    new LocalizedString(LocalizationTableName, $"settings.{itemData.Identifier}");
 
                 itemTitleLocalizedString.StringChanged += value =>
                 {
@@ -48,14 +48,15 @@ namespace UI.Settings
                     elementRoot.Q<Label>("item-name-watermark").text =
                         $"<color=white><gradient=\"level-item-watermark\">{value}</gradient></color>";
                 };
-                
-                var itemDescriptionLocalizedString = new LocalizedString( $"{ LocalizationTableName }.Descriptions", $"settings.{itemData.Identifier}");
+
+                var itemDescriptionLocalizedString = new LocalizedString($"{LocalizationTableName}.Descriptions",
+                    $"settings.{itemData.Identifier}");
 
                 itemDescriptionLocalizedString.StringChanged += value =>
                 {
                     elementRoot.Q<Label>("item-description").text = value;
                 };
-                
+
                 itemTitleLocalizedString.RefreshString();
 
                 userData.LocalizedString = itemTitleLocalizedString;
@@ -81,6 +82,7 @@ namespace UI.Settings
                                 new SwitchBasedValueManipulator(itemData, LocalizationTableName);
                             valuePanel.Q("selector-based-value-panel").AddManipulator(userData.ValueManipulator);
                         }
+
                         break;
                     case SuccessiveIntegerValueSet:
                         valuePanel = numberBasedValueControllerTreeAsset.Instantiate();
