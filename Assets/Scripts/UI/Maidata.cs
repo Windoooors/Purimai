@@ -147,7 +147,7 @@ namespace UI
             }
         }
 
-        public static int[] GetAllInoteIndexes(string maidataString)
+        private static int[] GetAllInoteIndexes(string maidataString)
         {
             if (string.IsNullOrEmpty(maidataString)) return new int[0];
 
@@ -157,7 +157,7 @@ namespace UI
 
             while (true)
             {
-                var foundPos = maidataString.IndexOf(tagStart, searchPos);
+                var foundPos = maidataString.IndexOf(tagStart, searchPos, StringComparison.InvariantCulture);
                 if (foundPos == -1) break;
 
                 var numStart = foundPos + tagStart.Length;
@@ -269,23 +269,9 @@ namespace UI
 
             var contentStart = startIndex + startTag.Length;
 
-            var nextTagPos = maidataString.Length;
-            var searchPos = contentStart;
-            while (true)
-            {
-                var tagPos = maidataString.IndexOf("&inote_", searchPos, StringComparison.InvariantCulture);
-                if (tagPos == -1) break;
+            var nextTagPos = maidataString.IndexOf("&", contentStart, StringComparison.InvariantCulture);
 
-                var numStart = tagPos + "&inote_".Length;
-                var eqPos = maidataString.IndexOf('=', numStart);
-                if (eqPos != -1)
-                {
-                    nextTagPos = tagPos;
-                    break;
-                }
-
-                searchPos = tagPos + 7;
-            }
+            if (nextTagPos == -1) nextTagPos = maidataString.Length;
 
             var finalEndIndex = nextTagPos;
             var eSearchPos = contentStart;
