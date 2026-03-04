@@ -68,6 +68,8 @@ namespace Game
 
         private float _criticalSoundVolume;
 
+        private Coroutine _delayedVideoPlaybackRoutine;
+
         private double _dspTimeWhenPausing;
 
         private double _dspTimeWhenSongStartsPlaying;
@@ -103,7 +105,6 @@ namespace Game
 
             _needCalibrationThreshold = PlayerPrefs.GetFloat("CalibrationThreshold", 1f);
 
-            ScreenOrientationManager.Instance.ScreenChanged = null;
             ScreenOrientationManager.Instance.ScreenChanged += UpdateCameraSize;
 
             judgeDelay = SettingsPool.GetValue("input_delay");
@@ -151,6 +152,11 @@ namespace Game
                 if (_time + 0.1f >= noteBase.emergingTime / 1000f && noteBase.enabled)
                     noteBase.ManualUpdate();
             });
+        }
+
+        private void OnDestroy()
+        {
+            ScreenOrientationManager.Instance.ScreenChanged -= UpdateCameraSize;
         }
 
         private void CalibrateTime()
@@ -219,6 +225,12 @@ namespace Game
 
             SimulatedSensor.Enabled = false;
 
+            if (_time < 0 && _delayedVideoPlaybackRoutine != null)
+            {
+                StopCoroutine(_delayedVideoPlaybackRoutine);
+                _delayedVideoPlaybackRoutine = null;
+            }
+
             _videoPlayer?.Pause();
 
             _paused = true;
@@ -245,6 +257,8 @@ namespace Game
                 {
                     scheduledTime = AudioManager.Instance.EstimatedDspTime - _time + 0.5;
                     _dspTimeWhenSongStartsPlaying = scheduledTime;
+
+                    _delayedVideoPlaybackRoutine = StartCoroutine(VideoPlaybackRoutine(0.5f - _time));
                 }
 
                 _songPlaybackAudioSourceHandler.Stop();
@@ -337,23 +351,21 @@ namespace Game
 
         private void Play()
         {
-            StartCoroutine(VideoPlaybackRoutine());
+            _delayedVideoPlaybackRoutine = StartCoroutine(VideoPlaybackRoutine(_generalPlaybackDelayInSeconds));
 
             isPlaying = true;
 
             PlayAudio();
+        }
 
-            return;
+        private IEnumerator VideoPlaybackRoutine(float delay)
+        {
+            yield return new WaitForSeconds(delay);
 
-            IEnumerator VideoPlaybackRoutine()
+            if (_chartHasVideo)
             {
-                yield return new WaitForSeconds(_generalPlaybackDelayInSeconds);
-
-                if (_chartHasVideo)
-                {
-                    _videoPlayer.Play();
-                    backgroundImage.color = Color.white;
-                }
+                _videoPlayer.Play();
+                backgroundImage.color = Color.white;
             }
         }
 

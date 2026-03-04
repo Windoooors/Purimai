@@ -20,7 +20,8 @@
                              style="width: 600px; top: -500px; bottom: -500px; right: auto; position: absolute; left: 0;"/>
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement name="safe-area" picking-mode="Ignore" class="safe-area" style="flex-grow: 1;">
+        <ui:VisualElement name="safe-area" picking-mode="Ignore" class="safe-area"
+                          style="flex-grow: 1; top: 0; bottom: 0; right: 0; left: 0;">
             <UI.ScoreContentPanel enabled="true" usage-hints="None" tabindex="0" focusable="false"
                                   language-direction="Inherit" name="score-content-panel" class="score-content-panel"/>
             <ui:Button name="play-button" class="play-button button">
@@ -28,10 +29,15 @@
                         style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Textures/UI/Shared/PlayIcon.png?fileID=2800000&amp;guid=2a3b021954248420ca431c76ea955b9e&amp;type=3#PlayIcon&quot;); position: absolute; width: 33px; height: 34px; top: 31px; left: 91px;"/>
             </ui:Button>
             <ui:VisualElement name="control-panel" class="control-panel">
-                <ui:Button name="sort-button" class="button"
+                <ui:Button name="sort-button" class="button sort-button"
                            style="position: absolute; height: 69px; width: 69px; top: 7px; left: 81px;">
                     <ui:VisualElement name="icon" class="icon"
                                       style="flex-grow: 1; position: absolute; width: 32px; height: 32px; top: 50%; left: 50%; margin-top: -20px; margin-right: 0; margin-left: -16px;"/>
+                </ui:Button>
+                <ui:Button name="refresh-button" class="button refresh-button"
+                           style="position: absolute; height: 69px; width: 69px; top: 7px; left: 150px;">
+                    <ui:VisualElement name="icon" class="icon"
+                                      style="flex-grow: 1; position: absolute; width: 32px; height: 32px; top: 50%; left: 50%; margin-top: -20px; margin-right: 0; margin-left: -16px; background-image: url(&quot;project://database/Assets/Textures/UI/LevelSelection/Refresh.png?fileID=2800000&amp;guid=f27a304cf41a54d97959fd9e2143a221&amp;type=3#Refresh&quot;);"/>
                 </ui:Button>
                 <ui:VisualElement name="category-panel" class="category-panel" style="bottom: auto;">
                     <ui:ListView name="category-list" selection-type="None"

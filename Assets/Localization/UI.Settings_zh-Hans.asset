@@ -262,6 +262,14 @@ MonoBehaviour:
     m_Localized: "\u8FBE\u6210\u7387\u7C7B\u578B"
     m_Metadata:
       m_Items: []
+  - m_Id: 41202766620647424
+    m_Localized: Native Audio
+    m_Metadata:
+      m_Items: []
+  - m_Id: 41202893221519360
+    m_Localized: "\u9AD8\u7EA7"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

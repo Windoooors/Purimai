@@ -276,16 +276,12 @@ namespace UI
                 var tagPos = maidataString.IndexOf("&inote_", searchPos, StringComparison.InvariantCulture);
                 if (tagPos == -1) break;
 
-                var numStart = tagPos + 7; // "&inote_".Length
+                var numStart = tagPos + "&inote_".Length;
                 var eqPos = maidataString.IndexOf('=', numStart);
                 if (eqPos != -1)
                 {
-                    var numStr = maidataString.Substring(numStart, eqPos - numStart);
-                    if (int.TryParse(numStr, out var k) && k > i)
-                    {
-                        nextTagPos = tagPos;
-                        break;
-                    }
+                    nextTagPos = tagPos;
+                    break;
                 }
 
                 searchPos = tagPos + 7;

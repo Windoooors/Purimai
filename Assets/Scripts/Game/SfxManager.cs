@@ -19,6 +19,8 @@ namespace Game
         private readonly Dictionary<string, ClipHandler> _clipHandlers = new();
         private readonly Dictionary<string, float> _volumes = new();
 
+        private int _lastUseNative = -1;
+
         public ClipHandler CriticalSoundClip => _clipHandlers[gameSoundNameData.criticalSoundPath];
         public ClipHandler PreparatorySoundClip => _clipHandlers[gameSoundNameData.preparatoryBeatSoundPath];
 
@@ -28,33 +30,49 @@ namespace Game
         {
             _instance = this;
 
-            LoadAllSoundData();
+            AdaptToSettings();
 
-            UpdateVolume();
-
-            SettingsManager.OnSettingsChanged += UpdateVolume;
+            SettingsManager.OnSettingsChanged += AdaptToSettings;
         }
 
         private void LoadAllSoundData()
         {
+            var settingsValue = SettingsPool.GetValue("native_audio");
+
+            if (_lastUseNative == settingsValue) return;
+
             var gameSoundPathData = gameSoundNameData.GetStreamingAssetsPrefixedPathData();
 
-            LoadSingleSoundData(gameSoundPathData.perfectSoundPath, gameSoundNameData.perfectSoundPath, true);
-            LoadSingleSoundData(gameSoundPathData.greatSoundPath, gameSoundNameData.greatSoundPath, true);
-            LoadSingleSoundData(gameSoundPathData.goodSoundPath, gameSoundNameData.goodSoundPath, true);
-            LoadSingleSoundData(gameSoundPathData.breakExtraSoundPath, gameSoundNameData.breakExtraSoundPath, true);
-            LoadSingleSoundData(gameSoundPathData.breakPerfectSoundPath, gameSoundNameData.breakPerfectSoundPath, true);
-            LoadSingleSoundData(gameSoundPathData.breakGreatSoundPath, gameSoundNameData.breakGreatSoundPath, true);
-            LoadSingleSoundData(gameSoundPathData.slideSoundPath, gameSoundNameData.slideSoundPath, true);
+            var useNative = settingsValue == 1;
+
+            foreach (var handler in _clipHandlers.Values)
+                handler.Dispose();
+
+            _clipHandlers.Clear();
+
+            LoadSingleSoundData(gameSoundPathData.perfectSoundPath, gameSoundNameData.perfectSoundPath, useNative);
+            LoadSingleSoundData(gameSoundPathData.greatSoundPath, gameSoundNameData.greatSoundPath, useNative);
+            LoadSingleSoundData(gameSoundPathData.goodSoundPath, gameSoundNameData.goodSoundPath, useNative);
+            LoadSingleSoundData(gameSoundPathData.breakExtraSoundPath, gameSoundNameData.breakExtraSoundPath,
+                useNative);
+            LoadSingleSoundData(gameSoundPathData.breakPerfectSoundPath, gameSoundNameData.breakPerfectSoundPath,
+                useNative);
+            LoadSingleSoundData(gameSoundPathData.breakGreatSoundPath, gameSoundNameData.breakGreatSoundPath,
+                useNative);
+            LoadSingleSoundData(gameSoundPathData.slideSoundPath, gameSoundNameData.slideSoundPath, useNative);
             LoadSingleSoundData(gameSoundPathData.criticalSoundPath, gameSoundNameData.criticalSoundPath);
             LoadSingleSoundData(gameSoundPathData.preparatoryBeatSoundPath, gameSoundNameData.preparatoryBeatSoundPath);
+
+            _lastUseNative = settingsValue;
         }
 
-        private void UpdateVolume()
+        private void AdaptToSettings()
         {
             UpdatePair("tap", SettingsPool.GetValue("volume.tap") / 10f);
             UpdatePair("break", SettingsPool.GetValue("volume.break") / 10f);
             UpdatePair("slide", SettingsPool.GetValue("volume.slide") / 10f);
+
+            LoadAllSoundData();
 
             return;
 

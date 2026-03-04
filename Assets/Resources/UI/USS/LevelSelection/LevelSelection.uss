@@ -1,3 +1,11 @@
+.confirm-entry .refresh-button {
+    opacity: 0;
+}
+
+.confirm-entry .sort-button {
+    opacity: 0;
+}
+
 .unity-scroll-view__vertical-scroller {
     width: 0;
     visibility: hidden;
@@ -101,14 +109,8 @@
     height: 0;
 }
 
-.confirm-entry .sort-button-alphabetically {
-    opacity: 0;
-    display: none;
-}
-
-.confirm-entry .sort-button-difficulty {
-    opacity: 0;
-    display: none;
+.sort-button {
+    opacity: 1;
 }
 
 .unity-disabled {
@@ -118,7 +120,7 @@
 .mods-button {
     position: absolute;
     top: 7px;
-    left: 218px;
+    left: 289px;
     width: 69px;
     height: 69px;
 }
@@ -126,7 +128,7 @@
 .settings-button {
     position: absolute;
     top: 7px;
-    left: 150px;
+    left: 219px;
     width: 69px;
     height: 69px;
 }
@@ -217,4 +219,8 @@
 
 .confirm-entry .mods-button {
     left: 73px;
+}
+
+.refresh-button {
+    opacity: 1;
 }

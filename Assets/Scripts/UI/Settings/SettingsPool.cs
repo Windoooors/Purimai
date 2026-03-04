@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
@@ -18,66 +17,45 @@ namespace UI.Settings
                     : new List<StorageItem>()
                 : new List<StorageItem>();
 
-        private static readonly List<(int original, int current, string id)> ChangeHistoryList = new();
-
         public static int GetValue(string identifier)
         {
             var value = 0;
 
             foreach (var category in SettingsItems.Settings)
             foreach (var settingsItem in category.Items)
-                if (settingsItem.Identifier == identifier)
-                    if (settingsItem.ValueSet is SuccessiveIntegerValueSet successiveValueSet)
-                        value = successiveValueSet.DefaultValue;
-                    else if (settingsItem.ValueSet is SeparatedValueSet separatedValueSet)
-                        value = separatedValueSet.DefaultValueIndex;
+                if (identifier == settingsItem.Identifier)
+                    value = settingsItem.ValueSet switch
+                    {
+                        SuccessiveIntegerValueSet successiveValueSet
+                            => successiveValueSet.DefaultValue,
+
+                        SeparatedValueSet separatedValueSet => separatedValueSet.DefaultValueIndex,
+                        BoolValueSet boolValueSet => boolValueSet.DefaultValue ? 1 : 0,
+                        _ => 0
+                    };
 
             foreach (var storageItem in StorageItems)
                 if (storageItem.Identifier == identifier)
-                    if (storageItem.IsSeparatedValue)
-                        value = storageItem.Value;
-                    else
-                        value = storageItem.Value;
+                    value = storageItem.Value;
 
             return value;
         }
 
         public static void SetValue(string identifier, int value)
         {
-            (int original, int current, string id) pair;
-
-            if (!ChangeHistoryList.Exists(x => x.id == identifier))
-            {
-                pair = new ValueTuple<int, int, string>(GetValue(identifier), value, identifier);
-                ChangeHistoryList.Add(pair);
-            }
-            else
-            {
-                pair = ChangeHistoryList.Find(x => x.id == identifier);
-                pair.current = value;
-            }
-
-            ValueSet valueSet = null;
-
-            foreach (var settings in SettingsItems.Settings)
-            foreach (var item in settings.Items)
-            {
-                if (item.Identifier != identifier)
-                    continue;
-
-                valueSet = item.ValueSet;
-            }
-
             var found = false;
-            foreach (var storageItem in StorageItems)
-                if (storageItem.Identifier == identifier)
-                {
-                    storageItem.Value = value;
-                    found = true;
-                }
+
+            StorageItems.ForEach(storageItem =>
+            {
+                if (storageItem.Identifier != identifier)
+                    return;
+
+                storageItem.Value = value;
+                found = true;
+            });
 
             if (!found)
-                StorageItems.Add(new StorageItem(identifier, value, valueSet is SeparatedValueSet));
+                StorageItems.Add(new StorageItem(identifier, value));
         }
 
         public static void Save()
@@ -87,17 +65,14 @@ namespace UI.Settings
 
         private class StorageItem
         {
-            public readonly string Identifier;
+            [JsonProperty] public readonly string Identifier;
 
-            [NonSerialized] public readonly bool IsSeparatedValue;
+            [JsonProperty] public int Value;
 
-            public int Value;
-
-            public StorageItem(string identifier, int value, bool isSeparatedValue)
+            public StorageItem(string identifier, int value)
             {
                 Identifier = identifier;
                 Value = value;
-                IsSeparatedValue = isSeparatedValue;
             }
         }
     }

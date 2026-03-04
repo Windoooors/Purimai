@@ -103,6 +103,10 @@ MonoBehaviour:
     m_Key: settings.volume.tap
     m_Metadata:
       m_Items: []
+  - m_Id: 1243545615720448
+    m_Key: settings.native_audio
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

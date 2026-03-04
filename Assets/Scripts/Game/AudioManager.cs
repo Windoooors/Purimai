@@ -149,6 +149,7 @@ namespace Game
 
                         audioSourceHandler.SerialTick();
                         audioSourceHandler.Clear();
+
                         return true;
                     }
 
@@ -301,9 +302,9 @@ namespace Game
         private static int _globalSerialCount;
         private readonly AudioSource _audioSource;
 
-        private bool _paused;
+        private ClipHandler _clipHandler;
 
-        private ClipHandler clipHandler;
+        private bool _paused;
 
         public double ScheduledStartTime = -1;
 
@@ -315,7 +316,7 @@ namespace Game
         public void Clear()
         {
             ScheduledStartTime = -1;
-            clipHandler = null;
+            _clipHandler = null;
             Stop();
         }
 
@@ -358,7 +359,7 @@ namespace Game
 
         public ClipHandler GetClip()
         {
-            return clipHandler;
+            return _clipHandler;
         }
 
         public void Play()
@@ -397,6 +398,7 @@ namespace Game
         public void SetClip(ClipHandler clip)
         {
             _audioSource.clip = ((AudioClipHandler)clip).clip;
+            _clipHandler = clip;
         }
 
         public bool IsPlaying()

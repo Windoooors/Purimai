@@ -123,7 +123,10 @@ namespace UI.Settings
                 Identifier = "graphics",
                 Items = new List<SettingsItem>
                 {
-                    new("framerate_limiter", new BoolValueSet())
+                    new("framerate_limiter", new BoolValueSet
+                    {
+                        DefaultValue = false
+                    })
                 }
             },
             new()
@@ -170,6 +173,17 @@ namespace UI.Settings
                         "0", "0.1", "0.2", "0.3", "0.4",
                         "0.5", "0.6", "0.7", "0.8", "0.9", "1"
                     }, false)
+                }
+            },
+            new()
+            {
+                Identifier = "advanced",
+                Items = new List<SettingsItem>
+                {
+                    new("native_audio", new BoolValueSet
+                    {
+                        DefaultValue = true
+                    })
                 }
             }
         };
@@ -224,13 +238,11 @@ namespace UI.Settings
     public class BoolValueSet : ValueSet
     {
         public bool DefaultValue;
-        public bool Value;
     }
 
     public class SettingsCategory
     {
         public string Identifier;
         public List<SettingsItem> Items;
-        public bool VisibleFromSettingsPanel = true;
     }
 }

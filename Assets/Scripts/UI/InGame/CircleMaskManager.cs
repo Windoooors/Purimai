@@ -35,7 +35,7 @@ namespace UI.InGame
 
         private void OnDestroy()
         {
-            UIManager.Instance.uiDocument.rootVisualElement.Remove(_circleMaskTree);
+            UIManager.Instance?.uiDocument?.rootVisualElement?.Remove(_circleMaskTree);
         }
 
         private void OnApplicationFocus(bool hasFocus)

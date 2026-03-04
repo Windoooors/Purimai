@@ -82,7 +82,7 @@ namespace UI
             switch (achievementType)
             {
                 case AchievementType.Finale:
-                    if (score == totalScoreWithExtraScore)
+                    if (score == totalScoreWithExtraScore && score != 0)
                         return "SSS+";
 
                     return achievement switch

@@ -105,9 +105,22 @@ namespace UI.Result
             var totalCount = SlideCount.TotalCount + HoldCount.TotalCount + TapCount.TotalCount + BreakCount.TotalCount;
             var missCount = SlideCount.MissCount + HoldCount.MissCount + TapCount.MissCount + BreakCount.MissCount;
             var goodCount = SlideCount.GoodCount + HoldCount.GoodCount + TapCount.GoodCount + BreakCount.GoodCount;
-            var greatCount = SlideCount.GreatCount + HoldCount.GreatCount + TapCount.GreatCount + BreakCount.GreatCount;
+            var greatCount = SlideCount.GreatCount + HoldCount.GreatCount + TapCount.GreatCount + BreakCount.GreatCount
+                             + SlideCount.SemiGreatCount + HoldCount.SemiGreatCount + TapCount.SemiGreatCount +
+                             BreakCount.SemiGreatCount
+                             + SlideCount.QuarterGreatCount + HoldCount.QuarterGreatCount + TapCount.QuarterGreatCount +
+                             BreakCount.QuarterGreatCount;
+            var perfectCount = SlideCount.PerfectCount + HoldCount.PerfectCount + TapCount.PerfectCount +
+                               BreakCount.PerfectCount +
+                               SlideCount.SemiCriticalPerfectCount + HoldCount.SemiCriticalPerfectCount +
+                               TapCount.SemiCriticalPerfectCount + BreakCount.SemiCriticalPerfectCount +
+                               SlideCount.CriticalPerfectCount + HoldCount.CriticalPerfectCount +
+                               TapCount.CriticalPerfectCount + BreakCount.CriticalPerfectCount;
 
             if (totalCount == 0)
+                return FcState.None;
+
+            if (missCount + goodCount + greatCount + perfectCount == 0)
                 return FcState.None;
 
             if (missCount + goodCount + greatCount == 0)
@@ -142,6 +155,9 @@ namespace UI.Result
 
         public static int GetScore()
         {
+            if (GetTotalScore() == 0)
+                return 0;
+
             var score = BreakCount.CriticalPerfectCount * 2600 +
                         BreakCount.SemiCriticalPerfectCount * 2550 + BreakCount.PerfectCount * 2500 +
                         BreakCount.GreatCount * 2000 + BreakCount.SemiGreatCount * 1500 +
@@ -167,6 +183,9 @@ namespace UI.Result
 
         public static (int deltaBasicScore, int extraScore) GetDeltaScore(AchievementType type)
         {
+            if (GetTotalScore() == 0)
+                return (0, 0);
+
             switch (type)
             {
                 case AchievementType.Finale:
@@ -228,6 +247,9 @@ namespace UI.Result
 
         public static float GetDeltaAchievement(AchievementType type)
         {
+            if (GetTotalScore() == 0)
+                return -100;
+
             switch (type)
             {
                 case AchievementType.Finale:
@@ -247,6 +269,9 @@ namespace UI.Result
 
         public static float GetCurrentAchievement(AchievementType type)
         {
+            if (GetTotalScore() == 0)
+                return 0;
+
             var currentBasicAchievement = (BreakCount.CurrentCount * 2500 + TapCount.CurrentCount * 500 +
                                            HoldCount.CurrentCount * 1000 + SlideCount.CurrentCount * 1500) /
                 (float)(GetTotalScore() - GetHighestExtraScore()) * 100;

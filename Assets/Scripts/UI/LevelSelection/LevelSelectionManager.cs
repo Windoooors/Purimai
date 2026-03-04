@@ -1,12 +1,8 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Game;
-using GihanSoft.String;
-using TinyPinyin;
 using UI.Settings;
 using UI.Settings.Managers;
 using UnityEngine;
@@ -28,8 +24,6 @@ namespace UI.LevelSelection
 
         private static LevelSelectionManager _instance;
 
-        private static readonly List<MaidataReferenceCountPair> MaidataList = new();
-
         public SortingRules groupByRule = SortingRules.Undefined;
 
         public VisualTreeAsset itemTemplate;
@@ -48,6 +42,7 @@ namespace UI.LevelSelection
         private ListView _listView;
         private Button _modsButton;
         private LevelListItemData[] _rawData;
+        private Button _refreshButton;
         private ScoreContentPanel _scoreContentPanel;
         private ScrollView _scrollView;
         private Button _settingsButton;
@@ -79,45 +74,7 @@ namespace UI.LevelSelection
 
             _instance = this;
 
-            if (MaidataList.Count == 0)
-            {
-                var path = Path.Combine(Application.persistentDataPath, "Charts/");
-
-                if (!Directory.Exists(path))
-                    Directory.CreateDirectory(path);
-
-                foreach (var levelPath in Directory.GetDirectories(path))
-                {
-                    if (!(FileExistsIgnoreCase(Path.Combine(levelPath, "maidata.txt"), out var actualMaidataPath) &&
-                          (FileExistsIgnoreCase(Path.Combine(levelPath, "track.mp3"), out var actualSongMp3Path) ||
-                           FileExistsIgnoreCase(Path.Combine(levelPath, "track.ogg"), out var actualSongOggPath))))
-                        continue;
-
-                    actualSongOggPath = "";
-
-                    var aviExists = FileExistsIgnoreCase(Path.Combine(levelPath, "pv.avi"), out var actualPvPathAvi);
-                    FileExistsIgnoreCase(Path.Combine(levelPath, "pv.mp4"), out var actualPvPathMp4);
-
-                    var pngExists = FileExistsIgnoreCase(Path.Combine(levelPath, "bg.png"), out var actualBgPathPng);
-                    var jpgExists = FileExistsIgnoreCase(Path.Combine(levelPath, "bg.jpg"), out var actualBgPathJpg);
-
-                    if (!jpgExists)
-                        FileExistsIgnoreCase(Path.Combine(levelPath, "bg.jpeg"), out actualBgPathJpg);
-
-                    var maidata = new Maidata(actualMaidataPath,
-                        File.Exists(actualSongMp3Path) ? actualSongMp3Path : actualSongOggPath,
-                        aviExists ? actualPvPathAvi : actualPvPathMp4,
-                        pngExists ? actualBgPathPng : actualBgPathJpg);
-
-                    MaidataList.Add(new MaidataReferenceCountPair
-                    {
-                        Maidata = maidata,
-                        Referenced = false
-                    });
-                }
-
-                UIManager.Instance.UpdateTMPAtlas(Maidata.UsedCharacters.ToArray());
-            }
+            MaidataManager.Load();
 
             levelLoader.PlayerPrefsSavingProcedure += () =>
             {
@@ -141,7 +98,7 @@ namespace UI.LevelSelection
             if (maidata.CoverDataLoaded && _largeSongCover != null)
                 _largeSongCover.style.backgroundImage = maidata.SongCoverDecodedImage.GetTexture2D();
 
-            foreach (var pair in MaidataList)
+            foreach (var pair in MaidataManager.MaidataList)
                 if (!pair.Referenced && pair.Maidata.CoverDataLoaded)
                     pair.Maidata.UnloadSongCover();
 
@@ -192,41 +149,6 @@ namespace UI.LevelSelection
             var volume = SettingsPool.GetValue("volume.song") / 10f;
 
             _songPreviewAudioSourceHandler?.SetVolume(volume);
-        }
-
-        private static bool FileExistsIgnoreCase(string input, out string actualPath)
-        {
-            actualPath = "";
-
-            if (string.IsNullOrEmpty(input)) return false;
-
-            try
-            {
-                var directory = Path.GetDirectoryName(input);
-                var fileName = Path.GetFileName(input);
-
-                if (string.IsNullOrEmpty(directory)) directory = Directory.GetCurrentDirectory();
-
-                if (!Directory.Exists(directory)) return false;
-
-                var matches = Directory.GetFiles(directory, fileName, new EnumerationOptions
-                {
-                    MatchCasing = MatchCasing.CaseInsensitive,
-                    RecurseSubdirectories = false
-                });
-
-                if (matches.Length > 0)
-                {
-                    actualPath = matches[0];
-                    return true;
-                }
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-
-            return false;
         }
 
         private void ChangeDifficultyInNumericalView(object sender, ScoreContentPanel.DifficultyChangeEventArgs e)
@@ -353,6 +275,13 @@ namespace UI.LevelSelection
             _settingsButton = root.Q<VisualElement>("control-panel").Q<Button>("settings-button");
             _settingsButton.clicked += UIManager.Instance.ShowSettingsPanel;
 
+            _refreshButton = root.Q<VisualElement>("control-panel").Q<Button>("refresh-button");
+            _refreshButton.clicked += () =>
+            {
+                MaidataManager.Load(true);
+                InitializeGroupingRuleCore();
+            };
+
             _modsButton = root.Q<VisualElement>("control-panel").Q<Button>("mods-button");
             _modsButton.clicked += UIManager.Instance.ShowModsPanel;
 
@@ -412,23 +341,11 @@ namespace UI.LevelSelection
             _lastPreviewedMaidata = _data[index].MaidataReferenceCountPair.Maidata;
         }
 
-        private void InitializeGroupingRule()
+        private void InitializeGroupingRuleCore()
         {
-            var newGroupByRule = SettingsPool.GetValue("group_rule") switch
-            {
-                0 => SortingRules.Alphabet,
-                1 => SortingRules.Difficulty,
-                _ => SortingRules.Undefined
-            };
-
-            if (groupByRule == newGroupByRule)
-                return;
-
-            groupByRule = newGroupByRule;
-
             var currentData = _data?[_listView.selectedIndex];
 
-            var pairedData = GetLevelListItemData(groupByRule);
+            var pairedData = MaidataManager.GetLevelListItemData(groupByRule);
 
             _rawData = pairedData.Item1;
 
@@ -509,6 +426,23 @@ namespace UI.LevelSelection
                 CategoryListManager.Instance.ChangeCategoryPassively(_data[targetIndex].Category);
 
             _lastCategoryData = _data[targetIndex].Category;
+        }
+
+        private void InitializeGroupingRule()
+        {
+            var newGroupByRule = SettingsPool.GetValue("group_rule") switch
+            {
+                0 => SortingRules.Alphabet,
+                1 => SortingRules.Difficulty,
+                _ => SortingRules.Undefined
+            };
+
+            if (groupByRule == newGroupByRule)
+                return;
+
+            groupByRule = newGroupByRule;
+
+            InitializeGroupingRuleCore();
         }
 
         private void ChangeGroupingRule()
@@ -643,149 +577,6 @@ namespace UI.LevelSelection
             }
 
             if (relativeY is < 750 and > 730) _listView.selectedIndex = (int)item.userData;
-        }
-
-        private (LevelListItemData[], CategoryData[]) GetLevelListItemData(SortingRules rule)
-        {
-            var groups = new List<((MaidataReferenceCountPair, int)[], string)>();
-
-            switch (rule)
-            {
-                case SortingRules.Difficulty:
-                    var difficultyStringHashSet = new HashSet<string>();
-
-                    foreach (var maidata in MaidataList)
-                    foreach (var chart in maidata.Maidata.Charts)
-                    {
-                        var difficultyName = chart.DifficultyString;
-
-                        difficultyStringHashSet.Add(difficultyName);
-                    }
-
-                    var sortedCustomizedDifficultyNames = difficultyStringHashSet.ToList();
-                    sortedCustomizedDifficultyNames.Sort((x, y) =>
-                        new NaturalComparer().Compare(x, y));
-
-                    AddGroupByDifficulty(sortedCustomizedDifficultyNames.ToArray());
-
-                    break;
-                default:
-                case SortingRules.Alphabet:
-                    var groupNames = new HashSet<string>();
-
-                    foreach (var maidata in MaidataList)
-                    {
-                        var firstCharacterIsLetterOrDigit = char.IsLetterOrDigit(maidata.Maidata.Title[0]);
-                        var firstCharacterIsInChinese =
-                            PinyinHelper.IsChinese(maidata.Maidata.Title[0]);
-                        var pinyinOfFirstCharacter =
-                            PinyinHelper.GetPinyin(maidata.Maidata.Title[0]);
-
-                        if (firstCharacterIsInChinese)
-                        {
-                            groupNames.Add(pinyinOfFirstCharacter.ToUpper()[0].ToString());
-                        }
-                        else if (firstCharacterIsLetterOrDigit)
-                        {
-                            var firstLetter = maidata.Maidata.Title.ToUpper()[0].ToString();
-                            groupNames.Add(firstLetter == "" ? maidata.Maidata.Title[0].ToString() : firstLetter);
-                        }
-                    }
-
-                    var sortedGroupNames = groupNames.ToList();
-                    sortedGroupNames.Sort((x, y) => new NaturalComparer().Compare(x, y));
-
-                    sortedGroupNames.Add("Misc");
-
-                    AddGroupByAbcd(sortedGroupNames.ToArray());
-
-                    break;
-            }
-
-
-            var listItemDataList = new List<LevelListItemData>();
-            var categoryDataList = new List<CategoryData>();
-            foreach (var group in groups)
-            {
-                var category = new CategoryData
-                {
-                    CategoryNameEntryString = group.Item2
-                };
-
-                categoryDataList.Add(category);
-
-                var isFirst = true;
-
-                foreach (var item in group.Item1)
-                {
-                    var data = new LevelListItemData
-                    {
-                        MaidataReferenceCountPair = item.Item1,
-                        DifficultyIndex = item.Item2,
-                        Category = category
-                    };
-
-                    listItemDataList.Add(data);
-
-                    if (isFirst)
-                    {
-                        isFirst = false;
-                        category.FirstItem = data;
-                    }
-                }
-            }
-
-            return (listItemDataList.ToArray(), categoryDataList.ToArray());
-
-            void AddGroupByAbcd(string[] keys)
-            {
-                foreach (var key in keys)
-                {
-                    var alphabetGroup = key switch
-                    {
-                        "Misc" => MaidataList.Where(x =>
-                            !char.IsLetterOrDigit(x.Maidata.Title[0])
-                        ).Select(x => (x, 0)).ToList(),
-                        _ =>
-                            MaidataList.Where(x =>
-                                x.Maidata.Title.ToUpper()[0].ToString() == key ||
-                                PinyinHelper.GetPinyin(x.Maidata.Title[0]).ToUpper()[0]
-                                    .ToString() ==
-                                key).Select(x => (x, 0)).ToList()
-                    };
-
-                    if (alphabetGroup.Count == 0)
-                        continue;
-
-                    alphabetGroup.Sort((x, y) =>
-                        new NaturalComparer().Compare(x.Item1.Maidata.Title, y.Item1.Maidata.Title));
-
-                    groups.Add((alphabetGroup.ToArray(), key));
-                }
-            }
-
-            void AddGroupByDifficulty(string[] keys)
-            {
-                foreach (var difficultyName in keys)
-                {
-                    var difficultyGroup =
-                        new List<(MaidataReferenceCountPair, int
-                            )>(); // _maidataList.Where(x => x.DifficultyNames.Contains(difficulty)).ToList();
-
-                    foreach (var maidata in MaidataList)
-                    foreach (var chart in maidata.Maidata.Charts)
-                        if (chart.DifficultyString == difficultyName)
-                            difficultyGroup.Add((maidata, chart.DifficultyIndex));
-
-                    if (difficultyGroup.Count == 0)
-                        continue;
-
-                    difficultyGroup.Sort((x, y) =>
-                        new NaturalComparer().Compare(x.Item1.Maidata.Title, y.Item1.Maidata.Title));
-
-                    groups.Add((difficultyGroup.ToArray(), difficultyName));
-                }
-            }
         }
     }
 }
