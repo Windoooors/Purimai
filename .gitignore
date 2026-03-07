@@ -146,3 +146,6 @@ apdisk
 /[Aa]ssets/[Pp]lugins/ManagedBass.meta
 /[Aa]ssets/[Pp]lugins/NativeBass
 /[Aa]ssets/[Pp]lugins/NativeBass.meta
+
+# Packages
+/Packages/System*
