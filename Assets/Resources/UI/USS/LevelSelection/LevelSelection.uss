@@ -1,9 +1,11 @@
 .confirm-entry .refresh-button {
     opacity: 0;
+    display: none;
 }
 
 .confirm-entry .sort-button {
     opacity: 0;
+    display: none;
 }
 
 .unity-scroll-view__vertical-scroller {
@@ -111,6 +113,7 @@
 
 .sort-button {
     opacity: 1;
+    display: flex;
 }
 
 .unity-disabled {
@@ -223,4 +226,5 @@
 
 .refresh-button {
     opacity: 1;
+    display: flex;
 }

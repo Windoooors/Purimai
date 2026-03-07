@@ -4352,7 +4352,6 @@ GameObject:
   - component: {fileID: 872429103}
   - component: {fileID: 872429102}
   - component: {fileID: 872429105}
-  - component: {fileID: 872429106}
   - component: {fileID: 872429107}
   - component: {fileID: 872429108}
   m_Layer: 5
@@ -4434,18 +4433,6 @@ MonoBehaviour:
   modsManager: {fileID: 0}
   portraitReferenceResolution: {x: 600, y: 600}
   landscapeReferenceResolution: {x: 1024, y: 600}
---- !u!114 &872429106
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 872429101}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 83ba3f013fef4987be4c324fdc2203ca, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Game.AudioManager
 --- !u!114 &872429107
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4470,20 +4457,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7d29b8c47b34dae8c2f5e8e6b30fbc4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.SfxManager
-  uiSoundNameData:
-    rollSoundPath: roll.wav
-    selectSoundPath: select.wav
-    entrySoundPath: entry.wav
-  gameSoundNameData:
-    perfectSoundPath: perfect.wav
-    greatSoundPath: great.wav
-    goodSoundPath: good.wav
-    breakExtraSoundPath: break_extra_score.wav
-    breakPerfectSoundPath: break_perfect.wav
-    breakGreatSoundPath: break_great.wav
-    slideSoundPath: slide.wav
-    criticalSoundPath: critical_sound.wav
-    preparatoryBeatSoundPath: preparatory_beat.wav
 --- !u!1 &990677103
 GameObject:
   m_ObjectHideFlags: 0

@@ -175,8 +175,6 @@ namespace UI.Result
 
             _maidata.UnloadResources();
 
-            AudioManager.Instance.AudioSourcePool.Clear();
-
             UIManager.Instance.ShowLevelSelector();
 
             _resultRoot.BringToFront();

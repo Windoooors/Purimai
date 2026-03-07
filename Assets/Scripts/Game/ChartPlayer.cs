@@ -18,6 +18,8 @@ namespace Game
     public class ChartPlayer : MonoBehaviour
     {
         private const float DefaultLandscapeSize = 5.5f;
+
+        private const int GlobalInputOffset = 11;
         public static ChartPlayer Instance;
 
         public RawImage backgroundImage;
@@ -54,33 +56,25 @@ namespace Game
         public int levelDifficultyIndex;
 
         private readonly float _generalPlaybackDelayInSeconds = 3f;
-
-        private readonly float _maxCalibrationRate = 0.1f;
-
-        private readonly int _maxScheduledCriticalSoundCount = 16;
         private int _calibrationTimes;
 
         private Camera _camera;
 
         private bool _chartHasVideo;
 
-        private int _criticalSoundIndex;
-
         private float _criticalSoundVolume;
 
+        private int _cueSoundIndex;
+
+        private Coroutine _delayedAudioPlaybackRoutine;
+
         private Coroutine _delayedVideoPlaybackRoutine;
-
-        private double _dspTimeWhenPausing;
-
-        private double _dspTimeWhenSongStartsPlaying;
-
-        private float _needCalibrationThreshold = 1f;
+        private readonly float _maxCalibrationRate = 0.1f;
+        private float _needCalibrationThreshold = 0.020f;
 
         private bool _paused;
 
-        private float _songLength;
-        private AudioSourceHandler _songPlaybackAudioSourceHandler;
-
+        private float _songLengthInSeconds;
         private float _songPositionWhenCalibrationThresholdChanged;
 
         private float _songVolume;
@@ -93,21 +87,19 @@ namespace Game
 
         public Maidata Maidata;
 
-        public AudioClipHandler songClip;
-
         public float TimeInMilliseconds => _time * 1000f;
 
         public void Awake()
         {
             Instance = this;
 
-            _camera = FindAnyObjectByType<Camera>();
+            _needCalibrationThreshold = PlayerPrefs.GetFloat("CalibrationDeltaTimeThreshold", 0.020f);
 
-            _needCalibrationThreshold = PlayerPrefs.GetFloat("CalibrationThreshold", 1f);
+            _camera = FindAnyObjectByType<Camera>();
 
             ScreenOrientationManager.Instance.ScreenChanged += UpdateCameraSize;
 
-            judgeDelay = SettingsPool.GetValue("input_delay");
+            judgeDelay = SettingsPool.GetValue("input_delay") + GlobalInputOffset;
             flowSpeed = SettingsPool.GetValue("flow_speed") * 0.25f + 1;
 
             if (flowSpeed.Equals(10.25f)) flowSpeed = 49;
@@ -138,13 +130,11 @@ namespace Game
 
             CalibrateTime();
 
-            SetCueSoundChannel();
-
-            if (_time > math.max(NoteGenerator.Instance.endingTime / 1000f + 0.5f, _songLength))
+            if (_time > math.max(NoteGenerator.Instance.endingTime / 1000f + 0.5f, _songLengthInSeconds))
             {
                 isPlaying = false;
                 LMotion.Create(_songVolume, 0, 0.5f).WithOnComplete(OnPlayCompleted)
-                    .Bind(x => _songPlaybackAudioSourceHandler.SetVolume(x));
+                    .Bind(x => Maidata.SongBassHandler.Volume = x);
             }
 
             NoteGenerator.Instance.notesList.ForEach(noteBase =>
@@ -154,6 +144,23 @@ namespace Game
             });
         }
 
+        private void LateUpdate()
+        {
+            if (NoteGenerator.Instance.CriticalTimeList.Count == 0)
+                return;
+
+            var audioTime = Maidata.SongBassHandler?.GetPosition();
+
+            if (_time <= 0)
+                audioTime = _time;
+
+            if (audioTime * 1000 >= NoteGenerator.Instance.CriticalTimeList[_cueSoundIndex])
+            {
+                SfxManager.Instance.PlayCueSound();
+                _cueSoundIndex++;
+            }
+        }
+
         private void OnDestroy()
         {
             ScreenOrientationManager.Instance.ScreenChanged -= UpdateCameraSize;
@@ -161,7 +168,7 @@ namespace Game
 
         private void CalibrateTime()
         {
-            var songPosition = _songPlaybackAudioSourceHandler.GetPosition();
+            var songPosition = (float)Maidata.SongBassHandler.GetPosition();
 
             if (!_startCalibrated &&
                 songPosition > 0)
@@ -171,7 +178,7 @@ namespace Game
             }
 
             if (songPosition > 0 && math.abs(_time - songPosition) >
-                _needCalibrationThreshold * (Time.deltaTime + AudioManager.Instance.DSPDurationInSeconds))
+                _needCalibrationThreshold)
             {
                 _calibrationTimes++;
                 _time = songPosition;
@@ -181,17 +188,11 @@ namespace Game
                 {
                     _calibrationTimes = 0;
                     _songPositionWhenCalibrationThresholdChanged = songPosition;
-                    _needCalibrationThreshold += 0.05f;
+                    _needCalibrationThreshold += 0.002f;
 
-                    PlayerPrefs.SetFloat("CalibrationThreshold", _needCalibrationThreshold);
+                    PlayerPrefs.SetFloat("CalibrationDeltaTimeThreshold", _needCalibrationThreshold);
                 }
             }
-
-            /*if (songPosition > 0 && math.abs(_time - songPosition) >
-                _needLerpCalibrationThreshold * (Time.deltaTime + AudioManager.Instance.DSPDurationInSeconds))
-            {
-                _time = math.lerp(_time, songPosition, 0.1f);
-            }*/
         }
 
         private void ShowResult()
@@ -208,30 +209,25 @@ namespace Game
                 return;
             }
 
-            AudioManager.Instance.AudioSourcePool.Pool.ForEach(x =>
-            {
-                if (x != _songPlaybackAudioSourceHandler)
-                    x.Stop();
-            });
-
-            _criticalSoundIndex = NoteGenerator.Instance.CriticalTimeList.FindLastIndex(x =>
-                x < _time * 1000
-            ) + 1;
-
-            if (_criticalSoundIndex >= NoteGenerator.Instance.CriticalTimeList.Count)
-                _criticalSoundIndex = NoteGenerator.Instance.CriticalTimeList.Count;
-
-            _songPlaybackAudioSourceHandler.Pause();
-
             SimulatedSensor.Enabled = false;
 
-            if (_time < 0 && _delayedVideoPlaybackRoutine != null)
+            if (_time < 0)
             {
-                StopCoroutine(_delayedVideoPlaybackRoutine);
-                _delayedVideoPlaybackRoutine = null;
+                if (_delayedVideoPlaybackRoutine != null)
+                {
+                    StopCoroutine(_delayedVideoPlaybackRoutine);
+                    _delayedVideoPlaybackRoutine = null;
+                }
+
+                if (_delayedAudioPlaybackRoutine != null)
+                {
+                    StopCoroutine(_delayedAudioPlaybackRoutine);
+                    _delayedAudioPlaybackRoutine = null;
+                }
             }
 
             _videoPlayer?.Pause();
+            Maidata.SongBassHandler.Pause();
 
             _paused = true;
 
@@ -246,42 +242,17 @@ namespace Game
 
             IEnumerator ResumeRoutine()
             {
-                double scheduledTime;
+                float scheduledDelay;
 
                 if (_time > 0)
-                {
-                    scheduledTime = AudioManager.Instance.EstimatedDspTime + 0.5;
-                    _dspTimeWhenSongStartsPlaying = scheduledTime - _time;
-                }
+                    scheduledDelay = 0.5f;
                 else
-                {
-                    scheduledTime = AudioManager.Instance.EstimatedDspTime - _time + 0.5;
-                    _dspTimeWhenSongStartsPlaying = scheduledTime;
+                    scheduledDelay = _time + 0.5f;
 
-                    _delayedVideoPlaybackRoutine = StartCoroutine(VideoPlaybackRoutine(0.5f - _time));
-                }
+                _delayedVideoPlaybackRoutine = StartCoroutine(VideoPlaybackRoutine(scheduledDelay));
+                _delayedAudioPlaybackRoutine = StartCoroutine(AudioPlaybackRoutine(scheduledDelay));
 
-                _songPlaybackAudioSourceHandler.Stop();
-
-                AudioManager.Instance.AudioSourcePool.TryGetAudioSourceHandler(out var handler);
-
-                if (handler == null)
-                    yield break;
-
-                _songPlaybackAudioSourceHandler = (AudioSourceHandler)handler;
-
-                _songPlaybackAudioSourceHandler.SetClip(Maidata.SongAudioClip);
-                _songPlaybackAudioSourceHandler.SetVolume(_songVolume);
-                _songPlaybackAudioSourceHandler.SetPosition(_time);
-
-                _songPlaybackAudioSourceHandler.PlayScheduled(scheduledTime);
-
-                SetCueSoundChannel(true);
-
-                yield return new WaitForSeconds(0.5f);
-
-                _videoPlayer?.Play();
-
+                yield return new WaitForSeconds(scheduledDelay);
                 if (SettingsPool.GetValue("auto_play") != 1)
                     SimulatedSensor.Enabled = true;
 
@@ -344,7 +315,7 @@ namespace Game
 
         private void OnPlayCompleted()
         {
-            _songPlaybackAudioSourceHandler.Stop();
+            Maidata.SongBassHandler.Stop();
 
             ShowResult();
         }
@@ -356,6 +327,14 @@ namespace Game
             isPlaying = true;
 
             PlayAudio();
+        }
+
+
+        private IEnumerator AudioPlaybackRoutine(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+
+            Maidata.SongBassHandler.Play();
         }
 
         private IEnumerator VideoPlaybackRoutine(float delay)
@@ -381,84 +360,11 @@ namespace Game
 
         private void PlayAudio()
         {
-            AudioManager.Instance.AudioSourcePool.TryGetAudioSourceHandler(out var songPlaybackAudioSourceHandler);
-
-            _songPlaybackAudioSourceHandler = (AudioSourceHandler)songPlaybackAudioSourceHandler;
-
-            _songPlaybackAudioSourceHandler.SetClip(songClip);
-
-            _dspTimeWhenSongStartsPlaying = AudioManager.Instance.EstimatedDspTime +
-                                            _generalPlaybackDelayInSeconds;
-
-            _songPlaybackAudioSourceHandler.PlayScheduled(_dspTimeWhenSongStartsPlaying);
-
-            _songPlaybackAudioSourceHandler.ScheduledStartTime = _dspTimeWhenSongStartsPlaying;
-
-            _songPlaybackAudioSourceHandler.SetVolume(_songVolume);
-
             isPlaying = true;
 
-            _songLength = songClip.clip.length;
+            _songLengthInSeconds = (float)Maidata.SongBassHandler.Duration;
 
-            SetCueSoundChannel(true);
-        }
-
-        private void SetCueSoundChannel(bool initialSet = false)
-        {
-            if (_criticalSoundIndex == NoteGenerator.Instance.CriticalTimeList.Count)
-                return;
-
-            AudioSourceHandler handler;
-
-            if (initialSet)
-            {
-                for (var i = 0; i < _maxScheduledCriticalSoundCount; i++)
-                {
-                    AudioManager.Instance.AudioSourcePool.TryGetAudioSourceHandler(out var audioHandler);
-
-                    handler = (AudioSourceHandler)audioHandler;
-
-                    SetUpChannelDelay(handler);
-                    handler?.SetVolume(_criticalSoundVolume);
-                }
-
-                return;
-            }
-
-            if (AudioManager.Instance.AudioSourcePool.GetOccupiedCount() < _maxScheduledCriticalSoundCount)
-            {
-                var channelAvailable =
-                    AudioManager.Instance.AudioSourcePool.TryGetAudioSourceHandler(out var audioHandler);
-
-                handler = (AudioSourceHandler)audioHandler;
-
-                if (!channelAvailable)
-                    return;
-
-                SetUpChannelDelay(handler);
-                handler?.SetVolume(_criticalSoundVolume);
-            }
-
-            return;
-
-            void SetUpChannelDelay(AudioSourceHandler audioSourceHandler)
-            {
-                if (_criticalSoundIndex >= NoteGenerator.Instance.CriticalTimeList.Count ||
-                    audioSourceHandler == null)
-                    return;
-
-                var delay = _dspTimeWhenSongStartsPlaying +
-                            NoteGenerator.Instance.CriticalTimeList[_criticalSoundIndex] /
-                            1000f;
-
-                var audioClip = SfxManager.Instance.CriticalSoundClip;
-
-                audioSourceHandler.SetClip(audioClip);
-                audioSourceHandler.PlayScheduled(delay);
-                audioSourceHandler.ScheduledStartTime = delay;
-
-                _criticalSoundIndex++;
-            }
+            _delayedAudioPlaybackRoutine = StartCoroutine(AudioPlaybackRoutine(_generalPlaybackDelayInSeconds));
         }
 
         public void InitializeLevel(Maidata maidata, int difficultyIndex)
@@ -470,8 +376,6 @@ namespace Game
             var chart = maidata.Charts.ToList().Find(x => x.DifficultyIndex == difficultyIndex);
 
             NoteGenerator.Instance.GenerateNotes(chart.ChartString, maidata.FirstNoteTime);
-
-            songClip = maidata.SongAudioClip;
 
             var useBlurredCover = SettingsPool.GetValue("blurred_cover") != 0;
 
@@ -511,8 +415,8 @@ namespace Game
         [InspectorButton("Skip Playback")]
         public void Skip()
         {
-            _time = math.max(_songLength, NoteGenerator.Instance.endingTime / 1000f + 0.5f);
-            _songPlaybackAudioSourceHandler.Pause();
+            _time = math.max(_songLengthInSeconds, NoteGenerator.Instance.endingTime / 1000f + 0.5f);
+            Maidata.SongBassHandler.Pause();
             _videoPlayer?.Stop();
             ShowResult();
         }

@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -44,14 +43,14 @@ namespace UI
 
         private bool _generatingBlurredCover;
         private bool _loadingCover;
-        private bool _loadingSong;
+
         public DecodedImage BlurredSongCoverAsBackgroundDecodedImage;
         public DecodedImage BlurredSongCoverDecodedImage;
         public bool BlurredSongCoverGenerated;
 
         public DecodedImage BlurredSongCoverWithConstantRadiusDecodedImage;
         public bool CoverDataLoaded;
-        public AudioClipHandler SongAudioClip;
+        public BassHandler SongBassHandler;
         public DecodedImage SongCoverDecodedImage;
         public bool SongLoaded;
 
@@ -225,15 +224,15 @@ namespace UI
 
         public void UnloadSong()
         {
-            SongAudioClip?.Dispose();
+            SongBassHandler?.Dispose();
 
-            SongAudioClip = null;
+            SongBassHandler = null;
             SongLoaded = false;
         }
 
         public void UnloadResources()
         {
-            SongAudioClip?.Dispose();
+            SongBassHandler?.Dispose();
 
             BlurredSongCoverAsBackgroundDecodedImage?.Dispose();
             BlurredSongCoverWithConstantRadiusDecodedImage?.Dispose();
@@ -246,7 +245,7 @@ namespace UI
             BlurredSongCoverAsBackgroundDecodedImage = null;
             BlurredSongCoverDecodedImage = null;
             SongCoverDecodedImage = null;
-            SongAudioClip = null;
+            SongBassHandler = null;
 
             BlurredSongCoverGenerated = false;
             CoverDataLoaded = false;
@@ -319,22 +318,14 @@ namespace UI
             _loadingCover = false;
         }
 
-        public IEnumerator LoadSongClip(bool streamed)
+        public void LoadSongClip()
         {
-            if (_loadingSong)
-                yield break;
-
             if (SongLoaded)
-                yield break;
+                return;
 
-            _loadingSong = true;
-
-            yield return AudioManager.Instance.LoadAudioClip(_songPath,
-                clip => SongAudioClip = new AudioClipHandler(clip)
-                , streamed);
+            SongBassHandler = new BassHandler(_songPath);
 
             SongLoaded = true;
-            _loadingSong = false;
         }
 
         public void GenerateBlurredCover()

@@ -13,6 +13,7 @@ namespace Game
 {
     public class NoteGenerator : MonoBehaviour
     {
+        private const int GlobalCueSoundOffset = -16;
         private static NoteGenerator _instance;
 
         public Tap[] tapPrefabs;
@@ -82,11 +83,13 @@ namespace Game
             foreach (var noteDataObject in noteDataObjects)
             {
                 if (noteDataObject.HoldDataObjects.Length + noteDataObject.TapDataObjects.Length >= 1)
-                    criticalTimeHashSet.Add((int)((noteDataObject.TimingInSeconds - audioOffset) * 1000));
+                    criticalTimeHashSet.Add((int)((noteDataObject.TimingInSeconds - audioOffset) * 1000) +
+                                            GlobalCueSoundOffset);
 
                 foreach (var hold in noteDataObject.HoldDataObjects)
                     criticalTimeHashSet.Add(
-                        (int)((noteDataObject.TimingInSeconds + hold.HoldDurationInSeconds - audioOffset) * 1000));
+                        (int)((noteDataObject.TimingInSeconds + hold.HoldDurationInSeconds - audioOffset) * 1000) +
+                        GlobalCueSoundOffset);
 
                 var isEach = noteDataObject.TapDataObjects.Length + noteDataObject.HoldDataObjects.Length > 1;
                 //var isSlideEach = noteDataObject.SlideDataObjects.Length > 1;

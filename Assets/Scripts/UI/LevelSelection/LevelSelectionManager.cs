@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Game;
 using UI.Settings;
 using UI.Settings.Managers;
 using UnityEngine;
@@ -32,6 +31,8 @@ namespace UI.LevelSelection
 
         public LevelLoader levelLoader;
 
+        public bool songPreviewing = true;
+
         private LevelListItemData[] _data;
         private VisualElement _largeSongCover;
 
@@ -51,8 +52,6 @@ namespace UI.LevelSelection
         private SongCoverManipulator _songCoverManipulator;
 
         private bool _songPlaying;
-
-        private AudioSourceHandler _songPreviewAudioSourceHandler;
 
         private Button _sortButton;
 
@@ -102,28 +101,15 @@ namespace UI.LevelSelection
                 if (!pair.Referenced && pair.Maidata.CoverDataLoaded)
                     pair.Maidata.UnloadSongCover();
 
-            if (maidata.SongLoaded && !_songPlaying)
+            if (maidata.SongLoaded && !_songPlaying && songPreviewing)
             {
                 _songPlaying = true;
 
-                if (_songPreviewAudioSourceHandler == null)
-                {
-                    AudioManager.Instance.AudioSourcePool
-                        .TryGetAudioSourceHandler(out var songPreviewAudioSourceHandler);
-                    _songPreviewAudioSourceHandler = (AudioSourceHandler)songPreviewAudioSourceHandler;
-                }
-
-                _songPreviewAudioSourceHandler.SetClip(maidata.SongAudioClip);
-
-                _songPreviewAudioSourceHandler.Play();
-
-                var volume = SettingsPool.GetValue("volume.song") / 10f;
-
-                _songPreviewAudioSourceHandler.SetVolume(volume);
+                maidata.SongBassHandler.PlayOneShot();
             }
 
-            if (_songPlaying && _songPreviewAudioSourceHandler?.IsPlaying() == false)
-                _songPreviewAudioSourceHandler.Play();
+            if (_songPlaying && maidata.SongBassHandler?.IsPlaying == false && songPreviewing)
+                maidata.SongBassHandler.PlayOneShot();
         }
 
         private void OnDestroy()
@@ -148,7 +134,8 @@ namespace UI.LevelSelection
         {
             var volume = SettingsPool.GetValue("volume.song") / 10f;
 
-            _songPreviewAudioSourceHandler?.SetVolume(volume);
+            if (_lastPreviewedMaidata != null)
+                _lastPreviewedMaidata.SongBassHandler.Volume = volume;
         }
 
         private void ChangeDifficultyInNumericalView(object sender, ScoreContentPanel.DifficultyChangeEventArgs e)
@@ -335,7 +322,7 @@ namespace UI.LevelSelection
 
             _lastPreviewedMaidata?.UnloadSong();
 
-            StartCoroutine(_data[index].MaidataReferenceCountPair.Maidata.LoadSongClip(true));
+            _data[index].MaidataReferenceCountPair.Maidata.LoadSongClip();
             _songPlaying = false;
 
             _lastPreviewedMaidata = _data[index].MaidataReferenceCountPair.Maidata;

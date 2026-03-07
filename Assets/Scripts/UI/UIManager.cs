@@ -1,3 +1,4 @@
+using Game;
 using UI.InGame;
 using UI.LevelSelection;
 using UI.Result;
@@ -59,6 +60,8 @@ namespace UI
 
         private void OnApplicationQuit()
         {
+            GlobalAudioMixer.Free();
+
             SettingsPool.Save();
         }
 

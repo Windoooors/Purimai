@@ -65,9 +65,14 @@ namespace UI.LevelSelection
             _maidata = maidata;
             _levelIndex = difficultyIndex;
 
-            maidata.UnloadSong();
+            if (LevelSelectionManager.Instance)
+                LevelSelectionManager.Instance.songPreviewing = false;
 
-            StartCoroutine(maidata.LoadSongClip(false));
+            _maidata.SongBassHandler?.Stop();
+
+            if (!maidata.SongLoaded)
+                maidata.LoadSongClip();
+
             Task.Run(maidata.GenerateBlurredCover);
 
             ScreenOrientationManager.Instance.EnablePortrait();
@@ -82,8 +87,6 @@ namespace UI.LevelSelection
             SceneManager.sceneLoaded -= OnSceneLoaded;
 
             SimulatedSensor.Enabled = true;
-
-            AudioManager.Instance.AudioSourcePool.Clear();
 
             ChartPlayer.Instance.InitializeLevel(_maidata, _levelIndex);
 

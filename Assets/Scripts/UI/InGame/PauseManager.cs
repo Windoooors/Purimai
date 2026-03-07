@@ -62,8 +62,6 @@ namespace UI.InGame
 
                 SimulatedSensor.Clear();
 
-                AudioManager.Instance.AudioSourcePool.Clear();
-
                 SceneManager.LoadScene("Empty");
 
                 SceneManager.sceneLoaded += OnSceneLoaded;

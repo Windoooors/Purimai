@@ -11,21 +11,6 @@
       },
       "hash": "b651c5866fe0e3fba065ce2e56dfdfcd59d3d109"
     },
-    "com.coffee.softmask-for-ugui": {
-      "version": "https://github.com/mob-sakai/SoftMaskForUGUI.git?path=Packages/src#3.5.0",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {
-        "com.unity.ugui": "1.0.0"
-      },
-      "hash": "9a7535a3fad66ebec5458a8b22f6ad023c960fd3"
-    },
-    "com.e7.native-audio": {
-      "version": "file:Asset Store/Native Audio",
-      "depth": 0,
-      "source": "local",
-      "dependencies": {}
-    },
     "com.github-glitchenzo.nugetforunity": {
       "version": "https://github.com/GlitchEnzo/NuGetForUnity.git?path=/src/NuGetForUnity",
       "depth": 0,

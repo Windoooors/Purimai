@@ -174,17 +174,6 @@ namespace UI.Settings
                         "0.5", "0.6", "0.7", "0.8", "0.9", "1"
                     }, false)
                 }
-            },
-            new()
-            {
-                Identifier = "advanced",
-                Items = new List<SettingsItem>
-                {
-                    new("native_audio", new BoolValueSet
-                    {
-                        DefaultValue = true
-                    })
-                }
             }
         };
     }

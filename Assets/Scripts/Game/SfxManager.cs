@@ -1,28 +1,69 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UI.Settings;
 using UI.Settings.Managers;
 using UnityEngine;
-#if (UNITY_IOS || UNITY_ANDROID) && !UNITY_EDITOR
-using E7.Native;
-#endif
+using UnityEngine.Networking;
 
 namespace Game
 {
+    public static class FileDownloader
+    {
+        public static IEnumerator DownloadFile(string fromFileNameRelativeToStreamingAssets, string toFileName,
+            Action callback)
+        {
+            var directory = Path.GetDirectoryName(toFileName);
+
+            if (directory == null) yield break;
+
+            if (!Directory.Exists(directory))
+                Directory.CreateDirectory(directory);
+
+            if (File.Exists(toFileName))
+            {
+                callback();
+                yield break;
+            }
+
+            var uri = new Uri(Path.Combine(Application.streamingAssetsPath, fromFileNameRelativeToStreamingAssets));
+
+            var request = UnityWebRequest.Get(uri);
+
+            yield return request.SendWebRequest();
+
+            if (request.downloadHandler.data != null)
+                File.WriteAllBytes(toFileName, request.downloadHandler.data);
+
+            request.Dispose();
+
+            callback();
+        }
+    }
+
     public class SfxManager : MonoBehaviour
     {
         private static SfxManager _instance;
-        public UiSoundNameData uiSoundNameData;
-        public GameSoundNameData gameSoundNameData;
 
-        private readonly Dictionary<string, ClipHandler> _clipHandlers = new();
+        private readonly Dictionary<string, BassHandler> _bassHandlers = new();
+
+        private readonly GameSoundNameData _gameSoundNameData = new()
+        {
+            audioSoundNameDataDict = new Dictionary<string, AudioSoundNameData>
+            {
+                { "cue", new AudioSoundNameData("cue_sound.wav") },
+                { "slide", new AudioSoundNameData("slide_sound.wav") },
+                { "break_extra", new AudioSoundNameData("break_extra_sound.wav") },
+                { "break_perfect", new AudioSoundNameData("break_perfect_sound.wav") },
+                { "break_great", new AudioSoundNameData("break_great_sound.wav") },
+                { "perfect", new AudioSoundNameData("perfect_sound.wav") },
+                { "great", new AudioSoundNameData("great_sound.wav") },
+                { "good", new AudioSoundNameData("good_sound.wav") }
+            }
+        };
+
         private readonly Dictionary<string, float> _volumes = new();
-
-        private int _lastUseNative = -1;
-
-        public ClipHandler CriticalSoundClip => _clipHandlers[gameSoundNameData.criticalSoundPath];
-        public ClipHandler PreparatorySoundClip => _clipHandlers[gameSoundNameData.preparatoryBeatSoundPath];
 
         public static SfxManager Instance => _instance ?? FindAnyObjectByType<SfxManager>();
 
@@ -37,33 +78,13 @@ namespace Game
 
         private void LoadAllSoundData()
         {
-            var settingsValue = SettingsPool.GetValue("native_audio");
-
-            if (_lastUseNative == settingsValue) return;
-
-            var gameSoundPathData = gameSoundNameData.GetStreamingAssetsPrefixedPathData();
-
-            var useNative = settingsValue == 1;
-
-            foreach (var handler in _clipHandlers.Values)
+            foreach (var handler in _bassHandlers.Values)
                 handler.Dispose();
 
-            _clipHandlers.Clear();
+            _bassHandlers.Clear();
 
-            LoadSingleSoundData(gameSoundPathData.perfectSoundPath, gameSoundNameData.perfectSoundPath, useNative);
-            LoadSingleSoundData(gameSoundPathData.greatSoundPath, gameSoundNameData.greatSoundPath, useNative);
-            LoadSingleSoundData(gameSoundPathData.goodSoundPath, gameSoundNameData.goodSoundPath, useNative);
-            LoadSingleSoundData(gameSoundPathData.breakExtraSoundPath, gameSoundNameData.breakExtraSoundPath,
-                useNative);
-            LoadSingleSoundData(gameSoundPathData.breakPerfectSoundPath, gameSoundNameData.breakPerfectSoundPath,
-                useNative);
-            LoadSingleSoundData(gameSoundPathData.breakGreatSoundPath, gameSoundNameData.breakGreatSoundPath,
-                useNative);
-            LoadSingleSoundData(gameSoundPathData.slideSoundPath, gameSoundNameData.slideSoundPath, useNative);
-            LoadSingleSoundData(gameSoundPathData.criticalSoundPath, gameSoundNameData.criticalSoundPath);
-            LoadSingleSoundData(gameSoundPathData.preparatoryBeatSoundPath, gameSoundNameData.preparatoryBeatSoundPath);
-
-            _lastUseNative = settingsValue;
+            foreach (var audioSoundNameData in _gameSoundNameData.audioSoundNameDataDict)
+                LoadSingleSoundData(audioSoundNameData.Value, audioSoundNameData.Key);
         }
 
         private void AdaptToSettings()
@@ -71,6 +92,7 @@ namespace Game
             UpdatePair("tap", SettingsPool.GetValue("volume.tap") / 10f);
             UpdatePair("break", SettingsPool.GetValue("volume.break") / 10f);
             UpdatePair("slide", SettingsPool.GetValue("volume.slide") / 10f);
+            UpdatePair("cue", SettingsPool.GetValue("volume.cue_sound") / 10f);
 
             LoadAllSoundData();
 
@@ -85,159 +107,93 @@ namespace Game
 
         public void PlaySlideSound()
         {
-            var sound = _clipHandlers[gameSoundNameData.slideSoundPath];
-            PlaySound(sound, _volumes["slide"]);
+            var sound = _bassHandlers["slide"];
+            sound.Volume = _volumes["slide"];
+            sound.PlayOneShot();
+        }
+
+        public void PlayCueSound()
+        {
+            var sound = _bassHandlers["cue"];
+            sound.Volume = _volumes["cue"];
+            sound.PlayOneShot();
         }
 
         public void PlayBreakCriticalPerfectSound()
         {
-            var sound = _clipHandlers[gameSoundNameData.breakPerfectSoundPath];
-            PlaySound(sound, _volumes["break"]);
-            sound = _clipHandlers[gameSoundNameData.breakExtraSoundPath];
-            PlaySound(sound, _volumes["break"]);
+            var sound = _bassHandlers["break_extra"];
+            sound.Volume = _volumes["break"];
+            sound.PlayOneShot();
+            sound = _bassHandlers["break_perfect"];
+            sound.Volume = _volumes["break"];
+            sound.PlayOneShot();
         }
 
         public void PlayBreakPerfectSound()
         {
-            var sound = _clipHandlers[gameSoundNameData.breakPerfectSoundPath];
-            PlaySound(sound, _volumes["break"]);
+            var sound = _bassHandlers["break_perfect"];
+            sound.Volume = _volumes["break"];
+            sound.PlayOneShot();
         }
 
         public void PlayBreakGreatSound()
         {
-            var sound = _clipHandlers[gameSoundNameData.breakGreatSoundPath];
-            PlaySound(sound, _volumes["break"]);
+            var sound = _bassHandlers["break_great"];
+            sound.Volume = _volumes["break"];
+            sound.PlayOneShot();
         }
 
         public void PlayPerfectSound()
         {
-            var sound = _clipHandlers[gameSoundNameData.perfectSoundPath];
-            PlaySound(sound, _volumes["tap"]);
+            var sound = _bassHandlers["perfect"];
+            sound.Volume = _volumes["tap"];
+            sound.PlayOneShot();
         }
 
         public void PlayGreatSound()
         {
-            var sound = _clipHandlers[gameSoundNameData.greatSoundPath];
-            PlaySound(sound, _volumes["tap"]);
+            var sound = _bassHandlers["great"];
+            sound.Volume = _volumes["tap"];
+            sound.PlayOneShot();
         }
 
         public void PlayGoodSound()
         {
-            var sound = _clipHandlers[gameSoundNameData.goodSoundPath];
-            PlaySound(sound, _volumes["tap"]);
+            var sound = _bassHandlers["good"];
+            sound.Volume = _volumes["tap"];
+            sound.PlayOneShot();
         }
 
-        private void PlaySound(ClipHandler sound, float volume)
+        private void LoadSingleSoundData(AudioSoundNameData soundNameData, string dictKey)
         {
-            switch (sound)
+            var path = Path.Combine(soundNameData.directoryRelativeToStreamingAssets,
+                soundNameData.fileNameRelativeToDirectory);
+            var toPath = Path.Combine(Application.persistentDataPath, path);
+
+            StartCoroutine(FileDownloader.DownloadFile(path, toPath, () =>
             {
-                case AudioClipHandler audioClipHandler:
-                {
-                    var succeed =
-                        AudioManager.Instance.AudioSourcePool.TryGetAudioSourceHandler(out var handler,
-                            audioClipHandler, true);
+                var bassHandler = new BassHandler(toPath);
 
-                    if (!succeed)
-                        return;
-
-                    var audioSourceHandler = (AudioSourceHandler)handler;
-                    audioSourceHandler.SetClip(audioClipHandler);
-                    audioSourceHandler.SetVolume(volume);
-                    audioSourceHandler.Play();
-                    break;
-                }
-
-                case NativePointerHandler pointerHandler:
-                {
-                    AudioManager.Instance.NativeSourcePool.TryGetAudioSourceHandler(out var handler, pointerHandler,
-                        true);
-
-                    var nativeHandler = (NativeAudioSourceHandler)handler;
-
-                    nativeHandler.SetClip(pointerHandler);
-                    nativeHandler.Play();
-                    nativeHandler.SetVolume(volume);
-                    break;
-                }
-            }
-        }
-
-        private void LoadSingleSoundData(string path, string soundName, bool useNative = false)
-        {
-            ClipHandler clipHandler;
-
-            StartCoroutine(AudioManager.Instance.LoadAudioClip(path, clip =>
-            {
-#if (UNITY_IOS || UNITY_ANDROID) && !UNITY_EDITOR
-                if (useNative)
-                    clipHandler = new NativePointerHandler(NativeAudio.Load(clip));
-                else
-                    clipHandler = new AudioClipHandler(clip);
-#else
-                clipHandler = new AudioClipHandler(clip);
-#endif
-                _clipHandlers.Add(soundName, clipHandler);
+                _bassHandlers.Add(dictKey, bassHandler);
             }));
         }
     }
 
     [Serializable]
-    public class UiSoundNameData
+    public class AudioSoundNameData
     {
-        public string rollSoundPath;
-        public string selectSoundPath;
-        public string entrySoundPath;
+        public string fileNameRelativeToDirectory;
+        public string directoryRelativeToStreamingAssets = "DefaultSFX/GameSFX/";
 
-        public UiSoundNameData GetStreamingAssetsPrefixedPathData(string prefix = "DefaultSFX/UserInterfaceSFX/")
+        public AudioSoundNameData(string fileNameRelativeToDirectory)
         {
-            return new UiSoundNameData
-            {
-                rollSoundPath = Path.Combine(Application.streamingAssetsPath,
-                    prefix + rollSoundPath),
-                selectSoundPath = Path.Combine(Application.streamingAssetsPath,
-                    prefix + selectSoundPath),
-                entrySoundPath = Path.Combine(Application.streamingAssetsPath,
-                    prefix + entrySoundPath)
-            };
+            this.fileNameRelativeToDirectory = fileNameRelativeToDirectory;
         }
     }
 
     [Serializable]
     public class GameSoundNameData
     {
-        public string perfectSoundPath;
-        public string greatSoundPath;
-        public string goodSoundPath;
-        public string breakExtraSoundPath;
-        public string breakPerfectSoundPath;
-        public string breakGreatSoundPath;
-        public string slideSoundPath;
-        public string criticalSoundPath;
-        public string preparatoryBeatSoundPath;
-
-        public GameSoundNameData GetStreamingAssetsPrefixedPathData(string prefix = "DefaultSFX/GameSFX/")
-        {
-            return new GameSoundNameData
-            {
-                perfectSoundPath = Path.Combine(Application.streamingAssetsPath,
-                    prefix + perfectSoundPath),
-                greatSoundPath = Path.Combine(Application.streamingAssetsPath,
-                    prefix + greatSoundPath),
-                goodSoundPath =
-                    Path.Combine(Application.streamingAssetsPath, prefix + goodSoundPath),
-                breakExtraSoundPath = Path.Combine(Application.streamingAssetsPath,
-                    prefix + breakExtraSoundPath),
-                breakPerfectSoundPath = Path.Combine(Application.streamingAssetsPath,
-                    prefix + breakPerfectSoundPath),
-                breakGreatSoundPath = Path.Combine(Application.streamingAssetsPath,
-                    prefix + breakGreatSoundPath),
-                slideSoundPath = Path.Combine(Application.streamingAssetsPath,
-                    prefix + slideSoundPath),
-                criticalSoundPath = Path.Combine(Application.streamingAssetsPath,
-                    prefix + criticalSoundPath),
-                preparatoryBeatSoundPath = Path.Combine(Application.streamingAssetsPath,
-                    prefix + preparatoryBeatSoundPath)
-            };
-        }
+        public Dictionary<string, AudioSoundNameData> audioSoundNameDataDict;
     }
 }
