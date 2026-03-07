@@ -149,6 +149,9 @@ namespace Game
             if (NoteGenerator.Instance.CriticalTimeList.Count == 0)
                 return;
 
+            if (_cueSoundIndex >= NoteGenerator.Instance.CriticalTimeList.Count)
+                return;
+
             var audioTime = Maidata.SongBassHandler?.GetPosition();
 
             if (_time <= 0)
