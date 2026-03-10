@@ -1,6 +1,7 @@
 using System;
 using ManagedBass;
 using ManagedBass.Mix;
+using UI;
 
 namespace Game
 {
@@ -23,6 +24,16 @@ namespace Game
             Bass.ChannelSetAttribute(MixerHandle, ChannelAttribute.Buffer, 0);
 
             Bass.ChannelPlay(MixerHandle);
+
+            UIManager.OnApplicationLoseFocus += () =>
+            {
+                Bass.ChannelPause(MixerHandle);
+            };
+            
+            UIManager.OnApplicationHasFocus += () =>
+            {
+                Bass.ChannelPlay(MixerHandle);
+            };
         }
 
         public static void Free()

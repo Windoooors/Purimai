@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -338,85 +339,96 @@ namespace UI.LevelSelection
 
             var dataList = new List<LevelListItemData>();
 
+            Logging.Logger.LogInfo($"Grouped data count: {_rawData.Length}");
+
             while (dataList.Count < VirtualCount) dataList.AddRange(_rawData);
 
             _data = dataList.ToArray();
 
-            _listView.itemsSource = _data;
+            try
+            {
+                _listView.itemsSource = _data;
 
-            var targetRawIndex = 0;
+                var targetRawIndex = 0;
 
-            if (currentData != null)
-                switch (groupByRule)
-                {
-                    case SortingRules.Alphabet:
+                if (currentData != null)
+                    switch (groupByRule)
                     {
-                        for (var i = 0; i < _rawData.Length; i++)
+                        case SortingRules.Alphabet:
                         {
-                            var maidata = _rawData[i];
-                            if (maidata.MaidataReferenceCountPair.Maidata.Title ==
-                                currentData.MaidataReferenceCountPair.Maidata.Title)
+                            for (var i = 0; i < _rawData.Length; i++)
                             {
-                                targetRawIndex = i;
-                                break;
+                                var maidata = _rawData[i];
+                                if (maidata.MaidataReferenceCountPair.Maidata.Title ==
+                                    currentData.MaidataReferenceCountPair.Maidata.Title)
+                                {
+                                    targetRawIndex = i;
+                                    break;
+                                }
                             }
-                        }
 
-                        break;
-                    }
-                    case SortingRules.Difficulty:
-                    {
-                        for (var i = 0; i < _rawData.Length; i++)
+                            break;
+                        }
+                        case SortingRules.Difficulty:
                         {
-                            var maidata = _rawData[i];
-                            if (maidata.MaidataReferenceCountPair.Maidata.Title ==
-                                currentData.MaidataReferenceCountPair.Maidata.Title && maidata.DifficultyIndex ==
-                                _scoreContentPanel.AlphabeticallySelectedDifficultyIndex)
+                            for (var i = 0; i < _rawData.Length; i++)
                             {
-                                targetRawIndex = i;
-                                break;
+                                var maidata = _rawData[i];
+                                if (maidata.MaidataReferenceCountPair.Maidata.Title ==
+                                    currentData.MaidataReferenceCountPair.Maidata.Title && maidata.DifficultyIndex ==
+                                    _scoreContentPanel.AlphabeticallySelectedDifficultyIndex)
+                                {
+                                    targetRawIndex = i;
+                                    break;
+                                }
                             }
+
+                            break;
                         }
-
-                        break;
                     }
-                }
 
-            if (currentData == null) targetRawIndex = PlayerPrefs.GetInt("LevelListIndex");
+                if (currentData == null) targetRawIndex = PlayerPrefs.GetInt("LevelListIndex");
 
-            _snapManipulator.SnapToNearest(1, targetRawIndex, VirtualCount / 2, _rawData.Length, _scrollView,
-                out var targetIndex, false, false);
+                _snapManipulator.SnapToNearest(1, targetRawIndex, VirtualCount / 2, _rawData.Length, _scrollView,
+                    out var targetIndex, false, false);
 
-            _sortButton.RemoveFromClassList("sort-button-difficulty");
-            _sortButton.RemoveFromClassList("sort-button-alphabetically");
+                _sortButton.RemoveFromClassList("sort-button-difficulty");
+                _sortButton.RemoveFromClassList("sort-button-alphabetically");
 
-            _sortButton.AddToClassList(groupByRule is SortingRules.Alphabet
-                ? "sort-button-alphabetically"
-                : "sort-button-difficulty");
+                _sortButton.AddToClassList(groupByRule is SortingRules.Alphabet
+                    ? "sort-button-alphabetically"
+                    : "sort-button-difficulty");
 
-            CategoryListManager.Instance.ChangeData(pairedData.Item2);
+                CategoryListManager.Instance.ChangeData(pairedData.Item2);
 
-            _listView.selectedIndex = targetIndex;
+                _listView.selectedIndex = targetIndex;
 
-            _scoreContentPanel.SetChartInformationData(
-                _data[_listView.selectedIndex].MaidataReferenceCountPair.Maidata,
-                groupByRule == SortingRules.Difficulty
-                    ? _data[_listView.selectedIndex].DifficultyIndex
-                    : _scoreContentPanel.AlphabeticallySelectedDifficultyIndex);
-            _scoreContentPanel.SetScoreData(
-                ChartRankDataManager.GetChartRankData(_data[_listView.selectedIndex].MaidataReferenceCountPair
-                    .Maidata.MaidataDirectoryName), groupByRule == SortingRules.Difficulty
-                    ? _data[_listView.selectedIndex].DifficultyIndex
-                    : _scoreContentPanel.AlphabeticallySelectedDifficultyIndex);
+                _scoreContentPanel.SetChartInformationData(
+                    _data[_listView.selectedIndex].MaidataReferenceCountPair.Maidata,
+                    groupByRule == SortingRules.Difficulty
+                        ? _data[_listView.selectedIndex].DifficultyIndex
+                        : _scoreContentPanel.AlphabeticallySelectedDifficultyIndex);
+                _scoreContentPanel.SetScoreData(
+                    ChartRankDataManager.GetChartRankData(_data[_listView.selectedIndex].MaidataReferenceCountPair
+                        .Maidata.MaidataDirectoryName), groupByRule == SortingRules.Difficulty
+                        ? _data[_listView.selectedIndex].DifficultyIndex
+                        : _scoreContentPanel.AlphabeticallySelectedDifficultyIndex);
 
-            if (_lastCategoryData != _data[targetIndex].Category)
-                CategoryListManager.Instance.ChangeCategoryPassively(_data[targetIndex].Category);
+                if (_lastCategoryData != _data[targetIndex].Category)
+                    CategoryListManager.Instance.ChangeCategoryPassively(_data[targetIndex].Category);
 
-            _lastCategoryData = _data[targetIndex].Category;
+                _lastCategoryData = _data[targetIndex].Category;
+            }
+            catch (Exception ex)
+            {
+                Logging.Logger.LogError($"{ex.Message} Stack Trace: {ex.StackTrace}");
+            }
         }
 
         private void InitializeGroupingRule()
         {
+            Logging.Logger.LogInfo("Initializing grouping rule.");
+            
             var newGroupByRule = SettingsPool.GetValue("group_rule") switch
             {
                 0 => SortingRules.Alphabet,

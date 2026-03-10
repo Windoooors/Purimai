@@ -1,3 +1,4 @@
+using System;
 using Game;
 using UI.InGame;
 using UI.LevelSelection;
@@ -36,6 +37,9 @@ namespace UI
         public Vector2Int portraitReferenceResolution = new(600, 600);
         public Vector2Int landscapeReferenceResolution = new(1024, 600);
 
+        public static Action OnApplicationHasFocus;
+        public static Action OnApplicationLoseFocus;
+
         public static UIManager Instance => _instance ?? FindAnyObjectByType<UIManager>();
 
         private void Awake()
@@ -51,6 +55,14 @@ namespace UI
             ShowLevelSelector();
 
             ScreenOrientationManager.Instance.ScreenChanged += ChangeLayoutConsideringOrientation;
+        }
+
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            if (hasFocus)
+                OnApplicationHasFocus();
+            else
+                OnApplicationLoseFocus();
         }
 
         private void Start()

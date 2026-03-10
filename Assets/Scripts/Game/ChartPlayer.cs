@@ -154,7 +154,7 @@ namespace Game
 
             var audioTime = Maidata.SongBassHandler?.GetPosition();
 
-            if (_time <= 0)
+            if (_time <= 0 || !(Maidata.SongBassHandler?.IsPlaying ?? false))
                 audioTime = _time;
 
             if (audioTime * 1000 >= NoteGenerator.Instance.CriticalTimeList[_cueSoundIndex])
@@ -171,6 +171,9 @@ namespace Game
 
         private void CalibrateTime()
         {
+            if (!Maidata.SongBassHandler.IsPlaying)
+                return;
+            
             var songPosition = (float)Maidata.SongBassHandler.GetPosition();
 
             if (!_startCalibrated &&

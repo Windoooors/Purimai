@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 namespace UI
@@ -8,6 +9,7 @@ namespace UI
         private static ScreenOrientationManager _instance;
 
         private ScreenOrientation _lastScreenOrientation = ScreenOrientation.AutoRotation;
+        private ScreenOrientation _lastLandscapeOrientation = ScreenOrientation.LandscapeLeft;
 
         public Action ScreenChanged;
         public static ScreenOrientationManager Instance => _instance ?? FindAnyObjectByType<ScreenOrientationManager>();
@@ -19,7 +21,12 @@ namespace UI
 
         private void Update()
         {
-            if (Screen.orientation != _lastScreenOrientation) ScreenChanged();
+            if (Screen.orientation != _lastScreenOrientation)
+            {
+                ScreenChanged();
+                if (_lastScreenOrientation is ScreenOrientation.LandscapeLeft or ScreenOrientation.LandscapeRight)
+                    _lastLandscapeOrientation = _lastScreenOrientation;
+            }
 
             _lastScreenOrientation = Screen.orientation;
         }
@@ -32,6 +39,8 @@ namespace UI
             Screen.autorotateToLandscapeRight = true;
 
             Screen.orientation = ScreenOrientation.AutoRotation;
+            
+            Logging.Logger.LogInfo("Screen rotation set to portrait-only.");
         }
 
         public void DisablePortrait()
@@ -41,7 +50,19 @@ namespace UI
             Screen.autorotateToLandscapeLeft = true;
             Screen.autorotateToLandscapeRight = true;
 
-            Screen.orientation = ScreenOrientation.AutoRotation;
+            Screen.orientation = _lastLandscapeOrientation;
+
+            StartCoroutine(WaitAndEnableAutoRotation());
+            
+            Logging.Logger.LogInfo("Screen rotation set to horizontal-only.");
+            
+            return;
+
+            IEnumerator WaitAndEnableAutoRotation()
+            {
+                yield return new WaitForSeconds(0.5f);
+                Screen.orientation = ScreenOrientation.AutoRotation;
+            }
         }
     }
 }
