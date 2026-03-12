@@ -48,6 +48,9 @@ namespace Game.Notes
             {
                 var index = segments.ToList().IndexOf(segment);
 
+                if (index == 0)
+                    continue;
+
                 float tapTime;
                 float leaveTime;
 

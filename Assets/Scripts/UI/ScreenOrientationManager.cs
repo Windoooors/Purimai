@@ -1,15 +1,16 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using Logger = Logging.Logger;
 
 namespace UI
 {
     public class ScreenOrientationManager : MonoBehaviour
     {
         private static ScreenOrientationManager _instance;
+        private ScreenOrientation _lastLandscapeOrientation = ScreenOrientation.LandscapeLeft;
 
         private ScreenOrientation _lastScreenOrientation = ScreenOrientation.AutoRotation;
-        private ScreenOrientation _lastLandscapeOrientation = ScreenOrientation.LandscapeLeft;
 
         public Action ScreenChanged;
         public static ScreenOrientationManager Instance => _instance ?? FindAnyObjectByType<ScreenOrientationManager>();
@@ -39,8 +40,8 @@ namespace UI
             Screen.autorotateToLandscapeRight = true;
 
             Screen.orientation = ScreenOrientation.AutoRotation;
-            
-            Logging.Logger.LogInfo("Screen rotation set to portrait-only.");
+
+            Logger.LogInfo("Screen rotation set to portrait-only.");
         }
 
         public void DisablePortrait()
@@ -53,9 +54,9 @@ namespace UI
             Screen.orientation = _lastLandscapeOrientation;
 
             StartCoroutine(WaitAndEnableAutoRotation());
-            
-            Logging.Logger.LogInfo("Screen rotation set to horizontal-only.");
-            
+
+            Logger.LogInfo("Screen rotation set to horizontal-only.");
+
             return;
 
             IEnumerator WaitAndEnableAutoRotation()

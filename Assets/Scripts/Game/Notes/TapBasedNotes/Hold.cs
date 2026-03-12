@@ -33,10 +33,13 @@ namespace Game.Notes.TapBasedNotes
 
         private HoldTransform _holdTransformData = new();
         private float _initialHoldLength;
+        private JudgeManager.JudgeAction _leaveJudgeAction;
         private bool _lineMoving;
         private bool _moving;
 
         private int _nowEmergingTimePosition;
+
+        private JudgeManager.JudgeAction _tapJudgeAction;
         private TapOrLineTransform _tapOrLineTransform = new();
 
         public override void ManualUpdate()
@@ -75,8 +78,8 @@ namespace Game.Notes.TapBasedNotes
                 holdSpriteRenderer.enabled = false;
                 holdEndSpriteRenderer.enabled = false;
 
-                SimulatedSensor.OnTap -= JudgeHead;
-                SimulatedSensor.OnLeave -= OnLeave;
+                _tapJudgeAction.Enabled = false;
+                _leaveJudgeAction.Enabled = false;
 
                 SetActive(false, NoteContentRoot);
             }
@@ -105,7 +108,7 @@ namespace Game.Notes.TapBasedNotes
 
                 SetActive(false, NoteContentRoot);
 
-                SimulatedSensor.OnLeave -= OnLeave;
+                _leaveJudgeAction.Enabled = false;
             }
 
             holdTransform.position = Lanes.Instance.startPoints[lane - 1].position +
@@ -245,8 +248,14 @@ namespace Game.Notes.TapBasedNotes
 
         public override void RegisterTapEvent()
         {
-            SimulatedSensor.OnTap += JudgeHead;
-            SimulatedSensor.OnLeave += OnLeave;
+            var tapJudgeSettings = ChartPlayer.Instance.tapJudgeSettings;
+            var holdTailJudgeSettings = ChartPlayer.Instance.holdTailJudgeSettings;
+
+            JudgeManager.Instance.RegisterTap(timing - 100 - tapJudgeSettings.fastGoodTiming,
+                timing + 100 + tapJudgeSettings.lateGoodTiming, JudgeHead, out _tapJudgeAction);
+
+            JudgeManager.Instance.RegisterLeave(timing - 100 - tapJudgeSettings.fastGoodTiming,
+                timing + duration + 100 + holdTailJudgeSettings.lateGoodTiming, OnLeave, out _leaveJudgeAction);
         }
 
         public override void AddAutoPlayKeyFrame()
@@ -338,7 +347,7 @@ namespace Game.Notes.TapBasedNotes
 
             _glowAnimator.SetTrigger("Glow");
 
-            SimulatedSensor.OnTap -= JudgeHead;
+            _tapJudgeAction.Enabled = false;
         }
 
         private void OnLeave(object sender, TouchEventArgs e)
@@ -395,7 +404,7 @@ namespace Game.Notes.TapBasedNotes
             holdSpriteRenderer.enabled = false;
             holdEndSpriteRenderer.enabled = false;
 
-            SimulatedSensor.OnLeave -= OnLeave;
+            _leaveJudgeAction.Enabled = false;
 
             holdJudged = true;
 

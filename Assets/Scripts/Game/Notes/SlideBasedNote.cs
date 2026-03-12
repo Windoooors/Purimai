@@ -49,11 +49,14 @@ namespace Game.Notes
 
         private bool _haveShown;
 
+        private JudgeManager.JudgeAction _holdJudgeAction;
+
         private bool _isFast;
 
 
         private Animator _judgeDisplayAnimator;
         private JudgeState _judgeState;
+        private JudgeManager.JudgeAction _leaveJudgeAction;
 
         private SpriteRenderer[] _slideArrowSpriteRenderers;
 
@@ -141,8 +144,15 @@ namespace Game.Notes
 
             judgeDisplaySpriteRenderer.sortingOrder -= order;
 
-            SimulatedSensor.OnHold += OnHoldSlidePath;
-            SimulatedSensor.OnLeave += OnLeaveSlidePath;
+            var tapJudgeSettings = ChartPlayer.Instance.tapJudgeSettings;
+            var slideJudgeSettings = ChartPlayer.Instance.slideJudgeSettings;
+
+            JudgeManager.Instance.RegisterHold(timing - tapJudgeSettings.fastGoodTiming - 100,
+                timing + slideDuration + waitDuration + 100 + slideJudgeSettings.lateGoodTiming, OnHoldSlidePath,
+                out _holdJudgeAction);
+            JudgeManager.Instance.RegisterLeave(timing - tapJudgeSettings.fastGoodTiming - 100,
+                timing + slideDuration + waitDuration + 100 + slideJudgeSettings.lateGoodTiming, OnLeaveSlidePath,
+                out _leaveJudgeAction);
 
             Scoreboard.SlideCount.TotalCount++;
 
@@ -230,6 +240,10 @@ namespace Game.Notes
                 }
 
                 Slided = true;
+
+                _holdJudgeAction.Enabled = false;
+                _leaveJudgeAction.Enabled = false;
+
                 if (!_concealed)
                     PlayJudgeAnimation();
 
@@ -408,6 +422,9 @@ namespace Game.Notes
 
             UpdateJudgeDisplayDirection(index);
             Slided = true;
+
+            _holdJudgeAction.Enabled = false;
+            _leaveJudgeAction.Enabled = false;
         }
 
         private void PlayJudgeAnimation()

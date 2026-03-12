@@ -1,6 +1,6 @@
 using Game.ChartManagement;
 
-namespace Game.Notes.SlideBasedNotes
+namespace Game.Notes.NormalSlideBasedNotes
 {
     public class PqSlide : NormalSlide
     {

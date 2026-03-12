@@ -7,6 +7,7 @@ using UI.Settings;
 using UI.Settings.Managers;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Logger = Logging.Logger;
 
 namespace UI.LevelSelection
 {
@@ -339,7 +340,7 @@ namespace UI.LevelSelection
 
             var dataList = new List<LevelListItemData>();
 
-            Logging.Logger.LogInfo($"Grouped data count: {_rawData.Length}");
+            Logger.LogInfo($"Grouped data count: {_rawData.Length}");
 
             while (dataList.Count < VirtualCount) dataList.AddRange(_rawData);
 
@@ -421,14 +422,14 @@ namespace UI.LevelSelection
             }
             catch (Exception ex)
             {
-                Logging.Logger.LogError($"{ex.Message} Stack Trace: {ex.StackTrace}");
+                Logger.LogError($"{ex.Message} Stack Trace: {ex.StackTrace}");
             }
         }
 
         private void InitializeGroupingRule()
         {
-            Logging.Logger.LogInfo("Initializing grouping rule.");
-            
+            Logger.LogInfo("Initializing grouping rule.");
+
             var newGroupByRule = SettingsPool.GetValue("group_rule") switch
             {
                 0 => SortingRules.Alphabet,

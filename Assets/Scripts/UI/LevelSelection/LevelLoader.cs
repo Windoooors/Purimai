@@ -4,6 +4,7 @@ using Game;
 using UI.Result;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Logger = Logging.Logger;
 
 namespace UI.LevelSelection
 {
@@ -58,28 +59,39 @@ namespace UI.LevelSelection
 
         public void EnterLevel(Maidata maidata, int difficultyIndex)
         {
-            SimulatedSensor.Clear();
+            Logger.LogInfo("Entering level: " + maidata.MaidataDirectoryName + ", Diff:" + difficultyIndex);
 
-            Scoreboard.Reset();
+            try
+            {
+                SimulatedSensor.Clear();
 
-            _maidata = maidata;
-            _levelIndex = difficultyIndex;
+                Scoreboard.Reset();
 
-            if (LevelSelectionManager.Instance)
-                LevelSelectionManager.Instance.songPreviewing = false;
+                _maidata = maidata;
+                _levelIndex = difficultyIndex;
 
-            _maidata.SongBassHandler?.Stop();
+                if (LevelSelectionManager.Instance)
+                    LevelSelectionManager.Instance.songPreviewing = false;
 
-            if (!maidata.SongLoaded)
-                maidata.LoadSongClip();
+                _maidata.SongBassHandler?.Stop();
 
-            Task.Run(maidata.GenerateBlurredCover);
+                if (!maidata.SongLoaded)
+                    maidata.LoadSongClip();
 
-            ScreenOrientationManager.Instance.EnablePortrait();
+                Task.Run(maidata.GenerateBlurredCover);
 
-            PlayerPrefsSavingProcedure?.Invoke();
+                ScreenOrientationManager.Instance.EnablePortrait();
 
-            _enteringLevel = true;
+                PlayerPrefsSavingProcedure?.Invoke();
+
+                _enteringLevel = true;
+            }
+            catch (Exception e)
+            {
+                Logger.LogError("Entering level failed: " + maidata.MaidataDirectoryName + ", Diff:" +
+                                difficultyIndex + ", Exception:" +
+                                $"\n{e.Message}\nStack Trace:{e.StackTrace}");
+            }
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)

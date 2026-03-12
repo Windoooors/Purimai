@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.ChartManagement;
 using Game.Notes;
+using Game.Notes.NormalSlideBasedNotes;
 using Game.Notes.SlideBasedNotes;
 using Game.Notes.TapBasedNotes;
 using UI.Settings;
@@ -92,7 +93,6 @@ namespace Game
                         GlobalCueSoundOffset);
 
                 var isEach = noteDataObject.TapDataObjects.Length + noteDataObject.HoldDataObjects.Length > 1;
-                //var isSlideEach = noteDataObject.SlideDataObjects.Length > 1;
 
                 GenerateTaps(noteDataObject, isEach, order);
                 GenerateHolds(noteDataObject, isEach, order);

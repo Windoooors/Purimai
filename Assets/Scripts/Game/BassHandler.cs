@@ -25,15 +25,9 @@ namespace Game
 
             Bass.ChannelPlay(MixerHandle);
 
-            UIManager.OnApplicationLoseFocus += () =>
-            {
-                Bass.ChannelPause(MixerHandle);
-            };
-            
-            UIManager.OnApplicationHasFocus += () =>
-            {
-                Bass.ChannelPlay(MixerHandle);
-            };
+            UIManager.OnApplicationLoseFocus += () => { Bass.ChannelPause(MixerHandle); };
+
+            UIManager.OnApplicationHasFocus += () => { Bass.ChannelPlay(MixerHandle); };
         }
 
         public static void Free()

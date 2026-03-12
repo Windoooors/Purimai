@@ -6720,8 +6720,9 @@ GameObject:
   - component: {fileID: 1054234680}
   - component: {fileID: 1054234684}
   - component: {fileID: 1054234685}
+  - component: {fileID: 1054234686}
   m_Layer: 0
-  m_Name: Chart Manager
+  m_Name: Game Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6977,7 +6978,6 @@ MonoBehaviour:
     lateGoodTiming: 600
     fastGoodTiming: 600
   isPlaying: 0
-  songClip: {fileID: 0}
   levelDifficultyIndex: 0
 --- !u!114 &1054234682
 MonoBehaviour:
@@ -7115,6 +7115,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a3ac8f569274625bb6678388154881b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.AutoPlayer
+--- !u!114 &1054234686
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1054234679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb821d764d6346b292a6cb43c5cb6743, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Notes.JudgeManager
 --- !u!1 &1071052371
 GameObject:
   m_ObjectHideFlags: 0

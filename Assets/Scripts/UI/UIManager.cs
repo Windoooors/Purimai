@@ -16,6 +16,9 @@ namespace UI
     {
         private static UIManager _instance;
 
+        public static Action OnApplicationHasFocus;
+        public static Action OnApplicationLoseFocus;
+
         public FontAsset mainFontAsset;
 
         [FormerlySerializedAs("uIDocument")] public UIDocument uiDocument;
@@ -37,9 +40,6 @@ namespace UI
         public Vector2Int portraitReferenceResolution = new(600, 600);
         public Vector2Int landscapeReferenceResolution = new(1024, 600);
 
-        public static Action OnApplicationHasFocus;
-        public static Action OnApplicationLoseFocus;
-
         public static UIManager Instance => _instance ?? FindAnyObjectByType<UIManager>();
 
         private void Awake()
@@ -48,7 +48,7 @@ namespace UI
 
             ApplyResolution();
 
-            uiDocument.rootVisualElement.RegisterCallback<GeometryChangedEvent>(evt => { ApplySafeArea(); });
+            uiDocument.rootVisualElement.RegisterCallback<GeometryChangedEvent>(_ => { ApplySafeArea(); });
 
             SettingsManager.OnSettingsChanged += ApplyResolution;
 
@@ -57,17 +57,17 @@ namespace UI
             ScreenOrientationManager.Instance.ScreenChanged += ChangeLayoutConsideringOrientation;
         }
 
+        private void Start()
+        {
+            DontDestroyOnLoad(gameObject);
+        }
+
         private void OnApplicationFocus(bool hasFocus)
         {
             if (hasFocus)
                 OnApplicationHasFocus();
             else
                 OnApplicationLoseFocus();
-        }
-
-        private void Start()
-        {
-            DontDestroyOnLoad(gameObject);
         }
 
         private void OnApplicationQuit()
@@ -164,6 +164,7 @@ namespace UI
         public void UpdateTMPAtlas(char[] characters)
         {
             var characterString = new string(characters);
+
             mainFontAsset.TryAddCharacters(characterString);
         }
 

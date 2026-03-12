@@ -5,6 +5,7 @@ using System.Linq;
 using GihanSoft.String;
 using TinyPinyin;
 using UnityEngine;
+using Logger = Logging.Logger;
 
 namespace UI.LevelSelection
 {
@@ -163,7 +164,7 @@ namespace UI.LevelSelection
 
             MaidataList.Clear();
 
-            Logging.Logger.LogInfo("Loading simai metadata.");
+            Logger.LogInfo("Loading simai metadata.");
 
             try
             {
@@ -203,12 +204,12 @@ namespace UI.LevelSelection
                 }
 
                 UIManager.Instance.UpdateTMPAtlas(Maidata.UsedCharacters.ToArray());
-                
-                Logging.Logger.LogInfo($"Simai metadata loading completed. Found {MaidataList.Count} chart(s).");
+
+                Logger.LogInfo($"Simai metadata loading completed. Found {MaidataList.Count} chart(s).");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                Logging.Logger.LogError($"{ex.Message} Stack Trace: {ex.StackTrace}");
+                Logger.LogError($"{ex.Message} Stack Trace: {ex.StackTrace}");
             }
         }
 

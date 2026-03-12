@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Linq;
 using Game.Notes;
@@ -9,6 +10,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Video;
+using Logger = Logging.Logger;
 #if UNITY_EDITOR
 using EditorScript;
 #endif
@@ -56,6 +58,7 @@ namespace Game
         public int levelDifficultyIndex;
 
         private readonly float _generalPlaybackDelayInSeconds = 3f;
+        private readonly float _maxCalibrationRate = 0.1f;
         private int _calibrationTimes;
 
         private Camera _camera;
@@ -69,7 +72,6 @@ namespace Game
         private Coroutine _delayedAudioPlaybackRoutine;
 
         private Coroutine _delayedVideoPlaybackRoutine;
-        private readonly float _maxCalibrationRate = 0.1f;
         private float _needCalibrationThreshold = 0.020f;
 
         private bool _paused;
@@ -94,6 +96,8 @@ namespace Game
             Instance = this;
 
             _needCalibrationThreshold = PlayerPrefs.GetFloat("CalibrationDeltaTimeThreshold", 0.020f);
+
+            Logger.LogInfo("Calibration Threshold: " + _needCalibrationThreshold);
 
             _camera = FindAnyObjectByType<Camera>();
 
@@ -173,7 +177,7 @@ namespace Game
         {
             if (!Maidata.SongBassHandler.IsPlaying)
                 return;
-            
+
             var songPosition = (float)Maidata.SongBassHandler.GetPosition();
 
             if (!_startCalibrated &&
@@ -375,45 +379,59 @@ namespace Game
 
         public void InitializeLevel(Maidata maidata, int difficultyIndex)
         {
-            Maidata = maidata;
-
-            levelDifficultyIndex = difficultyIndex;
-
-            var chart = maidata.Charts.ToList().Find(x => x.DifficultyIndex == difficultyIndex);
-
-            NoteGenerator.Instance.GenerateNotes(chart.ChartString, maidata.FirstNoteTime);
-
-            var useBlurredCover = SettingsPool.GetValue("blurred_cover") != 0;
-
-            if (!TryLoadVideo(maidata.PvPath))
+            try
             {
-                backgroundImage.color = Color.white;
-                backgroundImage.texture = useBlurredCover
-                    ? maidata.BlurredSongCoverAsBackgroundDecodedImage.GetTexture2D()
-                    : maidata.SongCoverDecodedImage.GetTexture2D();
+                Logger.LogInfo("Loading Chart..");
+
+                Maidata = maidata;
+
+                levelDifficultyIndex = difficultyIndex;
+
+                var chart = maidata.Charts.ToList().Find(x => x.DifficultyIndex == difficultyIndex);
+
+                NoteGenerator.Instance.GenerateNotes(chart.ChartString, maidata.FirstNoteTime);
+
+                var useBlurredCover = SettingsPool.GetValue("blurred_cover") != 0;
+
+                if (!TryLoadVideo(maidata.PvPath))
+                {
+                    backgroundImage.color = Color.white;
+                    backgroundImage.texture = useBlurredCover
+                        ? maidata.BlurredSongCoverAsBackgroundDecodedImage.GetTexture2D()
+                        : maidata.SongCoverDecodedImage.GetTexture2D();
+
+                    Logger.LogInfo("Chart has no video.");
+                }
+                else
+                {
+                    backgroundImage.texture = null;
+                    backgroundImage.color = Color.black;
+
+                    Logger.LogInfo("Chart video successfully loaded.");
+                }
+
+                InitializeCircleColor(difficultyIndex - 1, maidata.IsUtage);
+
+                var darkness = SettingsPool.GetValue("background_brightness") switch
+                {
+                    0 => 1f,
+                    1 => 0.7f,
+                    2 => 0.435f,
+                    3 => 0.3f,
+                    4 => 0.2f,
+                    5 => 0,
+                    _ => 0.435f
+                };
+
+                backgroundBrightnessCover.color = new Color(0, 0, 0, darkness);
+
+                Play();
             }
-            else
+            catch (Exception e)
             {
-                backgroundImage.texture = null;
-                backgroundImage.color = Color.black;
+                Logger.LogError(
+                    $"Chart Initialization failed: {e.Message}\nStack Trace: {e.StackTrace}");
             }
-
-            InitializeCircleColor(difficultyIndex - 1, maidata.IsUtage);
-
-            var darkness = SettingsPool.GetValue("background_brightness") switch
-            {
-                0 => 1f,
-                1 => 0.7f,
-                2 => 0.435f,
-                3 => 0.3f,
-                4 => 0.2f,
-                5 => 0,
-                _ => 0.435f
-            };
-
-            backgroundBrightnessCover.color = new Color(0, 0, 0, darkness);
-
-            Play();
         }
 
 

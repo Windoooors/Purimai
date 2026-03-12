@@ -14,6 +14,8 @@ namespace Game.Notes.TapBasedNotes
         public SpriteRenderer tapSpriteRenderer;
         public Transform tapTransform;
 
+        private JudgeManager.JudgeAction _judgeAction;
+
         private TapOrLineTransform _tapOrLineTransform = new();
 
         public override void ManualUpdate()
@@ -53,7 +55,7 @@ namespace Game.Notes.TapBasedNotes
 
                 PlayJudgeAnimation();
 
-                SimulatedSensor.OnTap -= Judge;
+                _judgeAction.Enabled = false;
 
                 SetActive(false, NoteContentRoot);
             }
@@ -95,7 +97,11 @@ namespace Game.Notes.TapBasedNotes
 
         public override void RegisterTapEvent()
         {
-            SimulatedSensor.OnTap += Judge;
+            var judgeSettings = ChartPlayer.Instance.tapJudgeSettings;
+
+            JudgeManager.Instance.RegisterTap(timing - 100 - judgeSettings.fastGoodTiming,
+                timing + 100 + judgeSettings.lateGoodTiming, Judge, out _judgeAction
+            );
         }
 
         public override void AddAutoPlayKeyFrame()
@@ -148,7 +154,7 @@ namespace Game.Notes.TapBasedNotes
 
             tapSpriteRenderer.enabled = false;
 
-            SimulatedSensor.OnTap -= Judge;
+            _judgeAction.Enabled = false;
 
             SetActive(false, NoteContentRoot);
         }

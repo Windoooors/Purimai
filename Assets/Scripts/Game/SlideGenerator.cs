@@ -1,7 +1,7 @@
 using System.Linq;
 using Game.ChartManagement;
 using Game.Notes;
-using Game.Notes.SlideBasedNotes;
+using Game.Notes.NormalSlideBasedNotes;
 using UnityEngine;
 
 namespace Game
