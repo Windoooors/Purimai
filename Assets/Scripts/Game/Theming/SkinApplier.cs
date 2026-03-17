@@ -14,6 +14,7 @@ namespace Game.Theming
     public static class SkinManager
     {
         public static readonly List<SkinData> SkinDataList = new();
+        public static SkinData DefaultSkin { get; private set; }
 
         public static void Load()
         {
@@ -26,7 +27,7 @@ namespace Game.Theming
 
             SkinDataList.Clear();
 
-            SkinDataList.Add(new SkinData
+            DefaultSkin = new SkinData
             {
                 Path = Path.Combine("default_skin"),
                 AppliedModules = 0,
@@ -42,7 +43,9 @@ namespace Game.Theming
                     Data = Array.Empty<SkinPieceDataDto>()
                 },
                 InStreamingAssets = true
-            });
+            };
+
+            SkinDataList.Add(DefaultSkin);
 
             foreach (var skinPath in skinPaths)
             {
@@ -178,59 +181,78 @@ namespace Game.Theming
 
                     if (!streaming)
                     {
-                        var path = skinPieceDataDto != null ? Path.Combine(skinData.Path, skinPieceDataDto.Path) : "";
+                        LoadFromPersistentData(skinData, skinPieceDataDto, skinPieceData, () =>
+                        {
+                            var defaultSkinPieceDataDto = SkinManager.DefaultSkin.SkinDataDto.Data.ToList()
+                                .Find(x => x.Key == skinPieceData.key);
 
-                        if (!File.Exists(path)) path = Path.Combine(skinData.Path, skinPieceData.key + ".png");
-                        if (!File.Exists(path))
-                            path = Path.Combine(skinData.Path, "GameSkins/" + skinPieceData.key + ".png");
-                        if (!File.Exists(path)) continue;
-
-                        LoadTexture(path, skinPieceData.sprite);
+                            LoadFromStreamingAssets(SkinManager.DefaultSkin, defaultSkinPieceDataDto, skinPieceData);
+                        });
                     }
                     else
                     {
                         /*if (BetterStreamingAssets.DirectoryExists(skinData.Path + "/"))
                             return;*/
-
-                        var path = skinPieceDataDto != null ? Path.Combine(skinData.Path, skinPieceDataDto.Path) : "";
-
-                        if (path == "" || !BetterStreamingAssets.FileExists(path))
-                            path = Path.Combine(skinData.Path, skinPieceData.key + ".png");
-                        if (!BetterStreamingAssets.FileExists(path))
-                            path = Path.Combine(skinData.Path, "game_skins/" + skinPieceData.key + ".png");
-                        if (!BetterStreamingAssets.FileExists(path)) continue;
-
-                        var data = BetterStreamingAssets.ReadAllBytes(path);
-
-                        LoadTextureFromBytes(data, skinPieceData.sprite);
+                        LoadFromStreamingAssets(skinData, skinPieceDataDto, skinPieceData);
                     }
                 }
+            }
 
-                return;
+            void LoadFromStreamingAssets(SkinData skinData, SkinPieceDataDto skinPieceDataDto,
+                SkinPieceData skinPieceData)
+            {
+                var path = skinPieceDataDto != null ? Path.Combine(skinData.Path, skinPieceDataDto.Path) : "";
 
-                void LoadTexture(string path, Sprite sprite)
+                if (path == "" || !BetterStreamingAssets.FileExists(path))
+                    path = Path.Combine(skinData.Path, skinPieceData.key + ".png");
+                if (!BetterStreamingAssets.FileExists(path))
+                    path = Path.Combine(skinData.Path, "game_skins/" + skinPieceData.key + ".png");
+                if (!BetterStreamingAssets.FileExists(path)) return;
+
+                var data = BetterStreamingAssets.ReadAllBytes(path);
+
+                LoadTextureFromBytes(data, skinPieceData.sprite);
+            }
+
+            void LoadFromPersistentData(SkinData skinData, SkinPieceDataDto skinPieceDataDto,
+                SkinPieceData skinPieceData, Action onFileNotFound)
+            {
+                var path = skinPieceDataDto != null ? Path.Combine(skinData.Path, skinPieceDataDto.Path) : "";
+
+                if (!File.Exists(path)) path = Path.Combine(skinData.Path, skinPieceData.key + ".png");
+                if (!File.Exists(path))
+                    path = Path.Combine(skinData.Path, "GameSkins/" + skinPieceData.key + ".png");
+                if (!File.Exists(path))
                 {
-                    using var image = Image.Load<Rgba32>(path);
-
-                    using var decoded = new DecodedImage(image);
-
-                    sprite.texture.Reinitialize(decoded.Width, decoded.Height,
-                        TextureFormat.RGBA32, false);
-                    sprite.texture.SetPixelData(decoded.PixelData, 0);
-                    sprite.texture.Apply();
+                    onFileNotFound?.Invoke();
+                    return;
                 }
 
-                void LoadTextureFromBytes(byte[] data, Sprite sprite)
-                {
-                    using var image = Image.Load<Rgba32>(data);
+                LoadTexture(path, skinPieceData.sprite);
+            }
 
-                    using var decoded = new DecodedImage(image);
+            void LoadTexture(string path, Sprite sprite)
+            {
+                using var image = Image.Load<Rgba32>(path);
 
-                    sprite.texture.Reinitialize(decoded.Width, decoded.Height,
-                        TextureFormat.RGBA32, false);
-                    sprite.texture.SetPixelData(decoded.PixelData, 0);
-                    sprite.texture.Apply();
-                }
+                using var decoded = new DecodedImage(image);
+
+                sprite.texture.Reinitialize(decoded.Width, decoded.Height,
+                    TextureFormat.RGBA32, false);
+                sprite.texture.SetPixelData(decoded.PixelData, 0);
+                sprite.texture.Apply();
+            }
+
+            void LoadTextureFromBytes(byte[] data, Sprite sprite)
+            {
+                using var image = Image.Load<Rgba32>(data);
+
+                using var decoded = new DecodedImage(image);
+
+                sprite.texture.Reinitialize(decoded.Width, decoded.Height,
+                    TextureFormat.RGBA32, false);
+                sprite.texture.SetPixelData(decoded.PixelData, 0);
+                sprite.texture.Apply();
             }
         }
     }
