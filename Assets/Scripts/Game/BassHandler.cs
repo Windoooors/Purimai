@@ -50,8 +50,22 @@ namespace Game
         public BassHandler(string filePath)
         {
             GlobalAudioMixer.Init();
-
+            
             _sourceStream = Bass.CreateStream(filePath, 0, 0, BassFlags.Decode | BassFlags.Prescan);
+
+            if (_sourceStream == 0)
+                throw new Exception($"Loading Failed: {Bass.LastError}");
+
+            BassMix.MixerAddChannel(GlobalAudioMixer.MixerHandle, _sourceStream,
+                BassFlags.Default | BassFlags.MixerChanNoRampin);
+            Pause();
+        }
+        
+        public BassHandler(byte[] data)
+        {
+            GlobalAudioMixer.Init();
+            
+            _sourceStream = Bass.CreateStream(data, 0, data.Length, BassFlags.Decode | BassFlags.Prescan);
 
             if (_sourceStream == 0)
                 throw new Exception($"Loading Failed: {Bass.LastError}");

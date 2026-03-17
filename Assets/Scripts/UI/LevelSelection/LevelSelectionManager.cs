@@ -49,6 +49,7 @@ namespace UI.LevelSelection
         private ScoreContentPanel _scoreContentPanel;
         private ScrollView _scrollView;
         private Button _settingsButton;
+        private Button _themesButton;
 
         private SnapScrollManipulator _snapManipulator;
         private SongCoverManipulator _songCoverManipulator;
@@ -59,7 +60,7 @@ namespace UI.LevelSelection
 
         public VisualElement LevelSelectionTree;
 
-        public static LevelSelectionManager Instance => _instance ?? FindAnyObjectByType<LevelSelectionManager>();
+        public static LevelSelectionManager Instance => _instance ??= FindAnyObjectByType<LevelSelectionManager>();
 
         private void Awake()
         {
@@ -260,6 +261,9 @@ namespace UI.LevelSelection
             _sortButton.clicked += ChangeGroupingRule;
             SettingsManager.OnSettingsChanged += InitializeGroupingRule;
             SettingsManager.OnSettingsChanged += ChangeVolume;
+            
+            _themesButton = root.Q<VisualElement>("control-panel").Q<Button>("themes-button");
+            _themesButton.clicked += () => UIManager.Instance.ShowThemeUiPanel();
 
             _settingsButton = root.Q<VisualElement>("control-panel").Q<Button>("settings-button");
             _settingsButton.clicked += UIManager.Instance.ShowSettingsPanel;

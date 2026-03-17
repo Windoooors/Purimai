@@ -46,10 +46,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6eaf07c4cf254403b9e6dff51eb102b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  emergingTime: 0
   stars:
   - {fileID: 6977200500126567055}
   judgeDisplaySpriteRenderer: {fileID: 5515998063890386318}
-  svgAssetPath: V_2
+  svgAssetPath: v_2
   slideArrowCount: 19
   slideType: 0
   fromLaneIndex: 0
@@ -69,36 +70,46 @@ MonoBehaviour:
     slideSpriteRenderers: []
     slideSpriteRenderersWithinSensorArea: []
     slideSpriteRenderersOutsideSensorArea: []
+    tapped: 0
     touched: 0
     arrowInBetweenConcealed: 0
+    canBeSkipped: 1
     sensorsNearby: []
   - mainSensor: B1
     slideSpriteRenderers: []
     slideSpriteRenderersWithinSensorArea: []
     slideSpriteRenderersOutsideSensorArea: []
+    tapped: 0
     touched: 0
     arrowInBetweenConcealed: 0
+    canBeSkipped: 1
     sensorsNearby: []
   - mainSensor: C
     slideSpriteRenderers: []
     slideSpriteRenderersWithinSensorArea: []
     slideSpriteRenderersOutsideSensorArea: []
+    tapped: 0
     touched: 0
     arrowInBetweenConcealed: 0
+    canBeSkipped: 1
     sensorsNearby: []
   - mainSensor: B2
     slideSpriteRenderers: []
     slideSpriteRenderersWithinSensorArea: []
     slideSpriteRenderersOutsideSensorArea: []
+    tapped: 0
     touched: 0
     arrowInBetweenConcealed: 0
+    canBeSkipped: 1
     sensorsNearby: []
   - mainSensor: A2
     slideSpriteRenderers: []
     slideSpriteRenderersWithinSensorArea: []
     slideSpriteRenderersOutsideSensorArea: []
+    tapped: 0
     touched: 0
     arrowInBetweenConcealed: 0
+    canBeSkipped: 1
     sensorsNearby: []
 --- !u!1 &3391677313794693549
 GameObject:
@@ -135,6 +146,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 22.5}
 --- !u!212 &5515998063890386318
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -180,6 +192,7 @@ SpriteRenderer:
   m_SortingLayerID: 421743895
   m_SortingLayer: 5
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Sprite: {fileID: -1698360533, guid: 7fec6c5136d80491e848e9050a56cfe2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -188,8 +201,7 @@ SpriteRenderer:
   m_Size: {x: 7.77, y: 2.28}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
 --- !u!95 &6917196436519835610
 Animator:
@@ -248,6 +260,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &7803407405299358416
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -293,6 +306,7 @@ SpriteRenderer:
   m_SortingLayerID: -789768153
   m_SortingLayer: 4
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 57e073b06f82de348ab42249bc7d1730, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -302,7 +316,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &6977200500126567055
 MonoBehaviour:

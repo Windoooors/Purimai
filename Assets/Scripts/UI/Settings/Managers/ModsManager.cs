@@ -15,7 +15,7 @@ namespace UI.Settings.Managers
         private VisualElement _modsTree;
 
         private VisualElement _root;
-        public static ModsManager Instance => _instance ?? FindAnyObjectByType<ModsManager>();
+        public static ModsManager Instance => _instance ??= FindAnyObjectByType<ModsManager>();
 
         private void Awake()
         {
@@ -70,7 +70,6 @@ namespace UI.Settings.Managers
             yield return new WaitForSeconds(0.1f);
             _modsTree.style.display = DisplayStyle.Flex;
             _modsTree.AddToClassList("shown");
-            yield break;
         }
 
         private void DestroySelf()

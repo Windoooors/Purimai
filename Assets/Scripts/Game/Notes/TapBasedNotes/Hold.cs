@@ -51,7 +51,7 @@ namespace Game.Notes.TapBasedNotes
 
             GetHoldTransform(ref _holdTransformData);
 
-            if (!_holdTransformData.Shown)
+            if (!_holdTransformData.Shown && (holdJudged || !headJudged))
             {
                 SetActive(false, NoteContentRoot);
                 return;
@@ -99,6 +99,8 @@ namespace Game.Notes.TapBasedNotes
                 judgeState = JudgeState.Good;
 
                 PlayJudgeSound(false, JudgeState.Good);
+                Scoreboard.HoldCount.Count(JudgeState.Good);
+
                 PlayJudgeAnimation();
 
                 holdSpriteRenderer.enabled = false;

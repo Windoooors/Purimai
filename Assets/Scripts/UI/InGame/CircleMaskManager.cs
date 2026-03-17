@@ -12,7 +12,7 @@ namespace UI.InGame
 
         private bool _paused;
 
-        public static CircleMaskManager Instance => _instance ?? FindAnyObjectByType<CircleMaskManager>();
+        public static CircleMaskManager Instance => _instance ??= FindAnyObjectByType<CircleMaskManager>();
 
         private void Awake()
         {

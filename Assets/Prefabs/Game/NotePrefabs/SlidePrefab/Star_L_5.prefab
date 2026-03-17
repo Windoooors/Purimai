@@ -35,6 +35,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &5656987807937456435
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -80,6 +81,7 @@ SpriteRenderer:
   m_SortingLayerID: -789768153
   m_SortingLayer: 4
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 57e073b06f82de348ab42249bc7d1730, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -89,7 +91,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &8800353968997434568
 MonoBehaviour:
@@ -142,6 +143,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -67.5}
 --- !u!212 &2119552366221301338
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -187,6 +189,7 @@ SpriteRenderer:
   m_SortingLayerID: 421743895
   m_SortingLayer: 5
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Sprite: {fileID: -1698360533, guid: 7fec6c5136d80491e848e9050a56cfe2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -195,8 +198,7 @@ SpriteRenderer:
   m_Size: {x: 7.77, y: 2.28}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
 --- !u!95 &1225419483350302150
 Animator:
@@ -270,7 +272,7 @@ MonoBehaviour:
   stars:
   - {fileID: 8800353968997434568}
   judgeDisplaySpriteRenderer: {fileID: 2119552366221301338}
-  svgAssetPath: L_5
+  svgAssetPath: l_5
   slideArrowCount: 28
   slideType: 0
   fromLaneIndex: 0

@@ -13,7 +13,7 @@ namespace UI
         private ScreenOrientation _lastScreenOrientation = ScreenOrientation.AutoRotation;
 
         public Action ScreenChanged;
-        public static ScreenOrientationManager Instance => _instance ?? FindAnyObjectByType<ScreenOrientationManager>();
+        public static ScreenOrientationManager Instance => _instance ??= FindAnyObjectByType<ScreenOrientationManager>();
 
         private void Awake()
         {

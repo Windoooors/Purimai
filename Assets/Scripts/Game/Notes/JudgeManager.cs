@@ -11,7 +11,7 @@ namespace Game.Notes
         private readonly List<JudgeAction> _leaveJudgeActions = new();
 
         private readonly List<JudgeAction> _tapJudgeActions = new();
-        public static JudgeManager Instance => _instance ?? FindAnyObjectByType<JudgeManager>();
+        public static JudgeManager Instance => _instance ??= FindAnyObjectByType<JudgeManager>();
 
         private void Awake()
         {

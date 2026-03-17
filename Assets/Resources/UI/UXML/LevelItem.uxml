@@ -10,6 +10,14 @@
                       style="position: absolute; top: auto; left: 19px; bottom: 16px; font-size: 24px; color: rgb(0, 0, 0); -unity-font-definition: resource(&apos;Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF&apos;); text-overflow: ellipsis; -unity-font-style: normal; right: 14px; -unity-text-align: lower-right; white-space: nowrap; overflow: hidden;"/>
             <ui:Label text="Project-G" name="song-artist" enable-rich-text="true" emoji-fallback-support="true"
                       style="position: absolute; top: auto; left: 20px; bottom: 43px; font-size: 18px; color: rgba(0, 0, 0, 0.5); -unity-font-definition: resource(&apos;Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF&apos;); text-overflow: ellipsis; -unity-font-style: normal; right: 14px; -unity-text-align: lower-right; white-space: nowrap; overflow: hidden;"/>
+            <ui:Label text="Label" class="warning-label"
+                      style="top: 7px; left: 234px; -unity-text-align: upper-right; -unity-font-definition: resource(&apos;Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF&apos;); font-size: 14px; display: none;">
+                <Bindings>
+                    <UnityEngine.Localization.LocalizedString property="text"
+                                                              table="GUID:d2b76fd67ca914cb09e3ea41b0e1f344"
+                                                              entry="Id(50133458944)"/>
+                </Bindings>
+            </ui:Label>
             <ui:Label text="BPM" name="song-bpm-title" enable-rich-text="true" emoji-fallback-support="true"
                       style="position: absolute; top: 7px; left: 20px; bottom: auto; font-size: 18px; color: rgba(0, 0, 0, 0.5); -unity-font-definition: resource(&apos;Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF&apos;); text-overflow: ellipsis; -unity-font-style: normal; right: 13px; -unity-text-align: lower-right; white-space: nowrap;"/>
             <ui:Label text="100" name="song-bpm" enable-rich-text="true" emoji-fallback-support="true"

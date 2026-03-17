@@ -21,7 +21,7 @@ namespace UI.Settings.Managers
         private TabView _tabView;
 
         public static SettingsManager Instance => _instance ??=
-            FindObjectsByType<SettingsManager>(FindObjectsInactive.Include, FindObjectsSortMode.None)[^1];
+            FindAnyObjectByType<SettingsManager>();
 
         private void Awake()
         {

@@ -5,6 +5,7 @@ using UI.LevelSelection;
 using UI.Result;
 using UI.Settings;
 using UI.Settings.Managers;
+using UI.Theming;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.TextCore.Text;
@@ -29,6 +30,7 @@ namespace UI
         public CircleMaskManager circleMaskPrefab;
         public PauseManager pausePrefab;
         public ModsManager modsPrefab;
+        public ThemeUiManager themeUiPrefab;
 
         public ResultManager resultManager;
         public LevelSelectionManager levelSelectionManager;
@@ -36,11 +38,12 @@ namespace UI
         public CircleMaskManager circleMaskManager;
         public PauseManager pauseManager;
         public ModsManager modsManager;
+        public ThemeUiManager themeUiManager;
 
         public Vector2Int portraitReferenceResolution = new(600, 600);
         public Vector2Int landscapeReferenceResolution = new(1024, 600);
 
-        public static UIManager Instance => _instance ?? FindAnyObjectByType<UIManager>();
+        public static UIManager Instance => _instance ??= FindAnyObjectByType<UIManager>();
 
         private void Awake()
         {
@@ -86,6 +89,12 @@ namespace UI
         public void ShowPausePanel()
         {
             pauseManager = Instantiate(pausePrefab, transform);
+            ApplySafeArea();
+        }
+
+        public void ShowThemeUiPanel()
+        {
+            themeUiManager = Instantiate(themeUiPrefab, transform);
             ApplySafeArea();
         }
 

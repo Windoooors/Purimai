@@ -27,3 +27,14 @@
     background-color: rgba(255, 255, 255, 0);
     color: black;
 }
+
+.value-panel {
+    position: absolute;
+    width: auto;
+    top: 5px;
+    left: auto;
+    right: 0;
+    bottom: auto;
+    max-width: 160px;
+    min-width: 160px;
+}

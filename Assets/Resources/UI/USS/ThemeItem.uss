@@ -1,0 +1,13 @@
+:root {
+}
+
+.value-panel {
+    position: absolute;
+    width: auto;
+    top: 5px;
+    left: auto;
+    right: 0;
+    bottom: auto;
+    max-width: 200px;
+    min-width: 200px;
+}

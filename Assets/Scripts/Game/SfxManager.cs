@@ -9,39 +9,6 @@ using UnityEngine.Networking;
 
 namespace Game
 {
-    public static class FileDownloader
-    {
-        public static IEnumerator DownloadFile(string fromFileNameRelativeToStreamingAssets, string toFileName,
-            Action callback)
-        {
-            var directory = Path.GetDirectoryName(toFileName);
-
-            if (directory == null) yield break;
-
-            if (!Directory.Exists(directory))
-                Directory.CreateDirectory(directory);
-
-            if (File.Exists(toFileName))
-            {
-                callback();
-                yield break;
-            }
-
-            var uri = new Uri(Path.Combine(Application.streamingAssetsPath, fromFileNameRelativeToStreamingAssets));
-
-            var request = UnityWebRequest.Get(uri);
-
-            yield return request.SendWebRequest();
-
-            if (request.downloadHandler.data != null)
-                File.WriteAllBytes(toFileName, request.downloadHandler.data);
-
-            request.Dispose();
-
-            callback();
-        }
-    }
-
     public class SfxManager : MonoBehaviour
     {
         private static SfxManager _instance;
@@ -65,7 +32,7 @@ namespace Game
 
         private readonly Dictionary<string, float> _volumes = new();
 
-        public static SfxManager Instance => _instance ?? FindAnyObjectByType<SfxManager>();
+        public static SfxManager Instance => _instance ??= FindAnyObjectByType<SfxManager>();
 
         private void Awake()
         {
@@ -168,14 +135,12 @@ namespace Game
         {
             var path = Path.Combine(soundNameData.directoryRelativeToStreamingAssets,
                 soundNameData.fileNameRelativeToDirectory);
-            var toPath = Path.Combine(Application.persistentDataPath, path);
 
-            StartCoroutine(FileDownloader.DownloadFile(path, toPath, () =>
-            {
-                var bassHandler = new BassHandler(toPath);
+            var data = BetterStreamingAssets.ReadAllBytes(path);
+            
+            var bassHandler = new BassHandler(data);
 
-                _bassHandlers.Add(dictKey, bassHandler);
-            }));
+            _bassHandlers.Add(dictKey, bassHandler);
         }
     }
 
@@ -183,7 +148,7 @@ namespace Game
     public class AudioSoundNameData
     {
         public string fileNameRelativeToDirectory;
-        public string directoryRelativeToStreamingAssets = "DefaultSFX/GameSFX/";
+        public string directoryRelativeToStreamingAssets = "default_sfx/game_sfx/";
 
         public AudioSoundNameData(string fileNameRelativeToDirectory)
         {

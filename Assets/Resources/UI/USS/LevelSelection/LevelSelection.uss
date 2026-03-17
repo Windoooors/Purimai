@@ -228,3 +228,18 @@
     opacity: 1;
     display: flex;
 }
+
+.themes-button {
+    position: absolute;
+    top: 7px;
+    left: 360px;
+    width: 69px;
+    height: 69px;
+}
+
+.confirm-entry .themes-button {
+    left: 144px;
+}
+
+.confirm-entry .sort-button {
+}

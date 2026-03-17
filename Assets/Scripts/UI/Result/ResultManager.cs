@@ -26,7 +26,7 @@ namespace UI.Result
         private VisualElement _resultRoot;
         private StyleSheet _toRetryAnimatedStyleSheet;
 
-        public static ResultManager Instance => _instance ??
+        public static ResultManager Instance => _instance ??=
                                                 FindObjectsByType<ResultManager>(FindObjectsInactive.Include,
                                                     FindObjectsSortMode.None)[^1];
 

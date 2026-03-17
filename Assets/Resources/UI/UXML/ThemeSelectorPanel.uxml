@@ -1,0 +1,22 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Resources/UI/USS/Mods.uss?fileID=7433441132597879392&amp;guid=858c872540557480aae815c89fe2e426&amp;type=3#Mods" />
+    <ui:VisualElement name="safe-area" picking-mode="Ignore" class="safe-area" style="flex-grow: 1;">
+        <ui:VisualElement name="transparent-panel" class="parent">
+            <ui:VisualElement name="background" style="flex-grow: 1; width: 880px; background-image: url(&quot;project://database/Assets/Textures/UI/LevelSelection/SongCoverLeftGradient.png?fileID=2800000&amp;guid=77a57ea2f1631488cb32a49596229e5c&amp;type=3#SongCoverLeftGradient&quot;); -unity-background-image-tint-color: rgb(255, 255, 255); left: -200px; position: absolute; bottom: 0; top: 0;" />
+            <ui:VisualElement name="title-background" style="flex-grow: 1; height: 60px; position: absolute; width: 500px; background-image: url(&quot;project://database/Assets/Textures/UI/LevelSelection/SongCoverLeftGradient.png?fileID=2800000&amp;guid=77a57ea2f1631488cb32a49596229e5c&amp;type=3#SongCoverLeftGradient&quot;);">
+                <ui:Label text="Label" style="font-size: 64px; -unity-font-definition: resource(&apos;Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF&apos;); top: -30px; left: -20px; -unity-font-style: bold; color: rgba(27, 27, 27, 0.5); opacity: 0.25;">
+                    <Bindings>
+                        <UnityEngine.Localization.LocalizedString property="text" table="GUID:c0eaca1764ba046fe82091c205c793a3" entry="Id(39844706861965312)" />
+                    </Bindings>
+                </ui:Label>
+                <ui:Label text="Label" style="font-size: 24px; -unity-font-definition: resource(&apos;Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF&apos;); top: 15px; left: 20px; -unity-font-style: normal; color: rgb(27, 27, 27); position: absolute; opacity: 1;">
+                    <Bindings>
+                        <UnityEngine.Localization.LocalizedString property="text" table="GUID:d2b76fd67ca914cb09e3ea41b0e1f344" entry="Id(920504494972928)" />
+                    </Bindings>
+                </ui:Label>
+            </ui:VisualElement>
+            <ui:ListView name="list-view" class="list-view" style="position: relative; top: 60px;" />
+            <ui:VisualElement name="clickable-panel" style="flex-grow: 1; position: absolute; top: 0; left: 550px; bottom: 0; right: 0;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

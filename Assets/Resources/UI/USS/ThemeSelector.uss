@@ -1,0 +1,66 @@
+:root {
+}
+
+.theme-selector {
+    flex-grow: 1;
+    min-height: 60px;
+    max-height: 60px;
+    flex-direction: row;
+    overflow: hidden;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-top-width: 2px;
+    border-right-width: 2px;
+    border-bottom-width: 2px;
+    border-left-width: 2px;
+    border-left-color: rgb(217, 217, 217);
+    border-right-color: rgb(217, 217, 217);
+    border-top-color: rgb(217, 217, 217);
+    border-bottom-color: rgb(217, 217, 217);
+}
+
+.button {
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    background-color: rgb(250, 250, 250);
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+    background-size: 24px 24px;
+    transition-property: background-color;
+    transition-duration: 0.2s;
+}
+
+.button--selected {
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    background-color: rgb(217, 217, 217);
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+    background-size: 24px 24px;
+}
+
+.button:hover {
+    background-color: rgb(217, 217, 217);
+}

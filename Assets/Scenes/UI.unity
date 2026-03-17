@@ -4354,6 +4354,7 @@ GameObject:
   - component: {fileID: 872429105}
   - component: {fileID: 872429107}
   - component: {fileID: 872429108}
+  - component: {fileID: 872429109}
   m_Layer: 5
   m_Name: UIManager
   m_TagString: Untagged
@@ -4425,12 +4426,15 @@ MonoBehaviour:
     type: 3}
   modsPrefab: {fileID: 8677279359261807040, guid: 80d7b9bd5e0af4ef480f944dc4fa0786,
     type: 3}
+  themeUiPrefab: {fileID: 8041478303283471924, guid: 874a55b2797c44dfcadb0bcfca2905c7,
+    type: 3}
   resultManager: {fileID: 0}
   levelSelectionManager: {fileID: 0}
   settingsManager: {fileID: 0}
   circleMaskManager: {fileID: 0}
   pauseManager: {fileID: 0}
   modsManager: {fileID: 0}
+  themeUiManager: {fileID: 0}
   portraitReferenceResolution: {x: 600, y: 600}
   landscapeReferenceResolution: {x: 1024, y: 600}
 --- !u!114 &872429107
@@ -4457,6 +4461,363 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7d29b8c47b34dae8c2f5e8e6b30fbc4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.SfxManager
+--- !u!114 &872429109
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 872429101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abdb197747664925a6872f28a09e039a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Theming.SkinApplier
+  tapSkinDataList:
+  - key: tap
+    sprite: {fileID: 21300000, guid: f2f8cb7c629484605b7addc4d42b59f7, type: 3}
+  - key: tap_break
+    sprite: {fileID: 21300000, guid: d775b1e2838934580aa515f56ea5ec1c, type: 3}
+  - key: tap_break_glowing
+    sprite: {fileID: 3600538773679765355, guid: cc1324294fd12475998923c9f1aef578,
+      type: 3}
+  - key: tap_each
+    sprite: {fileID: 21300000, guid: c6b8b34bfd4ba4eb68da1e44308ebfb4, type: 3}
+  - key: tap_line
+    sprite: {fileID: 21300000, guid: 3003041b178b9f246b4b465afb8079d3, type: 3}
+  - key: tap_break_line
+    sprite: {fileID: 21300000, guid: c190fb744a4bc94429a7cbce66f9fa9b, type: 3}
+  - key: tap_each_line
+    sprite: {fileID: 21300000, guid: 1a40750ad0e4fb747aeeb83536f52d09, type: 3}
+  holdSkinDataList:
+  - key: hold
+    sprite: {fileID: 7667639571242049443, guid: 7f12c5c665b514a899836f93833dc0b1,
+      type: 3}
+  - key: hold_each
+    sprite: {fileID: 2168400294388069195, guid: a06254767d13f40d8881ec1deb01e6f8,
+      type: 3}
+  - key: hold_each_glowing
+    sprite: {fileID: -6674917273419247621, guid: 81755a268767c45b19f43bbb673fd57b,
+      type: 3}
+  - key: hold_glowing
+    sprite: {fileID: 2861786816536900653, guid: 501049aad260f494c89fe59aa7acd719,
+      type: 3}
+  - key: hold_end_glow
+    sprite: {fileID: 21300000, guid: 9d622e66946624170b027fc664c7b634, type: 3}
+  - key: hold_each_end_glow
+    sprite: {fileID: 21300000, guid: bc6d1927dfc784f0c948d634b5c484a4, type: 3}
+  starSkinDataList:
+  - key: star
+    sprite: {fileID: 21300000, guid: 57e073b06f82de348ab42249bc7d1730, type: 3}
+  - key: star_break
+    sprite: {fileID: 21300000, guid: 0db78270fb53d492982a3142ba988c3e, type: 3}
+  - key: star_break_glowing
+    sprite: {fileID: -4793019825623182457, guid: c52d8d0787661433385a823bb8b3d3fb,
+      type: 3}
+  - key: star_multiple_break
+    sprite: {fileID: 21300000, guid: 107bd11799d094c16b034b98fa3b6cc7, type: 3}
+  - key: star_multiple_break_glowing
+    sprite: {fileID: -2748786987158145942, guid: 10e9becffac9046669d88a054e591478,
+      type: 3}
+  - key: star_multiple
+    sprite: {fileID: 21300000, guid: 4d9a017851293428489861c8a71be723, type: 3}
+  - key: star_multiple_each
+    sprite: {fileID: 21300000, guid: 4ea13292660fa4d48a02f4a0466902e5, type: 3}
+  - key: star_each
+    sprite: {fileID: 21300000, guid: 55421a5b4520b4c05a4d44b15a41641b, type: 3}
+  - key: star_line
+    sprite: {fileID: 21300000, guid: 8576ec838da5f784e866901901ed374f, type: 3}
+  slideSkinDataList:
+  - key: slide_arrow
+    sprite: {fileID: 21300000, guid: 3030b339c8cedc34bbbaf6fd2c4500e6, type: 3}
+  - key: slide_arrow_each
+    sprite: {fileID: 21300000, guid: 689d5b8e699a64ec191273871af1cd10, type: 3}
+  - key: slide_wifi_arrow_0
+    sprite: {fileID: 5998282392451294068, guid: e1adcd24670254e719210fa68ae966be,
+      type: 3}
+  - key: slide_wifi_arrow_1
+    sprite: {fileID: 6236970397817956103, guid: 5f518d78c020a4755977967e19aa2a1d,
+      type: 3}
+  - key: slide_wifi_arrow_2
+    sprite: {fileID: 5155842831241205629, guid: 3f1be457e96284e8d89972a66f3564a5,
+      type: 3}
+  - key: slide_wifi_arrow_3
+    sprite: {fileID: -7257757505513064375, guid: 2be902f44ba5c44febde4e395ec30193,
+      type: 3}
+  - key: slide_wifi_arrow_4
+    sprite: {fileID: -8559117368997589724, guid: 5b8d3abfab3dc4e55818d647aba34054,
+      type: 3}
+  - key: slide_wifi_arrow_5
+    sprite: {fileID: -7813093160058555934, guid: 6f98d853b72d843ac9f2801fcedfd778,
+      type: 3}
+  - key: slide_wifi_arrow_6
+    sprite: {fileID: -1679140293855240947, guid: c474100e270fc42e8b2c78ad8af0ef56,
+      type: 3}
+  - key: slide_wifi_arrow_7
+    sprite: {fileID: 4920331670690577734, guid: 6aff1b6b3e40844cc9df5f8ecc8383c3,
+      type: 3}
+  - key: slide_wifi_arrow_8
+    sprite: {fileID: -699131827933276496, guid: f032c896f253141f7ab1f2fc3a10fbf9,
+      type: 3}
+  - key: slide_wifi_arrow_9
+    sprite: {fileID: -7911947208479606274, guid: 2bf6322a0a32a4ce698961c98ece7415,
+      type: 3}
+  - key: slide_wifi_arrow_10
+    sprite: {fileID: 1259245704663942480, guid: 439e4aa7161a044c48358c1b92ca629e,
+      type: 3}
+  - key: slide_wifi_arrow_each_0
+    sprite: {fileID: -4573956471080597806, guid: 725513900cfdd4fdeb24ff81eec895a4,
+      type: 3}
+  - key: slide_wifi_arrow_each_1
+    sprite: {fileID: -4534785444233307621, guid: 30fed05747ca44ec18c0564ed64a7696,
+      type: 3}
+  - key: slide_wifi_arrow_each_2
+    sprite: {fileID: -6859483170234269528, guid: 0294ae6b71b8a487184bc04a55745724,
+      type: 3}
+  - key: slide_wifi_arrow_each_3
+    sprite: {fileID: 5211535651965953496, guid: e2c9a94bc6f1349fea5f237426fdef07,
+      type: 3}
+  - key: slide_wifi_arrow_each_4
+    sprite: {fileID: -8521193308747983017, guid: 8a1f618cdae0148df9b082a983b60772,
+      type: 3}
+  - key: slide_wifi_arrow_each_5
+    sprite: {fileID: 4980302950434865530, guid: dc14d2c8222e4403fb41bda8a4dc174f,
+      type: 3}
+  - key: slide_wifi_arrow_each_6
+    sprite: {fileID: -208379571650419963, guid: 3533fb28e99c849f9b9e91cc0ea178c9,
+      type: 3}
+  - key: slide_wifi_arrow_each_7
+    sprite: {fileID: -6665123400324216004, guid: d91db7b596014462090d583d0b7f88a8,
+      type: 3}
+  - key: slide_wifi_arrow_each_8
+    sprite: {fileID: -1974914546619814837, guid: 89ce4b5463826459f959a9c10a19e335,
+      type: 3}
+  - key: slide_wifi_arrow_each_9
+    sprite: {fileID: 7248151832620956231, guid: 7ea3ad0f5839f4867af334a457935047,
+      type: 3}
+  - key: slide_wifi_arrow_each_10
+    sprite: {fileID: 8046195113953667634, guid: ebe6b700a0cd8448aa6bb1a9e4498212,
+      type: 3}
+  judgeDisplaySkinDataList:
+  - key: judge_text_break_1000
+    sprite: {fileID: 2642053492378982893, guid: 860383160fd064de38ebdd68b5358bf7,
+      type: 3}
+  - key: judge_text_break_1250
+    sprite: {fileID: 8855524258614739108, guid: 0b552b3dd0513489fb19bbf1b362d4a8,
+      type: 3}
+  - key: judge_text_break_1500
+    sprite: {fileID: 4554718006028962738, guid: fd7525c6e2cdb4c4686057920c0ac33d,
+      type: 3}
+  - key: judge_text_break_2000
+    sprite: {fileID: -6279354293272549490, guid: 00356884950384dc49385be4206f986b,
+      type: 3}
+  - key: judge_text_break_2500
+    sprite: {fileID: -4728027704869328904, guid: effae917030a1432b9b6fa7d0c76c1ca,
+      type: 3}
+  - key: judge_text_break_2550
+    sprite: {fileID: -5011447946892869490, guid: 8f817e3f9440d4c2aaacf27afa2a2011,
+      type: 3}
+  - key: judge_text_break_2600
+    sprite: {fileID: 2180948900375915765, guid: 944c57045f4d44f03b8798aba4dcd10f,
+      type: 3}
+  - key: judge_text_fast
+    sprite: {fileID: -5246133556034159203, guid: 46e66ce29e8f84a1f9f210b5dffc38f5,
+      type: 3}
+  - key: judge_text_good
+    sprite: {fileID: 6256978819795432554, guid: 3c8ad70bb8ff54ca8868da4f8ee710e8,
+      type: 3}
+  - key: judge_text_great
+    sprite: {fileID: -7556016082631641370, guid: 8de98f6eaa5da43f2b68900b236a2ac2,
+      type: 3}
+  - key: judge_text_late
+    sprite: {fileID: -7533523765090204143, guid: 75f2457005c74479a9872b6c03f1fac4,
+      type: 3}
+  - key: judge_text_miss
+    sprite: {fileID: 413248917955918174, guid: 8485195bd325f42c5af10cf67a4aa3d8, type: 3}
+  - key: judge_text_perfect
+    sprite: {fileID: -8945558611893634135, guid: 9b876a9f5825c4bbe9992d06953e6bbd,
+      type: 3}
+  - key: judge_break_perfect
+    sprite: {fileID: -4217404839290217755, guid: b91b6972cb5f74b3eb6e11cfdae7f978,
+      type: 3}
+  - key: judge_break_great
+    sprite: {fileID: -6059878325920009622, guid: 22d17f5c212594fdf97ebecff11f258f,
+      type: 3}
+  - key: judge_break_good
+    sprite: {fileID: 6156699549390448692, guid: 2360fd16864b14173a7185d489250a3e,
+      type: 3}
+  - key: judge_perfect
+    sprite: {fileID: 21300000, guid: 280cf213a61361a408162b1680b6770a, type: 3}
+  - key: judge_great
+    sprite: {fileID: 21300000, guid: 96320f8aab756477585c3f2c2326570d, type: 3}
+  - key: judge_good
+    sprite: {fileID: 21300000, guid: cfbe43503d56c475ca366e85defe8657, type: 3}
+  - key: judge_hold_head_perfect
+    sprite: {fileID: -2413806693520163455, guid: 1b751b8c416ac8a4a92ea22e5d638905,
+      type: 3}
+  - key: judge_hold_head_great
+    sprite: {fileID: 1795406926467568262, guid: 1f69000c451b045288b89eb69ab66cb5,
+      type: 3}
+  - key: judge_hold_head_good
+    sprite: {fileID: 691122328588341274, guid: e092caa74d7d14a58b0b014bc3bbbb33, type: 3}
+  - key: judge_slide_perfect_circle_0
+    sprite: {fileID: 7587359449235639637, guid: d9058d8c27f2041579cdaddaedd7ad15,
+      type: 3}
+  - key: judge_slide_perfect_circle_1
+    sprite: {fileID: 8211977419919237452, guid: 8f4d3438eba304be6aabe33783f0a039,
+      type: 3}
+  - key: judge_slide_perfect_circle_2
+    sprite: {fileID: -7933891391610221701, guid: 7a8d45cd4345c407d920040f822ea7dc,
+      type: 3}
+  - key: judge_slide_perfect_circle_3
+    sprite: {fileID: 8632205197351129241, guid: 74f6df0dd4e6241d7b6d98f4459cf06b,
+      type: 3}
+  - key: judge_slide_perfect_line_0
+    sprite: {fileID: -8200077690223663658, guid: 836710cc5f1214361bd3d7ea29b19b29,
+      type: 3}
+  - key: judge_slide_perfect_line_1
+    sprite: {fileID: -3237177211354696216, guid: 947809f1bd7c94eae9aabf1ef12f4e77,
+      type: 3}
+  - key: judge_slide_perfect_wifi_0
+    sprite: {fileID: 1071155064264604715, guid: 71ba409cff7fe4f4ba6df674c53574b8,
+      type: 3}
+  - key: judge_slide_perfect_wifi_1
+    sprite: {fileID: 1433533201814605413, guid: c4b5af30b972d46bf9db6fdcc3f73187,
+      type: 3}
+  - key: judge_slide_fast_good_circle_0
+    sprite: {fileID: -699076040675776411, guid: 5b381ac6d8b5843dcb7ff7b305bae6de,
+      type: 3}
+  - key: judge_slide_fast_good_circle_1
+    sprite: {fileID: 6894052297137506205, guid: 28a15146a5ee94ad7abc09b6754604b7,
+      type: 3}
+  - key: judge_slide_fast_good_circle_2
+    sprite: {fileID: -6168308866092961647, guid: 18db40b3e919648589939053ac4e2c32,
+      type: 3}
+  - key: judge_slide_fast_good_circle_3
+    sprite: {fileID: 6269899156091398330, guid: 64f2bd2be8c8845ee9573c27019aef14,
+      type: 3}
+  - key: judge_slide_fast_good_line_0
+    sprite: {fileID: -4295005289119619869, guid: 9fb7348f0c8dc4eb0ba15eac4cbe4068,
+      type: 3}
+  - key: judge_slide_fast_good_line_1
+    sprite: {fileID: 9095521847207409101, guid: 0830a872354ac4e8aa7fab31114fcb0d,
+      type: 3}
+  - key: judge_slide_fast_good_wifi_0
+    sprite: {fileID: -7439867445573904939, guid: 476b7188dafc24a9888c729bb0c08a02,
+      type: 3}
+  - key: judge_slide_fast_good_wifi_1
+    sprite: {fileID: -7549201313626235547, guid: cbc4bbed009c34d0b8e998de0ecec533,
+      type: 3}
+  - key: judge_slide_fast_great_circle_0
+    sprite: {fileID: 820800874232884838, guid: 11ad392e2142542eca2142253673bdd2, type: 3}
+  - key: judge_slide_fast_great_circle_1
+    sprite: {fileID: 5424106289088168545, guid: 413d67e72b2644163a8a2a7bbc194980,
+      type: 3}
+  - key: judge_slide_fast_great_circle_2
+    sprite: {fileID: -7706518746141696232, guid: 8bbe49f052f1a4db38ba046a6e31b2a0,
+      type: 3}
+  - key: judge_slide_fast_great_circle_3
+    sprite: {fileID: 6220371656750872972, guid: b7c43ac8e41a744ae9e4b42605b8d4ea,
+      type: 3}
+  - key: judge_slide_fast_great_line_0
+    sprite: {fileID: 4882881251893983691, guid: 71c6e20c3f81c4ae1960be15acb5daad,
+      type: 3}
+  - key: judge_slide_fast_great_line_1
+    sprite: {fileID: 6308196607075953978, guid: dbbaf0161279342cfae69bd452d984e9,
+      type: 3}
+  - key: judge_slide_fast_great_wifi_0
+    sprite: {fileID: 5562086691877621460, guid: f04f436408b1e4e629d83a745d8cbdc8,
+      type: 3}
+  - key: judge_slide_fast_great_wifi_1
+    sprite: {fileID: -6502060987272168241, guid: 7f16c8225e70541b58d6738465ffffef,
+      type: 3}
+  - key: judge_slide_late_good_circle_0
+    sprite: {fileID: -699076040675776411, guid: 38e496c1b0608489bbf4d08f62c6983d,
+      type: 3}
+  - key: judge_slide_late_good_circle_1
+    sprite: {fileID: 6894052297137506205, guid: d56a95fb53e664658966e832bb867fac,
+      type: 3}
+  - key: judge_slide_late_good_circle_2
+    sprite: {fileID: -6168308866092961647, guid: 0c74dd73f961347f996b49907091df2a,
+      type: 3}
+  - key: judge_slide_late_good_circle_3
+    sprite: {fileID: 6269899156091398330, guid: 34070f61815bf4fc992a75b2a99c0487,
+      type: 3}
+  - key: judge_slide_late_good_line_0
+    sprite: {fileID: -4295005289119619869, guid: 39663b25f9ebe43ba89e02d262efa490,
+      type: 3}
+  - key: judge_slide_late_good_line_1
+    sprite: {fileID: 9095521847207409101, guid: 7d2e43fda1965414b9ff4eeb0ef55b44,
+      type: 3}
+  - key: judge_slide_late_good_wifi_0
+    sprite: {fileID: -7439867445573904939, guid: e0c624ae1bab54410ae1315524bbbd8c,
+      type: 3}
+  - key: judge_slide_late_good_wifi_1
+    sprite: {fileID: -7549201313626235547, guid: 30565d5f6165547518245360e94e5be4,
+      type: 3}
+  - key: judge_slide_late_great_circle_0
+    sprite: {fileID: 820800874232884838, guid: 94632ea74c4d24702a44a998c62ddc7b, type: 3}
+  - key: judge_slide_late_great_circle_1
+    sprite: {fileID: 5424106289088168545, guid: 1f9b466c39d414974b2d33081a019d96,
+      type: 3}
+  - key: judge_slide_late_great_circle_2
+    sprite: {fileID: -7706518746141696232, guid: c0c2cc09da4b44bff90b30d3339637d9,
+      type: 3}
+  - key: judge_slide_late_great_circle_3
+    sprite: {fileID: 6220371656750872972, guid: 54b4623f1e2ff43429d6db47525451c1,
+      type: 3}
+  - key: judge_slide_late_great_line_0
+    sprite: {fileID: 4882881251893983691, guid: 4107aa3abbd924d45a8397fc6e85ba84,
+      type: 3}
+  - key: judge_slide_late_great_line_1
+    sprite: {fileID: 6308196607075953978, guid: 66b8b498801984036b0e17c3fc9be03a,
+      type: 3}
+  - key: judge_slide_late_great_wifi_0
+    sprite: {fileID: 5562086691877621460, guid: 71bf800e0720c4621b2de474f4252093,
+      type: 3}
+  - key: judge_slide_late_great_wifi_1
+    sprite: {fileID: -6502060987272168241, guid: 6199a39f45b7c463597282b8b180e48c,
+      type: 3}
+  - key: judge_slide_late_miss_circle_0
+    sprite: {fileID: -5225028377912663511, guid: 63ed36822e1714057aba597c7e21a839,
+      type: 3}
+  - key: judge_slide_late_miss_circle_1
+    sprite: {fileID: 353065691235645245, guid: 66f9b263e10954b5aa2667df3eb0b15c, type: 3}
+  - key: judge_slide_late_miss_circle_2
+    sprite: {fileID: 5666114955266702983, guid: 13dbbf7f7914749c3874110494de783d,
+      type: 3}
+  - key: judge_slide_late_miss_circle_3
+    sprite: {fileID: 5093461527078011467, guid: 4041fec1140874c09b35395e3e3c56c4,
+      type: 3}
+  - key: judge_slide_late_miss_line_0
+    sprite: {fileID: 2915572599198372005, guid: a5769797689c341609ac841bb3910431,
+      type: 3}
+  - key: judge_slide_late_miss_line_1
+    sprite: {fileID: -1234510467267582815, guid: e4742c448f271443b9bdb0bb2f3e7cff,
+      type: 3}
+  - key: judge_slide_late_miss_wifi_0
+    sprite: {fileID: -4058343253701747472, guid: fdbbe3239bb874bf795b108ccdd47c50,
+      type: 3}
+  - key: judge_slide_late_miss_wifi_1
+    sprite: {fileID: -3861453823638572864, guid: 7d42cab8c9c9541d09b9dbe8d29b85c9,
+      type: 3}
+  miscSkinDataList:
+  - key: judge_circle
+    sprite: {fileID: 21300000, guid: 112d3ecad34d44f19b004b86e9dfa0b5, type: 3}
+  - key: judge_circle_glow
+    sprite: {fileID: 1374275759961779986, guid: dbd47b5bf7922484fbbb7fbf01e6ad8e,
+      type: 3}
+  - key: each_line_0
+    sprite: {fileID: 21300000, guid: 4d56b438beaa348818978135f1c3fde7, type: 3}
+  - key: each_line_1
+    sprite: {fileID: 21300000, guid: 3e5219a7d762744978d57e9da67bd205, type: 3}
+  - key: each_line_2
+    sprite: {fileID: 21300000, guid: 68916eca801614b0bb812f69a321d865, type: 3}
+  - key: each_line_3
+    sprite: {fileID: 21300000, guid: 502256d75f286417dabae3792d39c8f3, type: 3}
+  - key: a_area_ripple
+    sprite: {fileID: -3085605031942712393, guid: 3ed14c0f704bc44d5a2a7210f53e9cf7,
+      type: 3}
 --- !u!1 &990677103
 GameObject:
   m_ObjectHideFlags: 0

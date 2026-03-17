@@ -40,10 +40,8 @@ namespace Game
             _pathRotation = pathRotation;
             _flipPathY = flipPathY;
             ObjectRotationOffset = objectRotationOffset;
-
-            var fullPath = Path.Combine(Application.streamingAssetsPath, "StarPath/" + svgAssetPath + ".svg");
-
-            using var reader = new StringReader(GetSvgText(fullPath));
+            
+            using var reader = new StringReader(GetSvgText("star_path/" + svgAssetPath + ".svg"));
 
             var sceneInfo = SVGParser.ImportSVG(reader, ViewportOptions.DontPreserve);
             var shape = sceneInfo.NodeIDs.ToArray()[1].Value.Shapes[0];
@@ -238,25 +236,7 @@ namespace Game
 
         private string GetSvgText(string path)
         {
-#if UNITY_ANDROID
-            var request = UnityWebRequest.Get(new Uri(path));
-            request.SendWebRequest();
-
-            string text;
-
-            while (true)
-            {
-                if (!request.isDone)
-                    continue;
-                text = request.downloadHandler.text;
-                request.Dispose();
-                break;
-            }
-
-            return text;
-#else
-            return File.ReadAllText(path);
-#endif
+            return BetterStreamingAssets.ReadAllText(path);
         }
     }
 }
