@@ -49,7 +49,6 @@ namespace UI.LevelSelection
         private ScoreContentPanel _scoreContentPanel;
         private ScrollView _scrollView;
         private Button _settingsButton;
-        private Button _themesButton;
 
         private SnapScrollManipulator _snapManipulator;
         private SongCoverManipulator _songCoverManipulator;
@@ -57,6 +56,7 @@ namespace UI.LevelSelection
         private bool _songPlaying;
 
         private Button _sortButton;
+        private Button _themesButton;
 
         public VisualElement LevelSelectionTree;
 
@@ -261,7 +261,7 @@ namespace UI.LevelSelection
             _sortButton.clicked += ChangeGroupingRule;
             SettingsManager.OnSettingsChanged += InitializeGroupingRule;
             SettingsManager.OnSettingsChanged += ChangeVolume;
-            
+
             _themesButton = root.Q<VisualElement>("control-panel").Q<Button>("themes-button");
             _themesButton.clicked += () => UIManager.Instance.ShowThemeUiPanel();
 

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using Game.Theming;
 using UnityEngine.UIElements;
 using Action = System.Action;
@@ -8,8 +7,9 @@ namespace UI.Theming
 {
     public class ThemeSelectorManipulator : Manipulator
     {
-        private List<Button> _buttons;
+        private static Action _onUpdate;
         private readonly SkinData _skinData;
+        private List<Button> _buttons;
 
         public ThemeSelectorManipulator(SkinData skinData)
         {
@@ -20,10 +20,9 @@ namespace UI.Theming
         {
             _onUpdate -= OnUpdate;
         }
-        
+
         protected override void UnregisterCallbacksFromTarget()
         {
-            
         }
 
         protected override void RegisterCallbacksOnTarget()
@@ -39,7 +38,7 @@ namespace UI.Theming
                 void OnButtonClick()
                 {
                     var index = _buttons.IndexOf(x);
-                    
+
                     Select(index);
                 }
             });
@@ -54,9 +53,9 @@ namespace UI.Theming
             for (var i = 0; i < SkinApplier.ModuleCount; i++)
             {
                 var mask = 1 << i;
-                
+
                 var active = (mask & _skinData.AppliedModules) != 0;
-                
+
                 if (active)
                     _buttons[i].AddToClassList("button--selected");
                 else
@@ -67,23 +66,18 @@ namespace UI.Theming
         private void Select(int index)
         {
             var mask = 1 << index;
-            
+
             SkinManager.SkinDataList.ForEach(x =>
             {
                 if (x == _skinData)
                     return;
 
-                if ((x.AppliedModules & mask) != 0)
-                {
-                    x.AppliedModules &= ~mask;
-                }
+                if ((x.AppliedModules & mask) != 0) x.AppliedModules &= ~mask;
             });
 
             _skinData.AppliedModules |= mask;
-            
+
             _onUpdate();
         }
-
-        private static Action _onUpdate;
     }
 }

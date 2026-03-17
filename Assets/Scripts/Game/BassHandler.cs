@@ -50,7 +50,7 @@ namespace Game
         public BassHandler(string filePath)
         {
             GlobalAudioMixer.Init();
-            
+
             _sourceStream = Bass.CreateStream(filePath, 0, 0, BassFlags.Decode | BassFlags.Prescan);
 
             if (_sourceStream == 0)
@@ -60,11 +60,11 @@ namespace Game
                 BassFlags.Default | BassFlags.MixerChanNoRampin);
             Pause();
         }
-        
+
         public BassHandler(byte[] data)
         {
             GlobalAudioMixer.Init();
-            
+
             _sourceStream = Bass.CreateStream(data, 0, data.Length, BassFlags.Decode | BassFlags.Prescan);
 
             if (_sourceStream == 0)

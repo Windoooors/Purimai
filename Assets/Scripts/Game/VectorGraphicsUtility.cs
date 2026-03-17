@@ -2,7 +2,6 @@
 using UnityEngine.Networking;
 #endif
 using System;
-using System.IO;
 using System.Linq;
 using Unity.VectorGraphics;
 using UnityEngine;
@@ -40,7 +39,7 @@ namespace Game
             _pathRotation = pathRotation;
             _flipPathY = flipPathY;
             ObjectRotationOffset = objectRotationOffset;
-            
+
             using var reader = new StringReader(GetSvgText("star_path/" + svgAssetPath + ".svg"));
 
             var sceneInfo = SVGParser.ImportSVG(reader, ViewportOptions.DontPreserve);

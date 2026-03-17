@@ -1,11 +1,9 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UI.Settings;
 using UI.Settings.Managers;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace Game
 {
@@ -137,7 +135,7 @@ namespace Game
                 soundNameData.fileNameRelativeToDirectory);
 
             var data = BetterStreamingAssets.ReadAllBytes(path);
-            
+
             var bassHandler = new BassHandler(data);
 
             _bassHandlers.Add(dictKey, bassHandler);

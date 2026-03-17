@@ -22,28 +22,26 @@ namespace Game.Theming
     public class SkinDataDto
     {
         public string Author;
+
+        public SkinPieceDataDto[] Data;
         public string DescriptionEn;
         public string DescriptionZh;
         public string DisplayNameEn;
         public string DisplayNameZh;
 
         public string LoaderVersion;
-        
+
         public string Version;
-        
-        public SkinPieceDataDto[] Data;
     }
 
     public class SkinData
     {
-        [NonSerialized]
-        public SkinDataDto SkinDataDto;
+        [JsonProperty] public int AppliedModules;
 
         [NonSerialized] public bool InStreamingAssets;
 
-        [JsonProperty]
-        public int AppliedModules;
-        [JsonProperty]
-        public string Path;
+        [JsonProperty] public string Path;
+
+        [NonSerialized] public SkinDataDto SkinDataDto;
     }
 }

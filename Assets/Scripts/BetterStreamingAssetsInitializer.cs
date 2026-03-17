@@ -3,7 +3,7 @@ using UnityEngine;
 public static class BetterStreamingAssetsInitializer
 {
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-    static void OnBeforeSceneLoad()
+    private static void OnBeforeSceneLoad()
     {
         BetterStreamingAssets.Initialize();
     }

@@ -12,7 +12,7 @@ namespace UI.Theming
         public VisualTreeAsset itemTreeAsset;
 
         public float itemHeight = 65;
-        
+
         protected void SetUpList(ListView listView, SkinData[] items)
         {
             listView.fixedItemHeight = itemHeight;
@@ -86,9 +86,9 @@ namespace UI.Theming
         private static ThemeUiManager _instance;
 
         public VisualTreeAsset themeSelectorPanelTreeAsset;
-        private VisualElement _themeSelectorPanelTree;
 
         private VisualElement _root;
+        private VisualElement _themeSelectorPanelTree;
 
         public static ThemeUiManager Instance => _instance ??= FindAnyObjectByType<ThemeUiManager>();
 
@@ -147,15 +147,15 @@ namespace UI.Theming
             _themeSelectorPanelTree.AddToClassList("hidden");
 
             StartCoroutine(ClosePanelRoutine());
-            
+
             return;
 
             IEnumerator ClosePanelRoutine()
             {
                 yield return new WaitForSeconds(0.5f);
-                
+
                 SkinApplier.Instance.LoadSkin();
-                
+
                 DestroySelf();
             }
         }

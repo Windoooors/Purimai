@@ -6,12 +6,7 @@ using Newtonsoft.Json;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using UI;
-using UnityEditor;
-using UnityEditor.Localization;
-using UnityEditor.Localization.Plugins.XLIFF.V20;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.Localization.Tables;
 using Logger = Logging.Logger;
 
 namespace Game.Theming
@@ -26,16 +21,16 @@ namespace Game.Theming
 
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
-            
+
             var skinPaths = Directory.GetDirectories(path);
-            
+
             SkinDataList.Clear();
-            
-            SkinDataList.Add(new SkinData()
+
+            SkinDataList.Add(new SkinData
             {
                 Path = Path.Combine("default_skin"),
                 AppliedModules = 0,
-                SkinDataDto = new SkinDataDto()
+                SkinDataDto = new SkinDataDto
                 {
                     DescriptionEn = "Purimai default theme",
                     DescriptionZh = "Purimai 的默认主题",
@@ -61,12 +56,12 @@ namespace Game.Theming
 
                     var content = JsonConvert.DeserializeObject<SkinDataDto>(File.ReadAllText(metaPath));
 
-                    var skinData = new SkinData()
+                    var skinData = new SkinData
                     {
                         Path = skinPath,
                         SkinDataDto = content
                     };
-                    
+
                     SkinDataList.Add(skinData);
                 }
                 catch (Exception e)
@@ -77,40 +72,44 @@ namespace Game.Theming
 
             var savePath = Path.Combine(Application.persistentDataPath, "skin_settings.json");
 
-            var skinSettings = File.Exists(savePath)? JsonConvert.DeserializeObject<SkinSettingsItem[]>(
-                File.ReadAllText(savePath)) : Array.Empty<SkinSettingsItem>();
-            
+            var skinSettings = File.Exists(savePath)
+                ? JsonConvert.DeserializeObject<SkinSettingsItem[]>(
+                    File.ReadAllText(savePath))
+                : Array.Empty<SkinSettingsItem>();
+
             foreach (var skinSettingsItem in skinSettings)
             {
-                var match= SkinDataList.Find(x => x.Path == skinSettingsItem.Path);
+                var match = SkinDataList.Find(x => x.Path == skinSettingsItem.Path);
                 if (match == null)
                     continue;
-                
+
                 match.AppliedModules = skinSettingsItem.AppliedModules;
             }
 
-            if (SkinDataList.Count == 1 || skinSettings.Length == 0)
-            {
-                SkinDataList[0].AppliedModules = 0b11111;
-            }
+            if (SkinDataList.Count == 1 || skinSettings.Length == 0) SkinDataList[0].AppliedModules = 0b11111;
         }
     }
 
     [JsonObject]
     public class SkinSettingsItem
     {
-        public string Path;
         public int AppliedModules;
+        public string Path;
     }
 
     public class SkinApplier : MonoBehaviour
     {
+        public const int ModuleCount = 5;
+
+        private static SkinApplier _instance;
         public List<SkinPieceData> tapSkinDataList = new();
         public List<SkinPieceData> holdSkinDataList = new();
         public List<SkinPieceData> starSkinDataList = new();
         public List<SkinPieceData> slideSkinDataList = new();
         public List<SkinPieceData> judgeDisplaySkinDataList = new();
         public List<SkinPieceData> miscSkinDataList = new();
+
+        public static SkinApplier Instance => _instance ??= FindAnyObjectByType<SkinApplier>();
 
         private void Awake()
         {
@@ -141,15 +140,9 @@ namespace Game.Theming
             return null;
         }
 
-        public const int ModuleCount = 5;
-
-        public static SkinApplier Instance => _instance ??= FindAnyObjectByType<SkinApplier>();
-        
-        private static SkinApplier _instance;
-
         public void LoadSkin()
         {
-            for (int i = 0; i < ModuleCount; i++)
+            for (var i = 0; i < ModuleCount; i++)
             {
                 var mask = 1 << i;
 
@@ -157,7 +150,7 @@ namespace Game.Theming
                 {
                     if ((x.AppliedModules & mask) == 0)
                         return;
-                    
+
                     var list = GetSkinPieceDataList(i);
                     LoadSingleSkinData(x, list);
                 });
@@ -167,7 +160,7 @@ namespace Game.Theming
 
             File.WriteAllText(savePath, JsonConvert.SerializeObject
             (SkinManager.SkinDataList.Select(x =>
-                new SkinSettingsItem()
+                new SkinSettingsItem
                 {
                     Path = x.Path,
                     AppliedModules = x.AppliedModules
@@ -180,39 +173,41 @@ namespace Game.Theming
                 foreach (var skinPieceData in skinPieceDataArray)
                 {
                     var skinPieceDataDto = skinData.SkinDataDto.Data.ToList().Find(x => x.Key == skinPieceData.key);
-                    
+
                     var streaming = skinData.InStreamingAssets;
-                    
+
                     if (!streaming)
                     {
                         var path = skinPieceDataDto != null ? Path.Combine(skinData.Path, skinPieceDataDto.Path) : "";
-                        
+
                         if (!File.Exists(path)) path = Path.Combine(skinData.Path, skinPieceData.key + ".png");
                         if (!File.Exists(path))
                             path = Path.Combine(skinData.Path, "GameSkins/" + skinPieceData.key + ".png");
                         if (!File.Exists(path)) continue;
-                        
+
                         LoadTexture(path, skinPieceData.sprite);
                     }
                     else
                     {
                         /*if (BetterStreamingAssets.DirectoryExists(skinData.Path + "/"))
                             return;*/
-                        
+
                         var path = skinPieceDataDto != null ? Path.Combine(skinData.Path, skinPieceDataDto.Path) : "";
-                        
-                        if (path == "" || !BetterStreamingAssets.FileExists(path)) path = Path.Combine(skinData.Path, skinPieceData.key + ".png");
+
+                        if (path == "" || !BetterStreamingAssets.FileExists(path))
+                            path = Path.Combine(skinData.Path, skinPieceData.key + ".png");
                         if (!BetterStreamingAssets.FileExists(path))
                             path = Path.Combine(skinData.Path, "game_skins/" + skinPieceData.key + ".png");
                         if (!BetterStreamingAssets.FileExists(path)) continue;
 
                         var data = BetterStreamingAssets.ReadAllBytes(path);
-                        
+
                         LoadTextureFromBytes(data, skinPieceData.sprite);
                     }
                 }
 
                 return;
+
                 void LoadTexture(string path, Sprite sprite)
                 {
                     using var image = Image.Load<Rgba32>(path);

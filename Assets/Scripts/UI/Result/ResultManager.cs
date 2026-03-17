@@ -27,8 +27,8 @@ namespace UI.Result
         private StyleSheet _toRetryAnimatedStyleSheet;
 
         public static ResultManager Instance => _instance ??=
-                                                FindObjectsByType<ResultManager>(FindObjectsInactive.Include,
-                                                    FindObjectsSortMode.None)[^1];
+            FindObjectsByType<ResultManager>(FindObjectsInactive.Include,
+                FindObjectsSortMode.None)[^1];
 
         private void Awake()
         {
