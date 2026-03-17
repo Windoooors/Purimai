@@ -162,7 +162,7 @@ namespace Game.Notes.SlideBasedNotes
             if (touchedSegmentsIndex == segments.Length)
                 return;
 
-            if (timing > ChartPlayer.Instance.TimeInMilliseconds)
+            if (timing > ChartPlayer.Instance.TimeInMilliseconds + 50)
                 return;
 
             var sensorJumped =
