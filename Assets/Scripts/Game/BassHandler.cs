@@ -1,7 +1,11 @@
 using System;
+using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 using ManagedBass;
 using ManagedBass.Mix;
 using UI;
+using UnityEngine;
 
 namespace Game
 {
@@ -65,7 +69,28 @@ namespace Game
         {
             GlobalAudioMixer.Init();
 
-            _sourceStream = Bass.CreateStream(data, 0, data.Length, BassFlags.Decode | BassFlags.Prescan);
+            var md5 = MD5.Create();
+            var md5Data = md5.ComputeHash(data);
+            md5.Dispose();
+
+            var sb = new StringBuilder();
+            foreach (var b in md5Data)
+            {
+                sb.Append(b.ToString("x2"));
+            }
+
+            var hash = sb.ToString();
+
+            if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "Temp")))
+                Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Temp"));
+            
+            var persistentDataPath = Path.Combine(Application.persistentDataPath, $"Temp/{hash}");
+            if (!File.Exists(persistentDataPath))
+            {
+                File.WriteAllBytes(persistentDataPath, data);
+            }
+
+            _sourceStream = Bass.CreateStream(persistentDataPath, 0, 0, BassFlags.Decode | BassFlags.Prescan);
 
             if (_sourceStream == 0)
                 throw new Exception($"Loading Failed: {Bass.LastError}");

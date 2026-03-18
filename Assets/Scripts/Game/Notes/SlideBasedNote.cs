@@ -163,7 +163,7 @@ namespace Game.Notes
 
             foreach (var child in children) child.parent = SlideContentRoot.transform;
 
-            SetActive(false, SlideContentRoot);
+            SlideContentRoot.SetActive(false);
 
             emergingTime = timing - ChartPlayer.Instance.timeGapBeforeSlideStartsAppearing;
         }
@@ -172,7 +172,7 @@ namespace Game.Notes
         {
             GetSlideTransform(ref _slideTransform);
 
-            SetActive(_slideTransform.Shown, SlideContentRoot);
+            SlideContentRoot.SetActive(_slideTransform.Shown);
 
             if (!_slideTransform.Shown)
             {

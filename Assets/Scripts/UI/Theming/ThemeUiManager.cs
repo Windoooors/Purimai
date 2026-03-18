@@ -13,7 +13,7 @@ namespace UI.Theming
 
         public float itemHeight = 65;
 
-        protected void SetUpList(ListView listView, SkinData[] items)
+        protected void SetUpList(ListView listView, ThemeData[] items)
         {
             listView.fixedItemHeight = itemHeight;
 
@@ -39,12 +39,12 @@ namespace UI.Theming
 
                 var elementRoot = element.Q<VisualElement>("settings-item");
 
-                var displayName = isZh ? itemData.SkinDataDto.DisplayNameZh : itemData.SkinDataDto.DisplayNameEn;
+                var displayName = isZh ? itemData.themeDataDto.DisplayNameZh : itemData.themeDataDto.DisplayNameEn;
                 elementRoot.Q<Label>("item-title").text = displayName;
                 elementRoot.Q<Label>("item-name-watermark").text =
                     $"<color=white><gradient=\"level-item-watermark\">{displayName}</gradient></color>";
 
-                var description = isZh ? itemData.SkinDataDto.DescriptionZh : itemData.SkinDataDto.DescriptionEn;
+                var description = isZh ? itemData.themeDataDto.DescriptionZh : itemData.themeDataDto.DescriptionEn;
 
                 elementRoot.Q<Label>("item-description").text = description;
 
@@ -124,7 +124,7 @@ namespace UI.Theming
 
             listView.TrySetTouchDraggingAllowed(true);
 
-            SetUpList(listView, SkinManager.SkinDataList.ToArray());
+            SetUpList(listView, ThemeManager.SkinDataList.ToArray());
 
             StartCoroutine(Show());
         }
@@ -154,7 +154,7 @@ namespace UI.Theming
             {
                 yield return new WaitForSeconds(0.5f);
 
-                SkinApplier.Instance.LoadSkin();
+                ThemeApplier.Instance.LoadTheme();
 
                 DestroySelf();
             }

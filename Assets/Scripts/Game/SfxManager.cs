@@ -13,7 +13,7 @@ namespace Game
 
         private readonly Dictionary<string, BassHandler> _bassHandlers = new();
 
-        private readonly GameSoundNameData _gameSoundNameData = new()
+        public readonly GameSoundNameData GameSoundNameData = new()
         {
             audioSoundNameDataDict = new Dictionary<string, AudioSoundNameData>
             {
@@ -36,7 +36,7 @@ namespace Game
         {
             _instance = this;
 
-            AdaptToSettings();
+            //AdaptToSettings();
 
             SettingsManager.OnSettingsChanged += AdaptToSettings;
         }
@@ -48,11 +48,11 @@ namespace Game
 
             _bassHandlers.Clear();
 
-            foreach (var audioSoundNameData in _gameSoundNameData.audioSoundNameDataDict)
+            foreach (var audioSoundNameData in GameSoundNameData.audioSoundNameDataDict)
                 LoadSingleSoundData(audioSoundNameData.Value, audioSoundNameData.Key);
         }
 
-        private void AdaptToSettings()
+        public void AdaptToSettings()
         {
             UpdatePair("tap", SettingsPool.GetValue("volume.tap") / 10f);
             UpdatePair("break", SettingsPool.GetValue("volume.break") / 10f);
@@ -131,14 +131,36 @@ namespace Game
 
         private void LoadSingleSoundData(AudioSoundNameData soundNameData, string dictKey)
         {
-            var path = Path.Combine(soundNameData.directoryRelativeToStreamingAssets,
-                soundNameData.fileNameRelativeToDirectory);
+            if (soundNameData.inStreamingAssets)
+            {
+                var path = Path.Combine(soundNameData.directoryRelativeToStreamingAssets,
+                    soundNameData.fileNameRelativeToDirectory);
 
-            var data = BetterStreamingAssets.ReadAllBytes(path);
+                var data = BetterStreamingAssets.ReadAllBytes(path);
 
-            var bassHandler = new BassHandler(data);
+                var bassHandler = new BassHandler(data);
 
-            _bassHandlers.Add(dictKey, bassHandler);
+                UpdatePair(dictKey, bassHandler);
+            }
+            else
+            {
+                var path = soundNameData.fileNameRelativeToDirectory;
+                
+                var bassHandler = new BassHandler(path);
+
+                UpdatePair(dictKey, bassHandler);
+            }
+
+            return;
+            
+            void UpdatePair(string key, BassHandler value)
+            {
+                if (!_bassHandlers.TryAdd(key, value))
+                {
+                    _bassHandlers[key].Dispose();
+                    _bassHandlers[key] = value;
+                }
+            }
         }
     }
 
@@ -148,6 +170,7 @@ namespace Game
         public string fileNameRelativeToDirectory;
         public string directoryRelativeToStreamingAssets = "default_sfx/game_sfx/";
 
+        public bool inStreamingAssets = true;
         public AudioSoundNameData(string fileNameRelativeToDirectory)
         {
             this.fileNameRelativeToDirectory = fileNameRelativeToDirectory;

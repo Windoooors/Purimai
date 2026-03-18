@@ -362,6 +362,7 @@ MonoBehaviour:
   m_ShadowSegment: []
 --- !u!1971053207 &1747447
 SpriteShapeRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -408,8 +409,8 @@ SpriteShapeRenderer:
   m_SortingLayerID: 657196261
   m_SortingLayer: 11
   m_SortingOrder: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_MaskInteraction: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_ShapeTexture: {fileID: 2800000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
   m_Sprites:
   - {fileID: 21300000, guid: 0ae2b74b1edd14bb18dd7b65ae916a54, type: 3}
@@ -640,6 +641,7 @@ MonoBehaviour:
   m_ShadowSegment: []
 --- !u!1971053207 &41661432
 SpriteShapeRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -686,8 +688,8 @@ SpriteShapeRenderer:
   m_SortingLayerID: 657196261
   m_SortingLayer: 11
   m_SortingOrder: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_MaskInteraction: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_ShapeTexture: {fileID: 2800000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
   m_Sprites:
   - {fileID: 21300000, guid: 0ae2b74b1edd14bb18dd7b65ae916a54, type: 3}
@@ -1053,6 +1055,7 @@ MonoBehaviour:
   m_ShadowSegment: []
 --- !u!1971053207 &78388209
 SpriteShapeRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1099,8 +1102,8 @@ SpriteShapeRenderer:
   m_SortingLayerID: 657196261
   m_SortingLayer: 11
   m_SortingOrder: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_MaskInteraction: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_ShapeTexture: {fileID: 2800000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
   m_Sprites:
   - {fileID: 21300000, guid: 0ae2b74b1edd14bb18dd7b65ae916a54, type: 3}
@@ -1315,6 +1318,7 @@ MonoBehaviour:
   m_ShadowSegment: []
 --- !u!1971053207 &88104390
 SpriteShapeRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1361,8 +1365,8 @@ SpriteShapeRenderer:
   m_SortingLayerID: 657196261
   m_SortingLayer: 11
   m_SortingOrder: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_MaskInteraction: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_ShapeTexture: {fileID: 2800000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
   m_Sprites:
   - {fileID: 21300000, guid: 0ae2b74b1edd14bb18dd7b65ae916a54, type: 3}
@@ -1575,6 +1579,7 @@ MonoBehaviour:
   m_ShadowSegment: []
 --- !u!1971053207 &160365226
 SpriteShapeRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1621,8 +1626,8 @@ SpriteShapeRenderer:
   m_SortingLayerID: 657196261
   m_SortingLayer: 11
   m_SortingOrder: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_MaskInteraction: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_ShapeTexture: {fileID: 2800000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
   m_Sprites:
   - {fileID: 21300000, guid: 0ae2b74b1edd14bb18dd7b65ae916a54, type: 3}
@@ -1837,6 +1842,7 @@ MonoBehaviour:
   m_ShadowSegment: []
 --- !u!1971053207 &175005189
 SpriteShapeRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1883,8 +1889,8 @@ SpriteShapeRenderer:
   m_SortingLayerID: 657196261
   m_SortingLayer: 11
   m_SortingOrder: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_MaskInteraction: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_ShapeTexture: {fileID: 2800000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
   m_Sprites:
   - {fileID: 21300000, guid: 0ae2b74b1edd14bb18dd7b65ae916a54, type: 3}
@@ -2115,6 +2121,7 @@ MonoBehaviour:
   m_ShadowSegment: []
 --- !u!1971053207 &229685931
 SpriteShapeRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -2161,8 +2168,8 @@ SpriteShapeRenderer:
   m_SortingLayerID: 657196261
   m_SortingLayer: 11
   m_SortingOrder: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_MaskInteraction: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_ShapeTexture: {fileID: 2800000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
   m_Sprites:
   - {fileID: 21300000, guid: 0ae2b74b1edd14bb18dd7b65ae916a54, type: 3}
@@ -2375,6 +2382,7 @@ MonoBehaviour:
   m_ShadowSegment: []
 --- !u!1971053207 &230979319
 SpriteShapeRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -2421,8 +2429,8 @@ SpriteShapeRenderer:
   m_SortingLayerID: 657196261
   m_SortingLayer: 11
   m_SortingOrder: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_MaskInteraction: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_ShapeTexture: {fileID: 2800000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
   m_Sprites:
   - {fileID: 21300000, guid: 0ae2b74b1edd14bb18dd7b65ae916a54, type: 3}
@@ -2665,6 +2673,7 @@ MonoBehaviour:
   m_ShadowSegment: []
 --- !u!1971053207 &262125842
 SpriteShapeRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -2711,8 +2720,8 @@ SpriteShapeRenderer:
   m_SortingLayerID: 657196261
   m_SortingLayer: 11
   m_SortingOrder: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_MaskInteraction: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_ShapeTexture: {fileID: 2800000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
   m_Sprites:
   - {fileID: 21300000, guid: 0ae2b74b1edd14bb18dd7b65ae916a54, type: 3}
@@ -3003,6 +3012,7 @@ MonoBehaviour:
   m_ShadowSegment: []
 --- !u!1971053207 &309975954
 SpriteShapeRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -3049,8 +3059,8 @@ SpriteShapeRenderer:
   m_SortingLayerID: 657196261
   m_SortingLayer: 11
   m_SortingOrder: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_MaskInteraction: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_ShapeTexture: {fileID: 2800000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
   m_Sprites:
   - {fileID: 21300000, guid: 0ae2b74b1edd14bb18dd7b65ae916a54, type: 3}
@@ -3293,6 +3303,7 @@ MonoBehaviour:
   m_ShadowSegment: []
 --- !u!1971053207 &365957911
 SpriteShapeRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -3339,8 +3350,8 @@ SpriteShapeRenderer:
   m_SortingLayerID: 657196261
   m_SortingLayer: 11
   m_SortingOrder: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_MaskInteraction: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_ShapeTexture: {fileID: 2800000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
   m_Sprites:
   - {fileID: 21300000, guid: 0ae2b74b1edd14bb18dd7b65ae916a54, type: 3}
@@ -3646,6 +3657,7 @@ MonoBehaviour:
   m_ShadowSegment: []
 --- !u!1971053207 &472162253
 SpriteShapeRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -3692,8 +3704,8 @@ SpriteShapeRenderer:
   m_SortingLayerID: 657196261
   m_SortingLayer: 11
   m_SortingOrder: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_MaskInteraction: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_ShapeTexture: {fileID: 2800000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
   m_Sprites:
   - {fileID: 21300000, guid: 0ae2b74b1edd14bb18dd7b65ae916a54, type: 3}
@@ -4000,6 +4012,7 @@ MonoBehaviour:
   m_ShadowSegment: []
 --- !u!1971053207 &693175542
 SpriteShapeRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -4046,8 +4059,8 @@ SpriteShapeRenderer:
   m_SortingLayerID: 657196261
   m_SortingLayer: 11
   m_SortingOrder: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_MaskInteraction: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_ShapeTexture: {fileID: 2800000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
   m_Sprites:
   - {fileID: 21300000, guid: 0ae2b74b1edd14bb18dd7b65ae916a54, type: 3}
@@ -4278,6 +4291,7 @@ MonoBehaviour:
   m_ShadowSegment: []
 --- !u!1971053207 &803275088
 SpriteShapeRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -4324,8 +4338,8 @@ SpriteShapeRenderer:
   m_SortingLayerID: 657196261
   m_SortingLayer: 11
   m_SortingOrder: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_MaskInteraction: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_ShapeTexture: {fileID: 2800000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
   m_Sprites:
   - {fileID: 21300000, guid: 0ae2b74b1edd14bb18dd7b65ae916a54, type: 3}
@@ -5045,6 +5059,7 @@ MonoBehaviour:
   m_ShadowSegment: []
 --- !u!1971053207 &990677108
 SpriteShapeRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -5091,8 +5106,8 @@ SpriteShapeRenderer:
   m_SortingLayerID: 657196261
   m_SortingLayer: 11
   m_SortingOrder: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_MaskInteraction: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_ShapeTexture: {fileID: 2800000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
   m_Sprites:
   - {fileID: 21300000, guid: 0ae2b74b1edd14bb18dd7b65ae916a54, type: 3}
@@ -5351,6 +5366,7 @@ MonoBehaviour:
   m_ShadowSegment: []
 --- !u!1971053207 &1039366675
 SpriteShapeRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -5397,8 +5413,8 @@ SpriteShapeRenderer:
   m_SortingLayerID: 657196261
   m_SortingLayer: 11
   m_SortingOrder: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_MaskInteraction: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_ShapeTexture: {fileID: 2800000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
   m_Sprites:
   - {fileID: 21300000, guid: 0ae2b74b1edd14bb18dd7b65ae916a54, type: 3}
@@ -5613,6 +5629,7 @@ MonoBehaviour:
   m_ShadowSegment: []
 --- !u!1971053207 &1115246258
 SpriteShapeRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -5659,8 +5676,8 @@ SpriteShapeRenderer:
   m_SortingLayerID: 657196261
   m_SortingLayer: 11
   m_SortingOrder: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_MaskInteraction: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_ShapeTexture: {fileID: 2800000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
   m_Sprites:
   - {fileID: 21300000, guid: 0ae2b74b1edd14bb18dd7b65ae916a54, type: 3}
@@ -5919,6 +5936,7 @@ MonoBehaviour:
   m_ShadowSegment: []
 --- !u!1971053207 &1226605928
 SpriteShapeRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -5965,8 +5983,8 @@ SpriteShapeRenderer:
   m_SortingLayerID: 657196261
   m_SortingLayer: 11
   m_SortingOrder: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_MaskInteraction: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_ShapeTexture: {fileID: 2800000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
   m_Sprites:
   - {fileID: 21300000, guid: 0ae2b74b1edd14bb18dd7b65ae916a54, type: 3}
@@ -6209,6 +6227,7 @@ MonoBehaviour:
   m_ShadowSegment: []
 --- !u!1971053207 &1301398407
 SpriteShapeRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -6255,8 +6274,8 @@ SpriteShapeRenderer:
   m_SortingLayerID: 657196261
   m_SortingLayer: 11
   m_SortingOrder: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_MaskInteraction: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_ShapeTexture: {fileID: 2800000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
   m_Sprites:
   - {fileID: 21300000, guid: 0ae2b74b1edd14bb18dd7b65ae916a54, type: 3}
@@ -6515,6 +6534,7 @@ MonoBehaviour:
   m_ShadowSegment: []
 --- !u!1971053207 &1318124537
 SpriteShapeRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -6561,8 +6581,8 @@ SpriteShapeRenderer:
   m_SortingLayerID: 657196261
   m_SortingLayer: 11
   m_SortingOrder: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_MaskInteraction: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_ShapeTexture: {fileID: 2800000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
   m_Sprites:
   - {fileID: 21300000, guid: 0ae2b74b1edd14bb18dd7b65ae916a54, type: 3}
@@ -6805,6 +6825,7 @@ MonoBehaviour:
   m_ShadowSegment: []
 --- !u!1971053207 &1386514923
 SpriteShapeRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -6851,8 +6872,8 @@ SpriteShapeRenderer:
   m_SortingLayerID: 657196261
   m_SortingLayer: 11
   m_SortingOrder: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_MaskInteraction: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_ShapeTexture: {fileID: 2800000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
   m_Sprites:
   - {fileID: 21300000, guid: 0ae2b74b1edd14bb18dd7b65ae916a54, type: 3}
@@ -7095,6 +7116,7 @@ MonoBehaviour:
   m_ShadowSegment: []
 --- !u!1971053207 &1444831230
 SpriteShapeRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -7141,8 +7163,8 @@ SpriteShapeRenderer:
   m_SortingLayerID: 657196261
   m_SortingLayer: 11
   m_SortingOrder: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_MaskInteraction: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_ShapeTexture: {fileID: 2800000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
   m_Sprites:
   - {fileID: 21300000, guid: 0ae2b74b1edd14bb18dd7b65ae916a54, type: 3}
@@ -7357,6 +7379,7 @@ MonoBehaviour:
   m_ShadowSegment: []
 --- !u!1971053207 &1462013304
 SpriteShapeRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -7403,8 +7426,8 @@ SpriteShapeRenderer:
   m_SortingLayerID: 657196261
   m_SortingLayer: 11
   m_SortingOrder: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_MaskInteraction: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_ShapeTexture: {fileID: 2800000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
   m_Sprites:
   - {fileID: 21300000, guid: 0ae2b74b1edd14bb18dd7b65ae916a54, type: 3}
@@ -7633,6 +7656,7 @@ MonoBehaviour:
   m_ShadowSegment: []
 --- !u!1971053207 &1476120035
 SpriteShapeRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -7679,8 +7703,8 @@ SpriteShapeRenderer:
   m_SortingLayerID: 657196261
   m_SortingLayer: 11
   m_SortingOrder: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_MaskInteraction: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_ShapeTexture: {fileID: 2800000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
   m_Sprites:
   - {fileID: 21300000, guid: 0ae2b74b1edd14bb18dd7b65ae916a54, type: 3}
@@ -7911,6 +7935,7 @@ MonoBehaviour:
   m_ShadowSegment: []
 --- !u!1971053207 &1528290485
 SpriteShapeRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -7957,8 +7982,8 @@ SpriteShapeRenderer:
   m_SortingLayerID: 657196261
   m_SortingLayer: 11
   m_SortingOrder: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_MaskInteraction: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_ShapeTexture: {fileID: 2800000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
   m_Sprites:
   - {fileID: 21300000, guid: 0ae2b74b1edd14bb18dd7b65ae916a54, type: 3}
@@ -8209,6 +8234,7 @@ MonoBehaviour:
   m_ShadowSegment: []
 --- !u!1971053207 &1582672042
 SpriteShapeRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -8255,8 +8281,8 @@ SpriteShapeRenderer:
   m_SortingLayerID: 657196261
   m_SortingLayer: 11
   m_SortingOrder: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_MaskInteraction: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_ShapeTexture: {fileID: 2800000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
   m_Sprites:
   - {fileID: 21300000, guid: 0ae2b74b1edd14bb18dd7b65ae916a54, type: 3}
@@ -8515,6 +8541,7 @@ MonoBehaviour:
   m_ShadowSegment: []
 --- !u!1971053207 &1709129643
 SpriteShapeRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -8561,8 +8588,8 @@ SpriteShapeRenderer:
   m_SortingLayerID: 657196261
   m_SortingLayer: 11
   m_SortingOrder: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_MaskInteraction: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_ShapeTexture: {fileID: 2800000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
   m_Sprites:
   - {fileID: 21300000, guid: 0ae2b74b1edd14bb18dd7b65ae916a54, type: 3}
@@ -8805,6 +8832,7 @@ MonoBehaviour:
   m_ShadowSegment: []
 --- !u!1971053207 &1744144693
 SpriteShapeRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -8851,8 +8879,8 @@ SpriteShapeRenderer:
   m_SortingLayerID: 657196261
   m_SortingLayer: 11
   m_SortingOrder: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_MaskInteraction: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_ShapeTexture: {fileID: 2800000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
   m_Sprites:
   - {fileID: 21300000, guid: 0ae2b74b1edd14bb18dd7b65ae916a54, type: 3}
@@ -9111,6 +9139,7 @@ MonoBehaviour:
   m_ShadowSegment: []
 --- !u!1971053207 &1863957860
 SpriteShapeRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -9157,8 +9186,8 @@ SpriteShapeRenderer:
   m_SortingLayerID: 657196261
   m_SortingLayer: 11
   m_SortingOrder: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_MaskInteraction: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_ShapeTexture: {fileID: 2800000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
   m_Sprites:
   - {fileID: 21300000, guid: 0ae2b74b1edd14bb18dd7b65ae916a54, type: 3}
@@ -9373,6 +9402,7 @@ MonoBehaviour:
   m_ShadowSegment: []
 --- !u!1971053207 &1944187390
 SpriteShapeRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -9419,8 +9449,8 @@ SpriteShapeRenderer:
   m_SortingLayerID: 657196261
   m_SortingLayer: 11
   m_SortingOrder: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_MaskInteraction: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_ShapeTexture: {fileID: 2800000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
   m_Sprites:
   - {fileID: 21300000, guid: 0ae2b74b1edd14bb18dd7b65ae916a54, type: 3}
@@ -9651,6 +9681,7 @@ MonoBehaviour:
   m_ShadowSegment: []
 --- !u!1971053207 &1958122880
 SpriteShapeRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -9697,8 +9728,8 @@ SpriteShapeRenderer:
   m_SortingLayerID: 657196261
   m_SortingLayer: 11
   m_SortingOrder: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_MaskInteraction: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_ShapeTexture: {fileID: 2800000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
   m_Sprites:
   - {fileID: 21300000, guid: 0ae2b74b1edd14bb18dd7b65ae916a54, type: 3}
@@ -9933,6 +9964,7 @@ MonoBehaviour:
   m_ShadowSegment: []
 --- !u!1971053207 &1974927200
 SpriteShapeRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -9979,8 +10011,8 @@ SpriteShapeRenderer:
   m_SortingLayerID: 657196261
   m_SortingLayer: 11
   m_SortingOrder: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_MaskInteraction: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_ShapeTexture: {fileID: 2800000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
   m_Sprites:
   - {fileID: 21300000, guid: 0ae2b74b1edd14bb18dd7b65ae916a54, type: 3}
@@ -10195,6 +10227,7 @@ MonoBehaviour:
   m_ShadowSegment: []
 --- !u!1971053207 &1987843860
 SpriteShapeRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -10241,8 +10274,8 @@ SpriteShapeRenderer:
   m_SortingLayerID: 657196261
   m_SortingLayer: 11
   m_SortingOrder: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_MaskInteraction: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_ShapeTexture: {fileID: 2800000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
   m_Sprites:
   - {fileID: 21300000, guid: 0ae2b74b1edd14bb18dd7b65ae916a54, type: 3}
@@ -10473,6 +10506,7 @@ MonoBehaviour:
   m_ShadowSegment: []
 --- !u!1971053207 &2094755292
 SpriteShapeRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -10519,8 +10553,8 @@ SpriteShapeRenderer:
   m_SortingLayerID: 657196261
   m_SortingLayer: 11
   m_SortingOrder: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_MaskInteraction: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_ShapeTexture: {fileID: 2800000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
   m_Sprites:
   - {fileID: 21300000, guid: 0ae2b74b1edd14bb18dd7b65ae916a54, type: 3}

@@ -215,6 +215,8 @@ namespace Game
                     (false, true, true, true) => Instantiate(tapPrefabs[8]),
                     (_, _, _, _) => Instantiate(tapPrefabs[0])
                 };
+                
+                tapObjectInstance.isEach = isEach;
 
                 notesList.Add(tapObjectInstance);
 
@@ -284,6 +286,8 @@ namespace Game
                 var laneIndex = hold.Lane - 1;
 
                 var holdObjectInstance = isEach ? Instantiate(holdPrefabs[1]) : Instantiate(holdPrefabs[0]);
+
+                holdObjectInstance.isEach = isEach;
 
                 holdObjectInstance.timing = noteDataObject.Timing;
                 holdObjectInstance.lane = hold.Lane;

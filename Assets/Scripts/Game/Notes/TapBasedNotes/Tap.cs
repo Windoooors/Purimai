@@ -33,12 +33,12 @@ namespace Game.Notes.TapBasedNotes
 
             if (!_tapOrLineTransform.Shown)
             {
-                SetActive(false, NoteContentRoot);
+                NoteContentRoot.SetActive(false);
                 return;
             }
 
-            if (_tapOrLineTransform.Shown && !headJudged && NoteContentRoot.layer != ShownLayer)
-                SetActive(true, NoteContentRoot);
+            if (_tapOrLineTransform.Shown && !headJudged && !NoteContentRoot.activeSelf)
+                NoteContentRoot.SetActive(true);
 
             if (!headJudged && ChartPlayer.Instance.TimeInMilliseconds >
                 timing + ChartPlayer.Instance.tapJudgeSettings.lateGoodTiming + ChartPlayer.Instance.judgeDelay)
@@ -57,7 +57,7 @@ namespace Game.Notes.TapBasedNotes
 
                 _judgeAction.Enabled = false;
 
-                SetActive(false, NoteContentRoot);
+                NoteContentRoot.SetActive(false);
             }
 
             tapTransform.position = Lanes.Instance.startPoints[lane - 1].position +
@@ -156,7 +156,7 @@ namespace Game.Notes.TapBasedNotes
 
             _judgeAction.Enabled = false;
 
-            SetActive(false, NoteContentRoot);
+            NoteContentRoot.SetActive(false);
         }
     }
 }

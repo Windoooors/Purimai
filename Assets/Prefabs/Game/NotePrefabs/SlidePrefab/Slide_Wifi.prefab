@@ -220,7 +220,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 6617244548120875404}
   slideBasedNote: {fileID: 2592134520801541204}
-  wifiSvgAssetNameOverride: Straight_5
+  wifiSvgAssetNameOverride: straight_5
   duration: 5
 --- !u!1 &5844128097870956244
 GameObject:
@@ -328,7 +328,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 6650119813564221703}
   slideBasedNote: {fileID: 2592134520801541204}
-  wifiSvgAssetNameOverride: Straight_4
+  wifiSvgAssetNameOverride: straight_4
   duration: 5
 --- !u!1 &6574093696964316734
 GameObject:
@@ -563,5 +563,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 7851780208575611363}
   slideBasedNote: {fileID: 2592134520801541204}
-  wifiSvgAssetNameOverride: Straight_6
+  wifiSvgAssetNameOverride: straight_6
   duration: 5

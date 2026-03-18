@@ -8,12 +8,12 @@ namespace UI.Theming
     public class ThemeSelectorManipulator : Manipulator
     {
         private static Action _onUpdate;
-        private readonly SkinData _skinData;
+        private readonly ThemeData _themeData;
         private List<Button> _buttons;
 
-        public ThemeSelectorManipulator(SkinData skinData)
+        public ThemeSelectorManipulator(ThemeData themeData)
         {
-            _skinData = skinData;
+            _themeData = themeData;
         }
 
         ~ThemeSelectorManipulator()
@@ -50,11 +50,11 @@ namespace UI.Theming
 
         private void OnUpdate()
         {
-            for (var i = 0; i < SkinApplier.ModuleCount; i++)
+            for (var i = 0; i < ThemeApplier.ModuleCount; i++)
             {
                 var mask = 1 << i;
 
-                var active = (mask & _skinData.AppliedModules) != 0;
+                var active = (mask & _themeData.AppliedModules) != 0;
 
                 if (active)
                     _buttons[i].AddToClassList("button--selected");
@@ -67,15 +67,15 @@ namespace UI.Theming
         {
             var mask = 1 << index;
 
-            SkinManager.SkinDataList.ForEach(x =>
+            ThemeManager.SkinDataList.ForEach(x =>
             {
-                if (x == _skinData)
+                if (x == _themeData)
                     return;
 
                 if ((x.AppliedModules & mask) != 0) x.AppliedModules &= ~mask;
             });
 
-            _skinData.AppliedModules |= mask;
+            _themeData.AppliedModules |= mask;
 
             _onUpdate();
         }

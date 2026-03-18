@@ -78,7 +78,7 @@ namespace UI.Result
             songCover.style.backgroundImage = _maidata.SongCoverDecodedImage.GetTexture2D();
 
             _coverManipulator =
-                new SongCoverManipulator(SongCoverManipulator.SongCoverLayoutPopulationMode.MinimalLeft, -20);
+                new SongCoverManipulator(SongCoverManipulator.SongCoverLayoutPopulationMode.MinimalLeft, 0);
             songCoverParent.AddManipulator(_coverManipulator);
 
             _coverManipulator.OnGeometryChanged += (sender, args) =>

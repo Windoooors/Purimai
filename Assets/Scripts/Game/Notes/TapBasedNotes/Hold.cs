@@ -1,3 +1,4 @@
+using Game.Theming;
 using UI.Result;
 using UI.Settings;
 using Unity.Mathematics;
@@ -53,12 +54,12 @@ namespace Game.Notes.TapBasedNotes
 
             if (!_holdTransformData.Shown && (holdJudged || !headJudged))
             {
-                SetActive(false, NoteContentRoot);
+                NoteContentRoot.SetActive(false);
                 return;
             }
 
-            if (_holdTransformData.Shown && !headJudged && !holdJudged && NoteContentRoot.layer != ShownLayer)
-                SetActive(true, NoteContentRoot);
+            if (_holdTransformData.Shown && !headJudged && !holdJudged && !NoteContentRoot.activeSelf)
+                NoteContentRoot.SetActive(true);
 
             if (ChartPlayer.Instance.TimeInMilliseconds > timing +
                 ChartPlayer.Instance.tapJudgeSettings.lateGoodTiming +
@@ -81,7 +82,7 @@ namespace Game.Notes.TapBasedNotes
                 _tapJudgeAction.Enabled = false;
                 _leaveJudgeAction.Enabled = false;
 
-                SetActive(false, NoteContentRoot);
+                NoteContentRoot.SetActive(false);
             }
 
             if (ChartPlayer.Instance.TimeInMilliseconds >
@@ -108,7 +109,7 @@ namespace Game.Notes.TapBasedNotes
 
                 _glowAnimator.SetTrigger("Reset");
 
-                SetActive(false, NoteContentRoot);
+                NoteContentRoot.SetActive(false);
 
                 _leaveJudgeAction.Enabled = false;
             }
@@ -303,8 +304,13 @@ namespace Game.Notes.TapBasedNotes
 
             isHeadFast = state.isFast;
 
-            ChartPlayer.Instance.holdRippleAnimators[lane - 1].SetTrigger(
-                _headJudgeState switch
+            ChartPlayer.Instance.holdRippleAnimators[lane - 1].SetTrigger(ThemeManager.HoldColorRelatedHoldEffect
+                ? isEach switch
+                {
+                    true => "HoldPerfect",
+                    false => "HoldGreat"
+                }
+                : _headJudgeState switch
                 {
                     JudgeState.CriticalPerfect => "HoldPerfect",
                     JudgeState.SemiCriticalPerfect => "HoldPerfect",
@@ -410,7 +416,7 @@ namespace Game.Notes.TapBasedNotes
 
             holdJudged = true;
 
-            SetActive(false, NoteContentRoot);
+            NoteContentRoot.SetActive(false);
         }
 
         protected override void LateStart()

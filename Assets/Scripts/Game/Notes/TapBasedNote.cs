@@ -36,6 +36,7 @@ namespace Game.Notes
     public abstract class TapBasedNote : NoteBase
     {
         public int timing;
+        public bool isEach;
 
         public SpriteRenderer lineSpriteRenderer;
         public Transform lineTransform;
@@ -87,7 +88,7 @@ namespace Game.Notes
 
             emergingTime = timing - OnScreenTime * 2;
 
-            SetActive(false, NoteContentRoot);
+            NoteContentRoot.SetActive(false);
         }
 
         public virtual void RegisterTapEvent()
