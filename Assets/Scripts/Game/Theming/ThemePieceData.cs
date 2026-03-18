@@ -10,7 +10,7 @@ namespace Game.Theming
         public string key;
         public Sprite sprite;
     }
-    
+
     [Serializable]
     public class SfxPieceData
     {
@@ -23,7 +23,7 @@ namespace Game.Theming
         public string Key;
         public string Path;
     }
-    
+
     [JsonObject]
     public class SkinPieceDataDto
     {
@@ -37,19 +37,19 @@ namespace Game.Theming
         public string Author;
 
         public SkinPieceDataDto[] Data;
-        public SfxPieceDataDto[] SfxData;
-        
+
         public string DescriptionEn;
         public string DescriptionZh;
         public string DisplayNameEn;
         public string DisplayNameZh;
 
-        public string LoaderVersion;
-
-        public string Version;
-
         public bool HasJudgeCircleColor;
         public bool HoldColorRelatedHoldEffect;
+
+        public string LoaderVersion;
+        public SfxPieceDataDto[] SfxData;
+
+        public string Version;
     }
 
     public class ThemeData

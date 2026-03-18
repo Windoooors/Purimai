@@ -1,13 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
-using UI;
 using UnityEngine;
-using Logger = Logging.Logger;
 
 namespace Game.Theming
 {
@@ -43,7 +38,7 @@ namespace Game.Theming
         {
             SkinApplier.LoadSkin();
             SfxApplier.LoadSfx();
-            
+
             var savePath = Path.Combine(Application.persistentDataPath, "skin_settings.json");
 
             File.WriteAllText(savePath, JsonConvert.SerializeObject
@@ -57,12 +52,12 @@ namespace Game.Theming
 
         public List<SfxPieceData> GetSfxPieceDataList()
         {
-            return SfxManager.Instance.GameSoundNameData.audioSoundNameDataDict.Keys.Select(x => new SfxPieceData()
+            return SfxManager.Instance.GameSoundNameData.audioSoundNameDataDict.Keys.Select(x => new SfxPieceData
             {
                 key = x
             }).ToList();
         }
-        
+
         public List<SkinPieceData> GetSkinPieceDataList(int index)
         {
             switch (index)

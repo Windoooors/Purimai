@@ -13,6 +13,8 @@ namespace Game
 
         private readonly Dictionary<string, BassHandler> _bassHandlers = new();
 
+        private readonly Dictionary<string, float> _volumes = new();
+
         public readonly GameSoundNameData GameSoundNameData = new()
         {
             audioSoundNameDataDict = new Dictionary<string, AudioSoundNameData>
@@ -27,8 +29,6 @@ namespace Game
                 { "good", new AudioSoundNameData("good_sound.wav") }
             }
         };
-
-        private readonly Dictionary<string, float> _volumes = new();
 
         public static SfxManager Instance => _instance ??= FindAnyObjectByType<SfxManager>();
 
@@ -145,14 +145,14 @@ namespace Game
             else
             {
                 var path = soundNameData.fileNameRelativeToDirectory;
-                
+
                 var bassHandler = new BassHandler(path);
 
                 UpdatePair(dictKey, bassHandler);
             }
 
             return;
-            
+
             void UpdatePair(string key, BassHandler value)
             {
                 if (!_bassHandlers.TryAdd(key, value))
@@ -171,6 +171,7 @@ namespace Game
         public string directoryRelativeToStreamingAssets = "default_sfx/game_sfx/";
 
         public bool inStreamingAssets = true;
+
         public AudioSoundNameData(string fileNameRelativeToDirectory)
         {
             this.fileNameRelativeToDirectory = fileNameRelativeToDirectory;

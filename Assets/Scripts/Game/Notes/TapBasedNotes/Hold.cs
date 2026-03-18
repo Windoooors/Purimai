@@ -52,9 +52,11 @@ namespace Game.Notes.TapBasedNotes
 
             GetHoldTransform(ref _holdTransformData);
 
-            if (!_holdTransformData.Shown && (holdJudged || !headJudged))
+            if (!_holdTransformData.Shown &&
+                (holdJudged || ChartPlayer.Instance.TimeInMilliseconds < timing - 2 * OnScreenTime))
             {
                 NoteContentRoot.SetActive(false);
+
                 return;
             }
 

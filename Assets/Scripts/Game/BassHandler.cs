@@ -74,21 +74,15 @@ namespace Game
             md5.Dispose();
 
             var sb = new StringBuilder();
-            foreach (var b in md5Data)
-            {
-                sb.Append(b.ToString("x2"));
-            }
+            foreach (var b in md5Data) sb.Append(b.ToString("x2"));
 
             var hash = sb.ToString();
 
             if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "Temp")))
                 Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Temp"));
-            
+
             var persistentDataPath = Path.Combine(Application.persistentDataPath, $"Temp/{hash}");
-            if (!File.Exists(persistentDataPath))
-            {
-                File.WriteAllBytes(persistentDataPath, data);
-            }
+            if (!File.Exists(persistentDataPath)) File.WriteAllBytes(persistentDataPath, data);
 
             _sourceStream = Bass.CreateStream(persistentDataPath, 0, 0, BassFlags.Decode | BassFlags.Prescan);
 

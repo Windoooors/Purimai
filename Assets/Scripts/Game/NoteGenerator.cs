@@ -215,7 +215,7 @@ namespace Game
                     (false, true, true, true) => Instantiate(tapPrefabs[8]),
                     (_, _, _, _) => Instantiate(tapPrefabs[0])
                 };
-                
+
                 tapObjectInstance.isEach = isEach;
 
                 notesList.Add(tapObjectInstance);

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Newtonsoft.Json;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using UI;
@@ -18,23 +17,17 @@ namespace Game.Theming
             {
                 if (i == 5)
                     continue;
-                
+
                 var mask = 1 << i;
 
                 ThemeManager.SkinDataList.ForEach(x =>
                 {
                     if ((x.AppliedModules & mask) == 0)
                         return;
-                    
-                    if (i == 1)
-                    {
-                        ThemeManager.HoldColorRelatedHoldEffect = x.themeDataDto.HoldColorRelatedHoldEffect;
-                    }
 
-                    if (i == 4)
-                    {
-                        ThemeManager.HasJudgeCircleColor = x.themeDataDto.HasJudgeCircleColor;
-                    }
+                    if (i == 1) ThemeManager.HoldColorRelatedHoldEffect = x.themeDataDto.HoldColorRelatedHoldEffect;
+
+                    if (i == 4) ThemeManager.HasJudgeCircleColor = x.themeDataDto.HasJudgeCircleColor;
 
                     var list = ThemeApplier.Instance.GetSkinPieceDataList(i);
                     LoadSingleSkinData(x, list);
@@ -52,7 +45,6 @@ namespace Game.Theming
                     var streaming = themeData.InStreamingAssets;
 
                     if (!streaming)
-                    {
                         LoadFromPersistentData(themeData, skinPieceDataDto, skinPieceData, () =>
                         {
                             var defaultSkinPieceDataDto = ThemeManager.DefaultTheme.themeDataDto.Data.ToList()
@@ -60,13 +52,10 @@ namespace Game.Theming
 
                             LoadFromStreamingAssets(ThemeManager.DefaultTheme, defaultSkinPieceDataDto, skinPieceData);
                         });
-                    }
                     else
-                    {
                         /*if (BetterStreamingAssets.DirectoryExists(skinData.Path + "/"))
                             return;*/
                         LoadFromStreamingAssets(themeData, skinPieceDataDto, skinPieceData);
-                    }
                 }
             }
 

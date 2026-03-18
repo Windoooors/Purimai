@@ -68,7 +68,7 @@ namespace Game.Theming
 
                     skinData.themeDataDto.Data ??= Array.Empty<SkinPieceDataDto>();
                     skinData.themeDataDto.SfxData ??= Array.Empty<SfxPieceDataDto>();
-                    
+
                     SkinDataList.Add(skinData);
                 }
                 catch (Exception e)

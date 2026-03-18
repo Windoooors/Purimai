@@ -19,7 +19,7 @@ namespace Game.Notes.TapBasedNotes
             if (shown)
             {
                 _haveShown = true;
-                
+
                 NoteContentRoot.SetActive(true);
             }
             else

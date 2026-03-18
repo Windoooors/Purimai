@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Linq;
 using Game.Notes;
+using Game.Notes.TapBasedNotes;
 using Game.Theming;
 using LitMotion;
 using UI;
@@ -144,7 +145,14 @@ namespace Game
 
             NoteGenerator.Instance.notesList.ForEach(noteBase =>
             {
-                if (_time + 0.1f >= noteBase.emergingTime / 1000f && noteBase.enabled)
+                var judged = noteBase switch
+                {
+                    Tap tap => tap.headJudged,
+                    Hold hold => hold.holdJudged,
+                    _ => true
+                };
+
+                if (_time + 0.1f >= noteBase.emergingTime / 1000f && (!judged || noteBase.enabled))
                     noteBase.ManualUpdate();
             });
         }
