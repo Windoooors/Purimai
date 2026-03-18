@@ -31,6 +31,11 @@ namespace Game.Theming
                         ThemeManager.HoldColorRelatedHoldEffect = x.themeDataDto.HoldColorRelatedHoldEffect;
                     }
 
+                    if (i == 4)
+                    {
+                        ThemeManager.HasJudgeCircleColor = x.themeDataDto.HasJudgeCircleColor;
+                    }
+
                     var list = ThemeApplier.Instance.GetSkinPieceDataList(i);
                     LoadSingleSkinData(x, list);
                 });

@@ -38,6 +38,7 @@ namespace Game.Theming
 
         public SkinPieceDataDto[] Data;
         public SfxPieceDataDto[] SfxData;
+        
         public string DescriptionEn;
         public string DescriptionZh;
         public string DisplayNameEn;
@@ -47,6 +48,7 @@ namespace Game.Theming
 
         public string Version;
 
+        public bool HasJudgeCircleColor;
         public bool HoldColorRelatedHoldEffect;
     }
 

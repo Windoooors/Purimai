@@ -12,6 +12,7 @@ namespace Game.Theming
         public static readonly List<ThemeData> SkinDataList = new();
         public static ThemeData DefaultTheme { get; private set; }
         public static bool HoldColorRelatedHoldEffect { get; set; }
+        public static bool HasJudgeCircleColor { get; set; }
 
         public static void Load()
         {

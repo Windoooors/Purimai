@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Linq;
 using Game.Notes;
+using Game.Theming;
 using LitMotion;
 using UI;
 using UI.Settings;
@@ -314,13 +315,21 @@ namespace Game
 
         private void InitializeCircleColor(int index, bool isUtage)
         {
-            var targetIndex = isUtage ? 5 : index == 5 ? 4 : index;
+            if (ThemeManager.HasJudgeCircleColor)
+            {
+                var targetIndex = isUtage ? 5 : index == 5 ? 4 : index;
 
-            if (judgeCircleColors.Length <= targetIndex || targetIndex < 0)
-                targetIndex = 5;
+                if (judgeCircleColors.Length <= targetIndex || targetIndex < 0)
+                    targetIndex = 5;
 
-            judgeCircleSpriteRenderer.color = judgeCircleColors[targetIndex];
-            judgeCircleGlowSpriteRenderer.color = judgeCircleColors[targetIndex];
+                judgeCircleSpriteRenderer.color = judgeCircleColors[targetIndex];
+                judgeCircleGlowSpriteRenderer.color = judgeCircleColors[targetIndex];
+            }
+            else
+            {
+                judgeCircleSpriteRenderer.color = Color.white;
+                judgeCircleGlowSpriteRenderer.color = Color.white;
+            }
         }
 
         private void OnPlayCompleted()
