@@ -11,10 +11,10 @@
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
     border-bottom-left-radius: 10px;
-    border-top-width: 2px;
-    border-right-width: 2px;
-    border-bottom-width: 2px;
-    border-left-width: 2px;
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
     border-left-color: rgb(217, 217, 217);
     border-right-color: rgb(217, 217, 217);
     border-top-color: rgb(217, 217, 217);
@@ -32,14 +32,15 @@
     padding-right: 0;
     padding-bottom: 0;
     padding-left: 0;
-    background-color: rgb(250, 250, 250);
+    background-color: rgb(255, 255, 255);
     border-top-width: 0;
     border-right-width: 0;
     border-bottom-width: 0;
     border-left-width: 0;
     background-size: 24px 24px;
-    transition-property: background-color;
+    transition-property: all;
     transition-duration: 0.2s;
+    scale: 1 1;
 }
 
 .button--selected {
@@ -63,4 +64,5 @@
 
 .button:hover {
     background-color: rgb(217, 217, 217);
+    scale: 0.9 0.9;
 }

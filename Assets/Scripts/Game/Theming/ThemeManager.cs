@@ -39,7 +39,9 @@ namespace Game.Theming
                     LoaderVersion = "1.0.0",
                     Version = "1.0.0",
                     Data = Array.Empty<SkinPieceDataDto>(),
-                    SfxData = Array.Empty<SfxPieceDataDto>()
+                    SfxData = Array.Empty<SfxPieceDataDto>(),
+                    HasJudgeCircleColor = true,
+                    HoldColorRelatedHoldEffect = false
                 },
                 InStreamingAssets = true
             };
@@ -64,6 +66,9 @@ namespace Game.Theming
                         themeDataDto = content
                     };
 
+                    skinData.themeDataDto.Data ??= Array.Empty<SkinPieceDataDto>();
+                    skinData.themeDataDto.SfxData ??= Array.Empty<SfxPieceDataDto>();
+                    
                     SkinDataList.Add(skinData);
                 }
                 catch (Exception e)

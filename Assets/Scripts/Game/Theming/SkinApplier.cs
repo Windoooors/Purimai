@@ -41,16 +41,6 @@ namespace Game.Theming
                 });
             }
 
-            var savePath = Path.Combine(Application.persistentDataPath, "skin_settings.json");
-
-            File.WriteAllText(savePath, JsonConvert.SerializeObject
-            (ThemeManager.SkinDataList.Select(x =>
-                new SkinSettingsItem
-                {
-                    Path = x.Path,
-                    AppliedModules = x.AppliedModules
-                }).ToArray()));
-
             return;
 
             void LoadSingleSkinData(ThemeData themeData, List<SkinPieceData> skinPieceDataArray)

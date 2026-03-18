@@ -43,6 +43,16 @@ namespace Game.Theming
         {
             SkinApplier.LoadSkin();
             SfxApplier.LoadSfx();
+            
+            var savePath = Path.Combine(Application.persistentDataPath, "skin_settings.json");
+
+            File.WriteAllText(savePath, JsonConvert.SerializeObject
+            (ThemeManager.SkinDataList.Select(x =>
+                new SkinSettingsItem
+                {
+                    Path = x.Path,
+                    AppliedModules = x.AppliedModules
+                }).ToArray()));
         }
 
         public List<SfxPieceData> GetSfxPieceDataList()
