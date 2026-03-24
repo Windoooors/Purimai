@@ -268,6 +268,8 @@ namespace Game.Notes.SlideBasedNotes
                     judgeSpriteNeedsChange
                         ? 0
                         : 1];
+
+            if (!judgeSpriteNeedsChange) judgeDisplaySpriteRenderer.transform.eulerAngles += new Vector3(0, 0, 180);
         }
 
         private void CheckAndJudge()

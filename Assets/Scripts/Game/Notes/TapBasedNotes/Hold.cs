@@ -368,13 +368,13 @@ namespace Game.Notes.TapBasedNotes
 
             if (touchedLane != lane)
                 return;
-
+            
             if (!headJudged)
                 return;
 
             var time = ChartPlayer.Instance.TimeInMilliseconds;
 
-            if (time < timing || time > timing + duration +
+            if (time < timing - ChartPlayer.Instance.tapJudgeSettings.fastGoodTiming || time > timing + duration +
                 ChartPlayer.Instance.holdTailJudgeSettings.greatTiming + ChartPlayer.Instance.judgeDelay)
                 return;
 

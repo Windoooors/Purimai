@@ -93,7 +93,27 @@ namespace Game.Theming
                 match.AppliedModules = skinSettingsItem.AppliedModules;
             }
 
-            if (SkinDataList.Count == 1 || skinSettings.Length == 0) SkinDataList[0].AppliedModules = 0b111111;
+            var needRestoringSettings = false;
+
+            for (var i = 0; i < ThemeApplier.ModuleCount; i++)
+            {
+                var mask = 1 << i;
+                var found = false;
+                SkinDataList.ForEach(x =>
+                {
+                    if ((x.AppliedModules & mask) != 0)
+                        found = true;
+                });
+
+                if (!found)
+                {
+                    needRestoringSettings = true;
+                    break;
+                }
+            }
+
+            if (SkinDataList.Count == 1 || skinSettings.Length == 0 || needRestoringSettings)
+                SkinDataList[0].AppliedModules = 0b111111;
         }
     }
 }

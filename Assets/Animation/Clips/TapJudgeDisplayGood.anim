@@ -38,7 +38,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: GameObject (3)
+    path: Hexes/GameObject (3)
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -54,7 +54,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: GameObject (2)/Hex
+    path: Hexes/GameObject (2)/Hex
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -70,7 +70,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: GameObject (1)/Hex
+    path: Hexes/GameObject (1)/Hex
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -86,7 +86,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: GameObject/Hex
+    path: Hexes/GameObject/Hex
   m_PositionCurves:
   - curve:
       serializedVersion: 2
@@ -148,7 +148,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: GameObject/Hex
+    path: Hexes/GameObject/Hex
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -209,7 +209,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: GameObject (1)/Hex
+    path: Hexes/GameObject (1)/Hex
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -270,42 +270,52 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: GameObject (2)/Hex
+    path: Hexes/GameObject (2)/Hex
+  m_ScaleCurves:
   - curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: {x: -0.9485323, y: -0.13312097, z: 0}
-        inSlope: {x: 0.37593246, y: 0.004026681, z: 0}
-        outSlope: {x: 1.1238527, y: 0.2961005, z: 0}
+        value: {x: 0.3, y: 0.3, z: 0.3}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 8.4, y: 8.4, z: 8.4}
         tangentMode: 0
         weightedMode: 0
         inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
         outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
       - serializedVersion: 3
         time: 0.083333336
-        value: {x: -0.8548779, y: -0.10844593, z: 0}
-        inSlope: {x: 1.1238527, y: 0.2961005, z: -0}
-        outSlope: {x: 0.38858035, y: 0.049293533, z: 0}
+        value: {x: 1, y: 1, z: 1}
+        inSlope: {x: 8.4, y: 8.4, z: 8.4}
+        outSlope: {x: 4.499999, y: 4.499999, z: 4.499999}
         tangentMode: 0
         weightedMode: 0
         inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
         outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
       - serializedVersion: 3
-        time: 0.36666667
-        value: {x: -0.7447801, y: -0.09447943, z: 0}
-        inSlope: {x: 0.38858035, y: 0.049293533, z: -0}
-        outSlope: {x: 0.41678044, y: 0.6532289, z: 0}
+        time: 0.15
+        value: {x: 1.3, y: 1.3, z: 1.3}
+        inSlope: {x: 4.499999, y: 4.499999, z: 4.499999}
+        outSlope: {x: -4.4999995, y: -4.4999995, z: -4.4999995}
         tangentMode: 0
         weightedMode: 0
         inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
         outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
       - serializedVersion: 3
-        time: 0.5
-        value: {x: -0.6892094, y: -0.0073822485, z: 0}
-        inSlope: {x: 0.41678044, y: 0.6532289, z: -0}
-        outSlope: {x: 0.37593246, y: 0.004026681, z: 0}
+        time: 0.21666667
+        value: {x: 1, y: 1, z: 1}
+        inSlope: {x: -4.4999995, y: -4.4999995, z: -4.4999995}
+        outSlope: {x: -8.399999, y: -8.399999, z: -8.399999}
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
+        outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
+      - serializedVersion: 3
+        time: 0.3
+        value: {x: 0.3, y: 0.3, z: 0.3}
+        inSlope: {x: -8.399999, y: -8.399999, z: -8.399999}
+        outSlope: {x: 0, y: 0, z: 0}
         tangentMode: 0
         weightedMode: 0
         inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
@@ -313,8 +323,111 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Text
-  m_ScaleCurves:
+    path: Hexes/GameObject/Hex
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: {x: 0.3, y: 0.3, z: 0.3}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 8.4, y: 8.4, z: 8.4}
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
+        outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
+      - serializedVersion: 3
+        time: 0.083333336
+        value: {x: 1, y: 1, z: 1}
+        inSlope: {x: 8.4, y: 8.4, z: 8.4}
+        outSlope: {x: 4.499999, y: 4.499999, z: 4.499999}
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
+        outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
+      - serializedVersion: 3
+        time: 0.15
+        value: {x: 1.3, y: 1.3, z: 1.3}
+        inSlope: {x: 4.499999, y: 4.499999, z: 4.499999}
+        outSlope: {x: -4.4999995, y: -4.4999995, z: -4.4999995}
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
+        outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
+      - serializedVersion: 3
+        time: 0.21666667
+        value: {x: 1, y: 1, z: 1}
+        inSlope: {x: -4.4999995, y: -4.4999995, z: -4.4999995}
+        outSlope: {x: -8.399999, y: -8.399999, z: -8.399999}
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
+        outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
+      - serializedVersion: 3
+        time: 0.3
+        value: {x: 0.3, y: 0.3, z: 0.3}
+        inSlope: {x: -8.399999, y: -8.399999, z: -8.399999}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
+        outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    path: Hexes/GameObject (1)/Hex
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: {x: 0.3, y: 0.3, z: 0.3}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 8.4, y: 8.4, z: 8.4}
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
+        outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
+      - serializedVersion: 3
+        time: 0.083333336
+        value: {x: 1, y: 1, z: 1}
+        inSlope: {x: 8.4, y: 8.4, z: 8.4}
+        outSlope: {x: 4.499999, y: 4.499999, z: 4.499999}
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
+        outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
+      - serializedVersion: 3
+        time: 0.15
+        value: {x: 1.3, y: 1.3, z: 1.3}
+        inSlope: {x: 4.499999, y: 4.499999, z: 4.499999}
+        outSlope: {x: -4.4999995, y: -4.4999995, z: -4.4999995}
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
+        outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
+      - serializedVersion: 3
+        time: 0.21666667
+        value: {x: 1, y: 1, z: 1}
+        inSlope: {x: -4.4999995, y: -4.4999995, z: -4.4999995}
+        outSlope: {x: -8.399999, y: -8.399999, z: -8.399999}
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
+        outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
+      - serializedVersion: 3
+        time: 0.3
+        value: {x: 0.3, y: 0.3, z: 0.3}
+        inSlope: {x: -8.399999, y: -8.399999, z: -8.399999}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
+        outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    path: Hexes/GameObject (2)/Hex
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -339,198 +452,33 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: 
+    path: Hexes
   - curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: {x: 0.3, y: 0.3, z: 0.3}
-        inSlope: {x: 0, y: 0, z: 0}
-        outSlope: {x: 8.4, y: 8.4, z: 8.4}
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
-        outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
-      - serializedVersion: 3
-        time: 0.083333336
-        value: {x: 1, y: 1, z: 1}
-        inSlope: {x: 8.4, y: 8.4, z: 8.4}
-        outSlope: {x: 4.499999, y: 4.499999, z: 4.499999}
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
-        outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
-      - serializedVersion: 3
-        time: 0.15
-        value: {x: 1.3, y: 1.3, z: 1.3}
-        inSlope: {x: 4.499999, y: 4.499999, z: 4.499999}
-        outSlope: {x: -4.4999995, y: -4.4999995, z: -4.4999995}
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
-        outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
-      - serializedVersion: 3
-        time: 0.21666667
-        value: {x: 1, y: 1, z: 1}
-        inSlope: {x: -4.4999995, y: -4.4999995, z: -4.4999995}
-        outSlope: {x: -8.399999, y: -8.399999, z: -8.399999}
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
-        outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
-      - serializedVersion: 3
-        time: 0.3
-        value: {x: 0.3, y: 0.3, z: 0.3}
-        inSlope: {x: -8.399999, y: -8.399999, z: -8.399999}
-        outSlope: {x: 0, y: 0, z: 0}
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
-        outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    path: GameObject/Hex
-  - curve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: {x: 0.3, y: 0.3, z: 0.3}
-        inSlope: {x: 0, y: 0, z: 0}
-        outSlope: {x: 8.4, y: 8.4, z: 8.4}
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
-        outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
-      - serializedVersion: 3
-        time: 0.083333336
-        value: {x: 1, y: 1, z: 1}
-        inSlope: {x: 8.4, y: 8.4, z: 8.4}
-        outSlope: {x: 4.499999, y: 4.499999, z: 4.499999}
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
-        outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
-      - serializedVersion: 3
-        time: 0.15
-        value: {x: 1.3, y: 1.3, z: 1.3}
-        inSlope: {x: 4.499999, y: 4.499999, z: 4.499999}
-        outSlope: {x: -4.4999995, y: -4.4999995, z: -4.4999995}
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
-        outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
-      - serializedVersion: 3
-        time: 0.21666667
-        value: {x: 1, y: 1, z: 1}
-        inSlope: {x: -4.4999995, y: -4.4999995, z: -4.4999995}
-        outSlope: {x: -8.399999, y: -8.399999, z: -8.399999}
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
-        outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
-      - serializedVersion: 3
-        time: 0.3
-        value: {x: 0.3, y: 0.3, z: 0.3}
-        inSlope: {x: -8.399999, y: -8.399999, z: -8.399999}
-        outSlope: {x: 0, y: 0, z: 0}
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
-        outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    path: GameObject (1)/Hex
-  - curve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: {x: 0.3, y: 0.3, z: 0.3}
-        inSlope: {x: 0, y: 0, z: 0}
-        outSlope: {x: 8.4, y: 8.4, z: 8.4}
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
-        outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
-      - serializedVersion: 3
-        time: 0.083333336
-        value: {x: 1, y: 1, z: 1}
-        inSlope: {x: 8.4, y: 8.4, z: 8.4}
-        outSlope: {x: 4.499999, y: 4.499999, z: 4.499999}
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
-        outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
-      - serializedVersion: 3
-        time: 0.15
-        value: {x: 1.3, y: 1.3, z: 1.3}
-        inSlope: {x: 4.499999, y: 4.499999, z: 4.499999}
-        outSlope: {x: -4.4999995, y: -4.4999995, z: -4.4999995}
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
-        outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
-      - serializedVersion: 3
-        time: 0.21666667
-        value: {x: 1, y: 1, z: 1}
-        inSlope: {x: -4.4999995, y: -4.4999995, z: -4.4999995}
-        outSlope: {x: -8.399999, y: -8.399999, z: -8.399999}
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
-        outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
-      - serializedVersion: 3
-        time: 0.3
-        value: {x: 0.3, y: 0.3, z: 0.3}
-        inSlope: {x: -8.399999, y: -8.399999, z: -8.399999}
-        outSlope: {x: 0, y: 0, z: 0}
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
-        outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    path: GameObject (2)/Hex
-  - curve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: {x: 1.5999997, y: 1.5999997, z: 1.6}
+        value: {x: 2.5, y: 2.5, z: 2.5}
         inSlope: {x: -0.3896103, y: -0.38961017, z: -0.3896104}
-        outSlope: {x: -5.524694, y: -5.524694, z: -5.524697}
+        outSlope: {x: -6, y: -6, z: -6}
         tangentMode: 0
         weightedMode: 0
         inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
         outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
       - serializedVersion: 3
         time: 0.083333336
-        value: {x: 1.1396085, y: 1.1396085, z: 1.1396086}
-        inSlope: {x: -5.524694, y: -5.524694, z: -5.524697}
-        outSlope: {x: -0.51800376, y: -0.51800376, z: -0.5180036}
+        value: {x: 2, y: 2, z: 2}
+        inSlope: {x: -6, y: -6, z: -6}
+        outSlope: {x: 0, y: 0, z: 0}
         tangentMode: 0
         weightedMode: 0
         inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
         outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
       - serializedVersion: 3
         time: 0.36666667
-        value: {x: 0.99284077, y: 0.99284077, z: 0.99284095}
-        inSlope: {x: -0.51800376, y: -0.51800376, z: -0.5180036}
-        outSlope: {x: -2.0891633, y: -2.0891633, z: -2.0891643}
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
-        outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
-      - serializedVersion: 3
-        time: 0.5
-        value: {x: 0.7142857, y: 0.7142857, z: 0.71428573}
-        inSlope: {x: -2.0891633, y: -2.0891633, z: -2.0891643}
-        outSlope: {x: -0.3896103, y: -0.38961017, z: -0.3896104}
+        value: {x: 2, y: 2, z: 2}
+        inSlope: {x: -0, y: -0, z: -0}
+        outSlope: {x: -1.4117646, y: -1.4117646, z: -1.4117646}
         tangentMode: 0
         weightedMode: 0
         inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
@@ -584,7 +532,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_Color.a
-    path: GameObject/Hex
+    path: Hexes/GameObject/Hex
     classID: 212
     script: {fileID: 0}
     flags: 0
@@ -632,7 +580,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_Color.a
-    path: GameObject (1)/Hex
+    path: Hexes/GameObject (1)/Hex
     classID: 212
     script: {fileID: 0}
     flags: 0
@@ -680,7 +628,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_Color.a
-    path: GameObject (2)/Hex
+    path: Hexes/GameObject (2)/Hex
     classID: 212
     script: {fileID: 0}
     flags: 0
@@ -710,7 +658,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_Color.a
-    path: GameObject (3)/Hex
+    path: Hexes/GameObject (3)/Hex
     classID: 212
     script: {fileID: 0}
     flags: 0
@@ -740,7 +688,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_Color.a
-    path: Hex
+    path: Hexes/Hex
     classID: 212
     script: {fileID: 0}
     flags: 0
@@ -788,7 +736,49 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_Color.a
-    path: Text/star_double.png.meta_0
+    path: Text/JudgeText
+    classID: 212
+    script: {fileID: 0}
+    flags: 0
+  - serializedVersion: 2
+    curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1.92
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_Size.x
+    path: Text/JudgeText
+    classID: 212
+    script: {fileID: 0}
+    flags: 0
+  - serializedVersion: 2
+    curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1.92
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_Size.y
+    path: Text/JudgeText
     classID: 212
     script: {fileID: 0}
     flags: 0
@@ -798,7 +788,7 @@ AnimationClip:
     - time: 0
       value: {fileID: 21300000, guid: cfbe43503d56c475ca366e85defe8657, type: 3}
     attribute: m_Sprite
-    path: GameObject/Hex
+    path: Hexes/GameObject/Hex
     classID: 212
     script: {fileID: 0}
     flags: 2
@@ -807,7 +797,7 @@ AnimationClip:
     - time: 0
       value: {fileID: 21300000, guid: cfbe43503d56c475ca366e85defe8657, type: 3}
     attribute: m_Sprite
-    path: GameObject (1)/Hex
+    path: Hexes/GameObject (1)/Hex
     classID: 212
     script: {fileID: 0}
     flags: 2
@@ -816,7 +806,7 @@ AnimationClip:
     - time: 0
       value: {fileID: 21300000, guid: cfbe43503d56c475ca366e85defe8657, type: 3}
     attribute: m_Sprite
-    path: GameObject (2)/Hex
+    path: Hexes/GameObject (2)/Hex
     classID: 212
     script: {fileID: 0}
     flags: 2
@@ -825,17 +815,16 @@ AnimationClip:
     - time: 0
       value: {fileID: 21300000, guid: cfbe43503d56c475ca366e85defe8657, type: 3}
     attribute: m_Sprite
-    path: Hex
+    path: Hexes/Hex
     classID: 212
     script: {fileID: 0}
     flags: 2
   - serializedVersion: 2
     curve:
     - time: 0
-      value: {fileID: 6256978819795432554, guid: 3c8ad70bb8ff54ca8868da4f8ee710e8,
-        type: 3}
+      value: {fileID: 21300000, guid: 3c8ad70bb8ff54ca8868da4f8ee710e8, type: 3}
     attribute: m_Sprite
-    path: Text/star_double.png.meta_0
+    path: Text/JudgeText
     classID: 212
     script: {fileID: 0}
     flags: 2
@@ -847,7 +836,7 @@ AnimationClip:
   m_ClipBindingConstant:
     genericBindings:
     - serializedVersion: 2
-      path: 1995138184
+      path: 640785614
       attribute: 1
       script: {fileID: 0}
       typeID: 4
@@ -856,7 +845,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 1122839349
+      path: 1475965661
       attribute: 1
       script: {fileID: 0}
       typeID: 4
@@ -865,7 +854,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 3296287131
+      path: 3513581683
       attribute: 1
       script: {fileID: 0}
       typeID: 4
@@ -874,16 +863,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 2612594937
-      attribute: 1
-      script: {fileID: 0}
-      typeID: 4
-      customType: 0
-      isPPtrCurve: 0
-      isIntCurve: 0
-      isSerializeReferenceCurve: 0
-    - serializedVersion: 2
-      path: 2530354254
+      path: 3322469384
       attribute: 4
       script: {fileID: 0}
       typeID: 4
@@ -892,7 +872,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 0
+      path: 640785614
       attribute: 3
       script: {fileID: 0}
       typeID: 4
@@ -901,7 +881,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 1995138184
+      path: 1475965661
       attribute: 3
       script: {fileID: 0}
       typeID: 4
@@ -910,7 +890,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 1122839349
+      path: 3513581683
       attribute: 3
       script: {fileID: 0}
       typeID: 4
@@ -919,7 +899,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 3296287131
+      path: 691889448
       attribute: 3
       script: {fileID: 0}
       typeID: 4
@@ -937,7 +917,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 1995138184
+      path: 640785614
       attribute: 304273561
       script: {fileID: 0}
       typeID: 212
@@ -946,7 +926,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 1122839349
+      path: 1475965661
       attribute: 304273561
       script: {fileID: 0}
       typeID: 212
@@ -955,7 +935,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 3296287131
+      path: 3513581683
       attribute: 304273561
       script: {fileID: 0}
       typeID: 212
@@ -964,7 +944,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 254118462
+      path: 439473110
       attribute: 304273561
       script: {fileID: 0}
       typeID: 212
@@ -973,7 +953,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 3348915078
+      path: 3792208936
       attribute: 304273561
       script: {fileID: 0}
       typeID: 212
@@ -982,7 +962,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 1676091383
+      path: 46219
       attribute: 304273561
       script: {fileID: 0}
       typeID: 212
@@ -991,7 +971,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 1995138184
+      path: 640785614
       attribute: 0
       script: {fileID: 0}
       typeID: 212
@@ -1000,7 +980,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 1122839349
+      path: 1475965661
       attribute: 0
       script: {fileID: 0}
       typeID: 212
@@ -1009,7 +989,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 3296287131
+      path: 3513581683
       attribute: 0
       script: {fileID: 0}
       typeID: 212
@@ -1018,7 +998,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 3348915078
+      path: 3792208936
       attribute: 0
       script: {fileID: 0}
       typeID: 212
@@ -1027,7 +1007,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 1676091383
+      path: 46219
       attribute: 0
       script: {fileID: 0}
       typeID: 212
@@ -1036,7 +1016,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 3296287131
+      path: 3513581683
       attribute: 4
       script: {fileID: 0}
       typeID: 4
@@ -1045,7 +1025,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 1122839349
+      path: 1475965661
       attribute: 4
       script: {fileID: 0}
       typeID: 4
@@ -1054,11 +1034,29 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 1995138184
+      path: 640785614
       attribute: 4
       script: {fileID: 0}
       typeID: 4
       customType: 4
+      isPPtrCurve: 0
+      isIntCurve: 0
+      isSerializeReferenceCurve: 0
+    - serializedVersion: 2
+      path: 46219
+      attribute: 4197328169
+      script: {fileID: 0}
+      typeID: 212
+      customType: 0
+      isPPtrCurve: 0
+      isIntCurve: 0
+      isSerializeReferenceCurve: 0
+    - serializedVersion: 2
+      path: 46219
+      attribute: 2368279999
+      script: {fileID: 0}
+      typeID: 212
+      customType: 0
       isPPtrCurve: 0
       isIntCurve: 0
       isSerializeReferenceCurve: 0
@@ -1067,7 +1065,7 @@ AnimationClip:
     - {fileID: 21300000, guid: cfbe43503d56c475ca366e85defe8657, type: 3}
     - {fileID: 21300000, guid: cfbe43503d56c475ca366e85defe8657, type: 3}
     - {fileID: 21300000, guid: cfbe43503d56c475ca366e85defe8657, type: 3}
-    - {fileID: 6256978819795432554, guid: 3c8ad70bb8ff54ca8868da4f8ee710e8, type: 3}
+    - {fileID: 21300000, guid: 3c8ad70bb8ff54ca8868da4f8ee710e8, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
@@ -1089,96 +1087,6 @@ AnimationClip:
     m_HeightFromFeet: 0
     m_Mirror: 0
   m_EditorCurves:
-  - serializedVersion: 2
-    curve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 1.1
-        inSlope: 0.5999999
-        outSlope: 0.5999999
-        tangentMode: 69
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      - serializedVersion: 3
-        time: 0.5
-        value: 1.4
-        inSlope: 0.5999999
-        outSlope: 0.5999999
-        tangentMode: 69
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    attribute: m_LocalScale.x
-    path: 
-    classID: 4
-    script: {fileID: 0}
-    flags: 0
-  - serializedVersion: 2
-    curve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 1.1
-        inSlope: 0.5999999
-        outSlope: 0.5999999
-        tangentMode: 69
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      - serializedVersion: 3
-        time: 0.5
-        value: 1.4
-        inSlope: 0.5999999
-        outSlope: 0.5999999
-        tangentMode: 69
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    attribute: m_LocalScale.y
-    path: 
-    classID: 4
-    script: {fileID: 0}
-    flags: 0
-  - serializedVersion: 2
-    curve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 1.1
-        inSlope: 0.5999999
-        outSlope: 0.5999999
-        tangentMode: 69
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      - serializedVersion: 3
-        time: 0.5
-        value: 1.4
-        inSlope: 0.5999999
-        outSlope: 0.5999999
-        tangentMode: 69
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    attribute: m_LocalScale.z
-    path: 
-    classID: 4
-    script: {fileID: 0}
-    flags: 0
   - serializedVersion: 2
     curve:
       serializedVersion: 2
@@ -1241,7 +1149,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.x
-    path: GameObject/Hex
+    path: Hexes/GameObject/Hex
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -1307,7 +1215,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.y
-    path: GameObject/Hex
+    path: Hexes/GameObject/Hex
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -1373,7 +1281,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.z
-    path: GameObject/Hex
+    path: Hexes/GameObject/Hex
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -1430,7 +1338,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalScale.x
-    path: GameObject/Hex
+    path: Hexes/GameObject/Hex
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -1487,7 +1395,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalScale.y
-    path: GameObject/Hex
+    path: Hexes/GameObject/Hex
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -1544,7 +1452,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalScale.z
-    path: GameObject/Hex
+    path: Hexes/GameObject/Hex
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -1592,7 +1500,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_Color.a
-    path: GameObject/Hex
+    path: Hexes/GameObject/Hex
     classID: 212
     script: {fileID: 0}
     flags: 0
@@ -1658,7 +1566,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.x
-    path: GameObject (1)/Hex
+    path: Hexes/GameObject (1)/Hex
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -1724,7 +1632,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.y
-    path: GameObject (1)/Hex
+    path: Hexes/GameObject (1)/Hex
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -1790,7 +1698,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.z
-    path: GameObject (1)/Hex
+    path: Hexes/GameObject (1)/Hex
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -1847,7 +1755,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalScale.x
-    path: GameObject (1)/Hex
+    path: Hexes/GameObject (1)/Hex
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -1904,7 +1812,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalScale.y
-    path: GameObject (1)/Hex
+    path: Hexes/GameObject (1)/Hex
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -1961,7 +1869,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalScale.z
-    path: GameObject (1)/Hex
+    path: Hexes/GameObject (1)/Hex
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -2009,7 +1917,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_Color.a
-    path: GameObject (1)/Hex
+    path: Hexes/GameObject (1)/Hex
     classID: 212
     script: {fileID: 0}
     flags: 0
@@ -2075,7 +1983,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.x
-    path: GameObject (2)/Hex
+    path: Hexes/GameObject (2)/Hex
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -2141,7 +2049,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.y
-    path: GameObject (2)/Hex
+    path: Hexes/GameObject (2)/Hex
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -2207,7 +2115,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.z
-    path: GameObject (2)/Hex
+    path: Hexes/GameObject (2)/Hex
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -2264,7 +2172,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalScale.x
-    path: GameObject (2)/Hex
+    path: Hexes/GameObject (2)/Hex
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -2321,7 +2229,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalScale.y
-    path: GameObject (2)/Hex
+    path: Hexes/GameObject (2)/Hex
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -2378,7 +2286,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalScale.z
-    path: GameObject (2)/Hex
+    path: Hexes/GameObject (2)/Hex
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -2426,7 +2334,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_Color.a
-    path: GameObject (2)/Hex
+    path: Hexes/GameObject (2)/Hex
     classID: 212
     script: {fileID: 0}
     flags: 0
@@ -2456,7 +2364,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.x
-    path: GameObject (3)
+    path: Hexes/GameObject (3)
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -2486,7 +2394,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.y
-    path: GameObject (3)
+    path: Hexes/GameObject (3)
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -2516,7 +2424,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.z
-    path: GameObject (3)
+    path: Hexes/GameObject (3)
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -2546,7 +2454,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_Color.a
-    path: GameObject (3)/Hex
+    path: Hexes/GameObject (3)/Hex
     classID: 212
     script: {fileID: 0}
     flags: 0
@@ -2576,104 +2484,8 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_Color.a
-    path: Hex
+    path: Hexes/Hex
     classID: 212
-    script: {fileID: 0}
-    flags: 0
-  - serializedVersion: 2
-    curve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: -0.9485323
-        inSlope: 0.37593246
-        outSlope: 1.1238527
-        tangentMode: 69
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      - serializedVersion: 3
-        time: 0.083333336
-        value: -0.8548779
-        inSlope: 1.1238527
-        outSlope: 0.38858035
-        tangentMode: 69
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      - serializedVersion: 3
-        time: 0.36666667
-        value: -0.7447801
-        inSlope: 0.38858035
-        outSlope: 0.41678044
-        tangentMode: 69
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      - serializedVersion: 3
-        time: 0.5
-        value: -0.6892094
-        inSlope: 0.41678044
-        outSlope: 0.37593246
-        tangentMode: 69
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    attribute: m_LocalPosition.x
-    path: Text
-    classID: 4
-    script: {fileID: 0}
-    flags: 0
-  - serializedVersion: 2
-    curve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: -0.13312097
-        inSlope: 0.004026681
-        outSlope: 0.2961005
-        tangentMode: 69
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      - serializedVersion: 3
-        time: 0.083333336
-        value: -0.10844593
-        inSlope: 0.2961005
-        outSlope: 0.049293533
-        tangentMode: 69
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      - serializedVersion: 3
-        time: 0.36666667
-        value: -0.09447943
-        inSlope: 0.049293533
-        outSlope: 0.6532289
-        tangentMode: 69
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      - serializedVersion: 3
-        time: 0.5
-        value: -0.0073822485
-        inSlope: 0.6532289
-        outSlope: 0.004026681
-        tangentMode: 69
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    attribute: m_LocalPosition.y
-    path: Text
-    classID: 4
     script: {fileID: 0}
     flags: 0
   - serializedVersion: 2
@@ -2685,33 +2497,204 @@ AnimationClip:
         value: 0
         inSlope: 0
         outSlope: 0
-        tangentMode: 69
+        tangentMode: 136
         weightedMode: 0
         inWeight: 0.33333334
         outWeight: 0.33333334
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: localEulerAnglesRaw.x
+    path: Hexes/GameObject (2)/Hex
+    classID: 4
+    script: {fileID: 0}
+    flags: 16
+  - serializedVersion: 2
+    curve:
+      serializedVersion: 2
+      m_Curve:
       - serializedVersion: 3
-        time: 0.083333336
+        time: 0
         value: 0
-        inSlope: -0
+        inSlope: 0
         outSlope: 0
-        tangentMode: 69
+        tangentMode: 136
         weightedMode: 0
         inWeight: 0.33333334
         outWeight: 0.33333334
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: localEulerAnglesRaw.y
+    path: Hexes/GameObject (2)/Hex
+    classID: 4
+    script: {fileID: 0}
+    flags: 16
+  - serializedVersion: 2
+    curve:
+      serializedVersion: 2
+      m_Curve:
       - serializedVersion: 3
-        time: 0.36666667
-        value: 0
-        inSlope: -0
+        time: 0
+        value: 22.5
+        inSlope: 0
         outSlope: 0
+        tangentMode: 136
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: localEulerAnglesRaw.z
+    path: Hexes/GameObject (2)/Hex
+    classID: 4
+    script: {fileID: 0}
+    flags: 16
+  - serializedVersion: 2
+    curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: localEulerAnglesRaw.x
+    path: Hexes/GameObject (1)/Hex
+    classID: 4
+    script: {fileID: 0}
+    flags: 16
+  - serializedVersion: 2
+    curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: localEulerAnglesRaw.y
+    path: Hexes/GameObject (1)/Hex
+    classID: 4
+    script: {fileID: 0}
+    flags: 16
+  - serializedVersion: 2
+    curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 22.5
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: localEulerAnglesRaw.z
+    path: Hexes/GameObject (1)/Hex
+    classID: 4
+    script: {fileID: 0}
+    flags: 16
+  - serializedVersion: 2
+    curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: localEulerAnglesRaw.x
+    path: Hexes/GameObject/Hex
+    classID: 4
+    script: {fileID: 0}
+    flags: 16
+  - serializedVersion: 2
+    curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: localEulerAnglesRaw.y
+    path: Hexes/GameObject/Hex
+    classID: 4
+    script: {fileID: 0}
+    flags: 16
+  - serializedVersion: 2
+    curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 22.5
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: localEulerAnglesRaw.z
+    path: Hexes/GameObject/Hex
+    classID: 4
+    script: {fileID: 0}
+    flags: 16
+  - serializedVersion: 2
+    curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1.1
+        inSlope: 0.5999999
+        outSlope: 0.5999999
         tangentMode: 69
         weightedMode: 0
         inWeight: 0.33333334
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 0.5
-        value: 0
-        inSlope: -0
-        outSlope: 0
+        value: 1.4
+        inSlope: 0.5999999
+        outSlope: 0.5999999
         tangentMode: 69
         weightedMode: 0
         inWeight: 0.33333334
@@ -2719,8 +2702,8 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    attribute: m_LocalPosition.z
-    path: Text
+    attribute: m_LocalScale.x
+    path: Hexes
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -2730,36 +2713,87 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 1.5999997
-        inSlope: -0.3896103
-        outSlope: -5.524694
-        tangentMode: 69
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      - serializedVersion: 3
-        time: 0.083333336
-        value: 1.1396085
-        inSlope: -5.524694
-        outSlope: -0.51800376
-        tangentMode: 69
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      - serializedVersion: 3
-        time: 0.36666667
-        value: 0.99284077
-        inSlope: -0.51800376
-        outSlope: -2.0891633
+        value: 1.1
+        inSlope: 0.5999999
+        outSlope: 0.5999999
         tangentMode: 69
         weightedMode: 0
         inWeight: 0.33333334
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 0.5
-        value: 0.7142857
-        inSlope: -2.0891633
-        outSlope: -0.3896103
+        value: 1.4
+        inSlope: 0.5999999
+        outSlope: 0.5999999
+        tangentMode: 69
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_LocalScale.y
+    path: Hexes
+    classID: 4
+    script: {fileID: 0}
+    flags: 0
+  - serializedVersion: 2
+    curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1.1
+        inSlope: 0.5999999
+        outSlope: 0.5999999
+        tangentMode: 69
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.5
+        value: 1.4
+        inSlope: 0.5999999
+        outSlope: 0.5999999
+        tangentMode: 69
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_LocalScale.z
+    path: Hexes
+    classID: 4
+    script: {fileID: 0}
+    flags: 0
+  - serializedVersion: 2
+    curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 2.5
+        inSlope: -0.3896103
+        outSlope: -6
+        tangentMode: 69
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.083333336
+        value: 2
+        inSlope: -6
+        outSlope: 0
+        tangentMode: 69
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.36666667
+        value: 2
+        inSlope: -0
+        outSlope: -1.4117646
         tangentMode: 69
         weightedMode: 0
         inWeight: 0.33333334
@@ -2778,36 +2812,27 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 1.5999997
+        value: 2.5
         inSlope: -0.38961017
-        outSlope: -5.524694
+        outSlope: -6
         tangentMode: 69
         weightedMode: 0
         inWeight: 0.33333334
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 0.083333336
-        value: 1.1396085
-        inSlope: -5.524694
-        outSlope: -0.51800376
+        value: 2
+        inSlope: -6
+        outSlope: 0
         tangentMode: 69
         weightedMode: 0
         inWeight: 0.33333334
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 0.36666667
-        value: 0.99284077
-        inSlope: -0.51800376
-        outSlope: -2.0891633
-        tangentMode: 69
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      - serializedVersion: 3
-        time: 0.5
-        value: 0.7142857
-        inSlope: -2.0891633
-        outSlope: -0.38961017
+        value: 2
+        inSlope: -0
+        outSlope: -1.4117646
         tangentMode: 69
         weightedMode: 0
         inWeight: 0.33333334
@@ -2826,36 +2851,27 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 1.6
+        value: 2.5
         inSlope: -0.3896104
-        outSlope: -5.524697
+        outSlope: -6
         tangentMode: 69
         weightedMode: 0
         inWeight: 0.33333334
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 0.083333336
-        value: 1.1396086
-        inSlope: -5.524697
-        outSlope: -0.5180036
+        value: 2
+        inSlope: -6
+        outSlope: 0
         tangentMode: 69
         weightedMode: 0
         inWeight: 0.33333334
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 0.36666667
-        value: 0.99284095
-        inSlope: -0.5180036
-        outSlope: -2.0891643
-        tangentMode: 69
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      - serializedVersion: 3
-        time: 0.5
-        value: 0.71428573
-        inSlope: -2.0891643
-        outSlope: -0.3896104
+        value: 2
+        inSlope: -0
+        outSlope: -1.4117646
         tangentMode: 69
         weightedMode: 0
         inWeight: 0.33333334
@@ -2912,7 +2928,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_Color.a
-    path: Text/star_double.png.meta_0
+    path: Text/JudgeText
     classID: 212
     script: {fileID: 0}
     flags: 0
@@ -2922,189 +2938,42 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0
+        value: 1.92
         inSlope: 0
         outSlope: 0
         tangentMode: 136
         weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
+        inWeight: 0
+        outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    attribute: localEulerAnglesRaw.x
-    path: GameObject (2)/Hex
-    classID: 4
+    attribute: m_Size.x
+    path: Text/JudgeText
+    classID: 212
     script: {fileID: 0}
-    flags: 16
+    flags: 0
   - serializedVersion: 2
     curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0
+        value: 1.92
         inSlope: 0
         outSlope: 0
         tangentMode: 136
         weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
+        inWeight: 0
+        outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    attribute: localEulerAnglesRaw.y
-    path: GameObject (2)/Hex
-    classID: 4
+    attribute: m_Size.y
+    path: Text/JudgeText
+    classID: 212
     script: {fileID: 0}
-    flags: 16
-  - serializedVersion: 2
-    curve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 22.5
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 136
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    attribute: localEulerAnglesRaw.z
-    path: GameObject (2)/Hex
-    classID: 4
-    script: {fileID: 0}
-    flags: 16
-  - serializedVersion: 2
-    curve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 136
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    attribute: localEulerAnglesRaw.x
-    path: GameObject (1)/Hex
-    classID: 4
-    script: {fileID: 0}
-    flags: 16
-  - serializedVersion: 2
-    curve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 136
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    attribute: localEulerAnglesRaw.y
-    path: GameObject (1)/Hex
-    classID: 4
-    script: {fileID: 0}
-    flags: 16
-  - serializedVersion: 2
-    curve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 22.5
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 136
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    attribute: localEulerAnglesRaw.z
-    path: GameObject (1)/Hex
-    classID: 4
-    script: {fileID: 0}
-    flags: 16
-  - serializedVersion: 2
-    curve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 136
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    attribute: localEulerAnglesRaw.x
-    path: GameObject/Hex
-    classID: 4
-    script: {fileID: 0}
-    flags: 16
-  - serializedVersion: 2
-    curve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 136
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    attribute: localEulerAnglesRaw.y
-    path: GameObject/Hex
-    classID: 4
-    script: {fileID: 0}
-    flags: 16
-  - serializedVersion: 2
-    curve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 22.5
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 136
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    attribute: localEulerAnglesRaw.z
-    path: GameObject/Hex
-    classID: 4
-    script: {fileID: 0}
-    flags: 16
+    flags: 0
   m_EulerEditorCurves:
   - serializedVersion: 2
     curve:
@@ -3114,7 +2983,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.z
-    path: GameObject/Hex
+    path: Hexes/GameObject/Hex
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -3126,7 +2995,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.y
-    path: GameObject/Hex
+    path: Hexes/GameObject/Hex
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -3138,7 +3007,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.x
-    path: GameObject/Hex
+    path: Hexes/GameObject/Hex
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -3150,7 +3019,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.z
-    path: GameObject (1)/Hex
+    path: Hexes/GameObject (1)/Hex
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -3162,7 +3031,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.y
-    path: GameObject (1)/Hex
+    path: Hexes/GameObject (1)/Hex
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -3174,7 +3043,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.x
-    path: GameObject (1)/Hex
+    path: Hexes/GameObject (1)/Hex
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -3186,7 +3055,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.z
-    path: GameObject (2)/Hex
+    path: Hexes/GameObject (2)/Hex
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -3198,7 +3067,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.y
-    path: GameObject (2)/Hex
+    path: Hexes/GameObject (2)/Hex
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -3210,7 +3079,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.x
-    path: GameObject (2)/Hex
+    path: Hexes/GameObject (2)/Hex
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -3222,7 +3091,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.x
-    path: GameObject (3)
+    path: Hexes/GameObject (3)
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -3234,7 +3103,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.y
-    path: GameObject (3)
+    path: Hexes/GameObject (3)
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -3246,7 +3115,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.z
-    path: GameObject (3)
+    path: Hexes/GameObject (3)
     classID: 4
     script: {fileID: 0}
     flags: 0

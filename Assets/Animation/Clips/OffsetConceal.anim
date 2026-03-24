@@ -34,7 +34,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_Color.a
-    path: Text/star_double.png.meta_0
+    path: Text/JudgeText
     classID: 212
     script: {fileID: 0}
     flags: 0
@@ -94,7 +94,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_Color.a
-    path: Text/star_double.png.meta_0
+    path: Text/JudgeText
     classID: 212
     script: {fileID: 0}
     flags: 0

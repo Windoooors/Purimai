@@ -46,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -129,10 +129,10 @@ TextureImporter:
       name: outline_glow_0
       rect:
         serializedVersion: 2
-        x: 12
-        y: 6
-        width: 996
-        height: 1008
+        x: 0
+        y: 0
+        width: 1127
+        height: 1127
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -147,12 +147,56 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: outline_glow_1
+      rect:
+        serializedVersion: 2
+        x: 588
+        y: 1088
+        width: 42
+        height: 4
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 70932e8a489da4e7f9c9d581ac1d5065
+      internalID: 1010726038
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: outline_glow_2
+      rect:
+        serializedVersion: 2
+        x: 540
+        y: 30
+        width: 42
+        height: 5
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 448c997dc45b641c99ce3405aae6a30d
+      internalID: -1582883737
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
     spriteID: 9cbfcd77f8ed34aa3bdf9a253ff1af2a
-    internalID: 0
+    internalID: 1854525246
     vertices: []
     indices: 
     edges: []
@@ -164,6 +208,9 @@ TextureImporter:
         value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       outline_glow_0: 1374275759961779986
+      outline_glow_1: 1010726038
+      outline_glow_2: -1582883737
+      outline_glow_3: 402030505
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -77,7 +77,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 177122611
-  m_SortingLayer: 7
+  m_SortingLayer: 8
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 9d622e66946624170b027fc664c7b634, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -167,15 +167,14 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 177122611
-  m_SortingLayer: 7
+  m_SortingLayer: 8
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7667639571242049443, guid: 7f12c5c665b514a899836f93833dc0b1,
-    type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7f12c5c665b514a899836f93833dc0b1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 1
-  m_Size: {x: 1.18, y: 1.345968}
+  m_Size: {x: 1.22, y: 1.4}
   m_AdaptiveModeThreshold: 1
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -258,7 +257,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 999475227
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 3003041b178b9f246b4b465afb8079d3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -319,7 +318,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c26dc3ba367c1469ca62581831162319, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  emergingTime: 0
   timing: 0
+  isEach: 0
   lineSpriteRenderer: {fileID: 1745482705623708558}
   lineTransform: {fileID: 3749276297048441278}
   lane: 0
@@ -333,6 +334,7 @@ MonoBehaviour:
   holdEnd: {fileID: 172968471118669084}
   holdJudged: 0
   duration: 0
+  isHeadFast: 0
 --- !u!95 &9031460039452764356
 Animator:
   serializedVersion: 7

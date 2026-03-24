@@ -85,13 +85,13 @@ namespace Game
 
         private bool _startCalibrated;
 
-        private float _time;
+        private float _timeInSeconds;
         private VideoPlayer _videoPlayer;
         private RenderTexture _videoTexture;
 
         public Maidata Maidata;
 
-        public float TimeInMilliseconds => _time * 1000f;
+        public float TimeInMilliseconds => _timeInSeconds * 1000f;
 
         public void Awake()
         {
@@ -119,7 +119,7 @@ namespace Game
 
             SceneManager.sceneUnloaded += _ => { Destroy(_videoTexture); };
 
-            _time = -_generalPlaybackDelayInSeconds;
+            _timeInSeconds = -_generalPlaybackDelayInSeconds;
 
             _criticalSoundVolume = SettingsPool.GetValue("volume.cue_sound") / 10f;
             _songVolume = SettingsPool.GetValue("volume.song") / 10f;
@@ -132,11 +132,11 @@ namespace Game
             if (!isPlaying || _paused)
                 return;
 
-            _time += Time.deltaTime;
+            _timeInSeconds += Time.deltaTime;
 
             CalibrateTime();
 
-            if (_time > math.max(NoteGenerator.Instance.endingTime / 1000f + 0.5f, _songLengthInSeconds))
+            if (_timeInSeconds > math.max(NoteGenerator.Instance.endingTime / 1000f + 0.5f, _songLengthInSeconds))
             {
                 isPlaying = false;
                 LMotion.Create(_songVolume, 0, 0.5f).WithOnComplete(OnPlayCompleted)
@@ -152,7 +152,7 @@ namespace Game
                     _ => true
                 };
 
-                if (_time + 0.1f >= noteBase.emergingTime / 1000f && (!judged || noteBase.enabled))
+                if (_timeInSeconds + 0.1f >= noteBase.emergingTime / 1000f && (!judged || noteBase.enabled))
                     noteBase.ManualUpdate();
             });
         }
@@ -167,8 +167,8 @@ namespace Game
 
             var audioTime = Maidata.SongBassHandler?.GetPosition();
 
-            if (_time <= 0 || !(Maidata.SongBassHandler?.IsPlaying ?? false))
-                audioTime = _time;
+            if (_timeInSeconds <= 0 || !(Maidata.SongBassHandler?.IsPlaying ?? false))
+                audioTime = _timeInSeconds;
 
             if (audioTime * 1000 >= NoteGenerator.Instance.CriticalTimeList[_cueSoundIndex])
             {
@@ -193,21 +193,21 @@ namespace Game
                 songPosition > 0)
             {
                 _startCalibrated = true;
-                _time = songPosition;
+                _timeInSeconds = songPosition;
             }
 
-            if (songPosition > 0 && math.abs(_time - songPosition) >
+            if (songPosition > 0 && math.abs(_timeInSeconds - songPosition) >
                 _needCalibrationThreshold)
             {
                 _calibrationTimes++;
-                _time = songPosition;
+                _timeInSeconds = songPosition;
 
                 if (_calibrationTimes / (songPosition - _songPositionWhenCalibrationThresholdChanged) >
                     _maxCalibrationRate)
                 {
                     _calibrationTimes = 0;
                     _songPositionWhenCalibrationThresholdChanged = songPosition;
-                    _needCalibrationThreshold += 0.002f;
+                    _needCalibrationThreshold += 0.01f;
 
                     PlayerPrefs.SetFloat("CalibrationDeltaTimeThreshold", _needCalibrationThreshold);
                 }
@@ -230,7 +230,7 @@ namespace Game
 
             SimulatedSensor.Enabled = false;
 
-            if (_time < 0)
+            if (_timeInSeconds < 0)
             {
                 if (_delayedVideoPlaybackRoutine != null)
                 {
@@ -263,10 +263,10 @@ namespace Game
             {
                 float scheduledDelay;
 
-                if (_time > 0)
+                if (_timeInSeconds > 0)
                     scheduledDelay = 0.5f;
                 else
-                    scheduledDelay = _time + 0.5f;
+                    scheduledDelay = _timeInSeconds + 0.5f;
 
                 _delayedVideoPlaybackRoutine = StartCoroutine(VideoPlaybackRoutine(scheduledDelay));
                 _delayedAudioPlaybackRoutine = StartCoroutine(AudioPlaybackRoutine(scheduledDelay));
@@ -306,14 +306,16 @@ namespace Game
                 _videoTexture.Create();
 
                 vp.targetTexture = _videoTexture;
+
                 backgroundImage.texture = _videoTexture;
+                backgroundImage.material.SetTexture("_MainTex", _videoTexture);
+                judgeCircleGlowSpriteRenderer.material.SetTexture("_Background", _videoTexture);
 
-                var fitter = backgroundImage.GetComponent<AspectRatioFitter>();
-                if (fitter == null)
-                    fitter = backgroundImage.gameObject.AddComponent<AspectRatioFitter>();
+                judgeCircleGlowSpriteRenderer.material.SetFloat("_Width", _videoPlayer.width);
+                judgeCircleGlowSpriteRenderer.material.SetFloat("_Height", _videoPlayer.height);
 
-                fitter.aspectMode = AspectRatioFitter.AspectMode.FitInParent;
-                fitter.aspectRatio = (float)vp.width / vp.height;
+                backgroundImage.material.SetFloat("_Width", _videoPlayer.width);
+                backgroundImage.material.SetFloat("_Height", _videoPlayer.height);
             };
 
             _videoPlayer.Prepare();
@@ -331,12 +333,12 @@ namespace Game
                     targetIndex = 5;
 
                 judgeCircleSpriteRenderer.color = judgeCircleColors[targetIndex];
-                judgeCircleGlowSpriteRenderer.color = judgeCircleColors[targetIndex];
+                judgeCircleGlowSpriteRenderer.material.SetColor("_Tint", judgeCircleColors[targetIndex]);
             }
             else
             {
                 judgeCircleSpriteRenderer.color = Color.white;
-                judgeCircleGlowSpriteRenderer.color = Color.white;
+                judgeCircleGlowSpriteRenderer.material.SetColor("_Tint", Color.white);
             }
         }
 
@@ -362,6 +364,7 @@ namespace Game
             yield return new WaitForSeconds(delay);
 
             Maidata.SongBassHandler.Play();
+            _timeInSeconds = (float)Maidata.SongBassHandler.GetPosition();
         }
 
         private IEnumerator VideoPlaybackRoutine(float delay)
@@ -413,9 +416,20 @@ namespace Game
                 if (!TryLoadVideo(maidata.PvPath))
                 {
                     backgroundImage.color = Color.white;
-                    backgroundImage.texture = useBlurredCover
+                    var tex = useBlurredCover
                         ? maidata.BlurredSongCoverAsBackgroundDecodedImage.GetTexture2D()
                         : maidata.SongCoverDecodedImage.GetTexture2D();
+
+                    judgeCircleGlowSpriteRenderer.material.SetTexture("_Background", tex);
+
+                    judgeCircleGlowSpriteRenderer.material.SetFloat("_Width", tex.width);
+                    judgeCircleGlowSpriteRenderer.material.SetFloat("_Height", tex.height);
+
+                    backgroundImage.texture = tex;
+                    backgroundImage.material.SetTexture("_MainTex", tex);
+
+                    backgroundImage.material.SetFloat("_Width", tex.width);
+                    backgroundImage.material.SetFloat("_Height", tex.height);
 
                     Logger.LogInfo("Chart has no video.");
                 }
@@ -456,7 +470,7 @@ namespace Game
         [InspectorButton("Skip Playback")]
         public void Skip()
         {
-            _time = math.max(_songLengthInSeconds, NoteGenerator.Instance.endingTime / 1000f + 0.5f);
+            _timeInSeconds = math.max(_songLengthInSeconds, NoteGenerator.Instance.endingTime / 1000f + 0.5f);
             Maidata.SongBassHandler.Pause();
             _videoPlayer?.Stop();
             ShowResult();

@@ -1,4 +1,5 @@
 using Game.ChartManagement;
+using UnityEngine;
 
 namespace Game.Notes.NormalSlideBasedNotes
 {
@@ -25,16 +26,21 @@ namespace Game.Notes.NormalSlideBasedNotes
         protected override void UpdateJudgeDisplayDirection(int judgeDisplaySpriteGroupIndex)
         {
             var judgeSpriteNeedsChange =
-                judgeDisplaySpriteRenderer.transform.rotation.eulerAngles.z is >= 265 and <= 365 or >= -5 and <= 95;
+                judgeDisplaySpriteRenderer.transform.position.y < 0;
+
+            var index = judgeSpriteNeedsChange
+                ? IsClockwise ? 3 : 1
+                : IsClockwise
+                    ? 2
+                    : 0;
 
             judgeDisplaySpriteRenderer.sprite = NoteGenerator.Instance
                 .slideJudgeDisplaySprites[judgeDisplaySpriteGroupIndex]
-                .circleSlideJudgeSprites[
-                    judgeSpriteNeedsChange
-                        ? IsClockwise ? 2 : 0
-                        : IsClockwise
-                            ? 3
-                            : 1];
+                .circleSlideJudgeSprites[index];
+
+            if (!judgeSpriteNeedsChange) judgeDisplaySpriteRenderer.transform.eulerAngles += new Vector3(0, 0, 180);
+
+            judgeDisplaySpriteRenderer.transform.eulerAngles += new Vector3(0, 0, IsClockwise ? 200f : -20f);
         }
 
         private static bool IsUpper(int point)

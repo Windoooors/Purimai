@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 using UI;
 using UnityEngine;
 
@@ -94,14 +95,61 @@ namespace Game.Theming
 
             void LoadTexture(string path, Sprite sprite)
             {
-                using var image = Image.Load<Rgba32>(path);
+                var image = Image.Load<Rgba32>(path);
 
-                using var decoded = new DecodedImage(image);
+                if (image.Height > sprite.texture.height || image.Width > sprite.texture.width)
+                {
+                    try
+                    {
+                        var imageHeight = image.Height;
+                        var imageWidth = image.Width;
+
+                        image.Mutate(x =>
+                            x.Crop(new Rectangle((imageWidth - sprite.texture.width) / 2,
+                                (imageHeight - sprite.texture.height) / 2
+                                , sprite.texture.width, sprite.texture.height)));
+                    }
+                    catch (Exception ex)
+                    {
+                        Logging.Logger.LogError("Error adapting texture: " + ex.Message + "\nStack Trace: " +
+                                                ex.StackTrace);
+                    }
+                }
+
+                if (image.Height < sprite.texture.height || image.Width < sprite.texture.width)
+                {
+                    try
+                    {
+                        var imageHeight = image.Height;
+                        var imageWidth = image.Width;
+
+                        var background = new Image<Rgba32>(sprite.texture.width, sprite.texture.height,
+                            new Rgba32(0, 0, 0, 0));
+
+                        background.Mutate(x =>
+                        {
+                            x.DrawImage(image, new Point((sprite.texture.width - imageWidth) / 2,
+                                (sprite.texture.height - imageHeight) / 2), 1f);
+                        });
+
+                        image.Dispose();
+                        image = background;
+                    }
+                    catch (Exception ex)
+                    {
+                        Logging.Logger.LogError("Error adapting texture: " + ex.Message + "\nStack Trace: " +
+                                                ex.StackTrace);
+                    }
+                }
+
+                var decoded = new DecodedImage(image);
 
                 sprite.texture.Reinitialize(decoded.Width, decoded.Height,
                     TextureFormat.RGBA32, false);
                 sprite.texture.SetPixelData(decoded.PixelData, 0);
                 sprite.texture.Apply();
+
+                image.Dispose();
             }
 
             void LoadTextureFromBytes(byte[] data, Sprite sprite)

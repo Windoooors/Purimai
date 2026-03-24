@@ -58,6 +58,8 @@ namespace UI
             ShowLevelSelector();
 
             ScreenOrientationManager.Instance.ScreenChanged += ChangeLayoutConsideringOrientation;
+            
+            PlayerPrefs.SetFloat("CalibrationDeltaTimeThreshold", 0.020f);
         }
 
         private void Start()

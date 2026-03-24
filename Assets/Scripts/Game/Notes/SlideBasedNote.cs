@@ -97,26 +97,8 @@ namespace Game.Notes
             {
                 var pair = VectorGraphicsUtility.GetPositionRotationPair(1f - 0.6f / slideArrowCount);
                 judgeDisplaySpriteRenderer.transform.position = pair.position;
-                if ((int)slideType is not 0 and not 1 and not 2)
-                {
-                    judgeDisplaySpriteRenderer.transform.eulerAngles =
-                        pair.rotation.eulerAngles + new Vector3(0, 0, 18);
-                }
-                else
-                {
-                    if (IsClockwise)
-                    {
-                        judgeDisplaySpriteRenderer.transform.eulerAngles =
-                            pair.rotation.eulerAngles + new Vector3(0, 0, 37.5f);
-                    }
-                    else
-                    {
-                        judgeDisplaySpriteRenderer.transform.eulerAngles =
-                            pair.rotation.eulerAngles + new Vector3(0, 0, -1.5f);
-                        judgeDisplaySpriteRenderer.transform.Rotate(180, 0, 0, Space.Self);
-                        //judgeDisplaySpriteRenderer.flipY = true;
-                    }
-                }
+                judgeDisplaySpriteRenderer.transform.eulerAngles =
+                    pair.rotation.eulerAngles + new Vector3(0, 0, 18);
             }
 
             _judgeDisplayAnimator = judgeDisplaySpriteRenderer.GetComponent<Animator>();
@@ -643,11 +625,8 @@ namespace Game.Notes
                         ? SlideJudgeDisplaySpriteIndexes[1]
                         : SlideJudgeDisplaySpriteIndexes[0]];
 
-            var scale = judgeDisplaySpriteRenderer.gameObject.transform.localScale;
-            scale = new Vector3(scale.x,
-                judgeSpriteNeedsChange ? Mathf.Abs(scale.y) : -Mathf.Abs(scale.y),
-                scale.z);
-            judgeDisplaySpriteRenderer.transform.localScale = scale;
+            if (!judgeSpriteNeedsChange)
+                judgeDisplaySpriteRenderer.transform.eulerAngles += new Vector3(0, 0, 180);
         }
 
         protected string GetMirroredSensorId(string sensorId)
