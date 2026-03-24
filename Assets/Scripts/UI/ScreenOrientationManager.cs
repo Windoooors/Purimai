@@ -52,10 +52,16 @@ namespace UI
             Screen.autorotateToPortraitUpsideDown = false;
             Screen.autorotateToLandscapeLeft = true;
             Screen.autorotateToLandscapeRight = true;
-
+            
+            #if UNITY_ANDROID
             Screen.orientation = _lastLandscapeOrientation;
 
             StartCoroutine(WaitAndEnableAutoRotation());
+            #endif
+            
+            #if UNITY_IOS
+            Screen.orientation = ScreenOrientation.AutoRotation;
+            #endif
 
             Logger.LogInfo("Screen rotation set to horizontal-only.");
 
