@@ -67,8 +67,6 @@ namespace Game
 
         private bool _chartHasVideo;
 
-        private float _criticalSoundVolume;
-
         private int _cueSoundIndex;
 
         private Coroutine _delayedAudioPlaybackRoutine;
@@ -121,7 +119,6 @@ namespace Game
 
             _timeInSeconds = -_generalPlaybackDelayInSeconds;
 
-            _criticalSoundVolume = SettingsPool.GetValue("volume.cue_sound") / 10f;
             _songVolume = SettingsPool.GetValue("volume.song") / 10f;
 
             UpdateCameraSize();
@@ -262,16 +259,18 @@ namespace Game
             IEnumerator ResumeRoutine()
             {
                 float scheduledDelay;
+                float delay = 0.5f;
 
                 if (_timeInSeconds > 0)
-                    scheduledDelay = 0.5f;
+                    scheduledDelay = delay;
                 else
-                    scheduledDelay = _timeInSeconds + 0.5f;
+                    scheduledDelay = -_timeInSeconds + delay;
 
                 _delayedVideoPlaybackRoutine = StartCoroutine(VideoPlaybackRoutine(scheduledDelay));
                 _delayedAudioPlaybackRoutine = StartCoroutine(AudioPlaybackRoutine(scheduledDelay));
 
-                yield return new WaitForSeconds(scheduledDelay);
+                yield return new WaitForSeconds(delay);
+                
                 if (SettingsPool.GetValue("auto_play") != 1)
                     SimulatedSensor.Enabled = true;
 
@@ -404,6 +403,8 @@ namespace Game
                 Logger.LogInfo("Loading Chart..");
 
                 Maidata = maidata;
+
+                Maidata.SongBassHandler.Volume = _songVolume;
 
                 levelDifficultyIndex = difficultyIndex;
 

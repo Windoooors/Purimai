@@ -161,7 +161,7 @@ namespace UI.LevelSelection
         {
             if (MaidataList.Count != 0 && !clear)
                 return;
-
+            
             MaidataList.Clear();
 
             Logger.LogInfo("Loading simai metadata.");

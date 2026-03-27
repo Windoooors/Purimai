@@ -6,6 +6,7 @@ using UI.Result;
 using UI.Settings;
 using UI.Settings.Managers;
 using UI.Theming;
+using UI.TitleScreen;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.TextCore.Text;
@@ -31,6 +32,7 @@ namespace UI
         public PauseManager pausePrefab;
         public ModsManager modsPrefab;
         public ThemeUiManager themeUiPrefab;
+        public TitleScreenManager titleScreenPrefab;
 
         public ResultManager resultManager;
         public LevelSelectionManager levelSelectionManager;
@@ -39,6 +41,7 @@ namespace UI
         public PauseManager pauseManager;
         public ModsManager modsManager;
         public ThemeUiManager themeUiManager;
+        public TitleScreenManager titleScreenManager;
 
         public Vector2Int portraitReferenceResolution = new(600, 600);
         public Vector2Int landscapeReferenceResolution = new(1024, 600);
@@ -54,12 +57,20 @@ namespace UI
             uiDocument.rootVisualElement.RegisterCallback<GeometryChangedEvent>(_ => { ApplySafeArea(); });
 
             SettingsManager.OnSettingsChanged += ApplyResolution;
+            
+            MaidataManager.Load();
 
-            ShowLevelSelector();
+            ShowTitle();
 
             ScreenOrientationManager.Instance.ScreenChanged += ChangeLayoutConsideringOrientation;
             
             PlayerPrefs.SetFloat("CalibrationDeltaTimeThreshold", 0.020f);
+        }
+
+        public void ShowTitle()
+        {
+            titleScreenManager = Instantiate(titleScreenPrefab, transform);
+            ApplySafeArea();
         }
 
         private void Start()

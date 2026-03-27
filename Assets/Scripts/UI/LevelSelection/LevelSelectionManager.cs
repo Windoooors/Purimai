@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LitMotion;
 using UI.Settings;
 using UI.Settings.Managers;
 using UnityEngine;
@@ -57,6 +58,7 @@ namespace UI.LevelSelection
 
         private Button _sortButton;
         private Button _themesButton;
+        private Button _titleButton;
 
         public VisualElement LevelSelectionTree;
 
@@ -75,8 +77,6 @@ namespace UI.LevelSelection
             UIManager.Instance.uiDocument.rootVisualElement.Add(LevelSelectionTree);
 
             _instance = this;
-
-            MaidataManager.Load();
 
             levelLoader.PlayerPrefsSavingProcedure += () =>
             {
@@ -108,11 +108,17 @@ namespace UI.LevelSelection
             {
                 _songPlaying = true;
 
+                ChangeVolume();
+                
                 maidata.SongBassHandler.PlayOneShot();
             }
 
             if (_songPlaying && maidata.SongBassHandler?.IsPlaying == false && songPreviewing)
+            {
+                ChangeVolume();
+                
                 maidata.SongBassHandler.PlayOneShot();
+            }
         }
 
         private void OnDestroy()
@@ -272,6 +278,13 @@ namespace UI.LevelSelection
             _refreshButton.clicked += () =>
             {
                 MaidataManager.Load(true);
+                
+                if (MaidataManager.MaidataList.Count == 0)
+                {
+                    LoadTitle();
+                    return;
+                }
+                
                 InitializeGroupingRuleCore();
             };
 
@@ -281,6 +294,10 @@ namespace UI.LevelSelection
             _snapManipulator = new SnapScrollManipulator(ItemHeight, 741);
             _scrollView.AddManipulator(_snapManipulator);
             _scrollView.verticalScroller.valueChanged += _ => { SetStyle(); };
+
+            _titleButton = LevelSelectionTree.Q<Button>("title-button");
+
+            _titleButton.clicked += LoadTitle;
 
             InitializeGroupingRule();
 
@@ -320,6 +337,51 @@ namespace UI.LevelSelection
             };
         }
 
+        private void LoadTitle()
+        {
+            if (_rawData.Length > 0)
+            {
+                var index = _listView.selectedIndex % _rawData.Length;
+                PlayerPrefs.SetInt("LevelListIndex", index);
+            }
+            
+            StartCoroutine(ShowTitleAnimationRoutine());
+            
+            return;
+
+            IEnumerator ShowTitleAnimationRoutine()
+            {
+                yield return new WaitForSeconds(0.1f);
+                
+                var bassHandler = _lastPreviewedMaidata.SongBassHandler;
+                var volume = bassHandler.Volume;
+
+                LMotion.Create(volume, 0, 0.5f).WithOnComplete(() =>
+                {
+                    bassHandler.Stop();
+                    songPreviewing = false;
+                }).Bind(x =>
+                {
+                    bassHandler.Volume = x;
+                });
+                
+                LevelSelectionTree.styleSheets.Add(
+                    Resources.Load<StyleSheet>("UI/USS/LevelSelection/LevelSelectionToGameInAnimated"));
+
+                yield return new WaitForSeconds(0.5f);
+                
+                UIManager.Instance.ShowTitle();
+                LevelSelectionTree.BringToFront();
+                
+                LevelSelectionTree.styleSheets.Add(
+                    Resources.Load<StyleSheet>("UI/USS/LevelSelection/LevelSelectionToGameOutAnimated"));
+
+                yield return new WaitForSeconds(0.5f);
+                
+                Destroy(gameObject);
+            }
+        }
+
         private void LoadSong(int index)
         {
             if (_lastPreviewedMaidata != null && _lastPreviewedMaidata ==
@@ -346,7 +408,8 @@ namespace UI.LevelSelection
 
             Logger.LogInfo($"Grouped data count: {_rawData.Length}");
 
-            while (dataList.Count < VirtualCount) dataList.AddRange(_rawData);
+            if (_rawData.Length > 0)
+                while (dataList.Count < VirtualCount) dataList.AddRange(_rawData);
 
             _data = dataList.ToArray();
 

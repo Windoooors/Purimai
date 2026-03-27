@@ -1,0 +1,44 @@
+:root {
+}
+
+.background {
+    flex-grow: 1;
+    background-color: rgb(255, 255, 255);
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    justify-content: center;
+    transition-duration: 0.5s;
+    transition-delay: 0.5s;
+}
+
+.title-label {
+    -unity-font-definition: resource('Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF');
+    -unity-text-align: middle-center;
+    font-size: 81px;
+    color: rgb(27, 27, 27);
+    transition-duration: 0.5s;
+}
+
+.hint-label {
+    -unity-font-definition: resource('Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF');
+    -unity-text-align: middle-center;
+    font-size: 24px;
+    color: rgb(27, 27, 27);
+    transition-duration: 0.5s;
+}
+
+.version-label {
+    position: absolute;
+    bottom: 0;
+    color: rgb(27, 27, 27);
+    -unity-font-definition: resource('Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF');
+    font-size: 18px;
+    padding-top: 15px;
+    padding-right: 15px;
+    padding-bottom: 15px;
+    padding-left: 15px;
+    transition-duration: 0.5s;
+}

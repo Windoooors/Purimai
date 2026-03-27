@@ -16,7 +16,7 @@
 }
 
 .play-button {
-    right: -300px;
+    right: -454px;
     transition-property: right, scale, opacity;
     transition-duration: 0.5s, 0.2s, 0.2s;
     transition-timing-function: ease-in-cubic, ease, ease;

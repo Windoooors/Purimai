@@ -123,7 +123,7 @@
 .mods-button {
     position: absolute;
     top: 7px;
-    left: 289px;
+    left: 359px;
     width: 69px;
     height: 69px;
 }
@@ -131,7 +131,7 @@
 .settings-button {
     position: absolute;
     top: 7px;
-    left: 219px;
+    left: 289px;
     width: 69px;
     height: 69px;
 }
@@ -232,13 +232,13 @@
 .themes-button {
     position: absolute;
     top: 7px;
-    left: 360px;
+    left: 429px;
     width: 69px;
     height: 69px;
 }
 
 .confirm-entry .themes-button {
-    left: 144px;
+    left: 143px;
 }
 
 .confirm-entry .sort-button {

@@ -141,7 +141,9 @@ namespace UI.LevelSelection
 
             var dataList = new List<CategoryData>();
 
-            while (dataList.Count < VirtualCount) dataList.AddRange(_rawData);
+            if (_rawData.Length > 0)
+                while (dataList.Count < VirtualCount)
+                    dataList.AddRange(_rawData);
 
             _data = dataList.ToArray();
 

@@ -26,6 +26,16 @@ MonoBehaviour:
     m_Localized: Themes
     m_Metadata:
       m_Items: []
+  - m_Id: 4960310556352512
+    m_Localized: No charts available.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4960404013834240
+    m_Localized: 'Touch the screen to continue...
+
+'
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []
