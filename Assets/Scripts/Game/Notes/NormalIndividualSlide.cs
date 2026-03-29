@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Game.Notes
 {
-    public class NormalSlide : SlideBasedNote
+    public class NormalIndividualSlide : IndividualSlideBase
     {
         public NormalSegment[] segments;
 

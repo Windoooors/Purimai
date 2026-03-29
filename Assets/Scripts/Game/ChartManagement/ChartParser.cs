@@ -4,6 +4,8 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UI.Settings;
+using Unity.Collections;
+using UnityEditor.Localization.Plugins.XLIFF.V20;
 using UnityEngine;
 
 namespace Game.ChartManagement
@@ -186,30 +188,37 @@ namespace Game.ChartManagement
 
                 foreach (var separatedSlideString in separatedSlideStrings)
                 {
-                    var slideMatch = ParseSlide(separatedSlideString.Trim(), bpm);
+                    //var slideCount
+                    
+                    var slideMatch = ParseSlide(separatedSlideString.Trim(), bpm, lane);
 
                     if (!slideMatch.Success)
                         continue;
 
-                    var slideTypeString = slideMatch.RemainingInput.Trim();
-
-                    if (!SlideDataObject.SlideStringToSlideType.TryGetValue(slideTypeString, out var slideType))
+                    var slideDuration = 0;
+                    
+                    foreach (var slideMatchIndividualSlide in slideMatch.IndividualSlides)
                     {
-                        Debug.Log("Slide type not supported");
-                        continue;
+                        slideDuration += (int)(slideMatchIndividualSlide.SlideDuration * 1000);
                     }
-
-                    var slideDuration = (int)(slideMatch.SlideDuration * 1000);
+                    
                     var waitDuration = (int)(slideMatch.WaitDuration * 1000);
 
                     var slideDataObject = new SlideDataObject
                     {
-                        From = lane,
-                        To = slideMatch.To,
                         SlideDuration = slideDuration,
                         WaitDuration = waitDuration,
-                        Type = slideType,
-                        SuddenlyAppears = isSuddenAppearingSlide
+                        SuddenlyAppears = isSuddenAppearingSlide,
+                        IndividualSlides = slideMatch.IndividualSlides.Select(x =>
+                        {
+                            var result = new IndividualSlideDataObject();
+                            result.SlideDuration = (int)(x.SlideDuration * 1000);
+                            result.To = x.To;
+                            result.Type = x.type;
+                            result.From = x.From;
+
+                            return result;
+                        }).ToArray()
                     };
 
                     slides.Add(slideDataObject);
@@ -223,10 +232,10 @@ namespace Game.ChartManagement
                         IsBreak = isBreak,
                         Lane = lane,
                         IsStarHead = !isTapStyleStarHead && (isSpinningStarHead || isNoSpinningStarHead ||
-                                                             slides.Exists(x => x.From == lane)),
+                                                             slides.Exists(x => x.IndividualSlides[0].From == lane)),
                         IsNoSpinningStarHead = !isTapStyleStarHead && isNoSpinningStarHead,
                         IsDoubleStarHead = !isTapStyleStarHead &&
-                                           slides.Where(x => x.From == lane).Select(x => x).ToArray().Length > 1,
+                                           slides.Where(x => x.IndividualSlides[0].From == lane).Select(x => x).ToArray().Length > 1,
                         RotateSpeed = 1000 / slideAssociatedWithTap?.SlideDuration ?? 0f
                     });
             }
@@ -278,83 +287,124 @@ namespace Game.ChartManagement
             return result;
         }
 
-        private SlideResult ParseSlide(string input, double globalBpm)
+        private SlideResult ParseSlide(string input, double globalBpm, int fromLane)
         {
             var result = new SlideResult { RemainingInput = input };
             var quarter = 60.0 / globalBpm;
 
-            var cases = new (string pattern, Action<Match> action)[]
+            var cases = new (string pattern, Action<Match,IndividualSlideResult, bool> action)[]
             {
-                (@"([1-8]{1,2})\[([0-9]*?):([0-9]*?)\]", m =>
+                (@"([1-8]{1,2})\[([0-9]*?):([0-9]*?)\]", (m, individualSlideResult, first) =>
                 {
-                    result.To = m.Groups[1].Value.Select(c => int.Parse(c.ToString())).ToArray();
+                    individualSlideResult.To = m.Groups[1].Value.Select(c => int.Parse(c.ToString())).ToArray();
                     var start = ParseNum(m.Groups[2].Value);
                     var end = ParseNum(m.Groups[3].Value);
                     var noteDuration = 4.0 / start * quarter;
-                    result.SlideDuration = noteDuration * end;
-                    result.WaitDuration = quarter;
+                    individualSlideResult.SlideDuration = noteDuration * end;
+                    if (first || result.WaitDuration.CompareTo(-1) == 0) result.WaitDuration = quarter;
                 }),
-                (@"([1-8]{1,2})\[(\d+\.\d+?|\d+)#([0-9]*?):([0-9]*?)\]", m =>
+                (@"([1-8]{1,2})\[(\d+\.\d+?|\d+)#([0-9]*?):([0-9]*?)\]", (m, individualSlideResult, first) =>
                 {
-                    result.To = m.Groups[1].Value.Select(c => int.Parse(c.ToString())).ToArray();
+                    individualSlideResult.To = m.Groups[1].Value.Select(c => int.Parse(c.ToString())).ToArray();
                     var bpm = ParseNum(m.Groups[2].Value);
                     var start = ParseNum(m.Groups[3].Value);
                     var end = ParseNum(m.Groups[4].Value);
                     var customizedQuarter = 60.0 / bpm;
                     var noteDuration = 4.0 / start * customizedQuarter;
-                    result.SlideDuration = noteDuration * end;
-                    result.WaitDuration = customizedQuarter;
+                    individualSlideResult.SlideDuration = noteDuration * end;
+                    if (first || result.WaitDuration.CompareTo(-1) == 0) result.WaitDuration = customizedQuarter;
                 }),
-                (@"([1-8]{1,2})\[(\d+\.\d+?|\d+)#(\d+\.\d+?|\d+)\]", m =>
+                (@"([1-8]{1,2})\[(\d+\.\d+?|\d+)#(\d+\.\d+?|\d+)\]", (m, individualSlideResult, first) =>
                 {
-                    result.To = m.Groups[1].Value.Select(c => int.Parse(c.ToString())).ToArray();
+                    individualSlideResult.To = m.Groups[1].Value.Select(c => int.Parse(c.ToString())).ToArray();
                     var bpm = ParseNum(m.Groups[2].Value);
                     var slide = ParseNum(m.Groups[3].Value);
-                    result.SlideDuration = slide;
-                    result.WaitDuration = 60.0 / bpm;
+                    individualSlideResult.SlideDuration = slide;
+                    if (first || result.WaitDuration.CompareTo(-1) == 0) result.WaitDuration = 60.0 / bpm;
                 }),
-                (@"([1-8]{1,2})\[(\d+\.\d+?|\d+)##(\d+\.\d+?|\d+)\]", m =>
+                (@"([1-8]{1,2})\[(\d+\.\d+?|\d+)##(\d+\.\d+?|\d+)\]", (m, individualSlideResult, first) =>
                 {
-                    result.To = m.Groups[1].Value.Select(c => int.Parse(c.ToString())).ToArray();
-                    result.WaitDuration = ParseNum(m.Groups[2].Value);
-                    result.SlideDuration = ParseNum(m.Groups[3].Value);
+                    individualSlideResult.To = m.Groups[1].Value.Select(c => int.Parse(c.ToString())).ToArray();
+                    if (first || result.WaitDuration.CompareTo(-1) == 0) result.WaitDuration = ParseNum(m.Groups[2].Value);
+                    individualSlideResult.SlideDuration = ParseNum(m.Groups[3].Value);
                 }),
-                (@"([1-8]{1,2})\[(\d+\.\d+?|\d+)##([0-9]*?):([0-9]*?)\]", m =>
+                (@"([1-8]{1,2})\[(\d+\.\d+?|\d+)##([0-9]*?):([0-9]*?)\]", (m, individualSlideResult, first) =>
                 {
-                    result.To = m.Groups[1].Value.Select(c => int.Parse(c.ToString())).ToArray();
-                    result.WaitDuration = ParseNum(m.Groups[2].Value);
+                    individualSlideResult.To = m.Groups[1].Value.Select(c => int.Parse(c.ToString())).ToArray();
+                    if (first || result.WaitDuration.CompareTo(-1) == 0) result.WaitDuration = ParseNum(m.Groups[2].Value);
                     var start = ParseNum(m.Groups[3].Value);
                     var end = ParseNum(m.Groups[4].Value);
                     var noteDuration = 4.0 / start * quarter;
-                    result.SlideDuration = noteDuration * end;
+                    individualSlideResult.SlideDuration = noteDuration * end;
                 }),
-                (@"([1-8]{1,2})\[(\d+\.\d+?|\d+)##(\d+\.\d+?|\d+)#([0-9]*?):([0-9]*?)\]", m =>
+                (@"([1-8]{1,2})\[(\d+\.\d+?|\d+)##(\d+\.\d+?|\d+)#([0-9]*?):([0-9]*?)\]", (m, individualSlideResult, first) =>
                 {
-                    result.To = m.Groups[1].Value.Select(c => int.Parse(c.ToString())).ToArray();
-                    result.WaitDuration = ParseNum(m.Groups[2].Value);
+                    individualSlideResult.To = m.Groups[1].Value.Select(c => int.Parse(c.ToString())).ToArray();
+                    if (first || result.WaitDuration.CompareTo(-1) == 0) result.WaitDuration = ParseNum(m.Groups[2].Value);
                     var bpm = ParseNum(m.Groups[3].Value);
                     var start = ParseNum(m.Groups[4].Value);
                     var end = ParseNum(m.Groups[5].Value);
                     var customizedQuarter = 60.0 / bpm;
                     var noteDuration = 4.0 / start * customizedQuarter;
-                    result.SlideDuration = noteDuration * end;
+                    individualSlideResult.SlideDuration = noteDuration * end;
+                }),
+                ("([1-8]{1,2})", (m, individualSlideResult, _) =>
+                {
+                    individualSlideResult.To = m.Groups[1].Value.Select(c => int.Parse(c.ToString())).ToArray();
                 })
             };
 
-            foreach (var (pattern, action) in cases)
+            IndividualSlideResult individualResult;
+            var isFirst = true;
+
+            var from = fromLane;
+
+            List<IndividualSlideResult> individualSlideResults = new ();
+
+            while (MatchCore(isFirst ? input : result.RemainingInput, individualResult = new IndividualSlideResult(),
+                       isFirst, from))
             {
-                var m = Regex.Match(input, pattern);
-                if (!m.Success)
-                    continue;
+                isFirst = false;
 
-                action(m);
-                result.Success = true;
+                individualSlideResults.Add(individualResult);
 
-                result.RemainingInput = new Regex(pattern).Replace(input, "", 1);
-                break;
+                from = individualResult.To[^1];
             }
 
+            result.IndividualSlides = individualSlideResults.ToArray();
+
             return result;
+
+            bool MatchCore(string noteInput, IndividualSlideResult individualSlideResult, bool first, int slideFrom)
+            {
+                var typeString = noteInput.Split("[")[0];
+
+                var typeParsed = SlideStringToSlideType.TryGetValue(typeString, out var type);
+
+                if (!typeParsed)
+                    return false;
+
+                individualSlideResult.type = type;
+                
+                foreach (var (pattern, action) in cases)
+                {
+                    var m = Regex.Match(noteInput, pattern);
+                    if (!m.Success)
+                        continue;
+
+                    action(m, individualSlideResult, first);
+                    result.Success = true;
+
+                    result.RemainingInput = new Regex(pattern).Replace(noteInput, "", 1);
+                    
+                    return true;
+                }
+
+                individualResult.From = slideFrom;
+
+                individualSlideResult.SlideDuration = 0;
+                return false;
+            }
         }
 
         private double ParseNum(string s)
@@ -365,10 +415,20 @@ namespace Game.ChartManagement
         private class SlideResult
         {
             public bool Success { get; set; }
+
+            public IndividualSlideResult[] IndividualSlides { get; set; }
+
+            public double WaitDuration { get; set; } = -1;
+            public string RemainingInput { get; set; } = string.Empty;
+        }
+
+        private class IndividualSlideResult
+        {
+            public int From { get; set; }
             public int[] To { get; set; } = Array.Empty<int>();
             public double SlideDuration { get; set; }
-            public double WaitDuration { get; set; }
-            public string RemainingInput { get; set; } = string.Empty;
+
+            public SlideType type;
         }
 
         private class HoldResult
@@ -397,52 +457,57 @@ namespace Game.ChartManagement
             public int HoldDuration;
             public double HoldDurationInSeconds;
         }
+        
+        public enum SlideType
+        {
+            RotateRight,
+            RotateLeft,
+            RotateMinorArc,
+            Line,
+            LittleV,
+            BigV,
+            S,
+            Z,
+            P,
+            Q,
+            BigP,
+            BigQ,
+            Wifi
+        }
 
         public class SlideDataObject
         {
-            public enum SlideType
-            {
-                RotateRight,
-                RotateLeft,
-                RotateMinorArc,
-                Line,
-                LittleV,
-                BigV,
-                S,
-                Z,
-                P,
-                Q,
-                BigP,
-                BigQ,
-                Wifi
-            }
+            public bool SuddenlyAppears;
+            public int WaitDuration;
+            public int SlideDuration;
+            
+            public IndividualSlideDataObject[] IndividualSlides;
+        }
+        
+        public static readonly Dictionary<string, SlideType> SlideStringToSlideType = new()
+        {
+            { "<", SlideType.RotateLeft },
+            { ">", SlideType.RotateRight },
+            { "^", SlideType.RotateMinorArc },
+            { "-", SlideType.Line },
+            { "v", SlideType.LittleV },
+            { "s", SlideType.S },
+            { "z", SlideType.Z },
+            { "p", SlideType.P },
+            { "q", SlideType.Q },
+            { "pp", SlideType.BigP },
+            { "qq", SlideType.BigQ },
+            { "W", SlideType.Wifi },
+            { "w", SlideType.Wifi },
+            { "V", SlideType.BigV }
+        };
 
-            public static readonly Dictionary<string, SlideType> SlideStringToSlideType = new()
-            {
-                { "<", SlideType.RotateLeft },
-                { ">", SlideType.RotateRight },
-                { "^", SlideType.RotateMinorArc },
-                { "-", SlideType.Line },
-                { "v", SlideType.LittleV },
-                { "s", SlideType.S },
-                { "z", SlideType.Z },
-                { "p", SlideType.P },
-                { "q", SlideType.Q },
-                { "pp", SlideType.BigP },
-                { "qq", SlideType.BigQ },
-                { "W", SlideType.Wifi },
-                { "w", SlideType.Wifi },
-                { "V", SlideType.BigV }
-            };
-
+        public class IndividualSlideDataObject
+        {
             public int From;
             public int SlideDuration;
-
-            public bool SuddenlyAppears;
             public int[] To;
-
             public SlideType Type;
-            public int WaitDuration;
         }
     }
 }

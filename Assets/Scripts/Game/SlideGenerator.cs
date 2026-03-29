@@ -8,14 +8,14 @@ namespace Game
 {
     public class SlideGenerator : MonoBehaviour
     {
-        public static SlideBasedNote GenerateCycleSlide(NoteDataObject.SlideDataObject slide)
+        public static IndividualSlideBase GenerateCycleSlide(NoteDataObject.SlideDataObject slide)
         {
             var cycleSlidePrefabs = NoteGenerator.Instance.slidePrefabs.cycleSlidePrefabs;
 
             var fromLane = slide.From;
             var toLane = slide.To[0];
 
-            var cycleInterval = CycleSlide.GetCycleInterval(fromLane, toLane,
+            var cycleInterval = CycleIndividualSlide.GetCycleInterval(fromLane, toLane,
                 slide.Type
             );
 
@@ -40,12 +40,12 @@ namespace Game
             return cycleSlideInstance;
         }
 
-        public static SlideBasedNote GeneratePqSlide(NoteDataObject.SlideDataObject slide)
+        public static IndividualSlideBase GeneratePqSlide(NoteDataObject.SlideDataObject slide)
         {
             var fromLane = slide.From;
             var toLane = slide.To[0];
 
-            var pqInterval = SlideBasedNote.GetIntervalInBothWays(slide.From, slide.To[0]);
+            var pqInterval = IndividualSlideBase.GetIntervalInBothWays(slide.From, slide.To[0]);
 
             var pqSlidePrefabs = NoteGenerator.Instance.slidePrefabs.pqSlidePrefabs;
 
@@ -74,12 +74,12 @@ namespace Game
             return pqSlideInstance;
         }
 
-        public static SlideBasedNote GenerateLittleVSlide(NoteDataObject.SlideDataObject slide)
+        public static IndividualSlideBase GenerateLittleVSlide(NoteDataObject.SlideDataObject slide)
         {
             var fromLane = slide.From;
             var toLane = slide.To[0];
 
-            var interval = SlideBasedNote.GetIntervalInBothWays(slide.From, slide.To[0]).clockwiseInterval;
+            var interval = IndividualSlideBase.GetIntervalInBothWays(slide.From, slide.To[0]).clockwiseInterval;
 
             var vSlidePrefabs = NoteGenerator.Instance.slidePrefabs.vSlidePrefabs;
 
@@ -104,12 +104,12 @@ namespace Game
             return vSlideInstance;
         }
 
-        public static SlideBasedNote GenerateLineSlide(NoteDataObject.SlideDataObject slide)
+        public static IndividualSlideBase GenerateLineSlide(NoteDataObject.SlideDataObject slide)
         {
             var fromLane = slide.From;
             var toLane = slide.To[0];
 
-            var interval = SlideBasedNote.GetIntervalInBothWays(slide.From, slide.To[0]).clockwiseInterval;
+            var interval = IndividualSlideBase.GetIntervalInBothWays(slide.From, slide.To[0]).clockwiseInterval;
 
             var lineSlidePrefabs = NoteGenerator.Instance.slidePrefabs.lineSlidePrefabs;
 
@@ -131,11 +131,11 @@ namespace Game
             return lineSlideInstance;
         }
 
-        public static SlideBasedNote GenerateBigVSlide(NoteDataObject.SlideDataObject slide)
+        public static IndividualSlideBase GenerateBigVSlide(NoteDataObject.SlideDataObject slide)
         {
             var fromLane = slide.From;
 
-            var interval = SlideBasedNote.GetShortestInterval(slide.From, slide.To[1]);
+            var interval = IndividualSlideBase.GetShortestInterval(slide.From, slide.To[1]);
 
             var bigVSlidePrefabs = NoteGenerator.Instance.slidePrefabs.bigVSlidePrefabs;
 
@@ -156,12 +156,12 @@ namespace Game
             return bigVSlideInstance;
         }
 
-        public static SlideBasedNote GenerateBigPqSlide(NoteDataObject.SlideDataObject slide)
+        public static IndividualSlideBase GenerateBigPqSlide(NoteDataObject.SlideDataObject slide)
         {
             var fromLane = slide.From;
             var toLane = slide.To[0];
 
-            var bigPqInterval = SlideBasedNote.GetIntervalInBothWays(slide.From, slide.To[0]);
+            var bigPqInterval = IndividualSlideBase.GetIntervalInBothWays(slide.From, slide.To[0]);
 
             var bigPqSlidePrefabs = NoteGenerator.Instance.slidePrefabs.bigPqSlidePrefabs;
 
@@ -190,12 +190,12 @@ namespace Game
             return bigPqSlideInstance;
         }
 
-        public static SlideBasedNote GenerateZsSlide(NoteDataObject.SlideDataObject slide)
+        public static IndividualSlideBase GenerateZsSlide(NoteDataObject.SlideDataObject slide)
         {
             var fromLane = slide.From;
             var toLane = slide.To[0];
 
-            var zsSlideInstance = Instantiate(NoteGenerator.Instance.slidePrefabs.zsSlidePrefab);
+            var zsSlideInstance = Instantiate(NoteGenerator.Instance.slidePrefabs.zsIndividualSlidePrefab);
 
             zsSlideInstance.toLaneIndexes = new[] { toLane - 1 };
             zsSlideInstance.fromLaneIndex = fromLane - 1;
@@ -205,12 +205,12 @@ namespace Game
             return zsSlideInstance;
         }
 
-        public static SlideBasedNote GenerateWifiSlide(NoteDataObject.SlideDataObject slide)
+        public static IndividualSlideBase GenerateWifiSlide(NoteDataObject.SlideDataObject slide)
         {
             var fromLane = slide.From;
             var toLane = slide.To[0];
 
-            var wifiSlideInstance = Instantiate(NoteGenerator.Instance.slidePrefabs.wifiSlidePrefab);
+            var wifiSlideInstance = Instantiate(NoteGenerator.Instance.slidePrefabs.wifiIndividualSlidePrefab);
 
             wifiSlideInstance.toLaneIndexes = new[] { toLane - 1 };
             wifiSlideInstance.fromLaneIndex = fromLane - 1;

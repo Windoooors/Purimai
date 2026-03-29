@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Game.Notes.SlideBasedNotes
 {
-    public class WifiSlide : SlideBasedNote
+    public class WifiIndividualSlide : IndividualSlideBase
     {
         public WifiSegment[] segments;
 

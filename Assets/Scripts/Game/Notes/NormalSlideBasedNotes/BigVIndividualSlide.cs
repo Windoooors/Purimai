@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Game.Notes.NormalSlideBasedNotes
 {
-    public class BigVSlide : NormalSlide
+    public class BigVIndividualSlide : NormalIndividualSlide
     {
         protected override void InitializeSlideDirection()
         {

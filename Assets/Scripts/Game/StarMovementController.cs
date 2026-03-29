@@ -1,6 +1,7 @@
 using Game.Notes;
 using Game.Notes.SlideBasedNotes;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Game
 {
@@ -8,7 +9,7 @@ namespace Game
     {
         public SpriteRenderer spriteRenderer;
 
-        public SlideBasedNote slideBasedNote;
+        [FormerlySerializedAs("slideBasedNote")] public IndividualSlideBase individualSlideBase;
 
         public string wifiSvgAssetNameOverride;
 
@@ -20,17 +21,17 @@ namespace Game
 
         public void Initialize()
         {
-            if (slideBasedNote is not WifiSlide)
+            if (individualSlideBase is not WifiIndividualSlide)
             {
-                _vectorGraphicsUtility = slideBasedNote.VectorGraphicsUtility;
+                _vectorGraphicsUtility = individualSlideBase.VectorGraphicsUtility;
             }
             else
             {
                 _vectorGraphicsUtility = new VectorGraphicsUtility(wifiSvgAssetNameOverride,
-                    slideBasedNote.pathRotation, slideBasedNote.flipPathY,
-                    Lanes.Instance.endPoints[slideBasedNote.fromLaneIndex].position,
-                    slideBasedNote.starObjectRotationOffset);
-                _vectorGraphicsUtility.SetStartPosition(Lanes.Instance.endPoints[slideBasedNote.fromLaneIndex]
+                    individualSlideBase.pathRotation, individualSlideBase.flipPathY,
+                    Lanes.Instance.endPoints[individualSlideBase.fromLaneIndex].position,
+                    individualSlideBase.starObjectRotationOffset);
+                _vectorGraphicsUtility.SetStartPosition(Lanes.Instance.endPoints[individualSlideBase.fromLaneIndex]
                     .position);
             }
         }

@@ -143,41 +143,44 @@ namespace Game
 
                 foreach (var noteSlideDataObject in note.SlideDataObjects)
                 {
-                    if (_flipHorizontally)
-                        noteSlideDataObject.Type = noteSlideDataObject.Type switch
-                        {
-                            NoteDataObject.SlideDataObject.SlideType.RotateLeft => NoteDataObject.SlideDataObject
-                                .SlideType.RotateRight,
-                            NoteDataObject.SlideDataObject.SlideType.RotateRight => NoteDataObject.SlideDataObject
-                                .SlideType.RotateLeft,
-                            NoteDataObject.SlideDataObject.SlideType.Z => NoteDataObject.SlideDataObject.SlideType.S,
-                            NoteDataObject.SlideDataObject.SlideType.S => NoteDataObject.SlideDataObject.SlideType.Z,
-                            NoteDataObject.SlideDataObject.SlideType.P => NoteDataObject.SlideDataObject.SlideType.Q,
-                            NoteDataObject.SlideDataObject.SlideType.Q => NoteDataObject.SlideDataObject.SlideType.P,
-                            NoteDataObject.SlideDataObject.SlideType.BigP => NoteDataObject.SlideDataObject.SlideType
-                                .BigQ,
-                            NoteDataObject.SlideDataObject.SlideType.BigQ => NoteDataObject.SlideDataObject.SlideType
-                                .BigP,
-                            _ => noteSlideDataObject.Type
-                        };
+                    foreach (var individualSlideDataObject in noteSlideDataObject.IndividualSlides)
+                    {
+                        if (_flipHorizontally)
+                            individualSlideDataObject.Type = individualSlideDataObject.Type switch
+                            {
+                                NoteDataObject.SlideType.RotateLeft => NoteDataObject
+                                    .SlideType.RotateRight,
+                                NoteDataObject.SlideType.RotateRight => NoteDataObject
+                                    .SlideType.RotateLeft,
+                                NoteDataObject.SlideType.Z => NoteDataObject.SlideType.S,
+                                NoteDataObject.SlideType.S => NoteDataObject.SlideType.Z,
+                                NoteDataObject.SlideType.P => NoteDataObject.SlideType.Q,
+                                NoteDataObject.SlideType.Q => NoteDataObject.SlideType.P,
+                                NoteDataObject.SlideType.BigP => NoteDataObject.SlideType
+                                    .BigQ,
+                                NoteDataObject.SlideType.BigQ => NoteDataObject.SlideType
+                                    .BigP,
+                                _ => individualSlideDataObject.Type
+                            };
 
-                    if (_flipVertically)
-                        noteSlideDataObject.Type = noteSlideDataObject.Type switch
-                        {
-                            NoteDataObject.SlideDataObject.SlideType.Z => NoteDataObject.SlideDataObject.SlideType.S,
-                            NoteDataObject.SlideDataObject.SlideType.S => NoteDataObject.SlideDataObject.SlideType.Z,
-                            NoteDataObject.SlideDataObject.SlideType.P => NoteDataObject.SlideDataObject.SlideType.Q,
-                            NoteDataObject.SlideDataObject.SlideType.Q => NoteDataObject.SlideDataObject.SlideType.P,
-                            NoteDataObject.SlideDataObject.SlideType.BigP => NoteDataObject.SlideDataObject.SlideType
-                                .BigQ,
-                            NoteDataObject.SlideDataObject.SlideType.BigQ => NoteDataObject.SlideDataObject.SlideType
-                                .BigP,
-                            _ => noteSlideDataObject.Type
-                        };
+                        if (_flipVertically)
+                            individualSlideDataObject.Type = individualSlideDataObject.Type switch
+                            {
+                                NoteDataObject.SlideType.Z => NoteDataObject.SlideType.S,
+                                NoteDataObject.SlideType.S => NoteDataObject.SlideType.Z,
+                                NoteDataObject.SlideType.P => NoteDataObject.SlideType.Q,
+                                NoteDataObject.SlideType.Q => NoteDataObject.SlideType.P,
+                                NoteDataObject.SlideType.BigP => NoteDataObject.SlideType
+                                    .BigQ,
+                                NoteDataObject.SlideType.BigQ => NoteDataObject.SlideType
+                                    .BigP,
+                                _ => individualSlideDataObject.Type
+                            };
 
-                    noteSlideDataObject.From = GetModifiedLane(noteSlideDataObject.From);
-                    for (var i = 0; i < noteSlideDataObject.To.Length; i++)
-                        noteSlideDataObject.To[i] = GetModifiedLane(noteSlideDataObject.To[i]);
+                        individualSlideDataObject.From = GetModifiedLane(individualSlideDataObject.From);
+                        for (var i = 0; i < individualSlideDataObject.To.Length; i++)
+                            individualSlideDataObject.To[i] = GetModifiedLane(individualSlideDataObject.To[i]);
+                    }
                 }
             }
 
@@ -335,30 +338,30 @@ namespace Game
             {
                 var slideBasedNoteObjectInstance = slide.Type switch
                 {
-                    NoteDataObject.SlideDataObject.SlideType.RotateLeft
-                        or NoteDataObject.SlideDataObject.SlideType.RotateRight
-                        or NoteDataObject.SlideDataObject.SlideType.RotateMinorArc
+                    NoteDataObject.SlideType.RotateLeft
+                        or NoteDataObject.SlideType.RotateRight
+                        or NoteDataObject.SlideType.RotateMinorArc
                         => SlideGenerator.GenerateCycleSlide(
                             slide),
 
-                    NoteDataObject.SlideDataObject.SlideType.P or NoteDataObject.SlideDataObject.SlideType.Q =>
+                    NoteDataObject.SlideType.P or NoteDataObject.SlideType.Q =>
                         SlideGenerator.GeneratePqSlide(slide),
 
-                    NoteDataObject.SlideDataObject.SlideType.LittleV
+                    NoteDataObject.SlideType.LittleV
                         => SlideGenerator.GenerateLittleVSlide(slide),
 
-                    NoteDataObject.SlideDataObject.SlideType.Line
+                    NoteDataObject.SlideType.Line
                         => SlideGenerator.GenerateLineSlide(slide),
 
-                    NoteDataObject.SlideDataObject.SlideType.BigV => SlideGenerator.GenerateBigVSlide(slide),
+                    NoteDataObject.SlideType.BigV => SlideGenerator.GenerateBigVSlide(slide),
 
-                    NoteDataObject.SlideDataObject.SlideType.BigP or NoteDataObject.SlideDataObject.SlideType.BigQ =>
+                    NoteDataObject.SlideType.BigP or NoteDataObject.SlideType.BigQ =>
                         SlideGenerator.GenerateBigPqSlide(slide),
 
-                    NoteDataObject.SlideDataObject.SlideType.Z or NoteDataObject.SlideDataObject.SlideType.S =>
+                    NoteDataObject.SlideType.Z or NoteDataObject.SlideType.S =>
                         SlideGenerator.GenerateZsSlide(slide),
 
-                    NoteDataObject.SlideDataObject.SlideType.Wifi => SlideGenerator.GenerateWifiSlide(slide),
+                    NoteDataObject.SlideType.Wifi => SlideGenerator.GenerateWifiSlide(slide),
 
                     _ => null
                 };
@@ -419,14 +422,14 @@ namespace Game
         [Serializable]
         public class SlidePrefabDataObject
         {
-            public CycleSlide[] cycleSlidePrefabs;
-            public PqSlide[] pqSlidePrefabs;
-            public LittleVSlide[] vSlidePrefabs;
-            public LineSlide[] lineSlidePrefabs;
-            public BigVSlide[] bigVSlidePrefabs;
-            public BigPqSlide[] bigPqSlidePrefabs;
-            public ZsSlide zsSlidePrefab;
-            public WifiSlide wifiSlidePrefab;
+            public CycleIndividualSlide[] cycleSlidePrefabs;
+            public PqIndividualSlide[] pqSlidePrefabs;
+            public LittleVIndividualSlide[] vSlidePrefabs;
+            public LineIndividualSlide[] lineSlidePrefabs;
+            public BigVIndividualSlide[] bigVSlidePrefabs;
+            public BigPqIndividualSlide[] bigPqSlidePrefabs;
+            [FormerlySerializedAs("zsSlidePrefab")] public ZsIndividualSlide zsIndividualSlidePrefab;
+            [FormerlySerializedAs("wifiSlidePrefab")] public WifiIndividualSlide wifiIndividualSlidePrefab;
         }
 
         [Serializable]

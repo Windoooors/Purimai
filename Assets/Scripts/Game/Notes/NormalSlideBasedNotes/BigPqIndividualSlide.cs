@@ -2,13 +2,13 @@ using Game.ChartManagement;
 
 namespace Game.Notes.NormalSlideBasedNotes
 {
-    public class BigPqSlide : NormalSlide
+    public class BigPqIndividualSlide : NormalIndividualSlide
     {
         protected override void InitializeSlideDirection()
         {
             SlideJudgeDisplaySpriteIndexes = new[] { 0, 1 };
 
-            IsClockwise = slideType == NoteDataObject.SlideDataObject.SlideType.BigP;
+            IsClockwise = slideType == NoteDataObject.SlideType.BigP;
 
             if (IsClockwise)
             {

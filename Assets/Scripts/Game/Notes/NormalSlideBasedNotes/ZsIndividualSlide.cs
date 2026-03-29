@@ -2,13 +2,13 @@ using Game.ChartManagement;
 
 namespace Game.Notes.NormalSlideBasedNotes
 {
-    public class ZsSlide : NormalSlide
+    public class ZsIndividualSlide : NormalIndividualSlide
     {
         private bool _isMirror;
 
         protected override void InitializeSlideDirection()
         {
-            _isMirror = slideType == NoteDataObject.SlideDataObject.SlideType.Z;
+            _isMirror = slideType == NoteDataObject.SlideType.Z;
 
             SlideJudgeDisplaySpriteIndexes = new[] { 0, 1 };
 

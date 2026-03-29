@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Game.Notes.NormalSlideBasedNotes
 {
-    public class CycleSlide : NormalSlide
+    public class CycleIndividualSlide : NormalIndividualSlide
     {
         protected override void InitializeSlideDirection()
         {
@@ -48,11 +48,11 @@ namespace Game.Notes.NormalSlideBasedNotes
             return point == 1 || point == 2 || point == 7 || point == 8;
         }
 
-        public static int GetCycleInterval(int fromLane, int toLane, NoteDataObject.SlideDataObject.SlideType slideType)
+        public static int GetCycleInterval(int fromLane, int toLane, NoteDataObject.SlideType slideType)
         {
             if (fromLane == toLane) return 8;
 
-            if (slideType == NoteDataObject.SlideDataObject.SlideType.RotateMinorArc)
+            if (slideType == NoteDataObject.SlideType.RotateMinorArc)
                 return GetShortestInterval(fromLane, toLane);
 
             var isClockwise = IsCircleClockwise(fromLane, toLane, slideType);
@@ -72,15 +72,15 @@ namespace Game.Notes.NormalSlideBasedNotes
         }
 
         private static bool IsCircleClockwise(int fromLane, int toLane,
-            NoteDataObject.SlideDataObject.SlideType directionType)
+            NoteDataObject.SlideType directionType)
         {
             switch (directionType)
             {
-                case NoteDataObject.SlideDataObject.SlideType.RotateLeft:
+                case NoteDataObject.SlideType.RotateLeft:
                     return !IsUpper(fromLane);
-                case NoteDataObject.SlideDataObject.SlideType.RotateRight:
+                case NoteDataObject.SlideType.RotateRight:
                     return IsUpper(fromLane);
-                case NoteDataObject.SlideDataObject.SlideType.RotateMinorArc:
+                case NoteDataObject.SlideType.RotateMinorArc:
                     if (fromLane == toLane)
                         return true;
                     var clockwiseInterval = (toLane - fromLane + 8) % 8;
