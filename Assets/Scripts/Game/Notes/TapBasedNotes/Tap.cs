@@ -67,7 +67,7 @@ namespace Game.Notes.TapBasedNotes
             tapTransform.localScale = _tapOrLineTransform.Scale;
 
             var color = new Color(0.3f + 0.7f * _tapOrLineTransform.Alpha, 0.3f + 0.7f * _tapOrLineTransform.Alpha,
-                0.3f + 0.7f * _tapOrLineTransform.Alpha);
+                0.3f + 0.7f * _tapOrLineTransform.Alpha, 0.3f + 0.7f * _tapOrLineTransform.Alpha);
             var alphaColor = new Color(1, 1, 1, _tapOrLineTransform.Alpha);
             tapSpriteRenderer.color = color;
             lineSpriteRenderer.color = alphaColor;

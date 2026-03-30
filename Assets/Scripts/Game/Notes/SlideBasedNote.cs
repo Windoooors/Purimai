@@ -164,7 +164,9 @@ namespace Game.Notes
             if (!_slideTransform.Shown)
             {
                 if (_haveShown)
+                {
                     enabled = false;
+                }
                 return;
             }
 
@@ -186,7 +188,7 @@ namespace Game.Notes
                     _slideTransform.ArrowAlpha == 0)
                     arrowRenderer.color = new Color(1, 1, 1, _slideTransform.ArrowAlpha);
 
-            if (ChartPlayer.Instance.TimeInMilliseconds >= timing + waitDuration + slideDuration && Slided &&
+            if (ChartPlayer.Instance.TimeInMilliseconds >= _showJudgeDisplayTiming && _showJudgeDisplayTiming != -1 && Slided &&
                 !_concealed)
             {
                 Scoreboard.SlideCount.Count(_judgeState);
@@ -199,7 +201,10 @@ namespace Game.Notes
                         Scoreboard.LateCount++;
                 }
 
-                Scoreboard.Combo++;
+                if (_judgeState is not JudgeState.Miss)
+                    Scoreboard.Combo++;
+                else
+                    Scoreboard.ResetCombo();
 
                 PlayJudgeAnimation();
 
@@ -215,18 +220,13 @@ namespace Game.Notes
                 {
                     UpdateJudgeDisplayDirection(5);
                     _judgeState = JudgeState.Miss;
-
-                    Scoreboard.SlideCount.Count(JudgeState.Miss);
-                    Scoreboard.ResetCombo();
                 }
                 else
                 {
                     UpdateJudgeDisplayDirection(4);
                     _judgeState = JudgeState.Good;
 
-                    Scoreboard.SlideCount.Count(JudgeState.Good);
-                    Scoreboard.LateCount++;
-                    Scoreboard.Combo++;
+                    _isFast = false;
                 }
 
                 Slided = true;
@@ -234,10 +234,7 @@ namespace Game.Notes
                 _holdJudgeAction.Enabled = false;
                 _leaveJudgeAction.Enabled = false;
 
-                if (!_concealed)
-                    PlayJudgeAnimation();
-
-                _concealed = true;
+                _showJudgeDisplayTiming = (int)(_starInLastSegmentDuration + ChartPlayer.Instance.TimeInMilliseconds);
             }
         }
 
@@ -250,9 +247,19 @@ namespace Game.Notes
 
             if (currentTime < startAppearingTime - 100 || currentTime >= timing + waitDuration + slideDuration +
                 ChartPlayer.Instance.slideJudgeSettings.lateGoodTiming +
-                ChartPlayer.Instance.slideJudgeDisplayAnimationDuration)
+                ChartPlayer.Instance.slideJudgeDisplayAnimationDuration + _starInLastSegmentDuration)
             {
                 result.Shown = false;
+                return;
+            }
+            
+            if (currentTime >= _showJudgeDisplayTiming && _showJudgeDisplayTiming != -1 && Slided)
+            {
+                result.Shown = true;
+                result.StarAlpha = 0;
+                result.StarPosition = 1;
+                result.ArrowAlpha = 0;
+
                 return;
             }
 
@@ -295,13 +302,6 @@ namespace Game.Notes
 
                 if (currentTime >= timing + waitDuration + slideDuration +
                     ChartPlayer.Instance.slideJudgeSettings.lateGoodTiming)
-                {
-                    result.StarAlpha = 0;
-                    result.StarPosition = 1;
-                    result.ArrowAlpha = 0;
-                }
-
-                if (currentTime >= timing + waitDuration + slideDuration && Slided)
                 {
                     result.StarAlpha = 0;
                     result.StarPosition = 1;
@@ -369,6 +369,8 @@ namespace Game.Notes
             _slideArrowSpriteRenderers = slideArrowList.Select(x => x.GetComponent<SpriteRenderer>()).ToArray();
         }
 
+        private int _showJudgeDisplayTiming = -1;
+
         protected void Judge()
         {
             if (Slided)
@@ -382,9 +384,6 @@ namespace Game.Notes
             var absDeltaTiming = math.abs(deltaTiming);
 
             var judgeSettings = ChartPlayer.Instance.slideJudgeSettings;
-
-            if (deltaTiming < -judgeSettings.lateGoodTiming)
-                return;
 
             var isFast = deltaTiming > 0;
 
@@ -412,6 +411,8 @@ namespace Game.Notes
 
             UpdateJudgeDisplayDirection(index);
             Slided = true;
+
+            _showJudgeDisplayTiming = (int)(ChartPlayer.Instance.TimeInMilliseconds + _starInLastSegmentDuration);
 
             _holdJudgeAction.Enabled = false;
             _leaveJudgeAction.Enabled = false;
@@ -568,9 +569,14 @@ namespace Game.Notes
 
             var lastSegmentArrowCount = UniversalSegments[^1].slideSpriteRenderersWithinSensorArea.Length;
             SlideJudgeTiming = (int)((float)(_slideArrowSpriteRenderers.Length - lastSegmentArrowCount) /
-                                     _slideArrowSpriteRenderers.Length * slideDuration
+                                         _slideArrowSpriteRenderers.Length * slideDuration
                                      + timing + waitDuration);
+
+            _starInLastSegmentDuration =
+                (int)((float)lastSegmentArrowCount / _slideArrowSpriteRenderers.Length * slideDuration);
         }
+
+        private int _starInLastSegmentDuration;
 
         private bool ArrowOverlapsOnSensor(int index, Collider2D sensorCollider)
         {

@@ -123,7 +123,7 @@ namespace Game.Notes.TapBasedNotes
             holdTransform.localScale = _holdTransformData.Scale;
 
             var color = new Color(0.5f + 0.5f * _tapOrLineTransform.Alpha, 0.5f + 0.5f * _tapOrLineTransform.Alpha,
-                0.5f + 0.5f * _tapOrLineTransform.Alpha);
+                0.5f + 0.5f * _tapOrLineTransform.Alpha, 0.3f + 0.7f * _tapOrLineTransform.Alpha);
             var alphaColor = new Color(1, 1, 1, _tapOrLineTransform.Alpha);
             holdSpriteRenderer.color = color;
             lineSpriteRenderer.color = alphaColor;
@@ -390,12 +390,12 @@ namespace Game.Notes.TapBasedNotes
 
             isFast = deltaTiming > 0;
 
-            if (absDeltaTiming > judgeSettings.greatTiming)
-                _holdTailJudgeState = JudgeState.Good;
-            if (absDeltaTiming <= judgeSettings.greatTiming && absDeltaTiming > judgeSettings.perfectTiming)
-                _holdTailJudgeState = JudgeState.Great;
             if (absDeltaTiming <= judgeSettings.perfectTiming)
                 _holdTailJudgeState = JudgeState.CriticalPerfect;
+            else if (absDeltaTiming > judgeSettings.greatTiming)
+                _holdTailJudgeState = JudgeState.Good;
+            else if (absDeltaTiming <= judgeSettings.greatTiming && absDeltaTiming > judgeSettings.perfectTiming)
+                _holdTailJudgeState = JudgeState.Great;
 
             if (_holdTailJudgeState == JudgeState.CriticalPerfect)
                 judgeState = _headJudgeState;

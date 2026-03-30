@@ -6994,15 +6994,6 @@ MonoBehaviour:
     lateGoodTiming: 117
     fastGoodTiming: 150
   slideJudgeSettings:
-    criticalPerfectTiming: 300
-    semiCriticalPerfectTiming: 300
-    perfectTiming: 300
-    greatTiming: 433
-    semiGreatTiming: 433
-    quarterGreatTiming: 433
-    lateGoodTiming: 600
-    fastGoodTiming: 600
-  holdTailJudgeSettings:
     criticalPerfectTiming: 233
     semiCriticalPerfectTiming: 233
     perfectTiming: 233
@@ -7011,6 +7002,15 @@ MonoBehaviour:
     quarterGreatTiming: 433
     lateGoodTiming: 600
     fastGoodTiming: 600
+  holdTailJudgeSettings:
+    criticalPerfectTiming: 200
+    semiCriticalPerfectTiming: 200
+    perfectTiming: 200
+    greatTiming: 200
+    semiGreatTiming: 200
+    quarterGreatTiming: 200
+    lateGoodTiming: 200
+    fastGoodTiming: 200
   isPlaying: 0
   levelDifficultyIndex: 0
 --- !u!114 &1054234682
