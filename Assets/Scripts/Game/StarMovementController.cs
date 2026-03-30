@@ -21,7 +21,7 @@ namespace Game
 
         public void Initialize()
         {
-            if (individualSlideBase is not WifiIndividualSlide)
+            if (individualSlideBase is not WifiSlide)
             {
                 _vectorGraphicsUtility = individualSlideBase.VectorGraphicsUtility;
             }

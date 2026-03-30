@@ -21,6 +21,7 @@ namespace Game
         public Hold[] holdPrefabs;
         public EachLine[] eachLinePrefabs;
         public SlidePrefabDataObject slidePrefabs;
+        public SlideBasedNote generalSlidePrefab;
 
         public GameObject slideArrowPrefab;
 
@@ -336,7 +337,37 @@ namespace Game
 
             foreach (var slide in noteDataObject.SlideDataObjects)
             {
-                var slideBasedNoteObjectInstance = slide.Type switch
+                var slideObject = Instantiate(generalSlidePrefab);
+                
+                foreach (var individualSlideDataObject in slide.IndividualSlides)
+                {
+                    var individualSlideObject = GenerateIndividualSlide(individualSlideDataObject, slideObject);
+
+                    slideObject.individualSlides.Add(individualSlideObject);
+
+                    individualSlideObject.order = -_slideOrder;
+                    individualSlideObject.timing = noteDataObject.Timing;
+                    individualSlideObject.slideType = individualSlideDataObject.Type;
+                    individualSlideObject.isEach = (slidesGroupedByWaitDuration
+                        .Find(x => x.waitDuration == slide.WaitDuration).Item2?.Count ?? 1) > 1;
+                    individualSlideObject.suddenlyAppears = slide.SuddenlyAppears;
+
+                    _slideOrder -= individualSlideObject.slideArrowCount;
+
+                    individualSlideObject.transform.parent = _noteParent.transform;
+
+                    if (noteDataObject.Timing + slide.WaitDuration + slide.SlideDuration > endingTime)
+                        endingTime = noteDataObject.Timing + slide.WaitDuration + slide.SlideDuration;
+                }
+                
+                notesList.Add(slideObject);
+            }
+
+            return;
+
+            IndividualSlideBase GenerateIndividualSlide(NoteDataObject.IndividualSlideDataObject slide, SlideBasedNote slideObject)
+            {
+                var individualSlideObject = slide.Type switch
                 {
                     NoteDataObject.SlideType.RotateLeft
                         or NoteDataObject.SlideType.RotateRight
@@ -366,24 +397,12 @@ namespace Game
                     _ => null
                 };
 
-                if (slideBasedNoteObjectInstance)
+                if (individualSlideObject)
                 {
-                    notesList.Add(slideBasedNoteObjectInstance);
-
-                    slideBasedNoteObjectInstance.order = -_slideOrder;
-                    slideBasedNoteObjectInstance.timing = noteDataObject.Timing;
-                    slideBasedNoteObjectInstance.slideType = slide.Type;
-                    slideBasedNoteObjectInstance.isEach = (slidesGroupedByWaitDuration
-                        .Find(x => x.waitDuration == slide.WaitDuration).Item2?.Count ?? 1) > 1;
-                    slideBasedNoteObjectInstance.suddenlyAppears = slide.SuddenlyAppears;
-
-                    _slideOrder -= slideBasedNoteObjectInstance.slideArrowCount;
-
-                    slideBasedNoteObjectInstance.transform.parent = _noteParent.transform;
-
-                    if (noteDataObject.Timing + slide.WaitDuration + slide.SlideDuration > endingTime)
-                        endingTime = noteDataObject.Timing + slide.WaitDuration + slide.SlideDuration;
+                    return individualSlideObject;
                 }
+
+                throw new Exception("Incompatible slides.");
             }
         }
 
@@ -429,7 +448,7 @@ namespace Game
             public BigVIndividualSlide[] bigVSlidePrefabs;
             public BigPqIndividualSlide[] bigPqSlidePrefabs;
             [FormerlySerializedAs("zsSlidePrefab")] public ZsIndividualSlide zsIndividualSlidePrefab;
-            [FormerlySerializedAs("wifiSlidePrefab")] public WifiIndividualSlide wifiIndividualSlidePrefab;
+            [FormerlySerializedAs("wifiIndividualSlidePrefab")] public WifiSlide wifiSlidePrefab;
         }
 
         [Serializable]

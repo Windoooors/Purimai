@@ -10,31 +10,20 @@ using UnityEngine.Serialization;
 
 namespace Game.Notes
 {
-    public abstract class IndividualSlideBase
+    public abstract class IndividualSlideBase : MonoBehaviour
     {
         public StarMovementController[] stars;
         public SpriteRenderer judgeDisplaySpriteRenderer;
         public string svgAssetPath;
-
-        //public float slideArrowGenerationProgressOffset;
-        //public float slideArrowGenerationDivisionOffset;
-
+        
         public int slideArrowCount;
 
         [HideInInspector] public NoteDataObject.SlideType slideType;
 
         [HideInInspector] public int fromLaneIndex;
         [HideInInspector] public int[] toLaneIndexes;
-        [HideInInspector] public int timing;
-        [HideInInspector] public int waitDuration;
-        [HideInInspector] public int slideDuration;
-
-        [HideInInspector] public bool isEach;
-        [HideInInspector] public int order;
-
+        
         [HideInInspector] public bool isWifi;
-
-        [HideInInspector] public bool suddenlyAppears;
 
         [HideInInspector] public float pathRotation;
 
@@ -43,42 +32,13 @@ namespace Game.Notes
         [FormerlySerializedAs("objectRotationOffset")] [HideInInspector]
         public float starObjectRotationOffset = -18;
 
-        protected readonly List<Segment> UniversalSegments = new();
-
-        private bool _concealed;
-
-        private bool _haveShown;
-
-        private JudgeManager.JudgeAction _holdJudgeAction;
-
-        private bool _isFast;
-
-
+        public SlideBasedNote slide;
+        
         private Animator _judgeDisplayAnimator;
-        private JudgeState _judgeState;
-        private JudgeManager.JudgeAction _leaveJudgeAction;
-
-        private SpriteRenderer[] _slideArrowSpriteRenderers;
-
-        private bool _slidedHalf;
-
-        private SlideTransform _slideTransform = new();
-        private bool _starMovingStarted;
-
-        private bool _waitingStarted;
-
-        protected bool IsClockwise;
-
-        protected GameObject SlideContentRoot;
-
-        protected bool Slided;
-        protected int[] SlideJudgeDisplaySpriteIndexes;
-
-        protected int SlideJudgeTiming;
-
+        
         [HideInInspector] public VectorGraphicsUtility VectorGraphicsUtility;
-
-        private void Start()
+        
+        public void OnStart()
         {
             transform.position = Vector3.zero;
             InitializeSlideDirection();
@@ -111,11 +71,11 @@ namespace Game.Notes
 
             foreach (var star in stars)
             {
-                if (isEach)
+                if (slide.isEach)
                     star.spriteRenderer.sprite = NoteGenerator.Instance.eachStarSprite;
                 star.spriteRenderer.color = new Color(1, 1, 1, 0);
                 star.transform.localScale = Vector3.zero;
-                star.spriteRenderer.sortingOrder -= order;
+                star.spriteRenderer.sortingOrder -= slide.order;
             }
 
             InitializeSlideSegments();
@@ -124,19 +84,9 @@ namespace Game.Notes
 
             judgeDisplaySpriteRenderer.enabled = false;
 
-            judgeDisplaySpriteRenderer.sortingOrder -= order;
+            judgeDisplaySpriteRenderer.sortingOrder -= slide.order;
 
-            var tapJudgeSettings = ChartPlayer.Instance.tapJudgeSettings;
-            var slideJudgeSettings = ChartPlayer.Instance.slideJudgeSettings;
 
-            JudgeManager.Instance.RegisterHold(timing - tapJudgeSettings.fastGoodTiming - 100,
-                timing + slideDuration + waitDuration + 100 + slideJudgeSettings.lateGoodTiming, OnHoldSlidePath,
-                out _holdJudgeAction);
-            JudgeManager.Instance.RegisterLeave(timing - tapJudgeSettings.fastGoodTiming - 100,
-                timing + slideDuration + waitDuration + 100 + slideJudgeSettings.lateGoodTiming, OnLeaveSlidePath,
-                out _leaveJudgeAction);
-
-            Scoreboard.SlideCount.TotalCount++;
 
             SlideContentRoot = new GameObject("SlideContent");
             SlideContentRoot.transform.SetParent(transform);
@@ -674,14 +624,7 @@ namespace Game.Notes
             return (clockwise, counterClockwise);
         }
 
-        private class SlideTransform
-        {
-            public float ArrowAlpha;
 
-            public bool Shown;
-            public float StarAlpha;
-            public float StarPosition;
-        }
     }
 
     [Serializable]
