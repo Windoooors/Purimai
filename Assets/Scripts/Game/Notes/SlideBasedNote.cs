@@ -5,6 +5,7 @@ using System.Linq;
 using Game.ChartManagement;
 using UI.Result;
 using Unity.Mathematics;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -77,9 +78,13 @@ namespace Game.Notes
         protected int SlideJudgeTiming;
 
         [HideInInspector] public VectorGraphicsUtility VectorGraphicsUtility;
+        
+        private MaterialPropertyBlock _materialPropertyBlock;
 
         private void Start()
         {
+            _materialPropertyBlock = new MaterialPropertyBlock();
+
             transform.position = Vector3.zero;
             InitializeSlideDirection();
 
@@ -164,11 +169,14 @@ namespace Game.Notes
             }
 
             _haveShown = true;
+            
+            _materialPropertyBlock.SetFloat("_Transition", _slideTransform.StarAlpha);
 
             foreach (var star in stars)
             {
                 star.Move(_slideTransform.StarPosition);
-                star.spriteRenderer.color = new Color(1, 1, 1, _slideTransform.StarAlpha);
+                
+                star.spriteRenderer.SetPropertyBlock(_materialPropertyBlock, 0);
                 star.transform.localScale = Vector3.one + Vector3.one * _slideTransform.StarAlpha / 2;
             }
 
