@@ -7,6 +7,7 @@ using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using UI;
 using UnityEngine;
+using Logger = Logging.Logger;
 
 namespace Game.Theming
 {
@@ -98,7 +99,6 @@ namespace Game.Theming
                 var image = Image.Load<Rgba32>(path);
 
                 if (image.Height > sprite.texture.height || image.Width > sprite.texture.width)
-                {
                     try
                     {
                         var imageHeight = image.Height;
@@ -111,13 +111,11 @@ namespace Game.Theming
                     }
                     catch (Exception ex)
                     {
-                        Logging.Logger.LogError("Error adapting texture: " + ex.Message + "\nStack Trace: " +
-                                                ex.StackTrace);
+                        Logger.LogError("Error adapting texture: " + ex.Message + "\nStack Trace: " +
+                                        ex.StackTrace);
                     }
-                }
 
                 if (image.Height < sprite.texture.height || image.Width < sprite.texture.width)
-                {
                     try
                     {
                         var imageHeight = image.Height;
@@ -137,10 +135,9 @@ namespace Game.Theming
                     }
                     catch (Exception ex)
                     {
-                        Logging.Logger.LogError("Error adapting texture: " + ex.Message + "\nStack Trace: " +
-                                                ex.StackTrace);
+                        Logger.LogError("Error adapting texture: " + ex.Message + "\nStack Trace: " +
+                                        ex.StackTrace);
                     }
-                }
 
                 var decoded = new DecodedImage(image);
 

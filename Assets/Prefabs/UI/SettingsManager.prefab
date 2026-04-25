@@ -50,6 +50,8 @@ MonoBehaviour:
     type: 3}
   toggleBasedValueControllerTreeAsset: {fileID: 9197481963319205126, guid: b26a99a873d984193ac68abc399255af,
     type: 3}
+  buttonBasedValueControllerTreeAsset: {fileID: 9197481963319205126, guid: 2b36208e0dcc942cebb74d818d48270c,
+    type: 3}
   itemTreeAsset: {fileID: 9197481963319205126, guid: 2bd499a79806944ce85c51a9766b8b58,
     type: 3}
   itemHeight: 85

@@ -14,7 +14,7 @@ namespace Game
 {
     public class NoteGenerator : MonoBehaviour
     {
-        private const int GlobalCueSoundOffset = -16;
+        private const int GlobalCueSoundOffset = 0;
         private static NoteGenerator _instance;
 
         public Tap[] tapPrefabs;

@@ -259,7 +259,7 @@ namespace Game
             IEnumerator ResumeRoutine()
             {
                 float scheduledDelay;
-                float delay = 0.5f;
+                var delay = 0.5f;
 
                 if (_timeInSeconds > 0)
                     scheduledDelay = delay;
@@ -270,7 +270,7 @@ namespace Game
                 _delayedAudioPlaybackRoutine = StartCoroutine(AudioPlaybackRoutine(scheduledDelay));
 
                 yield return new WaitForSeconds(delay);
-                
+
                 if (SettingsPool.GetValue("auto_play") != 1)
                     SimulatedSensor.Enabled = true;
 

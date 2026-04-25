@@ -263,6 +263,22 @@ MonoBehaviour:
     m_Key: settings.advanced
     m_Metadata:
       m_Items: []
+  - m_Id: 51053418549075968
+    m_Key: calibration.hint_tapped
+    m_Metadata:
+      m_Items: []
+  - m_Id: 51053948201590784
+    m_Key: calibration.hint
+    m_Metadata:
+      m_Items: []
+  - m_Id: 51085385168576512
+    m_Key: settings.open
+    m_Metadata:
+      m_Items: []
+  - m_Id: 51085827298549760
+    m_Key: settings.audio_delay_calibration
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

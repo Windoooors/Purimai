@@ -1,11 +1,12 @@
-<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/Resources/UI/USS/Shared.uss?fileID=7433441132597879392&amp;guid=5933587f574ee4eefabbe2902975d699&amp;type=3#Shared" />
+<ui:UXML xmlns:ui="UnityEngine.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd"
+         editor-extension-mode="False">
+    <Style src="project://database/Assets/Resources/UI/USS/Shared.uss?fileID=7433441132597879392&amp;guid=5933587f574ee4eefabbe2902975d699&amp;type=3#Shared"/>
     <ui:VisualElement name="background" class="background">
-        <ui:Label text="Purimai" name="title-label" class="title-label" />
-        <ui:Label text="Touch the screen to continue..." name="hint-label" class="hint-label" />
+        <ui:Label text="Purimai" name="title-label" class="title-label"/>
+        <ui:Label text="Touch the screen to continue..." name="hint-label" class="hint-label"/>
     </ui:VisualElement>
     <ui:VisualElement name="safe-area" class="safe-area" style="flex-grow: 1;">
-        <ui:Label text="Version 0.2.7 ()" name="version-label" class="version-label" />
+        <ui:Label text="Version 0.2.7 ()" name="version-label" class="version-label"/>
     </ui:VisualElement>
-    <ui:VisualElement name="cover" style="flex-grow: 1; position: absolute; top: 0; left: 0; bottom: 0; right: 0;" />
+    <ui:VisualElement name="cover" style="flex-grow: 1; position: absolute; top: 0; left: 0; bottom: 0; right: 0;"/>
 </ui:UXML>

@@ -1,47 +1,70 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
-    <Style src="project://database/Assets/Resources/UI/USS/Shared.uss?fileID=7433441132597879392&amp;guid=5933587f574ee4eefabbe2902975d699&amp;type=3#Shared" />
-    <Style src="project://database/Assets/Resources/UI/USS/LevelSelection/LevelSelection.uss?fileID=7433441132597879392&amp;guid=cc86a0d6cda1641bca060022ac68c96b&amp;type=3#LevelSelection" />
-    <ui:VisualElement name="level-selection" class="level-selection" style="flex-grow: 1; top: 0; left: 0; bottom: 0; right: 0; position: absolute; background-color: rgb(246, 246, 246);">
-        <ui:VisualElement name="song-cover" class="song-cover-parent" style="height: auto; width: 60%; bottom: 0; top: 0;">
-            <ui:VisualElement name="song-cover-image" style="flex-grow: 1; background-image: none; opacity: 1; position: absolute; top: 0; left: 0; bottom: 0; right: 0; background-position-y: center; background-size: 130% 130%; background-position-x: left 60%;" />
-            <ui:VisualElement name="song-cover-right-gradient-mask" class="song-cover-right-gradient" style="flex-grow: 1; top: 0; bottom: 0; left: auto; right: 0; position: absolute; width: 230px;" />
-            <ui:VisualElement name="song-cover-left-gradient-mask" class="song-cover-left-gradient" style="flex-grow: 1; width: 115px; position: absolute; top: 0; left: 0; bottom: 0; right: auto;" />
+    <Style src="project://database/Assets/Resources/UI/USS/Shared.uss?fileID=7433441132597879392&amp;guid=5933587f574ee4eefabbe2902975d699&amp;type=3#Shared"/>
+    <Style src="project://database/Assets/Resources/UI/USS/LevelSelection/LevelSelection.uss?fileID=7433441132597879392&amp;guid=cc86a0d6cda1641bca060022ac68c96b&amp;type=3#LevelSelection"/>
+    <ui:VisualElement name="level-selection" class="level-selection"
+                      style="flex-grow: 1; top: 0; left: 0; bottom: 0; right: 0; position: absolute; background-color: rgb(246, 246, 246);">
+        <ui:VisualElement name="song-cover" class="song-cover-parent"
+                          style="height: auto; width: 60%; bottom: 0; top: 0;">
+            <ui:VisualElement name="song-cover-image"
+                              style="flex-grow: 1; background-image: none; opacity: 1; position: absolute; top: 0; left: 0; bottom: 0; right: 0; background-position-y: center; background-size: 130% 130%; background-position-x: left 60%;"/>
+            <ui:VisualElement name="song-cover-right-gradient-mask" class="song-cover-right-gradient"
+                              style="flex-grow: 1; top: 0; bottom: 0; left: auto; right: 0; position: absolute; width: 230px;"/>
+            <ui:VisualElement name="song-cover-left-gradient-mask" class="song-cover-left-gradient"
+                              style="flex-grow: 1; width: 115px; position: absolute; top: 0; left: 0; bottom: 0; right: auto;"/>
         </ui:VisualElement>
-        <ui:VisualElement name="confirm-entry-background" class="confirm-entry-background" />
-        <ui:VisualElement name="safe-area-ignore-bottom" picking-mode="Ignore" class="safe-area-ignore-bottom" style="flex-grow: 1;">
+        <ui:VisualElement name="confirm-entry-background" class="confirm-entry-background"/>
+        <ui:VisualElement name="safe-area-ignore-bottom" picking-mode="Ignore" class="safe-area-ignore-bottom"
+                          style="flex-grow: 1;">
             <ui:VisualElement name="list-parent" class="list-parent">
-                <ui:ListView name="list" selection-type="None" class="list" style="width: 600px; top: -500px; bottom: -500px; right: auto; position: absolute; left: 0;" />
+                <ui:ListView name="list" selection-type="None" class="list"
+                             style="width: 600px; top: -500px; bottom: -500px; right: auto; position: absolute; left: 0;"/>
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement name="safe-area" picking-mode="Ignore" class="safe-area" style="flex-grow: 1; top: 0; bottom: 0; right: 0; left: 0;">
-            <UI.ScoreContentPanel enabled="true" usage-hints="None" tabindex="0" focusable="false" language-direction="Inherit" name="score-content-panel" class="score-content-panel" />
+        <ui:VisualElement name="safe-area" picking-mode="Ignore" class="safe-area"
+                          style="flex-grow: 1; top: 0; bottom: 0; right: 0; left: 0;">
+            <UI.ScoreContentPanel enabled="true" usage-hints="None" tabindex="0" focusable="false"
+                                  language-direction="Inherit" name="score-content-panel" class="score-content-panel"/>
             <ui:Button name="play-button" class="play-button button">
-                <ui:VisualElement style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Textures/UI/Shared/PlayIcon.png?fileID=2800000&amp;guid=2a3b021954248420ca431c76ea955b9e&amp;type=3#PlayIcon&quot;); position: absolute; width: 33px; height: 34px; top: 31px; left: 91px;" />
+                <ui:VisualElement
+                        style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Textures/UI/Shared/PlayIcon.png?fileID=2800000&amp;guid=2a3b021954248420ca431c76ea955b9e&amp;type=3#PlayIcon&quot;); position: absolute; width: 33px; height: 34px; top: 31px; left: 91px;"/>
             </ui:Button>
             <ui:VisualElement name="control-panel" class="control-panel">
-                <ui:Button name="sort-button" class="button sort-button" style="position: absolute; height: 69px; width: 69px; top: 7px; left: 151px;">
-                    <ui:VisualElement name="icon" class="icon" style="flex-grow: 1; position: absolute; width: 32px; height: 32px; top: 50%; left: 50%; margin-top: -20px; margin-right: 0; margin-left: -16px;" />
+                <ui:Button name="sort-button" class="button sort-button"
+                           style="position: absolute; height: 69px; width: 69px; top: 7px; left: 151px;">
+                    <ui:VisualElement name="icon" class="icon"
+                                      style="flex-grow: 1; position: absolute; width: 32px; height: 32px; top: 50%; left: 50%; margin-top: -20px; margin-right: 0; margin-left: -16px;"/>
                 </ui:Button>
-                <ui:Button name="refresh-button" class="button refresh-button" style="position: absolute; height: 69px; width: 69px; top: 7px; left: 220px;">
-                    <ui:VisualElement name="icon" class="icon" style="flex-grow: 1; position: absolute; width: 32px; height: 32px; top: 50%; left: 50%; margin-top: -20px; margin-right: 0; margin-left: -16px; background-image: url(&quot;project://database/Assets/Textures/UI/LevelSelection/Refresh.png?fileID=2800000&amp;guid=f27a304cf41a54d97959fd9e2143a221&amp;type=3#Refresh&quot;);" />
+                <ui:Button name="refresh-button" class="button refresh-button"
+                           style="position: absolute; height: 69px; width: 69px; top: 7px; left: 220px;">
+                    <ui:VisualElement name="icon" class="icon"
+                                      style="flex-grow: 1; position: absolute; width: 32px; height: 32px; top: 50%; left: 50%; margin-top: -20px; margin-right: 0; margin-left: -16px; background-image: url(&quot;project://database/Assets/Textures/UI/LevelSelection/Refresh.png?fileID=2800000&amp;guid=f27a304cf41a54d97959fd9e2143a221&amp;type=3#Refresh&quot;);"/>
                 </ui:Button>
                 <ui:VisualElement name="category-panel" class="category-panel" style="bottom: auto;">
-                    <ui:ListView name="category-list" selection-type="None" style="left: 0; top: -146px; width: auto; height: auto; position: absolute; right: 0; bottom: 0; margin-right: 10px; margin-bottom: 0; margin-left: 10px;" />
+                    <ui:ListView name="category-list" selection-type="None"
+                                 style="left: 0; top: -146px; width: auto; height: auto; position: absolute; right: 0; bottom: 0; margin-right: 10px; margin-bottom: 0; margin-left: 10px;"/>
                 </ui:VisualElement>
-                <ui:Button name="settings-button" class="button settings-button" style="transition-property: scale, opacity, left; transition-duration: 0.2s, 0.2s, 0.5s; transition-timing-function: ease, ease, ease-out-cubic; transition-delay: 0s, 0s, 0s;">
-                    <ui:VisualElement name="icon" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Textures/UI/LevelSelection/Settings.png?fileID=2800000&amp;guid=3579417acd9c342baa1ebed319f07759&amp;type=3#Settings&quot;); position: absolute; width: 32px; height: 32px; top: 50%; left: 50%; margin-top: -20px; margin-right: 0; margin-left: -16px;" />
+                <ui:Button name="settings-button" class="button settings-button"
+                           style="transition-property: scale, opacity, left; transition-duration: 0.2s, 0.2s, 0.5s; transition-timing-function: ease, ease, ease-out-cubic; transition-delay: 0s, 0s, 0s;">
+                    <ui:VisualElement name="icon"
+                                      style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Textures/UI/LevelSelection/Settings.png?fileID=2800000&amp;guid=3579417acd9c342baa1ebed319f07759&amp;type=3#Settings&quot;); position: absolute; width: 32px; height: 32px; top: 50%; left: 50%; margin-top: -20px; margin-right: 0; margin-left: -16px;"/>
                 </ui:Button>
-                <ui:Button name="mods-button" class="button mods-button" style="transition-property: scale, opacity, left; transition-duration: 0.2s, 0.2s, 0.5s; transition-timing-function: ease, ease, ease-out-cubic; transition-delay: 0s, 0s, 0s;">
-                    <ui:VisualElement name="icon" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Textures/UI/LevelSelection/Mods.png?fileID=2800000&amp;guid=ad78a8295c9764b549c9fb9f7fb36df9&amp;type=3#Mods&quot;); position: absolute; width: 32px; height: 32px; top: 50%; left: 50%; margin-top: -20px; margin-right: 0; margin-left: -16px;" />
+                <ui:Button name="mods-button" class="button mods-button"
+                           style="transition-property: scale, opacity, left; transition-duration: 0.2s, 0.2s, 0.5s; transition-timing-function: ease, ease, ease-out-cubic; transition-delay: 0s, 0s, 0s;">
+                    <ui:VisualElement name="icon"
+                                      style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Textures/UI/LevelSelection/Mods.png?fileID=2800000&amp;guid=ad78a8295c9764b549c9fb9f7fb36df9&amp;type=3#Mods&quot;); position: absolute; width: 32px; height: 32px; top: 50%; left: 50%; margin-top: -20px; margin-right: 0; margin-left: -16px;"/>
                 </ui:Button>
-                <ui:Button name="themes-button" class="button themes-button" style="transition-property: scale, opacity, left; transition-duration: 0.2s, 0.2s, 0.5s; transition-timing-function: ease, ease, ease-out-cubic; transition-delay: 0s, 0s, 0s;">
-                    <ui:VisualElement name="icon" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Textures/UI/Theming/theme.png?fileID=2800000&amp;guid=5f120450d7877476bb24a654f63eedc8&amp;type=3#theme&quot;); position: absolute; width: 32px; height: 32px; top: 50%; left: 50%; margin-top: -20px; margin-right: 0; margin-left: -16px;" />
+                <ui:Button name="themes-button" class="button themes-button"
+                           style="transition-property: scale, opacity, left; transition-duration: 0.2s, 0.2s, 0.5s; transition-timing-function: ease, ease, ease-out-cubic; transition-delay: 0s, 0s, 0s;">
+                    <ui:VisualElement name="icon"
+                                      style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Textures/UI/Theming/theme.png?fileID=2800000&amp;guid=5f120450d7877476bb24a654f63eedc8&amp;type=3#theme&quot;); position: absolute; width: 32px; height: 32px; top: 50%; left: 50%; margin-top: -20px; margin-right: 0; margin-left: -16px;"/>
                 </ui:Button>
-                <ui:Button name="title-button" class="button refresh-button" style="position: absolute; height: 69px; width: 69px; top: 7px; left: 81px;">
-                    <ui:VisualElement name="icon" class="icon" style="flex-grow: 1; position: absolute; width: 32px; height: 32px; top: 50%; left: 50%; margin-top: -20px; margin-right: 0; margin-left: -16px; background-image: url(&quot;project://database/Assets/Textures/UI/LevelSelection/Return.png?fileID=2800000&amp;guid=a68a7dfdc0218413e8d6b14262c41b27&amp;type=3#Return&quot;);" />
+                <ui:Button name="title-button" class="button refresh-button"
+                           style="position: absolute; height: 69px; width: 69px; top: 7px; left: 81px;">
+                    <ui:VisualElement name="icon" class="icon"
+                                      style="flex-grow: 1; position: absolute; width: 32px; height: 32px; top: 50%; left: 50%; margin-top: -20px; margin-right: 0; margin-left: -16px; background-image: url(&quot;project://database/Assets/Textures/UI/LevelSelection/Return.png?fileID=2800000&amp;guid=a68a7dfdc0218413e8d6b14262c41b27&amp;type=3#Return&quot;);"/>
                 </ui:Button>
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement name="white-out-mask" class="white-out-mask" />
+        <ui:VisualElement name="white-out-mask" class="white-out-mask"/>
     </ui:VisualElement>
 </ui:UXML>

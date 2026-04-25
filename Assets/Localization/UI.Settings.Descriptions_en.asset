@@ -116,6 +116,10 @@ MonoBehaviour:
     m_Localized: Lowers the answering sound delay
     m_Metadata:
       m_Items: []
+  - m_Id: 11126594818007040
+    m_Localized: A setup tool to calibrate audio offset
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

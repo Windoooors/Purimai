@@ -5,7 +5,6 @@ using System.Linq;
 using Game.ChartManagement;
 using UI.Result;
 using Unity.Mathematics;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -59,11 +58,17 @@ namespace Game.Notes
         private JudgeState _judgeState;
         private JudgeManager.JudgeAction _leaveJudgeAction;
 
+        private MaterialPropertyBlock _materialPropertyBlock;
+
+        private int _showJudgeDisplayTiming = -1;
+
         private SpriteRenderer[] _slideArrowSpriteRenderers;
 
         private bool _slidedHalf;
 
         private SlideTransform _slideTransform = new();
+
+        private int _starInLastSegmentDuration;
         private bool _starMovingStarted;
 
         private bool _waitingStarted;
@@ -78,8 +83,6 @@ namespace Game.Notes
         protected int SlideJudgeTiming;
 
         [HideInInspector] public VectorGraphicsUtility VectorGraphicsUtility;
-        
-        private MaterialPropertyBlock _materialPropertyBlock;
 
         private void Start()
         {
@@ -100,7 +103,7 @@ namespace Game.Notes
 
             if (slideType is not NoteDataObject.SlideDataObject.SlideType.Wifi)
             {
-                var pair = VectorGraphicsUtility.GetPositionRotationPair(1f - 0.6f / slideArrowCount);
+                var pair = VectorGraphicsUtility.GetPositionRotationPair(1f - 0.6f / slideArrowCount, false);
                 judgeDisplaySpriteRenderer.transform.position = pair.position;
                 judgeDisplaySpriteRenderer.transform.eulerAngles =
                     pair.rotation.eulerAngles + new Vector3(0, 0, 18);
@@ -163,21 +166,18 @@ namespace Game.Notes
 
             if (!_slideTransform.Shown)
             {
-                if (_haveShown)
-                {
-                    enabled = false;
-                }
+                if (_haveShown) enabled = false;
                 return;
             }
 
             _haveShown = true;
-            
+
             _materialPropertyBlock.SetFloat("_Transition", _slideTransform.StarAlpha);
 
             foreach (var star in stars)
             {
                 star.Move(_slideTransform.StarPosition);
-                
+
                 star.spriteRenderer.SetPropertyBlock(_materialPropertyBlock, 0);
                 star.transform.localScale = Vector3.one + Vector3.one * _slideTransform.StarAlpha / 2;
             }
@@ -188,7 +188,8 @@ namespace Game.Notes
                     _slideTransform.ArrowAlpha == 0)
                     arrowRenderer.color = new Color(1, 1, 1, _slideTransform.ArrowAlpha);
 
-            if (ChartPlayer.Instance.TimeInMilliseconds >= _showJudgeDisplayTiming && _showJudgeDisplayTiming != -1 && Slided &&
+            if (ChartPlayer.Instance.TimeInMilliseconds >= _showJudgeDisplayTiming && _showJudgeDisplayTiming != -1 &&
+                Slided &&
                 !_concealed)
             {
                 Scoreboard.SlideCount.Count(_judgeState);
@@ -252,7 +253,7 @@ namespace Game.Notes
                 result.Shown = false;
                 return;
             }
-            
+
             if (currentTime >= _showJudgeDisplayTiming && _showJudgeDisplayTiming != -1 && Slided)
             {
                 result.Shown = true;
@@ -277,20 +278,20 @@ namespace Game.Notes
                     result.ArrowAlpha = 1f;
 
                 result.StarAlpha = 0;
-                result.StarPosition = 0;
+                result.StarPosition = 0.001f;
             }
             else if (currentTime >= timing && currentTime < timing + waitDuration)
             {
                 result.Shown = true;
                 result.StarAlpha = suddenlyAppears ? 0 : (currentTime - timing) / waitDuration;
                 result.ArrowAlpha = 1;
-                result.StarPosition = 0;
+                result.StarPosition = 0.001f;
             }
             else if (currentTime >= timing + waitDuration && currentTime < timing + waitDuration + slideDuration)
             {
                 result.Shown = true;
                 result.StarAlpha = 1;
-                result.StarPosition = (currentTime - timing - waitDuration) / slideDuration;
+                result.StarPosition = (currentTime - timing - waitDuration) / slideDuration * 0.999f + 0.001f;
                 result.ArrowAlpha = 1;
             }
             else
@@ -312,7 +313,7 @@ namespace Game.Notes
                 {
                     result.Shown = false;
                     result.StarAlpha = 0;
-                    result.StarPosition = 0;
+                    result.StarPosition = 0.001f;
                     result.ArrowAlpha = 0;
                 }
             }
@@ -349,7 +350,7 @@ namespace Game.Notes
                     progress += (currentProgress - 2) / 30
                                 - (currentProgress - 1) * 0.48f / division;
 
-                var pair = VectorGraphicsUtility.GetPositionRotationPair((float)progress);
+                var pair = VectorGraphicsUtility.GetPositionRotationPair((float)progress, false);
 
                 var arrowObject = Instantiate(NoteGenerator.Instance.slideArrowPrefab, transform);
 
@@ -368,8 +369,6 @@ namespace Game.Notes
 
             _slideArrowSpriteRenderers = slideArrowList.Select(x => x.GetComponent<SpriteRenderer>()).ToArray();
         }
-
-        private int _showJudgeDisplayTiming = -1;
 
         protected void Judge()
         {
@@ -569,14 +568,12 @@ namespace Game.Notes
 
             var lastSegmentArrowCount = UniversalSegments[^1].slideSpriteRenderersWithinSensorArea.Length;
             SlideJudgeTiming = (int)((float)(_slideArrowSpriteRenderers.Length - lastSegmentArrowCount) /
-                                         _slideArrowSpriteRenderers.Length * slideDuration
+                                     _slideArrowSpriteRenderers.Length * slideDuration
                                      + timing + waitDuration);
 
             _starInLastSegmentDuration =
                 (int)((float)lastSegmentArrowCount / _slideArrowSpriteRenderers.Length * slideDuration);
         }
-
-        private int _starInLastSegmentDuration;
 
         private bool ArrowOverlapsOnSensor(int index, Collider2D sensorCollider)
         {

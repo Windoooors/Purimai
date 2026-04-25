@@ -368,7 +368,7 @@ namespace Game.Notes.TapBasedNotes
 
             if (touchedLane != lane)
                 return;
-            
+
             if (!headJudged)
                 return;
 

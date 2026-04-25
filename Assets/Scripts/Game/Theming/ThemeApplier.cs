@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json;
+using UnityEditor;
+using UnityEngine;
 #if UNITY_EDITOR
 using System;
 using EditorScript;
 #endif
-using Newtonsoft.Json;
-using UnityEditor;
-using UnityEngine;
 
 namespace Game.Theming
 {
@@ -112,7 +112,7 @@ namespace Game.Theming
                 File.Copy(AssetDatabase.GetAssetPath(skinData.sprite), defaultSkinPath + "/" + skinData.key + ".png",
                     true);
         }
-        
+
         [InspectorButton]
         private void GenerateDefaultMetadata()
         {
@@ -124,13 +124,13 @@ namespace Game.Theming
             allList.AddRange(judgeDisplaySkinDataList);
             allList.AddRange(miscSkinDataList);
 
-            var dataDtoEnum = allList.Select(x => new SkinPieceDataDto()
+            var dataDtoEnum = allList.Select(x => new SkinPieceDataDto
             {
                 Key = x.key,
                 Path = ""
             });
 
-            var content = JsonConvert.SerializeObject(new ThemeDataDto()
+            var content = JsonConvert.SerializeObject(new ThemeDataDto
             {
                 Author = "Unknown",
                 Data = dataDtoEnum.ToArray(),

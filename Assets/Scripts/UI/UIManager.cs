@@ -33,6 +33,7 @@ namespace UI
         public ModsManager modsPrefab;
         public ThemeUiManager themeUiPrefab;
         public TitleScreenManager titleScreenPrefab;
+        public CalibrationManager calibrationPrefab;
 
         public ResultManager resultManager;
         public LevelSelectionManager levelSelectionManager;
@@ -42,6 +43,7 @@ namespace UI
         public ModsManager modsManager;
         public ThemeUiManager themeUiManager;
         public TitleScreenManager titleScreenManager;
+        public CalibrationManager calibrationManager;
 
         public Vector2Int portraitReferenceResolution = new(600, 600);
         public Vector2Int landscapeReferenceResolution = new(1024, 600);
@@ -57,20 +59,14 @@ namespace UI
             uiDocument.rootVisualElement.RegisterCallback<GeometryChangedEvent>(_ => { ApplySafeArea(); });
 
             SettingsManager.OnSettingsChanged += ApplyResolution;
-            
+
             MaidataManager.Load();
 
             ShowTitle();
 
             ScreenOrientationManager.Instance.ScreenChanged += ChangeLayoutConsideringOrientation;
-            
-            PlayerPrefs.SetFloat("CalibrationDeltaTimeThreshold", 0.020f);
-        }
 
-        public void ShowTitle()
-        {
-            titleScreenManager = Instantiate(titleScreenPrefab, transform);
-            ApplySafeArea();
+            PlayerPrefs.SetFloat("CalibrationDeltaTimeThreshold", 0.020f);
         }
 
         private void Start()
@@ -91,6 +87,18 @@ namespace UI
             GlobalAudioMixer.Free();
 
             SettingsPool.Save();
+        }
+
+        public void ShowCalibrationPanel()
+        {
+            calibrationManager = Instantiate(calibrationPrefab, transform);
+            ApplySafeArea();
+        }
+
+        public void ShowTitle()
+        {
+            titleScreenManager = Instantiate(titleScreenPrefab, transform);
+            ApplySafeArea();
         }
 
         public void ShowResult()

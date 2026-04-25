@@ -1,3 +1,4 @@
+using System;
 using UnityEngine.Localization;
 using UnityEngine.UIElements;
 
@@ -6,6 +7,8 @@ namespace UI.Settings
     public class SwitchBasedValueManipulator : Manipulator
     {
         private const int HoldingTimeThreshold = 500;
+
+        private static Action _updateAction;
         private readonly string _identifier;
 
         private readonly string _localizationTableName;
@@ -32,6 +35,28 @@ namespace UI.Settings
             _identifier = item.Identifier;
             _settingsItem = item;
             _localizationTableName = localizationTableName;
+
+            _updateAction += UpdateCurrentValue;
+        }
+
+        public static void UpdateValue()
+        {
+            _updateAction?.Invoke();
+        }
+
+        private void UpdateCurrentValue()
+        {
+            _currentValue = SettingsPool.GetValue(_identifier);
+
+            if (_settingsItem.ValueSet is SuccessiveIntegerValueSet successiveIntegerValueSet)
+            {
+                if (_currentValue > successiveIntegerValueSet.ValueUpperLimit)
+                    _currentValue = successiveIntegerValueSet.ValueUpperLimit;
+                else if (_currentValue < successiveIntegerValueSet.ValueLowerLimit)
+                    _currentValue = successiveIntegerValueSet.ValueLowerLimit;
+            }
+
+            UpdateValueDisplay();
         }
 
         private void Add()
@@ -123,7 +148,6 @@ namespace UI.Settings
                     _valueLabel.text = separatedValueSet.AvailableValues[_currentValue];
                 }
             }
-
             else if (_settingsItem.ValueSet is SuccessiveIntegerValueSet successiveValueSet)
             {
                 _valueLabel.text = _currentValue.ToString();
@@ -191,6 +215,8 @@ namespace UI.Settings
             _subButton.Clear();
 
             _localizedString?.Clear();
+
+            _updateAction -= UpdateCurrentValue;
         }
 
         protected override void UnregisterCallbacksFromTarget()

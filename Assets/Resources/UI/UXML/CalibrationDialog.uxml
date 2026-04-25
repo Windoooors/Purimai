@@ -1,0 +1,28 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd"
+         editor-extension-mode="False">
+    <Style src="project://database/Assets/Resources/UI/USS/Shared.uss?fileID=7433441132597879392&amp;guid=5933587f574ee4eefabbe2902975d699&amp;type=3#Shared"/>
+    <Style src="project://database/Assets/Resources/UI/USS/Calibration.uss?fileID=7433441132597879392&amp;guid=7b3e905d517f24d55bad7194e2ce9ecf&amp;type=3#Calibration"/>
+    <ui:VisualElement name="calibration-panel" class="panel">
+        <ui:VisualElement name="background" class="background" style="background-color: rgb(217, 217, 217);"/>
+        <ui:Label text="Label" name="hint-tapped-label" class="hint-tapped">
+            <Bindings>
+                <UnityEngine.Localization.LocalizedString property="text" table="GUID:c0eaca1764ba046fe82091c205c793a3"
+                                                          entry="Id(51053418549075968)"/>
+            </Bindings>
+        </ui:Label>
+        <ui:Label text="Label" name="hint-label" class="hint"
+                  style="-unity-font-definition: resource(&apos;Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF&apos;);">
+            <Bindings>
+                <UnityEngine.Localization.LocalizedString property="text" table="GUID:c0eaca1764ba046fe82091c205c793a3"
+                                                          entry="Id(51053948201590784)"/>
+            </Bindings>
+        </ui:Label>
+        <ui:VisualElement name="cover" style="flex-grow: 1; position: absolute; top: 0; left: 0; bottom: 0; right: 0;"/>
+        <ui:VisualElement name="safe-area" picking-mode="Ignore" class="safe-area" style="flex-grow: 1;">
+            <ui:Button text="&#10;" name="return-button" enabled="true" class="button">
+                <ui:VisualElement name="icon" class="icon"
+                                  style="flex-grow: 1; position: absolute; width: 32px; height: 32px; top: 50%; left: 50%; margin-top: -20px; margin-right: 0; margin-left: -16px; background-image: url(&quot;project://database/Assets/Textures/UI/LevelSelection/Return.png?fileID=2800000&amp;guid=a68a7dfdc0218413e8d6b14262c41b27&amp;type=3#Return&quot;);"/>
+            </ui:Button>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

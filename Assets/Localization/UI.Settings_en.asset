@@ -272,6 +272,22 @@ MonoBehaviour:
     m_Localized: Advanced
     m_Metadata:
       m_Items: []
+  - m_Id: 51053418549075968
+    m_Localized: Tap on the screen each time you hear the 3rd beat.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 51053948201590784
+    m_Localized: Tap on the screen to start calibration.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 51085385168576512
+    m_Localized: Open
+    m_Metadata:
+      m_Items: []
+  - m_Id: 51085827298549760
+    m_Localized: Audio offset calibrator
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

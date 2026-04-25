@@ -26,7 +26,7 @@ namespace UI
         {
             if (Screen.orientation != _lastScreenOrientation)
             {
-                ScreenChanged();
+                ScreenChanged?.Invoke();
                 if (_lastScreenOrientation is ScreenOrientation.LandscapeLeft or ScreenOrientation.LandscapeRight)
                     _lastLandscapeOrientation = _lastScreenOrientation;
             }
@@ -52,16 +52,16 @@ namespace UI
             Screen.autorotateToPortraitUpsideDown = false;
             Screen.autorotateToLandscapeLeft = true;
             Screen.autorotateToLandscapeRight = true;
-            
-            #if UNITY_ANDROID
+
+#if UNITY_ANDROID
             Screen.orientation = _lastLandscapeOrientation;
 
             StartCoroutine(WaitAndEnableAutoRotation());
-            #endif
-            
-            #if UNITY_IOS
+#endif
+
+#if UNITY_IOS
             Screen.orientation = ScreenOrientation.AutoRotation;
-            #endif
+#endif
 
             Logger.LogInfo("Screen rotation set to horizontal-only.");
 

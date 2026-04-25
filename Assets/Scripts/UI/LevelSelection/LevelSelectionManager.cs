@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Game;
 using LitMotion;
 using UI.Settings;
 using UI.Settings.Managers;
@@ -60,6 +61,8 @@ namespace UI.LevelSelection
         private Button _themesButton;
         private Button _titleButton;
 
+        public BassHandler bassHandler;
+
         public VisualElement LevelSelectionTree;
 
         public static LevelSelectionManager Instance => _instance ??= FindAnyObjectByType<LevelSelectionManager>();
@@ -109,15 +112,19 @@ namespace UI.LevelSelection
                 _songPlaying = true;
 
                 ChangeVolume();
-                
+
                 maidata.SongBassHandler.PlayOneShot();
+
+                bassHandler = maidata.SongBassHandler;
             }
 
             if (_songPlaying && maidata.SongBassHandler?.IsPlaying == false && songPreviewing)
             {
                 ChangeVolume();
-                
+
                 maidata.SongBassHandler.PlayOneShot();
+
+                bassHandler = maidata.SongBassHandler;
             }
         }
 
@@ -278,13 +285,13 @@ namespace UI.LevelSelection
             _refreshButton.clicked += () =>
             {
                 MaidataManager.Load(true);
-                
+
                 if (MaidataManager.MaidataList.Count == 0)
                 {
                     LoadTitle();
                     return;
                 }
-                
+
                 InitializeGroupingRuleCore();
             };
 
@@ -344,15 +351,15 @@ namespace UI.LevelSelection
                 var index = _listView.selectedIndex % _rawData.Length;
                 PlayerPrefs.SetInt("LevelListIndex", index);
             }
-            
+
             StartCoroutine(ShowTitleAnimationRoutine());
-            
+
             return;
 
             IEnumerator ShowTitleAnimationRoutine()
             {
                 yield return new WaitForSeconds(0.1f);
-                
+
                 var bassHandler = _lastPreviewedMaidata.SongBassHandler;
                 var volume = bassHandler.Volume;
 
@@ -360,24 +367,21 @@ namespace UI.LevelSelection
                 {
                     bassHandler.Stop();
                     songPreviewing = false;
-                }).Bind(x =>
-                {
-                    bassHandler.Volume = x;
-                });
-                
+                }).Bind(x => { bassHandler.Volume = x; });
+
                 LevelSelectionTree.styleSheets.Add(
                     Resources.Load<StyleSheet>("UI/USS/LevelSelection/LevelSelectionToGameInAnimated"));
 
                 yield return new WaitForSeconds(0.5f);
-                
+
                 UIManager.Instance.ShowTitle();
                 LevelSelectionTree.BringToFront();
-                
+
                 LevelSelectionTree.styleSheets.Add(
                     Resources.Load<StyleSheet>("UI/USS/LevelSelection/LevelSelectionToGameOutAnimated"));
 
                 yield return new WaitForSeconds(0.5f);
-                
+
                 Destroy(gameObject);
             }
         }
@@ -409,7 +413,8 @@ namespace UI.LevelSelection
             Logger.LogInfo($"Grouped data count: {_rawData.Length}");
 
             if (_rawData.Length > 0)
-                while (dataList.Count < VirtualCount) dataList.AddRange(_rawData);
+                while (dataList.Count < VirtualCount)
+                    dataList.AddRange(_rawData);
 
             _data = dataList.ToArray();
 

@@ -9,6 +9,7 @@ namespace UI.Settings
         public VisualTreeAsset numberBasedValueControllerTreeAsset;
         public VisualTreeAsset selectorBasedValueControllerTreeAsset;
         public VisualTreeAsset toggleBasedValueControllerTreeAsset;
+        public VisualTreeAsset buttonBasedValueControllerTreeAsset;
         public VisualTreeAsset itemTreeAsset;
 
         public float itemHeight = 65;
@@ -96,6 +97,12 @@ namespace UI.Settings
                         userData.ValueManipulator = new ToggleBasedValueManipulator(itemData, LocalizationTableName);
                         valuePanel.Q("toggle-based-value-panel").AddManipulator(userData.ValueManipulator);
                         break;
+                    case ButtonValueSet:
+                        valuePanel = buttonBasedValueControllerTreeAsset.Instantiate();
+                        elementRoot.Add(valuePanel);
+                        userData.ValueManipulator = new ButtonBasedValueManipulator(itemData, LocalizationTableName);
+                        valuePanel.Q("button-based-value-panel").AddManipulator(userData.ValueManipulator);
+                        break;
                 }
 
                 userData.ValuePanel = valuePanel;
@@ -122,6 +129,10 @@ namespace UI.Settings
                         break;
                     case BoolValueSet:
                         userData.ValuePanel.Q("toggle-based-value-panel")
+                            .RemoveManipulator(userData.ValueManipulator);
+                        break;
+                    case ButtonValueSet:
+                        userData.ValuePanel.Q("button-based-value-panel")
                             .RemoveManipulator(userData.ValueManipulator);
                         break;
                 }

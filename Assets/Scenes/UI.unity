@@ -4430,6 +4430,8 @@ MonoBehaviour:
     type: 3}
   titleScreenPrefab: {fileID: 370840503016904901, guid: 57224e88e87994494aae966ab25f9d14,
     type: 3}
+  calibrationPrefab: {fileID: 8708953766314664850, guid: 3eb584123c2534ce897def09e56ec994,
+    type: 3}
   resultManager: {fileID: 0}
   levelSelectionManager: {fileID: 0}
   settingsManager: {fileID: 0}
@@ -4438,6 +4440,7 @@ MonoBehaviour:
   modsManager: {fileID: 0}
   themeUiManager: {fileID: 0}
   titleScreenManager: {fileID: 0}
+  calibrationManager: {fileID: 0}
   portraitReferenceResolution: {x: 600, y: 600}
   landscapeReferenceResolution: {x: 1024, y: 600}
 --- !u!114 &872429107

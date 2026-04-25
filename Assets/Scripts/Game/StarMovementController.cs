@@ -1,3 +1,4 @@
+using Game.ChartManagement;
 using Game.Notes;
 using Game.Notes.SlideBasedNotes;
 using UnityEngine;
@@ -33,11 +34,13 @@ namespace Game
                 _vectorGraphicsUtility.SetStartPosition(Lanes.Instance.endPoints[slideBasedNote.fromLaneIndex]
                     .position);
             }
+
+            _vectorGraphicsUtility.FindTurningPoints();
         }
 
         public void Move(float progress)
         {
-            var nextPositionRotationPair = _vectorGraphicsUtility.GetPositionRotationPair(progress);
+            var nextPositionRotationPair = _vectorGraphicsUtility.GetPositionRotationPair(progress, true);
 
             transform.position = nextPositionRotationPair.position;
             transform.rotation = nextPositionRotationPair.rotation;

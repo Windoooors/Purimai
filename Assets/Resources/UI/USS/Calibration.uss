@@ -1,0 +1,57 @@
+:root {
+}
+
+.background {
+    flex-grow: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: rgb(217, 217, 217);
+}
+
+.hint {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    -unity-text-align: middle-center;
+    -unity-font-definition: resource('Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF');
+    font-size: 36px;
+}
+
+.hint-tapped {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    -unity-text-align: middle-center;
+    -unity-font-definition: resource('Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF');
+    font-size: 36px;
+    display: none;
+}
+
+.button {
+    position: absolute;
+    width: 69px;
+    height: 69px;
+    top: auto;
+    left: 12px;
+    bottom: 12px;
+}
+
+.panel {
+    flex-grow: 1;
+    background-color: rgb(255, 255, 255);
+    justify-content: space-around;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    opacity: 1;
+}

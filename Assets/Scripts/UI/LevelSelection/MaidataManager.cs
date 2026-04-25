@@ -161,7 +161,7 @@ namespace UI.LevelSelection
         {
             if (MaidataList.Count != 0 && !clear)
                 return;
-            
+
             MaidataList.Clear();
 
             Logger.LogInfo("Loading simai metadata.");
@@ -175,12 +175,11 @@ namespace UI.LevelSelection
 
                 foreach (var levelPath in Directory.GetDirectories(path))
                 {
+                    var actualSongOggPath = "";
                     if (!(FileExistsIgnoreCase(Path.Combine(levelPath, "maidata.txt"), out var actualMaidataPath) &&
                           (FileExistsIgnoreCase(Path.Combine(levelPath, "track.mp3"), out var actualSongMp3Path) ||
-                           FileExistsIgnoreCase(Path.Combine(levelPath, "track.ogg"), out var actualSongOggPath))))
+                           FileExistsIgnoreCase(Path.Combine(levelPath, "track.ogg"), out actualSongOggPath))))
                         continue;
-
-                    actualSongOggPath = "";
 
                     var aviExists = FileExistsIgnoreCase(Path.Combine(levelPath, "pv.avi"), out var actualPvPathAvi);
                     FileExistsIgnoreCase(Path.Combine(levelPath, "pv.mp4"), out var actualPvPathMp4);

@@ -107,6 +107,10 @@ MonoBehaviour:
     m_Key: settings.native_audio
     m_Metadata:
       m_Items: []
+  - m_Id: 11126594818007040
+    m_Key: settings.audio_delay_calibration
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

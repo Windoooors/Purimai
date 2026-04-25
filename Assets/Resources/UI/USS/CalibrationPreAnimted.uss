@@ -1,0 +1,10 @@
+:root {
+}
+
+.panel {
+    opacity: 0;
+}
+
+.button {
+    left: -103px;
+}

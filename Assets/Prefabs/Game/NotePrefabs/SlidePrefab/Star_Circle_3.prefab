@@ -195,7 +195,7 @@ MonoBehaviour:
     tapped: 0
     touched: 0
     arrowInBetweenConcealed: 0
-    canBeSkipped: 1
+    canBeSkipped: 0
     sensorsNearby: []
   - mainSensor: A3
     slideSpriteRenderers: []

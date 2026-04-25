@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace UI.Settings
@@ -31,6 +32,11 @@ namespace UI.Settings
                         DefaultValue = 0,
                         ValueUpperLimit = 1000,
                         ValueLowerLimit = -1000
+                    }),
+                    new("audio_delay_calibration", new ButtonValueSet
+                    {
+                        OnClick = UIManager.Instance.ShowCalibrationPanel,
+                        ButtonTextLocalizationEntry = "settings.open"
                     }),
                     new("input_delay", new SuccessiveIntegerValueSet
                     {
@@ -215,6 +221,12 @@ namespace UI.Settings
         public int DefaultValue;
         public int ValueLowerLimit;
         public int ValueUpperLimit;
+    }
+
+    public class ButtonValueSet : ValueSet
+    {
+        public string ButtonTextLocalizationEntry;
+        public Action OnClick;
     }
 
     public class SeparatedValueSet : ValueSet
