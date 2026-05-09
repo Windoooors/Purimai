@@ -1,5 +1,6 @@
 using Game.ChartManagement;
 using Game.Notes;
+using Game.Notes.NormalSlideBasedNotes;
 using Game.Notes.SlideBasedNotes;
 using UnityEngine;
 
@@ -35,7 +36,8 @@ namespace Game
                     .position);
             }
 
-            _vectorGraphicsUtility.FindTurningPoints();
+            if (slideBasedNote is not (CycleSlide or PqSlide or BigPqSlide or LineSlide or WifiSlide))
+                _vectorGraphicsUtility.FindTurningPoints();
         }
 
         public void Move(float progress)

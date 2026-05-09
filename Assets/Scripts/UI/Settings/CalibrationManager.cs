@@ -20,6 +20,7 @@ namespace UI.Settings
         };
 
         private readonly float[] _deltaTimeArray = { 0, 0, 0, 0 };
+        private float[] _timeArray = { 0, 0, 0, 0 };
 
         private readonly Color _originalEffectColor = new(217 / 255f, 217 / 255f, 217 / 255f);
 
@@ -70,7 +71,7 @@ namespace UI.Settings
 
             _returnButton.clicked += ClosePanel;
 
-            _cover.RegisterCallbackOnce<PointerUpEvent>(_ => StartCalibration());
+            _cover.RegisterCallbackOnce<MouseUpEvent>(_ => StartCalibration());
 
             LevelSelectionManager.Instance.songPreviewing = false;
 
@@ -116,6 +117,8 @@ namespace UI.Settings
             }
         }
 
+        private float TimeInSeconds => _bassHandler.IsPlaying ? (float)_bassHandler.GetPosition() : _timerInSeconds;
+
         private void OnDestroy()
         {
             _songFadeOutHandle.TryCancel();
@@ -151,10 +154,18 @@ namespace UI.Settings
         {
             if (!_calibrationStarted)
                 return;
-
-            _deltaTimeArray[_beatIndex] = _timerInSeconds - (_beats[_beatIndex] + _inputOffset);
-
-            _hintTappedLabel.text = (int)(_deltaTimeArray[_beatIndex++] * 1000) + "ms";
+            
+            if (_beatIndex > 0)
+            {
+                var deltaClickTime = TimeInSeconds - _timeArray[_beatIndex - 1];
+                if (deltaClickTime < 0.1f)
+                    return;
+                _timeArray[_beatIndex] = TimeInSeconds;
+            }
+            
+            _deltaTimeArray[_beatIndex] = TimeInSeconds - (_beats[_beatIndex] + _inputOffset);
+            
+            _hintTappedLabel.text = _deltaTimeArray[_beatIndex++].ToString("0.00") + "s";
 
             Effect();
 

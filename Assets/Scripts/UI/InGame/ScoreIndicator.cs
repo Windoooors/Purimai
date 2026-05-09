@@ -31,24 +31,34 @@ namespace UI.InGame
                 5 => "SCORE",
                 _ => ""
             };
-            scoreText.text = _settingsIndex switch
+            scoreText.text = (_settingsIndex switch
             {
                 0 => "",
                 1 => Scoreboard.Combo.ToString(),
-                2 => Scoreboard.GetCurrentAchievement(_achievementType)
-                    .ToString(_achievementType == AchievementType.Finale ? "0.00" : "0.0000") + "%",
-                3 => (Scoreboard.GetDeltaAchievement(_achievementType) + 100).ToString(
-                    _achievementType == AchievementType.Finale ? "0.00" : "0.0000") + "%",
+
+                2 => GetAchievementRichText(Scoreboard.GetCurrentAchievement(_achievementType)
+                    .ToString(_achievementType == AchievementType.Finale ? "0.00" : "0.0000") + "%"),
+                3 => GetAchievementRichText((Scoreboard.GetDeltaAchievement(_achievementType) + 100).ToString(
+                    _achievementType == AchievementType.Finale ? "0.00" : "0.0000") + "%"),
                 4 => Scoreboard.GetScore().ToString(),
                 5 => (Scoreboard.GetDeltaScore(AchievementType.Finale).deltaBasicScore +
                     Scoreboard.GetTotalScore() - Scoreboard.GetHighestExtraScore()).ToString(),
                 _ => ""
-            };
+            });
 
             if (_settingsIndex == 1 && Scoreboard.Combo < 2)
             {
                 titleText.text = "";
                 scoreText.text = "";
+            }
+
+            return;
+            
+            string GetAchievementRichText(string scoreString)
+            {
+                var splitResult = scoreString.Split(".");
+
+                return splitResult[0] + $"<size=80%>.{splitResult[1]}</size>";
             }
         }
 
