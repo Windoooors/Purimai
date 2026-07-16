@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.ChartManagement;
 using Game.Notes;
-using Game.Notes.NormalSlideBasedNotes;
-using Game.Notes.SlideBasedNotes;
+using Game.Notes.NormalIndividualSlides;
 using Game.Notes.TapBasedNotes;
 using UI.Settings;
 using UnityEngine;
@@ -20,7 +19,6 @@ namespace Game
         public Tap[] tapPrefabs;
         public Hold[] holdPrefabs;
         public EachLine[] eachLinePrefabs;
-        public SlidePrefabDataObject slidePrefabs;
 
         public GameObject slideArrowPrefab;
 
@@ -29,6 +27,10 @@ namespace Game
         public Sprite slideSprite;
         public Sprite[] wifiSlideEachSprites;
         public Sprite[] wifiSlideSprites;
+
+        public NormalSlide normalSlidePrefab;
+        public WifiSlide wifiSlidePrefab;
+        public IndividualSlidePrefabDataObject individualSlidePrefabs;
 
         public SlideJudgeDisplayDataObject[] slideJudgeDisplaySprites;
 
@@ -142,42 +144,49 @@ namespace Game
                     noteHoldDataObject.Lane = GetModifiedLane(noteHoldDataObject.Lane);
 
                 foreach (var noteSlideDataObject in note.SlideDataObjects)
+                foreach (var individualSlideDataObject in noteSlideDataObject.IndividualSlides)
                 {
                     if (_flipHorizontally)
-                        noteSlideDataObject.Type = noteSlideDataObject.Type switch
+                        individualSlideDataObject.Type = individualSlideDataObject.Type switch
                         {
-                            NoteDataObject.SlideDataObject.SlideType.RotateLeft => NoteDataObject.SlideDataObject
-                                .SlideType.RotateRight,
-                            NoteDataObject.SlideDataObject.SlideType.RotateRight => NoteDataObject.SlideDataObject
-                                .SlideType.RotateLeft,
-                            NoteDataObject.SlideDataObject.SlideType.Z => NoteDataObject.SlideDataObject.SlideType.S,
-                            NoteDataObject.SlideDataObject.SlideType.S => NoteDataObject.SlideDataObject.SlideType.Z,
-                            NoteDataObject.SlideDataObject.SlideType.P => NoteDataObject.SlideDataObject.SlideType.Q,
-                            NoteDataObject.SlideDataObject.SlideType.Q => NoteDataObject.SlideDataObject.SlideType.P,
-                            NoteDataObject.SlideDataObject.SlideType.BigP => NoteDataObject.SlideDataObject.SlideType
+                            NoteDataObject.SlideType.RotateLeft => NoteDataObject.SlideType.RotateRight,
+                            NoteDataObject.SlideType.RotateRight => NoteDataObject.SlideType.RotateLeft,
+                            NoteDataObject.SlideType.Z =>
+                                NoteDataObject.SlideType.S,
+                            NoteDataObject.SlideType.S =>
+                                NoteDataObject.SlideType.Z,
+                            NoteDataObject.SlideType.P =>
+                                NoteDataObject.SlideType.Q,
+                            NoteDataObject.SlideType.Q =>
+                                NoteDataObject.SlideType.P,
+                            NoteDataObject.SlideType.BigP => NoteDataObject.SlideType
                                 .BigQ,
-                            NoteDataObject.SlideDataObject.SlideType.BigQ => NoteDataObject.SlideDataObject.SlideType
+                            NoteDataObject.SlideType.BigQ => NoteDataObject.SlideType
                                 .BigP,
-                            _ => noteSlideDataObject.Type
+                            _ => individualSlideDataObject.Type
                         };
 
                     if (_flipVertically)
-                        noteSlideDataObject.Type = noteSlideDataObject.Type switch
+                        individualSlideDataObject.Type = individualSlideDataObject.Type switch
                         {
-                            NoteDataObject.SlideDataObject.SlideType.Z => NoteDataObject.SlideDataObject.SlideType.S,
-                            NoteDataObject.SlideDataObject.SlideType.S => NoteDataObject.SlideDataObject.SlideType.Z,
-                            NoteDataObject.SlideDataObject.SlideType.P => NoteDataObject.SlideDataObject.SlideType.Q,
-                            NoteDataObject.SlideDataObject.SlideType.Q => NoteDataObject.SlideDataObject.SlideType.P,
-                            NoteDataObject.SlideDataObject.SlideType.BigP => NoteDataObject.SlideDataObject.SlideType
+                            NoteDataObject.SlideType.Z =>
+                                NoteDataObject.SlideType.S,
+                            NoteDataObject.SlideType.S =>
+                                NoteDataObject.SlideType.Z,
+                            NoteDataObject.SlideType.P =>
+                                NoteDataObject.SlideType.Q,
+                            NoteDataObject.SlideType.Q =>
+                                NoteDataObject.SlideType.P,
+                            NoteDataObject.SlideType.BigP => NoteDataObject.SlideType
                                 .BigQ,
-                            NoteDataObject.SlideDataObject.SlideType.BigQ => NoteDataObject.SlideDataObject.SlideType
+                            NoteDataObject.SlideType.BigQ => NoteDataObject.SlideType
                                 .BigP,
-                            _ => noteSlideDataObject.Type
+                            _ => individualSlideDataObject.Type
                         };
 
-                    noteSlideDataObject.From = GetModifiedLane(noteSlideDataObject.From);
-                    for (var i = 0; i < noteSlideDataObject.To.Length; i++)
-                        noteSlideDataObject.To[i] = GetModifiedLane(noteSlideDataObject.To[i]);
+                    individualSlideDataObject.From = GetModifiedLane(individualSlideDataObject.From);
+                    for (var i = 0; i < individualSlideDataObject.To.Length; i++)
+                        individualSlideDataObject.To[i] = GetModifiedLane(individualSlideDataObject.To[i]);
                 }
             }
 
@@ -313,10 +322,11 @@ namespace Game
         private void GenerateSlides(NoteDataObject noteDataObject)
         {
             var slidesGroupedByWaitDuration = new List<(int waitDuration, List<NoteDataObject.SlideDataObject>)>();
-
             foreach (var slide in noteDataObject.SlideDataObjects)
             {
-                var findResult = slidesGroupedByWaitDuration.Find(x => x.waitDuration == slide.WaitDuration);
+                var findResult =
+                    slidesGroupedByWaitDuration
+                        .Find(x => x.waitDuration == slide.WaitDuration);
 
                 if (findResult.Item2?.Count is 0 or null)
                 {
@@ -333,54 +343,32 @@ namespace Game
 
             foreach (var slide in noteDataObject.SlideDataObjects)
             {
-                var slideBasedNoteObjectInstance = slide.Type switch
+                var isWifi = slide.IndividualSlides.Length == 1 &&
+                             slide.IndividualSlides[0].Type == NoteDataObject.SlideType.Wifi;
+
+                SlideBasedNote slideBasedNoteObjectInstance =
+                    isWifi ? SlideGenerator.GenerateWifiSlide(slide) : Instantiate(normalSlidePrefab);
+                
+                slideBasedNoteObjectInstance.transform.position = Vector3.zero;
+                
+                if (!slideBasedNoteObjectInstance)
+                    continue;
+                
+                notesList.Add(slideBasedNoteObjectInstance);
+                slideBasedNoteObjectInstance.transform.parent = _noteParent.transform;
+
+                var isEach = (slidesGroupedByWaitDuration
+                    .Find(x => x.waitDuration == slide.WaitDuration).Item2?.Count ?? 1) > 1;
+
+                if (slideBasedNoteObjectInstance is NormalSlide normalSlide)
                 {
-                    NoteDataObject.SlideDataObject.SlideType.RotateLeft
-                        or NoteDataObject.SlideDataObject.SlideType.RotateRight
-                        or NoteDataObject.SlideDataObject.SlideType.RotateMinorArc
-                        => SlideGenerator.GenerateCycleSlide(
-                            slide),
-
-                    NoteDataObject.SlideDataObject.SlideType.P or NoteDataObject.SlideDataObject.SlideType.Q =>
-                        SlideGenerator.GeneratePqSlide(slide),
-
-                    NoteDataObject.SlideDataObject.SlideType.LittleV
-                        => SlideGenerator.GenerateLittleVSlide(slide),
-
-                    NoteDataObject.SlideDataObject.SlideType.Line
-                        => SlideGenerator.GenerateLineSlide(slide),
-
-                    NoteDataObject.SlideDataObject.SlideType.BigV => SlideGenerator.GenerateBigVSlide(slide),
-
-                    NoteDataObject.SlideDataObject.SlideType.BigP or NoteDataObject.SlideDataObject.SlideType.BigQ =>
-                        SlideGenerator.GenerateBigPqSlide(slide),
-
-                    NoteDataObject.SlideDataObject.SlideType.Z or NoteDataObject.SlideDataObject.SlideType.S =>
-                        SlideGenerator.GenerateZsSlide(slide),
-
-                    NoteDataObject.SlideDataObject.SlideType.Wifi => SlideGenerator.GenerateWifiSlide(slide),
-
-                    _ => null
-                };
-
-                if (slideBasedNoteObjectInstance)
-                {
-                    notesList.Add(slideBasedNoteObjectInstance);
-
-                    slideBasedNoteObjectInstance.order = -_slideOrder;
-                    slideBasedNoteObjectInstance.timing = noteDataObject.Timing;
-                    slideBasedNoteObjectInstance.slideType = slide.Type;
-                    slideBasedNoteObjectInstance.isEach = (slidesGroupedByWaitDuration
-                        .Find(x => x.waitDuration == slide.WaitDuration).Item2?.Count ?? 1) > 1;
-                    slideBasedNoteObjectInstance.suddenlyAppears = slide.SuddenlyAppears;
-
-                    _slideOrder -= slideBasedNoteObjectInstance.slideArrowCount;
-
-                    slideBasedNoteObjectInstance.transform.parent = _noteParent.transform;
-
-                    if (noteDataObject.Timing + slide.WaitDuration + slide.SlideDuration > endingTime)
-                        endingTime = noteDataObject.Timing + slide.WaitDuration + slide.SlideDuration;
+                    GenerateIndividualSlides(normalSlide, slide.IndividualSlides);
                 }
+                
+                slideBasedNoteObjectInstance.Initialize(slide, isEach, noteDataObject.Timing, ref _slideOrder);
+                
+                if (noteDataObject.Timing + slide.WaitDuration + slide.SlideDuration > endingTime)
+                    endingTime = noteDataObject.Timing + slide.WaitDuration + slide.SlideDuration;
             }
         }
 
@@ -415,9 +403,9 @@ namespace Game
                 _ => inputLane
             };
         }
-
+        
         [Serializable]
-        public class SlidePrefabDataObject
+        public class IndividualSlidePrefabDataObject
         {
             public CycleSlide[] cycleSlidePrefabs;
             public PqSlide[] pqSlidePrefabs;
@@ -426,8 +414,7 @@ namespace Game
             public BigVSlide[] bigVSlidePrefabs;
             public BigPqSlide[] bigPqSlidePrefabs;
             public ZsSlide zsSlidePrefab;
-            public WifiSlide wifiSlidePrefab;
-        }
+         }
 
         [Serializable]
         public class SlideJudgeDisplayDataObject
@@ -435,6 +422,46 @@ namespace Game
             public Sprite[] normalSlideJudgeSprites;
             public Sprite[] circleSlideJudgeSprites;
             public Sprite[] wifiSlideJudgeSprites;
+        }
+
+        public static void GenerateIndividualSlides(NormalSlide normalSlide, NoteDataObject.IndividualSlideDataObject[] individualSlideData)
+        {
+            foreach (var individualSlide in individualSlideData)
+            {
+                var individualSlideInstance = individualSlide.Type switch
+                {
+                    NoteDataObject.SlideType.RotateLeft
+                        or NoteDataObject.SlideType.RotateRight
+                        or NoteDataObject.SlideType.RotateMinorArc
+                        => SlideGenerator.GenerateCycleSlide(
+                            individualSlide),
+
+                    NoteDataObject.SlideType.P or NoteDataObject.SlideType.Q =>
+                        SlideGenerator.GeneratePqSlide(individualSlide),
+
+                    NoteDataObject.SlideType.LittleV
+                        => SlideGenerator.GenerateLittleVSlide(individualSlide),
+
+                    NoteDataObject.SlideType.Line
+                        => SlideGenerator.GenerateLineSlide(individualSlide),
+
+                    NoteDataObject.SlideType.BigV => SlideGenerator.GenerateBigVSlide(individualSlide),
+
+                    NoteDataObject.SlideType.BigP or NoteDataObject.SlideType.BigQ =>
+                        SlideGenerator.GenerateBigPqSlide(individualSlide),
+                    NoteDataObject.SlideType.Z or NoteDataObject.SlideType.S =>
+                        SlideGenerator.GenerateZsSlide(individualSlide),
+                    _ => null
+                };
+
+                if (!individualSlideInstance)
+                    continue;
+                    
+                individualSlideInstance.transform.position = Vector3.zero;
+                
+                normalSlide.individualSlides.Add(individualSlideInstance);
+                individualSlideInstance?.transform.SetParent(normalSlide.transform);
+            }
         }
     }
 }

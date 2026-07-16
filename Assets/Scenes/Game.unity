@@ -6791,58 +6791,6 @@ MonoBehaviour:
   - {fileID: 354811350556749319, guid: c1aba16975723469fabf446ebed4072d, type: 3}
   - {fileID: 4848054096090414722, guid: 578cfff6b098145bc9ea827bc217abf6, type: 3}
   - {fileID: 8570259416459558586, guid: 3f7927b94255c4bb0a2a74cb78a78d80, type: 3}
-  slidePrefabs:
-    cycleSlidePrefabs:
-    - {fileID: 6885325233575427714, guid: f5f7af0567e6f394f80e70c964546f39, type: 3}
-    - {fileID: 7917266462666256004, guid: 172567737fd6e7c47a7b079c25acbdf6, type: 3}
-    - {fileID: 1076586564914681791, guid: f2ceddc6242b2b249ba67357cbb1dc8e, type: 3}
-    - {fileID: 2939962257204936816, guid: e5169727320db694ca5b6fc99e0ebfa3, type: 3}
-    - {fileID: 2573439468934583005, guid: 96668829e7509e147864549fa4e693dd, type: 3}
-    - {fileID: 2146073837328783100, guid: 209955fc2907f9a4ba8640fcbaa932bc, type: 3}
-    - {fileID: 5665867390448936314, guid: 3da3cb9272b855346b60391d19a2a710, type: 3}
-    - {fileID: 8131866605615420693, guid: e2a79d876af8eec46a830ccae393ab6a, type: 3}
-    pqSlidePrefabs:
-    - {fileID: 6358495756970557923, guid: 8c30b717117b5d8469c21293e7d60878, type: 3}
-    - {fileID: 4854438097338516245, guid: 873128d84d354594ba18a5a953a479ca, type: 3}
-    - {fileID: 3728511668802687097, guid: 7df113c2472524c42a35971690f67c3c, type: 3}
-    - {fileID: 4125147464584846351, guid: b54a1ed26ab230a45a27f0262d42f3e4, type: 3}
-    - {fileID: 1968617677702581886, guid: 049bb882b8b98034db879e6367063f4f, type: 3}
-    - {fileID: 5938568462685463625, guid: c346d9a2081ddad4e9507f89705c907e, type: 3}
-    - {fileID: 1909516349626755567, guid: 2081b5c87d9866b4ea5ac562dc15a5fb, type: 3}
-    - {fileID: 6717606391737495891, guid: 70ba2c5f34c9ef140a09fdd12592f445, type: 3}
-    vSlidePrefabs:
-    - {fileID: 8748467035828261133, guid: d0fd46e58bee17740a889818d94c8816, type: 3}
-    - {fileID: 1990361530506981305, guid: 985a4542fcf064d61aef98bc258493df, type: 3}
-    - {fileID: 5383335384825788240, guid: 2e1e1acb2b41b4f2abde0b8672b7d60d, type: 3}
-    - {fileID: 2650070520175852921, guid: 906e52b5215714332b87e749651ca598, type: 3}
-    - {fileID: -1500885392541790331, guid: b9f64e594c0434c9a96088bc09e760ac, type: 3}
-    - {fileID: 8728401864607460231, guid: e6f4ca930a3c345fdbf34cf77a71bcce, type: 3}
-    - {fileID: 1951663284913442019, guid: 838b025e2fbe14e1f8de660beb1ef1d1, type: 3}
-    - {fileID: 2613862324038588979, guid: c812e69dcb514475cb9de2178548f2ea, type: 3}
-    lineSlidePrefabs:
-    - {fileID: 3345722121886468148, guid: a78b9c1bfee274d00ad64cdebb8ee219, type: 3}
-    - {fileID: 3654740645049062925, guid: d3a075e545a694be8ba8c30c8b6cbbdb, type: 3}
-    - {fileID: 6982077603083318612, guid: 680f5766395ab43ad8984b72b79559d4, type: 3}
-    - {fileID: 3480586505711418442, guid: d8bccc042306d49cc8cf1fed71b1fa91, type: 3}
-    - {fileID: 4910601075622962132, guid: 069de12b60f174226805099d56cf671c, type: 3}
-    bigVSlidePrefabs:
-    - {fileID: 4515882775492449128, guid: 45d5304e9c994a54ab89a4021c5d2e46, type: 3}
-    - {fileID: 6402885579708074295, guid: c0d7d240be289194bbbd0c7c849c7208, type: 3}
-    - {fileID: 923437505587076173, guid: d050f65c3f52d524ab26963738702536, type: 3}
-    - {fileID: 1608438762101103245, guid: 32868e5f4fa463f4c905e870406abea5, type: 3}
-    bigPqSlidePrefabs:
-    - {fileID: 6824439047715600267, guid: eaa6e34748cacf8499b3a84cdd6ae4ff, type: 3}
-    - {fileID: 9014292974824469807, guid: 3b766972bf7e9034bbf487a9b6832fe8, type: 3}
-    - {fileID: 519064734252567894, guid: ca6b531a1dd411645bf12cb585420af1, type: 3}
-    - {fileID: 8917801702435456093, guid: 6ac090300791d2240843ae2b5a05d5bf, type: 3}
-    - {fileID: 1708593539770274565, guid: 881af3071c9291c4b870764a29a7ffb8, type: 3}
-    - {fileID: 8853190430886435058, guid: 2ce5531cf943064479144f1e9813f479, type: 3}
-    - {fileID: 2569342628504533226, guid: 230a2d441876f554d9026e875e46c8e5, type: 3}
-    - {fileID: 6328282505011909649, guid: dbff6d0116666534d9c03d7e194186f0, type: 3}
-    zsSlidePrefab: {fileID: 7828480733725902408, guid: b02d0b8cf780f4755bd5cf1c2a0d069e,
-      type: 3}
-    wifiSlidePrefab: {fileID: 2592134520801541204, guid: 460cd376e52d5fb40824e1ee8ccade3c,
-      type: 3}
   slideArrowPrefab: {fileID: 1741564000237911972, guid: 5d52db2aba4e64ea79b0e6247f24af6d,
     type: 3}
   eachStarSprite: {fileID: 21300000, guid: 55421a5b4520b4c05a4d44b15a41641b, type: 3}
@@ -6872,6 +6820,26 @@ MonoBehaviour:
   - {fileID: 21300000, guid: f032c896f253141f7ab1f2fc3a10fbf9, type: 3}
   - {fileID: 21300000, guid: 2bf6322a0a32a4ce698961c98ece7415, type: 3}
   - {fileID: 21300000, guid: 439e4aa7161a044c48358c1b92ca629e, type: 3}
+  normalSlidePrefab: {fileID: 2486997354171982589, guid: 8bf59fbee1b454b7d97e21ef0af8af9d,
+    type: 3}
+  wifiSlidePrefab: {fileID: 2592134520801541204, guid: 460cd376e52d5fb40824e1ee8ccade3c,
+    type: 3}
+  individualSlidePrefabs:
+    cycleSlidePrefabs:
+    - {fileID: 6885325233575427714, guid: f5f7af0567e6f394f80e70c964546f39, type: 3}
+    - {fileID: 7917266462666256004, guid: 172567737fd6e7c47a7b079c25acbdf6, type: 3}
+    - {fileID: 1076586564914681791, guid: f2ceddc6242b2b249ba67357cbb1dc8e, type: 3}
+    - {fileID: 2939962257204936816, guid: e5169727320db694ca5b6fc99e0ebfa3, type: 3}
+    - {fileID: 2573439468934583005, guid: 96668829e7509e147864549fa4e693dd, type: 3}
+    - {fileID: 2146073837328783100, guid: 209955fc2907f9a4ba8640fcbaa932bc, type: 3}
+    - {fileID: 5665867390448936314, guid: 3da3cb9272b855346b60391d19a2a710, type: 3}
+    - {fileID: 8131866605615420693, guid: e2a79d876af8eec46a830ccae393ab6a, type: 3}
+    pqSlidePrefabs: []
+    vSlidePrefabs: []
+    lineSlidePrefabs: []
+    bigVSlidePrefabs: []
+    bigPqSlidePrefabs: []
+    zsSlidePrefab: {fileID: 0}
   slideJudgeDisplaySprites:
   - normalSlideJudgeSprites:
     - {fileID: 21300000, guid: 836710cc5f1214361bd3d7ea29b19b29, type: 3}

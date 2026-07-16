@@ -29,16 +29,16 @@ namespace UI.Result
             MissCount = missCount;
         }
 
-        public int TotalCount { set; get; }
-        public int CurrentCount { private set; get; }
-        public int CriticalPerfectCount { private set; get; }
-        public int SemiCriticalPerfectCount { private set; get; }
-        public int PerfectCount { private set; get; }
-        public int GreatCount { private set; get; }
-        public int SemiGreatCount { private set; get; }
-        public int QuarterGreatCount { private set; get; }
-        public int GoodCount { private set; get; }
-        public int MissCount { private set; get; }
+        public int TotalCount { get; set; }
+        public int CurrentCount { get; private set; }
+        public int CriticalPerfectCount { get; private set; }
+        public int SemiCriticalPerfectCount { get; private set; }
+        public int PerfectCount { get; private set; }
+        public int GreatCount { get; private set; }
+        public int SemiGreatCount { get; private set; }
+        public int QuarterGreatCount { get; private set; }
+        public int GoodCount { get; private set; }
+        public int MissCount { get; private set; }
 
         public void Count(JudgeState judgeState)
         {

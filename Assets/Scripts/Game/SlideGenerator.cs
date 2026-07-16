@@ -1,16 +1,17 @@
+using System;
 using System.Linq;
 using Game.ChartManagement;
 using Game.Notes;
-using Game.Notes.NormalSlideBasedNotes;
+using Game.Notes.NormalIndividualSlides;
 using UnityEngine;
 
 namespace Game
 {
     public class SlideGenerator : MonoBehaviour
     {
-        public static SlideBasedNote GenerateCycleSlide(NoteDataObject.SlideDataObject slide)
+        public static IndividualSlideBase GenerateCycleSlide(NoteDataObject.IndividualSlideDataObject slide)
         {
-            var cycleSlidePrefabs = NoteGenerator.Instance.slidePrefabs.cycleSlidePrefabs;
+            var cycleSlidePrefabs = NoteGenerator.Instance.individualSlidePrefabs.cycleSlidePrefabs;
 
             var fromLane = slide.From;
             var toLane = slide.To[0];
@@ -32,24 +33,19 @@ namespace Game
                 _ => Instantiate(cycleSlidePrefabs[1])
             };
 
-            cycleSlideInstance.toLaneIndexes = new[] { toLane - 1 };
-            cycleSlideInstance.fromLaneIndex = fromLane - 1;
-            cycleSlideInstance.waitDuration = slide.WaitDuration;
-            cycleSlideInstance.slideDuration = slide.SlideDuration;
-
+            cycleSlideInstance.individualSlideDataObject = slide;
+            
             return cycleSlideInstance;
         }
 
-        public static SlideBasedNote GeneratePqSlide(NoteDataObject.SlideDataObject slide)
+        public static IndividualSlideBase GeneratePqSlide(NoteDataObject.IndividualSlideDataObject slide)
         {
-            var fromLane = slide.From;
-            var toLane = slide.To[0];
+            var pqInterval 
+                = IndividualSlideBase.GetIntervalInBothWays(slide.From, slide.To[0]);
 
-            var pqInterval = SlideBasedNote.GetIntervalInBothWays(slide.From, slide.To[0]);
+            var pqSlidePrefabs = NoteGenerator.Instance.individualSlidePrefabs.pqSlidePrefabs;
 
-            var pqSlidePrefabs = NoteGenerator.Instance.slidePrefabs.pqSlidePrefabs;
-
-            var interval = slide.Type == NoteDataObject.SlideDataObject.SlideType.P
+            var interval = slide.Type == NoteDataObject.SlideType.P
                 ? pqInterval.clockwiseInterval
                 : pqInterval.counterClockwiseInterval;
 
@@ -66,22 +62,18 @@ namespace Game
                 _ => Instantiate(pqSlidePrefabs[0])
             };
 
-            pqSlideInstance.toLaneIndexes = new[] { toLane - 1 };
-            pqSlideInstance.fromLaneIndex = fromLane - 1;
-            pqSlideInstance.waitDuration = slide.WaitDuration;
-            pqSlideInstance.slideDuration = slide.SlideDuration;
-
+            pqSlideInstance.individualSlideDataObject = slide;
             return pqSlideInstance;
         }
 
-        public static SlideBasedNote GenerateLittleVSlide(NoteDataObject.SlideDataObject slide)
+        public static IndividualSlideBase GenerateLittleVSlide(NoteDataObject.IndividualSlideDataObject slide)
         {
             var fromLane = slide.From;
             var toLane = slide.To[0];
 
-            var interval = SlideBasedNote.GetIntervalInBothWays(slide.From, slide.To[0]).clockwiseInterval;
+            var interval = IndividualSlideBase.GetIntervalInBothWays(slide.From, slide.To[0]).clockwiseInterval;
 
-            var vSlidePrefabs = NoteGenerator.Instance.slidePrefabs.vSlidePrefabs;
+            var vSlidePrefabs = NoteGenerator.Instance.individualSlidePrefabs.vSlidePrefabs;
 
             var vSlideInstance = interval switch
             {
@@ -96,22 +88,19 @@ namespace Game
                 _ => Instantiate(vSlidePrefabs[0])
             };
 
-            vSlideInstance.toLaneIndexes = new[] { toLane - 1 };
-            vSlideInstance.fromLaneIndex = fromLane - 1;
-            vSlideInstance.waitDuration = slide.WaitDuration;
-            vSlideInstance.slideDuration = slide.SlideDuration;
+            vSlideInstance.individualSlideDataObject = slide;
 
             return vSlideInstance;
         }
 
-        public static SlideBasedNote GenerateLineSlide(NoteDataObject.SlideDataObject slide)
+        public static IndividualSlideBase GenerateLineSlide(NoteDataObject.IndividualSlideDataObject slide)
         {
             var fromLane = slide.From;
             var toLane = slide.To[0];
 
-            var interval = SlideBasedNote.GetIntervalInBothWays(slide.From, slide.To[0]).clockwiseInterval;
+            var interval = IndividualSlideBase.GetIntervalInBothWays(slide.From, slide.To[0]).clockwiseInterval;
 
-            var lineSlidePrefabs = NoteGenerator.Instance.slidePrefabs.lineSlidePrefabs;
+            var lineSlidePrefabs = NoteGenerator.Instance.individualSlidePrefabs.lineSlidePrefabs;
 
             var lineSlideInstance = interval switch
             {
@@ -123,21 +112,18 @@ namespace Game
                 _ => Instantiate(lineSlidePrefabs[0])
             };
 
-            lineSlideInstance.toLaneIndexes = new[] { toLane - 1 };
-            lineSlideInstance.fromLaneIndex = fromLane - 1;
-            lineSlideInstance.waitDuration = slide.WaitDuration;
-            lineSlideInstance.slideDuration = slide.SlideDuration;
+            lineSlideInstance.individualSlideDataObject = slide;
 
             return lineSlideInstance;
         }
 
-        public static SlideBasedNote GenerateBigVSlide(NoteDataObject.SlideDataObject slide)
+        public static IndividualSlideBase GenerateBigVSlide(NoteDataObject.IndividualSlideDataObject slide)
         {
             var fromLane = slide.From;
 
-            var interval = SlideBasedNote.GetShortestInterval(slide.From, slide.To[1]);
+            var interval = IndividualSlideBase.GetShortestInterval(slide.From, slide.To[1]);
 
-            var bigVSlidePrefabs = NoteGenerator.Instance.slidePrefabs.bigVSlidePrefabs;
+            var bigVSlidePrefabs = NoteGenerator.Instance.individualSlidePrefabs.bigVSlidePrefabs;
 
             var bigVSlideInstance = interval switch
             {
@@ -148,24 +134,21 @@ namespace Game
                 _ => Instantiate(bigVSlidePrefabs[0])
             };
 
-            bigVSlideInstance.toLaneIndexes = slide.To.Select(x => x - 1).ToArray();
-            bigVSlideInstance.fromLaneIndex = fromLane - 1;
-            bigVSlideInstance.waitDuration = slide.WaitDuration;
-            bigVSlideInstance.slideDuration = slide.SlideDuration;
+            bigVSlideInstance.individualSlideDataObject = slide;
 
             return bigVSlideInstance;
         }
 
-        public static SlideBasedNote GenerateBigPqSlide(NoteDataObject.SlideDataObject slide)
+        public static IndividualSlideBase GenerateBigPqSlide(NoteDataObject.IndividualSlideDataObject slide)
         {
             var fromLane = slide.From;
             var toLane = slide.To[0];
 
-            var bigPqInterval = SlideBasedNote.GetIntervalInBothWays(slide.From, slide.To[0]);
+            var bigPqInterval = IndividualSlideBase.GetIntervalInBothWays(slide.From, slide.To[0]);
 
-            var bigPqSlidePrefabs = NoteGenerator.Instance.slidePrefabs.bigPqSlidePrefabs;
+            var bigPqSlidePrefabs = NoteGenerator.Instance.individualSlidePrefabs.bigPqSlidePrefabs;
 
-            var interval = slide.Type == NoteDataObject.SlideDataObject.SlideType.BigP
+            var interval = slide.Type == NoteDataObject.SlideType.BigP
                 ? bigPqInterval.clockwiseInterval
                 : bigPqInterval.counterClockwiseInterval;
 
@@ -182,40 +165,35 @@ namespace Game
                 _ => Instantiate(bigPqSlidePrefabs[0])
             };
 
-            bigPqSlideInstance.toLaneIndexes = new[] { toLane - 1 };
-            bigPqSlideInstance.fromLaneIndex = fromLane - 1;
-            bigPqSlideInstance.waitDuration = slide.WaitDuration;
-            bigPqSlideInstance.slideDuration = slide.SlideDuration;
-
+            bigPqSlideInstance.individualSlideDataObject = slide;
+            
             return bigPqSlideInstance;
         }
 
-        public static SlideBasedNote GenerateZsSlide(NoteDataObject.SlideDataObject slide)
+        public static IndividualSlideBase GenerateZsSlide(NoteDataObject.IndividualSlideDataObject slide)
         {
             var fromLane = slide.From;
             var toLane = slide.To[0];
 
-            var zsSlideInstance = Instantiate(NoteGenerator.Instance.slidePrefabs.zsSlidePrefab);
+            var zsSlideInstance = Instantiate(NoteGenerator.Instance.individualSlidePrefabs.zsSlidePrefab);
 
-            zsSlideInstance.toLaneIndexes = new[] { toLane - 1 };
-            zsSlideInstance.fromLaneIndex = fromLane - 1;
-            zsSlideInstance.waitDuration = slide.WaitDuration;
-            zsSlideInstance.slideDuration = slide.SlideDuration;
-
+            zsSlideInstance.individualSlideDataObject = slide;
+            
             return zsSlideInstance;
         }
 
-        public static SlideBasedNote GenerateWifiSlide(NoteDataObject.SlideDataObject slide)
+        public static WifiSlide GenerateWifiSlide(NoteDataObject.SlideDataObject slide)
         {
-            var fromLane = slide.From;
-            var toLane = slide.To[0];
+            if (slide.IndividualSlides.Length < 1 || slide.IndividualSlides[0].Type != NoteDataObject.SlideType.Wifi)
+            {
+                throw new Exception("Invalid wifi slide data.");
+            }
+            
+            var individualSlideData = slide.IndividualSlides[0];
+            
+            var wifiSlideInstance = Instantiate(NoteGenerator.Instance.wifiSlidePrefab);
 
-            var wifiSlideInstance = Instantiate(NoteGenerator.Instance.slidePrefabs.wifiSlidePrefab);
-
-            wifiSlideInstance.toLaneIndexes = new[] { toLane - 1 };
-            wifiSlideInstance.fromLaneIndex = fromLane - 1;
-            wifiSlideInstance.waitDuration = slide.WaitDuration;
-            wifiSlideInstance.slideDuration = slide.SlideDuration;
+            wifiSlideInstance.slideData = individualSlideData;
 
             return wifiSlideInstance;
         }

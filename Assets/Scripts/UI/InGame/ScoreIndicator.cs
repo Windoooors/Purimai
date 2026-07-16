@@ -31,7 +31,7 @@ namespace UI.InGame
                 5 => "SCORE",
                 _ => ""
             };
-            scoreText.text = (_settingsIndex switch
+            scoreText.text = _settingsIndex switch
             {
                 0 => "",
                 1 => Scoreboard.Combo.ToString(),
@@ -44,7 +44,7 @@ namespace UI.InGame
                 5 => (Scoreboard.GetDeltaScore(AchievementType.Finale).deltaBasicScore +
                     Scoreboard.GetTotalScore() - Scoreboard.GetHighestExtraScore()).ToString(),
                 _ => ""
-            });
+            };
 
             if (_settingsIndex == 1 && Scoreboard.Combo < 2)
             {
@@ -53,7 +53,7 @@ namespace UI.InGame
             }
 
             return;
-            
+
             string GetAchievementRichText(string scoreString)
             {
                 var splitResult = scoreString.Split(".");

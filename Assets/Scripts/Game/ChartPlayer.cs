@@ -398,8 +398,10 @@ namespace Game
 
         public void InitializeLevel(Maidata maidata, int difficultyIndex)
         {
+            #if !UNITY_EDITOR
             try
             {
+#endif
                 Logger.LogInfo("Loading Chart..");
 
                 Maidata = maidata;
@@ -458,12 +460,14 @@ namespace Game
                 backgroundBrightnessCover.color = new Color(0, 0, 0, darkness);
 
                 Play();
+                #if !UNITY_EDITOR
             }
             catch (Exception e)
             {
                 Logger.LogError(
                     $"Chart Initialization failed: {e.Message}\nStack Trace: {e.StackTrace}");
             }
+#endif
         }
 
 

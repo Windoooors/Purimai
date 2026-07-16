@@ -61,37 +61,43 @@ namespace UI.LevelSelection
         {
             Logger.LogInfo("Entering level: " + maidata.MaidataDirectoryName + ", Diff:" + difficultyIndex);
 
+#if !UNITY_EDITOR
             try
             {
-                SimulatedSensor.Clear();
+#endif
+            SimulatedSensor.Clear();
 
-                Scoreboard.Reset();
+            Scoreboard.Reset();
 
-                _maidata = maidata;
-                _levelIndex = difficultyIndex;
+            _maidata = maidata;
+            _levelIndex = difficultyIndex;
 
-                if (LevelSelectionManager.Instance)
-                    LevelSelectionManager.Instance.songPreviewing = false;
+            if (LevelSelectionManager.Instance)
+                LevelSelectionManager.Instance.songPreviewing = false;
 
-                _maidata.SongBassHandler?.Stop();
+            _maidata.SongBassHandler?.Stop();
 
-                if (!maidata.SongLoaded)
-                    maidata.LoadSongClip();
+            if (!maidata.SongLoaded)
+                maidata.LoadSongClip();
 
-                Task.Run(maidata.GenerateBlurredCover);
+            Task.Run(maidata.GenerateBlurredCover);
 
-                ScreenOrientationManager.Instance.EnablePortrait();
+            ScreenOrientationManager.Instance.EnablePortrait();
 
-                PlayerPrefsSavingProcedure?.Invoke();
+            PlayerPrefsSavingProcedure?.Invoke();
 
-                _enteringLevel = true;
-            }
+            _enteringLevel = true;
+#if !UNITY_EDITOR
+        }
             catch (Exception e)
             {
-                Logger.LogError("Entering level failed: " + maidata.MaidataDirectoryName + ", Diff:" +
-                                difficultyIndex + ", Exception:" +
-                                $"\n{e.Message}\nStack Trace:{e.StackTrace}");
+                var error = "Entering level failed: " + maidata.MaidataDirectoryName + ", Diff:" +
+                            difficultyIndex + ", Exception:" +
+                            $"\n{e.Message}\nStack Trace:{e.StackTrace}";
+                
+                Logger.LogError(error);
             }
+#endif
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)

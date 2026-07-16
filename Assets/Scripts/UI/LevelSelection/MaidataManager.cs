@@ -166,8 +166,10 @@ namespace UI.LevelSelection
 
             Logger.LogInfo("Loading simai metadata.");
 
+            #if !UNITY_EDITOR
             try
             {
+#endif
                 var path = Path.Combine(Application.persistentDataPath, "Charts/");
 
                 if (!Directory.Exists(path))
@@ -205,11 +207,13 @@ namespace UI.LevelSelection
                 UIManager.Instance.UpdateTMPAtlas(Maidata.UsedCharacters.ToArray());
 
                 Logger.LogInfo($"Simai metadata loading completed. Found {MaidataList.Count} chart(s).");
-            }
+#if !UNITY_EDITOR
+        }
             catch (Exception ex)
             {
                 Logger.LogError($"{ex.Message} Stack Trace: {ex.StackTrace}");
             }
+#endif
         }
 
         private static bool FileExistsIgnoreCase(string input, out string actualPath)

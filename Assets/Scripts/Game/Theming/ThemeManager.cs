@@ -54,8 +54,10 @@ namespace Game.Theming
                 if (!File.Exists(metaPath))
                     continue;
 
+#if !UNITY_EDITOR
                 try
                 {
+#endif
                     Logger.LogInfo($"Found skin path {skinPath}.");
 
                     var content = JsonConvert.DeserializeObject<ThemeDataDto>(File.ReadAllText(metaPath));
@@ -70,11 +72,13 @@ namespace Game.Theming
                     skinData.themeDataDto.SfxData ??= Array.Empty<SfxPieceDataDto>();
 
                     SkinDataList.Add(skinData);
+#if !UNITY_EDITOR
                 }
                 catch (Exception e)
                 {
                     Logger.LogError("Failed to load SkinData: " + e.Message + "\nStack Trace:" + e.StackTrace);
                 }
+#endif
             }
 
             var savePath = Path.Combine(Application.persistentDataPath, "skin_settings.json");

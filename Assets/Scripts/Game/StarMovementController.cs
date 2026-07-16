@@ -1,7 +1,4 @@
-using Game.ChartManagement;
 using Game.Notes;
-using Game.Notes.NormalSlideBasedNotes;
-using Game.Notes.SlideBasedNotes;
 using UnityEngine;
 
 namespace Game
@@ -10,11 +7,9 @@ namespace Game
     {
         public SpriteRenderer spriteRenderer;
 
-        public SlideBasedNote slideBasedNote;
+        public IndividualSlideBase slideBasedNote;
 
         public string wifiSvgAssetNameOverride;
-
-        [HideInInspector] public float duration = 5f;
 
         private bool _isReturning;
 
@@ -22,21 +17,7 @@ namespace Game
 
         public void Initialize()
         {
-            if (slideBasedNote is not WifiSlide)
-            {
-                _vectorGraphicsUtility = slideBasedNote.VectorGraphicsUtility;
-            }
-            else
-            {
-                _vectorGraphicsUtility = new VectorGraphicsUtility(wifiSvgAssetNameOverride,
-                    slideBasedNote.pathRotation, slideBasedNote.flipPathY,
-                    Lanes.Instance.endPoints[slideBasedNote.fromLaneIndex].position,
-                    slideBasedNote.starObjectRotationOffset);
-                _vectorGraphicsUtility.SetStartPosition(Lanes.Instance.endPoints[slideBasedNote.fromLaneIndex]
-                    .position);
-            }
-
-            if (slideBasedNote is not (CycleSlide or PqSlide or BigPqSlide or LineSlide or WifiSlide))
+            //if (slideBasedNote is not (CycleSlide or PqSlide or BigPqSlide or LineSlide))
                 _vectorGraphicsUtility.FindTurningPoints();
         }
 

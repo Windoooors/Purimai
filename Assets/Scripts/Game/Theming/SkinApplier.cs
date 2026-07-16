@@ -99,47 +99,60 @@ namespace Game.Theming
                 var image = Image.Load<Rgba32>(path);
 
                 if (image.Height > sprite.texture.height || image.Width > sprite.texture.width)
+                {
+#if !UNITY_EDITOR
                     try
                     {
-                        var imageHeight = image.Height;
-                        var imageWidth = image.Width;
+#endif
+                    var imageHeight = image.Height;
+                    var imageWidth = image.Width;
 
-                        image.Mutate(x =>
-                            x.Crop(new Rectangle((imageWidth - sprite.texture.width) / 2,
-                                (imageHeight - sprite.texture.height) / 2
-                                , sprite.texture.width, sprite.texture.height)));
+                    image.Mutate(x =>
+                        x.Crop(new Rectangle((imageWidth - sprite.texture.width) / 2,
+                            (imageHeight - sprite.texture.height) / 2
+                            , sprite.texture.width, sprite.texture.height)));
+#if !UNITY_EDITOR
                     }
+                    
                     catch (Exception ex)
                     {
                         Logger.LogError("Error adapting texture: " + ex.Message + "\nStack Trace: " +
                                         ex.StackTrace);
                     }
+#endif
+                }
 
                 if (image.Height < sprite.texture.height || image.Width < sprite.texture.width)
+                {
+#if !UNITY_EDITOR
                     try
                     {
-                        var imageHeight = image.Height;
-                        var imageWidth = image.Width;
+#endif
+                    var imageHeight = image.Height;
+                    var imageWidth = image.Width;
 
-                        var background = new Image<Rgba32>(sprite.texture.width, sprite.texture.height,
-                            new Rgba32(0, 0, 0, 0));
+                    var background = new Image<Rgba32>(sprite.texture.width, sprite.texture.height,
+                        new Rgba32(0, 0, 0, 0));
 
-                        background.Mutate(x =>
-                        {
-                            x.DrawImage(image, new Point((sprite.texture.width - imageWidth) / 2,
-                                (sprite.texture.height - imageHeight) / 2), 1f);
-                        });
+                    background.Mutate(x =>
+                    {
+                        x.DrawImage(image, new Point((sprite.texture.width - imageWidth) / 2,
+                            (sprite.texture.height - imageHeight) / 2), 1f);
+                    });
 
-                        image.Dispose();
-                        image = background;
+                    image.Dispose();
+                    image = background;
+#if !UNITY_EDITOR
                     }
                     catch (Exception ex)
                     {
                         Logger.LogError("Error adapting texture: " + ex.Message + "\nStack Trace: " +
                                         ex.StackTrace);
                     }
+#endif
+                }
 
-                var decoded = new DecodedImage(image);
+            var decoded = new DecodedImage(image);
 
                 sprite.texture.Reinitialize(decoded.Width, decoded.Height,
                     TextureFormat.RGBA32, false);

@@ -418,8 +418,10 @@ namespace UI.LevelSelection
 
             _data = dataList.ToArray();
 
+#if !UNITY_EDITOR
             try
             {
+#endif
                 _listView.itemsSource = _data;
 
                 var targetRawIndex = 0;
@@ -491,11 +493,13 @@ namespace UI.LevelSelection
                     CategoryListManager.Instance.ChangeCategoryPassively(_data[targetIndex].Category);
 
                 _lastCategoryData = _data[targetIndex].Category;
+#if !UNITY_EDITOR
             }
             catch (Exception ex)
             {
                 Logger.LogError($"{ex.Message} Stack Trace: {ex.StackTrace}");
             }
+#endif
         }
 
         private void InitializeGroupingRule()

@@ -87,6 +87,8 @@ namespace Game
                 _segmentLengths[i] = cumulativeLengths[n]; // total length of this segment
                 _totalLength += _segmentLengths[i];
             }
+            
+            SetStartPosition(startPosition);
         }
 
         public void FindTurningPoints()
