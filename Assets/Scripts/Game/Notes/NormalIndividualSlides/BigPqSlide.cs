@@ -1,4 +1,5 @@
 using Game.ChartManagement;
+using UnityEngine;
 
 namespace Game.Notes.NormalIndividualSlides
 {
@@ -17,11 +18,13 @@ namespace Game.Notes.NormalIndividualSlides
             }
             else
             {
-                //MirrorSlideSensorIds();
+                MirrorSlideSensorIds();
 
                 flipPathY = true;
                 pathRotation = -45f * (individualSlideDataObject.From - 1) - 45;
             }
+            
+            transform.Rotate(new Vector3(0, 0, -45f * (individualSlideDataObject.From - 1)));
         }
     }
 }

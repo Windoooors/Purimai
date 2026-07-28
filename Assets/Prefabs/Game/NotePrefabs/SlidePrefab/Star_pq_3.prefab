@@ -159,27 +159,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d218e84162b45dfa285021ad4cc0bf4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  emergingTime: 0
-  stars:
-  - {fileID: 83492326168121600}
-  judgeDisplaySpriteRenderer: {fileID: 4945829689387014387}
+  star: {fileID: 83492326168121600}
   svgAssetPath: u_curve_3
+  parentNormalSlide: {fileID: 0}
   slideArrowCount: 27
-  slideType: 0
-  fromLaneIndex: 0
-  toLaneIndexes: 
-  timing: 0
-  waitDuration: 0
-  slideDuration: 0
-  isEach: 0
-  order: 0
-  isWifi: 0
-  suddenlyAppears: 0
-  pathRotation: 0
-  flipPathY: 0
-  starObjectRotationOffset: -18
   segments:
-  - mainSensor: A1
+  - sensors:
+    - sensor: A1
+      lane: 3
+      type: 0
     slideSpriteRenderers: []
     slideSpriteRenderersWithinSensorArea: []
     slideSpriteRenderersOutsideSensorArea: []
@@ -187,8 +175,10 @@ MonoBehaviour:
     touched: 0
     arrowInBetweenConcealed: 0
     canBeSkipped: 1
-    sensorsNearby: []
-  - mainSensor: B8
+  - sensors:
+    - sensor: B8
+      lane: 3
+      type: 0
     slideSpriteRenderers: []
     slideSpriteRenderersWithinSensorArea: []
     slideSpriteRenderersOutsideSensorArea: []
@@ -196,8 +186,10 @@ MonoBehaviour:
     touched: 0
     arrowInBetweenConcealed: 0
     canBeSkipped: 1
-    sensorsNearby: []
-  - mainSensor: B7
+  - sensors:
+    - sensor: B7
+      lane: 3
+      type: 0
     slideSpriteRenderers: []
     slideSpriteRenderersWithinSensorArea: []
     slideSpriteRenderersOutsideSensorArea: []
@@ -205,8 +197,10 @@ MonoBehaviour:
     touched: 0
     arrowInBetweenConcealed: 0
     canBeSkipped: 1
-    sensorsNearby: []
-  - mainSensor: B6
+  - sensors:
+    - sensor: B6
+      lane: 3
+      type: 0
     slideSpriteRenderers: []
     slideSpriteRenderersWithinSensorArea: []
     slideSpriteRenderersOutsideSensorArea: []
@@ -214,8 +208,10 @@ MonoBehaviour:
     touched: 0
     arrowInBetweenConcealed: 0
     canBeSkipped: 1
-    sensorsNearby: []
-  - mainSensor: B5
+  - sensors:
+    - sensor: B5
+      lane: 3
+      type: 0
     slideSpriteRenderers: []
     slideSpriteRenderersWithinSensorArea: []
     slideSpriteRenderersOutsideSensorArea: []
@@ -223,8 +219,10 @@ MonoBehaviour:
     touched: 0
     arrowInBetweenConcealed: 0
     canBeSkipped: 1
-    sensorsNearby: []
-  - mainSensor: B4
+  - sensors:
+    - sensor: B4
+      lane: 3
+      type: 0
     slideSpriteRenderers: []
     slideSpriteRenderersWithinSensorArea: []
     slideSpriteRenderersOutsideSensorArea: []
@@ -232,8 +230,10 @@ MonoBehaviour:
     touched: 0
     arrowInBetweenConcealed: 0
     canBeSkipped: 1
-    sensorsNearby: []
-  - mainSensor: A3
+  - sensors:
+    - sensor: A3
+      lane: 3
+      type: 0
     slideSpriteRenderers: []
     slideSpriteRenderersWithinSensorArea: []
     slideSpriteRenderersOutsideSensorArea: []
@@ -241,7 +241,8 @@ MonoBehaviour:
     touched: 0
     arrowInBetweenConcealed: 0
     canBeSkipped: 1
-    sensorsNearby: []
+  flipPathY: 0
+  pathRotation: 0
 --- !u!1 &6957006416315944827
 GameObject:
   m_ObjectHideFlags: 0
@@ -348,4 +349,3 @@ MonoBehaviour:
   spriteRenderer: {fileID: 4484430481507548840}
   slideBasedNote: {fileID: 3728511668802687097}
   wifiSvgAssetNameOverride: 
-  duration: 5

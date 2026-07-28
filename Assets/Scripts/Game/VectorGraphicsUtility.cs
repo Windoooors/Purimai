@@ -90,6 +90,8 @@ namespace Game
             
             SetStartPosition(startPosition);
         }
+        
+        public float GetTotalLength() => _totalLength;
 
         public void FindTurningPoints()
         {

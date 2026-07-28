@@ -19,7 +19,7 @@ namespace Game.Notes.NormalIndividualSlides
             }
             else
             {
-                //MirrorSlideSensorIds();
+                MirrorSlideSensorIds();
 
                 flipPathY = false;
                 pathRotation = -45f * fromLaneIndex;

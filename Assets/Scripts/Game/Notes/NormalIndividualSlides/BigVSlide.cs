@@ -13,7 +13,7 @@ namespace Game.Notes.NormalIndividualSlides
 
             if (IsClockwise)
             {
-                //MirrorSlideSensorIds();
+                MirrorSlideSensorIds();
 
                 flipPathY = true;
                 pathRotation = -45f * (individualSlideDataObject.From - 1) - 45;
@@ -23,6 +23,8 @@ namespace Game.Notes.NormalIndividualSlides
                 flipPathY = false;
                 pathRotation = -45f * (individualSlideDataObject.From - 1);
             }
+            
+            transform.Rotate(new Vector3(0, 0, -45f * (individualSlideDataObject.From - 1)));
         }
 
         private static Vector2 GetPoint(int index)

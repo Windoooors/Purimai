@@ -461,6 +461,7 @@ namespace Game
                 
                 normalSlide.individualSlides.Add(individualSlideInstance);
                 individualSlideInstance?.transform.SetParent(normalSlide.transform);
+                individualSlideInstance.parentNormalSlide = normalSlide;
             }
         }
     }
