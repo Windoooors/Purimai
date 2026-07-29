@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -422,77 +421,77 @@ namespace UI.LevelSelection
             try
             {
 #endif
-                _listView.itemsSource = _data;
+            _listView.itemsSource = _data;
 
-                var targetRawIndex = 0;
+            var targetRawIndex = 0;
 
-                if (currentData != null)
-                    switch (groupByRule)
+            if (currentData != null)
+                switch (groupByRule)
+                {
+                    case SortingRules.Alphabet:
                     {
-                        case SortingRules.Alphabet:
+                        for (var i = 0; i < _rawData.Length; i++)
                         {
-                            for (var i = 0; i < _rawData.Length; i++)
+                            var maidata = _rawData[i];
+                            if (maidata.MaidataReferenceCountPair.Maidata.Title ==
+                                currentData.MaidataReferenceCountPair.Maidata.Title)
                             {
-                                var maidata = _rawData[i];
-                                if (maidata.MaidataReferenceCountPair.Maidata.Title ==
-                                    currentData.MaidataReferenceCountPair.Maidata.Title)
-                                {
-                                    targetRawIndex = i;
-                                    break;
-                                }
+                                targetRawIndex = i;
+                                break;
                             }
-
-                            break;
                         }
-                        case SortingRules.Difficulty:
-                        {
-                            for (var i = 0; i < _rawData.Length; i++)
-                            {
-                                var maidata = _rawData[i];
-                                if (maidata.MaidataReferenceCountPair.Maidata.Title ==
-                                    currentData.MaidataReferenceCountPair.Maidata.Title && maidata.DifficultyIndex ==
-                                    _scoreContentPanel.AlphabeticallySelectedDifficultyIndex)
-                                {
-                                    targetRawIndex = i;
-                                    break;
-                                }
-                            }
 
-                            break;
-                        }
+                        break;
                     }
+                    case SortingRules.Difficulty:
+                    {
+                        for (var i = 0; i < _rawData.Length; i++)
+                        {
+                            var maidata = _rawData[i];
+                            if (maidata.MaidataReferenceCountPair.Maidata.Title ==
+                                currentData.MaidataReferenceCountPair.Maidata.Title && maidata.DifficultyIndex ==
+                                _scoreContentPanel.AlphabeticallySelectedDifficultyIndex)
+                            {
+                                targetRawIndex = i;
+                                break;
+                            }
+                        }
 
-                if (currentData == null) targetRawIndex = PlayerPrefs.GetInt("LevelListIndex");
+                        break;
+                    }
+                }
 
-                _snapManipulator.SnapToNearest(1, targetRawIndex, VirtualCount / 2, _rawData.Length, _scrollView,
-                    out var targetIndex, false, false);
+            if (currentData == null) targetRawIndex = PlayerPrefs.GetInt("LevelListIndex");
 
-                _sortButton.RemoveFromClassList("sort-button-difficulty");
-                _sortButton.RemoveFromClassList("sort-button-alphabetically");
+            _snapManipulator.SnapToNearest(1, targetRawIndex, VirtualCount / 2, _rawData.Length, _scrollView,
+                out var targetIndex, false, false);
 
-                _sortButton.AddToClassList(groupByRule is SortingRules.Alphabet
-                    ? "sort-button-alphabetically"
-                    : "sort-button-difficulty");
+            _sortButton.RemoveFromClassList("sort-button-difficulty");
+            _sortButton.RemoveFromClassList("sort-button-alphabetically");
 
-                CategoryListManager.Instance.ChangeData(pairedData.Item2);
+            _sortButton.AddToClassList(groupByRule is SortingRules.Alphabet
+                ? "sort-button-alphabetically"
+                : "sort-button-difficulty");
 
-                _listView.selectedIndex = targetIndex;
+            CategoryListManager.Instance.ChangeData(pairedData.Item2);
 
-                _scoreContentPanel.SetChartInformationData(
-                    _data[_listView.selectedIndex].MaidataReferenceCountPair.Maidata,
-                    groupByRule == SortingRules.Difficulty
-                        ? _data[_listView.selectedIndex].DifficultyIndex
-                        : _scoreContentPanel.AlphabeticallySelectedDifficultyIndex);
-                _scoreContentPanel.SetScoreData(
-                    ChartRankDataManager.GetChartRankData(_data[_listView.selectedIndex].MaidataReferenceCountPair
-                        .Maidata.MaidataDirectoryName), groupByRule == SortingRules.Difficulty
-                        ? _data[_listView.selectedIndex].DifficultyIndex
-                        : _scoreContentPanel.AlphabeticallySelectedDifficultyIndex);
+            _listView.selectedIndex = targetIndex;
 
-                if (_lastCategoryData != _data[targetIndex].Category)
-                    CategoryListManager.Instance.ChangeCategoryPassively(_data[targetIndex].Category);
+            _scoreContentPanel.SetChartInformationData(
+                _data[_listView.selectedIndex].MaidataReferenceCountPair.Maidata,
+                groupByRule == SortingRules.Difficulty
+                    ? _data[_listView.selectedIndex].DifficultyIndex
+                    : _scoreContentPanel.AlphabeticallySelectedDifficultyIndex);
+            _scoreContentPanel.SetScoreData(
+                ChartRankDataManager.GetChartRankData(_data[_listView.selectedIndex].MaidataReferenceCountPair
+                    .Maidata.MaidataDirectoryName), groupByRule == SortingRules.Difficulty
+                    ? _data[_listView.selectedIndex].DifficultyIndex
+                    : _scoreContentPanel.AlphabeticallySelectedDifficultyIndex);
 
-                _lastCategoryData = _data[targetIndex].Category;
+            if (_lastCategoryData != _data[targetIndex].Category)
+                CategoryListManager.Instance.ChangeCategoryPassively(_data[targetIndex].Category);
+
+            _lastCategoryData = _data[targetIndex].Category;
 #if !UNITY_EDITOR
             }
             catch (Exception ex)

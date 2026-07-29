@@ -166,47 +166,47 @@ namespace UI.LevelSelection
 
             Logger.LogInfo("Loading simai metadata.");
 
-            #if !UNITY_EDITOR
+#if !UNITY_EDITOR
             try
             {
 #endif
-                var path = Path.Combine(Application.persistentDataPath, "Charts/");
+            var path = Path.Combine(Application.persistentDataPath, "Charts/");
 
-                if (!Directory.Exists(path))
-                    Directory.CreateDirectory(path);
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
 
-                foreach (var levelPath in Directory.GetDirectories(path))
+            foreach (var levelPath in Directory.GetDirectories(path))
+            {
+                var actualSongOggPath = "";
+                if (!(FileExistsIgnoreCase(Path.Combine(levelPath, "maidata.txt"), out var actualMaidataPath) &&
+                      (FileExistsIgnoreCase(Path.Combine(levelPath, "track.mp3"), out var actualSongMp3Path) ||
+                       FileExistsIgnoreCase(Path.Combine(levelPath, "track.ogg"), out actualSongOggPath))))
+                    continue;
+
+                var aviExists = FileExistsIgnoreCase(Path.Combine(levelPath, "pv.avi"), out var actualPvPathAvi);
+                FileExistsIgnoreCase(Path.Combine(levelPath, "pv.mp4"), out var actualPvPathMp4);
+
+                var pngExists = FileExistsIgnoreCase(Path.Combine(levelPath, "bg.png"), out var actualBgPathPng);
+                var jpgExists = FileExistsIgnoreCase(Path.Combine(levelPath, "bg.jpg"), out var actualBgPathJpg);
+
+                if (!jpgExists)
+                    FileExistsIgnoreCase(Path.Combine(levelPath, "bg.jpeg"), out actualBgPathJpg);
+
+                var maidata = new Maidata(actualMaidataPath,
+                    File.Exists(actualSongMp3Path) ? actualSongMp3Path : actualSongOggPath,
+                    aviExists ? actualPvPathAvi : actualPvPathMp4,
+                    pngExists ? actualBgPathPng : actualBgPathJpg);
+
+                MaidataList.Add(new MaidataReferenceCountPair
                 {
-                    var actualSongOggPath = "";
-                    if (!(FileExistsIgnoreCase(Path.Combine(levelPath, "maidata.txt"), out var actualMaidataPath) &&
-                          (FileExistsIgnoreCase(Path.Combine(levelPath, "track.mp3"), out var actualSongMp3Path) ||
-                           FileExistsIgnoreCase(Path.Combine(levelPath, "track.ogg"), out actualSongOggPath))))
-                        continue;
+                    Maidata = maidata,
+                    Referenced = false
+                });
+            }
 
-                    var aviExists = FileExistsIgnoreCase(Path.Combine(levelPath, "pv.avi"), out var actualPvPathAvi);
-                    FileExistsIgnoreCase(Path.Combine(levelPath, "pv.mp4"), out var actualPvPathMp4);
+            UIManager.Instance.UpdateTMPAtlas(Maidata.UsedCharacters.ToArray());
 
-                    var pngExists = FileExistsIgnoreCase(Path.Combine(levelPath, "bg.png"), out var actualBgPathPng);
-                    var jpgExists = FileExistsIgnoreCase(Path.Combine(levelPath, "bg.jpg"), out var actualBgPathJpg);
-
-                    if (!jpgExists)
-                        FileExistsIgnoreCase(Path.Combine(levelPath, "bg.jpeg"), out actualBgPathJpg);
-
-                    var maidata = new Maidata(actualMaidataPath,
-                        File.Exists(actualSongMp3Path) ? actualSongMp3Path : actualSongOggPath,
-                        aviExists ? actualPvPathAvi : actualPvPathMp4,
-                        pngExists ? actualBgPathPng : actualBgPathJpg);
-
-                    MaidataList.Add(new MaidataReferenceCountPair
-                    {
-                        Maidata = maidata,
-                        Referenced = false
-                    });
-                }
-
-                UIManager.Instance.UpdateTMPAtlas(Maidata.UsedCharacters.ToArray());
-
-                Logger.LogInfo($"Simai metadata loading completed. Found {MaidataList.Count} chart(s).");
+            Logger.LogInfo($"Simai metadata loading completed. Found {MaidataList.Count} chart(s).");
 #if !UNITY_EDITOR
         }
             catch (Exception ex)

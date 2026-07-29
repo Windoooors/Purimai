@@ -108,6 +108,7 @@ MonoBehaviour:
     canBeSkipped: 1
   flipPathY: 0
   pathRotation: 0
+  judgeDisplaySpriteRenderer: {fileID: 3007433877629184003}
 --- !u!1 &3454808495245340177
 GameObject:
   m_ObjectHideFlags: 0
@@ -212,8 +213,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 540396457052438638}
-  slideBasedNote: {fileID: 6982077603083318612}
-  wifiSvgAssetNameOverride: 
+  individualSlide: {fileID: 6982077603083318612}
 --- !u!1 &4589914769743340629
 GameObject:
   m_ObjectHideFlags: 0

@@ -123,7 +123,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7450887255288913370}
   - component: {fileID: 6617244548120875404}
-  - component: {fileID: 821354589065040094}
+  - component: {fileID: 6219809966296955133}
   m_Layer: 0
   m_Name: star
   m_TagString: Untagged
@@ -204,7 +204,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &821354589065040094
+--- !u!114 &6219809966296955133
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -213,12 +213,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 3409394947826497661}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e55ccf11941b344ad838706f64e16068, type: 3}
+  m_Script: {fileID: 11500000, guid: 3ec375e9f8a94931a53b37c0c07efc1d, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.WifiStarMovementController
   spriteRenderer: {fileID: 6617244548120875404}
-  slideBasedNote: {fileID: 0}
-  wifiSvgAssetNameOverride: straight_5
+  wifiSlide: {fileID: 2592134520801541204}
+  wifiSvgAssetName: straight_4
 --- !u!1 &5844128097870956244
 GameObject:
   m_ObjectHideFlags: 0
@@ -229,7 +229,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2624015010485647052}
   - component: {fileID: 6650119813564221703}
-  - component: {fileID: 7433590543640022345}
+  - component: {fileID: 2986509252851770737}
   m_Layer: 0
   m_Name: star
   m_TagString: Untagged
@@ -310,7 +310,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &7433590543640022345
+--- !u!114 &2986509252851770737
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -319,12 +319,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 5844128097870956244}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e55ccf11941b344ad838706f64e16068, type: 3}
+  m_Script: {fileID: 11500000, guid: 3ec375e9f8a94931a53b37c0c07efc1d, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.WifiStarMovementController
   spriteRenderer: {fileID: 6650119813564221703}
-  slideBasedNote: {fileID: 0}
-  wifiSvgAssetNameOverride: straight_4
+  wifiSlide: {fileID: 2592134520801541204}
+  wifiSvgAssetName: straight_5
 --- !u!1 &6574093696964316734
 GameObject:
   m_ObjectHideFlags: 0
@@ -374,47 +374,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   emergingTime: 0
-  segments:
-  - sensors: []
-    slideSpriteRenderers: []
-    slideSpriteRenderersWithinSensorArea: []
-    slideSpriteRenderersOutsideSensorArea: []
-    tapped: 0
-    touched: 0
-    arrowInBetweenConcealed: 0
-    canBeSkipped: 1
-  - sensors: []
-    slideSpriteRenderers: []
-    slideSpriteRenderersWithinSensorArea: []
-    slideSpriteRenderersOutsideSensorArea: []
-    tapped: 0
-    touched: 0
-    arrowInBetweenConcealed: 0
-    canBeSkipped: 1
-  - sensors: []
-    slideSpriteRenderers: []
-    slideSpriteRenderersWithinSensorArea: []
-    slideSpriteRenderersOutsideSensorArea: []
-    tapped: 0
-    touched: 0
-    arrowInBetweenConcealed: 0
-    canBeSkipped: 1
-  - sensors: []
-    slideSpriteRenderers: []
-    slideSpriteRenderersWithinSensorArea: []
-    slideSpriteRenderersOutsideSensorArea: []
-    tapped: 0
-    touched: 0
-    arrowInBetweenConcealed: 0
-    canBeSkipped: 1
-  order: 0
-  timing: 0
-  isEach: 0
-  suddenlyAppears: 0
-  stars:
-  - {fileID: 821354589065040094}
-  - {fileID: 7433590543640022345}
-  - {fileID: 2707453832534734268}
+  wifiStars:
+  - {fileID: 6219809966296955133}
+  - {fileID: 2986509252851770737}
+  - {fileID: 6763120040137670505}
   wifiSegments:
   - sensors:
     - sensor: A1
@@ -493,7 +456,7 @@ MonoBehaviour:
     touched: 0
     arrowInBetweenConcealed: 0
     canBeSkipped: 1
-  slideArrowCount: 11
+  judgeDisplaySpriteRenderer: {fileID: 8644270734557044439}
   svgAssetPath: straight_5
   pathRotation: 0
 --- !u!1 &8953793804671990520
@@ -506,7 +469,7 @@ GameObject:
   m_Component:
   - component: {fileID: 274021282209277522}
   - component: {fileID: 7851780208575611363}
-  - component: {fileID: 2707453832534734268}
+  - component: {fileID: 6763120040137670505}
   m_Layer: 0
   m_Name: star
   m_TagString: Untagged
@@ -587,7 +550,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &2707453832534734268
+--- !u!114 &6763120040137670505
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -596,9 +559,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 8953793804671990520}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e55ccf11941b344ad838706f64e16068, type: 3}
+  m_Script: {fileID: 11500000, guid: 3ec375e9f8a94931a53b37c0c07efc1d, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.WifiStarMovementController
   spriteRenderer: {fileID: 7851780208575611363}
-  slideBasedNote: {fileID: 0}
-  wifiSvgAssetNameOverride: straight_6
+  wifiSlide: {fileID: 2592134520801541204}
+  wifiSvgAssetName: straight_6

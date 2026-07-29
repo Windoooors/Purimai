@@ -23,7 +23,7 @@ namespace Game.Notes.NormalIndividualSlides
                 flipPathY = true;
                 pathRotation = -45f * (individualSlideDataObject.From - 1) - 45;
             }
-            
+
             transform.Rotate(new Vector3(0, 0, -45f * (individualSlideDataObject.From - 1)));
         }
     }

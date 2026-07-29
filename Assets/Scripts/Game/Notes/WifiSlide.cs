@@ -9,30 +9,37 @@ namespace Game.Notes
 {
     public class WifiSlide : SlideBasedNote
     {
-        [FormerlySerializedAs("stars")] public StarMovementController[] wifiStars;
-        public Segment[] wifiSegments;
         private const int WifiSlideArrowCount = 11;
-        private readonly List<SpriteRenderer> _slideArrowSpriteRenderers = new();
+        [FormerlySerializedAs("stars")] public WifiStarMovementController[] wifiStars;
+        public Segment[] wifiSegments;
         
-        private int[][] _slideArrowGroups = 
-        {
-            new[] { 0, 1 }, new[] { 2, 3 }, new[] { 4, 5, 6 }, new[] { 7, 8 }, new[] { 9, 10 }
-        };
-        
-        public string svgAssetPath;
-        public float pathRotation = 0;
-        
-        public NoteDataObject.IndividualSlideDataObject slideData;
-        
-        private VectorGraphicsUtility _vectorGraphicsUtility;
-        
-        private StarMovementController _starMovementController;
+        public SpriteRenderer judgeDisplaySpriteRenderer;
 
-        protected override (int judgeTiming, int starInLastSegmentDuration) InitializeSlideSegments()
+        protected override SpriteRenderer GetJudgeDisplaySpriteRenderer()
+        {
+            return judgeDisplaySpriteRenderer;
+        }
+
+        public string svgAssetPath;
+        public float pathRotation;
+        private readonly List<SpriteRenderer> _slideArrowSpriteRenderers = new();
+
+        private readonly int[][] _slideArrowGroups =
+        {
+            new[] { 0, 1 }, new[] { 2, 3, 4 }, new[] { 5, 6, 7 }, new[] { 8, 9, 10 }
+        };
+
+        private IndividualStarMovementController _individualIndividualStarMovementController;
+
+        private VectorGraphicsUtility _vectorGraphicsUtility;
+
+        public NoteDataObject.IndividualSlideDataObject slideData;
+
+        protected override (int judgeTiming, int starInLastSegmentDuration, Segment[] segments) InitializeSlideSegments()
         {
             var lastSegmentDuration = _slideArrowGroups[^1].Length / WifiSlideArrowCount * SlideDuration;
 
-            for (var i = 0;i < WifiSlideArrowCount;i++)
+            for (var i = 0; i < wifiSegments.Length; i++)
             {
                 var wifiSegment = wifiSegments[i];
 
@@ -42,50 +49,66 @@ namespace Game.Notes
                 wifiSegment.slideSpriteRenderersOutsideSensorArea = Array.Empty<SpriteRenderer>();
             }
             
-            segments = wifiSegments;
-            
-            return (Timing + WaitDuration + SlideDuration - lastSegmentDuration, lastSegmentDuration);
+            return (Timing + WaitDuration + SlideDuration - lastSegmentDuration, lastSegmentDuration, wifiSegments);
         }
-        
+
+        protected override IStarMovementController[] GetStars()
+        {
+            return wifiStars;
+        }
+
         private void GenerateSlideArrows()
         {
             for (var i = 0; i < WifiSlideArrowCount; i++)
             {
                 var division = WifiSlideArrowCount + 1.35;
-                
+
                 var currentProgress = (float)i + 1;
 
                 var progress = (float)(currentProgress / division + (currentProgress - 2) / 30
-                                - (currentProgress - 1) * 0.48f / division);
-                
+                                       - (currentProgress - 1) * 0.48f / division);
+
                 var prefab = NoteGenerator.Instance.slideArrowPrefab;
-                
+
                 var arrowInstance = Instantiate(prefab, transform);
 
                 var pair = _vectorGraphicsUtility.GetPositionRotationPair(progress, true);
                 arrowInstance.transform.position = pair.position;
                 arrowInstance.transform.rotation = pair.rotation;
-                
+
                 var slideSpriteRenderer = arrowInstance.GetComponent<SpriteRenderer>();
-                
+
                 slideSpriteRenderer.sprite = IsEach
                     ? NoteGenerator.Instance.wifiSlideEachSprites[i]
                     : NoteGenerator.Instance.wifiSlideSprites[i];
-                
+
                 slideSpriteRenderer.sortingOrder = i + Order;
-                
+
                 arrowInstance.transform.eulerAngles = new Vector3(0, 0, 315) +
                                                       arrowInstance.transform
                                                           .parent.eulerAngles;
-                
+
                 _slideArrowSpriteRenderers.Add(slideSpriteRenderer);
             }
-            
+
             if (IsEach)
                 foreach (var starMovementController in wifiStars)
-                {
                     starMovementController.spriteRenderer.sprite = NoteGenerator.Instance.eachStarSprite;
-                }
+        }
+        
+        protected override void UpdateJudgeDisplayDirection(int judgeDisplaySpriteGroupIndex)
+        {
+            var judgeSpriteNeedsChange =
+                JudgeDisplaySpriteRenderer.transform.rotation.eulerAngles.z is >= 265 and <= 365 or >= -5 and <= 95;
+
+            JudgeDisplaySpriteRenderer.sprite = NoteGenerator.Instance
+                .slideJudgeDisplaySprites[judgeDisplaySpriteGroupIndex]
+                .wifiSlideJudgeSprites[
+                    judgeSpriteNeedsChange
+                        ? 0
+                        : 1];
+
+            if (!judgeSpriteNeedsChange) JudgeDisplaySpriteRenderer.transform.eulerAngles += new Vector3(0, 0, 180);
         }
 
         protected override int GenerateSlideArrowObjects()
@@ -103,13 +126,9 @@ namespace Game.Notes
         protected override void InitializeSlideSensorIds()
         {
             foreach (var wifiSegment in wifiSegments)
-            {
-                foreach (var wifiSegmentSensor in wifiSegment.sensors)
-                {
-                    wifiSegmentSensor.sensor = 
-                        GetUpdatedSensorId(wifiSegmentSensor.sensor, slideData.From - 1);
-                }
-            }
+            foreach (var wifiSegmentSensor in wifiSegment.sensors)
+                wifiSegmentSensor.sensor =
+                    GetUpdatedSensorId(wifiSegmentSensor.sensor, slideData.From - 1);
         }
 
         protected override void InitializePathRotation()
@@ -118,12 +137,12 @@ namespace Game.Notes
 
             pathRotation = -45f * (slideData.From - 1);
         }
-        
+
         public override void AddAutoPlayKeyFrame()
         {
-            foreach (var segment in segments)
+            foreach (var segment in Segments)
             {
-                var index = segments.ToList().IndexOf(segment);
+                var index = Segments.ToList().IndexOf(segment);
 
                 if (index == 0)
                     continue;
@@ -131,15 +150,15 @@ namespace Game.Notes
                 float tapTime;
                 float leaveTime;
 
-                if (index == segments.Length - 1)
+                if (index == Segments.Length - 1)
                 {
                     tapTime = JudgeTiming;
                     leaveTime = JudgeTiming;
                 }
                 else
                 {
-                    tapTime = index / (float)segments.Length * SlideDuration + Timing + WaitDuration;
-                    leaveTime = (index + 1) / (float)segments.Length * SlideDuration + Timing + WaitDuration;
+                    tapTime = index / (float)Segments.Length * SlideDuration + Timing + WaitDuration;
+                    leaveTime = (index + 1) / (float)Segments.Length * SlideDuration + Timing + WaitDuration;
                 }
 
                 var lList = AutoPlayer.KeyFrameManager.GetKeyFrames(segment.sensors

@@ -1,29 +1,30 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Game.ChartManagement;
+using LitMotion;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Game.Notes
 {
     public abstract class SlideBasedNote : NoteBase
     {
-        [HideInInspector] public Segment[] segments;
-        [HideInInspector] public StarMovementController[] stars;
-
-        protected int Order { get; private set; }
-        public int Timing  { get; private set; }
-        public bool IsEach  { get; private set; }
-        public bool SuddenlyAppears  { get; private set; }
-        protected int WaitDuration  { get; private set; }
-        public int SlideDuration { get; private set; }
+        public Segment[] Segments{ get; private set; }
+        public IStarMovementController[] Stars{ get; private set; }
+        public NoteDataObject.SlideDataObject SlideDataObject { get; private set; }
+        public SpriteRenderer JudgeDisplaySpriteRenderer { get; private set; }
         
+        protected int Order { get; private set; }
+        public int Timing { get; private set; }
+        public bool IsEach { get; private set; }
+        public bool SuddenlyAppears { get; private set; }
+        protected int WaitDuration { get; private set; }
+        public int SlideDuration { get; private set; }
+
         public int JudgeTiming { get; private set; }
         public int SlideInLastSegmentDuration { get; private set; }
 
-        public void Initialize(NoteDataObject.SlideDataObject slideDataObject,bool isSlideEach, int noteTiming, ref int slideArrowOrder)
+        public void Initialize(NoteDataObject.SlideDataObject slideDataObject, bool isSlideEach, int noteTiming,
+            ref int slideArrowOrder)
         {
             Order = -slideArrowOrder;
             Timing = noteTiming;
@@ -37,21 +38,38 @@ namespace Game.Notes
             InitializePathRotation();
             InitializeVectorGraphicsUtility();
             InitializeSlideSensorIds();
-            
+
             slideArrowOrder -= GenerateSlideArrowObjects();
 
             var dataPair = InitializeSlideSegments();
             JudgeTiming = dataPair.judgeTiming;
             SlideInLastSegmentDuration = dataPair.starInLastSegmentDuration;
+            Segments = dataPair.segments;
+            
+            SlideDataObject = slideDataObject;
+            Stars = GetStars();
+            
+            JudgeDisplaySpriteRenderer =  GetJudgeDisplaySpriteRenderer();
+            
+            foreach (var starMovementController in Stars)
+            {
+                starMovementController.Initialize();
+            }
+
+            UpdateJudgeDisplayDirection(0);
         }
 
         protected abstract int GenerateSlideArrowObjects();
         protected abstract void InitializeVectorGraphicsUtility();
         protected abstract void InitializePathRotation();
         protected abstract void InitializeSlideSensorIds();
-        protected abstract (int judgeTiming, int starInLastSegmentDuration) InitializeSlideSegments();
-        
-        public static bool ArrowOverlapsOnSensor(SpriteRenderer slideArrowSpriteRenderer, NoteDataObject.SlideType slideType , Collider2D sensorCollider)
+        protected abstract (int judgeTiming, int starInLastSegmentDuration, Segment[] segments) InitializeSlideSegments();
+        protected abstract IStarMovementController[] GetStars();
+        protected abstract void UpdateJudgeDisplayDirection(int displaySpriteIndex);
+        protected abstract SpriteRenderer GetJudgeDisplaySpriteRenderer();
+
+        public static bool ArrowOverlapsOnSensor(SpriteRenderer slideArrowSpriteRenderer,
+            NoteDataObject.SlideType slideType, Collider2D sensorCollider)
         {
             if (slideType is NoteDataObject.SlideType.RotateLeft
                 or NoteDataObject.SlideType.RotateRight
@@ -80,7 +98,7 @@ namespace Game.Notes
 
             return result;
         }
-        
+
         public static string GetMirroredSensorId(string sensorId)
         {
             if (sensorId == "C")
@@ -103,7 +121,7 @@ namespace Game.Notes
 
             return sensorName + sensorLane;
         }
-        
+
         public static string GetUpdatedSensorId(string sensorId, int fromLaneIndex)
         {
             if (sensorId == "C")
@@ -119,15 +137,28 @@ namespace Game.Notes
 
             return sensorName + sensorLane;
         }
-        
+
         public override void ManualUpdate()
         {
-
         }
-        
+
         [Serializable]
         public class Segment
         {
+            public enum Lane
+            {
+                Left,
+                Center,
+                Right,
+                Single
+            }
+
+            public enum SensorType
+            {
+                Main,
+                Alternative
+            }
+
             public Sensor[] sensors;
 
             [HideInInspector] public SpriteRenderer[] slideSpriteRenderers;
@@ -146,20 +177,6 @@ namespace Game.Notes
                 public string sensor;
                 public Lane lane = Lane.Single;
                 public SensorType type = SensorType.Main;
-            }
-
-            public enum Lane
-            {
-                Left,
-                Center,
-                Right,
-                Single
-            }
-
-            public enum SensorType
-            {
-                Main,
-                Alternative
             }
         }
     }

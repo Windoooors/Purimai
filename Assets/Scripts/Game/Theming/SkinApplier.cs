@@ -7,7 +7,6 @@ using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using UI;
 using UnityEngine;
-using Logger = Logging.Logger;
 
 namespace Game.Theming
 {
@@ -152,7 +151,7 @@ namespace Game.Theming
 #endif
                 }
 
-            var decoded = new DecodedImage(image);
+                var decoded = new DecodedImage(image);
 
                 sprite.texture.Reinitialize(decoded.Width, decoded.Height,
                     TextureFormat.RGBA32, false);

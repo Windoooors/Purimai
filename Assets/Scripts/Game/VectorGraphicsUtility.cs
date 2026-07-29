@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.Mathematics;
 using Unity.VectorGraphics;
 using UnityEngine;
 using StringReader = System.IO.StringReader;
@@ -24,15 +23,15 @@ namespace Game
         private readonly float[][] _segmentCumLengths;
         private readonly float[] _segmentLengths;
 
-        private List<(float, Quaternion _rotationBeforeTurningPoint, Quaternion _rotationAfterTurningPoint)>
-            _turningPoints = new();
-
         // per-segment arc length tables
         private readonly float[][] _segmentSampleTs;
         private readonly float _totalLength;
         private Vector2 _presetOffsetPosition;
 
         private Vector3 _startPosition;
+
+        private readonly List<(float, Quaternion _rotationBeforeTurningPoint, Quaternion _rotationAfterTurningPoint)>
+            _turningPoints = new();
 
         public float ObjectRotationOffset;
 
@@ -87,11 +86,14 @@ namespace Game
                 _segmentLengths[i] = cumulativeLengths[n]; // total length of this segment
                 _totalLength += _segmentLengths[i];
             }
-            
+
             SetStartPosition(startPosition);
         }
-        
-        public float GetTotalLength() => _totalLength;
+
+        public float GetTotalLength()
+        {
+            return _totalLength;
+        }
 
         public void FindTurningPoints()
         {
@@ -103,21 +105,21 @@ namespace Game
                 var rotation = GetPositionRotationPair(current, false).rotation;
 
                 var deltaRotation = Quaternion.Angle(rotation, lastRotation);
-                
+
                 if (deltaRotation > 20)
                 {
                     var turningPoint = current;
-                    
+
                     var rotationBeforeTurningPoint = GetPositionRotationPair(turningPoint - 0.05f, false).rotation;
                     var rotationAfterTurningPoint = GetPositionRotationPair(turningPoint + 0.05f, false).rotation;
 
                     _turningPoints.Add((turningPoint, rotationBeforeTurningPoint, rotationAfterTurningPoint));
                 }
-                
+
                 lastRotation = rotation;
             }
         }
-        
+
         public void SetStartPosition(Vector3 startPosition)
         {
             _startPosition = startPosition;
@@ -143,7 +145,7 @@ namespace Game
 
             Vector2 worldPos = matrix.MultiplyPoint3x4(pos - _presetOffsetPosition);
             Vector2 worldTangent = matrix.MultiplyVector(tangent).normalized;
-            
+
             if (!isStar || _turningPoints.Count == 0 || !InTurningProgress(out var turningPoint))
             {
                 var angle = Mathf.Atan2(worldTangent.y, worldTangent.x) * Mathf.Rad2Deg;
@@ -151,8 +153,9 @@ namespace Game
                 return (_startPosition + new Vector3(worldPos.x, worldPos.y, 0),
                     Quaternion.Euler(0f, 0f, angle + ObjectRotationOffset));
             }
-            
-            var rotation = Quaternion.Lerp(turningPoint?.before ?? new Quaternion(), turningPoint?.after ?? new Quaternion(),
+
+            var rotation = Quaternion.Lerp(turningPoint?.before ?? new Quaternion(),
+                turningPoint?.after ?? new Quaternion(),
                 (progress - (turningPoint?.Item1 ?? 0) + 0.01f) / 0.05f);
 
             return (_startPosition + new Vector3(worldPos.x, worldPos.y, 0),
@@ -161,14 +164,12 @@ namespace Game
             bool InTurningProgress(out (float, Quaternion before, Quaternion after)? turningPoint)
             {
                 foreach (var point in _turningPoints)
-                {
                     if (progress >= point.Item1 - 0.01f && progress <= point.Item1 + 0.04f)
                     {
                         turningPoint = point;
 
                         return true;
                     }
-                }
 
                 turningPoint = null;
                 return false;

@@ -58,20 +58,20 @@ namespace Game.Theming
                 try
                 {
 #endif
-                    Logger.LogInfo($"Found skin path {skinPath}.");
+                Logger.LogInfo($"Found skin path {skinPath}.");
 
-                    var content = JsonConvert.DeserializeObject<ThemeDataDto>(File.ReadAllText(metaPath));
+                var content = JsonConvert.DeserializeObject<ThemeDataDto>(File.ReadAllText(metaPath));
 
-                    var skinData = new ThemeData
-                    {
-                        Path = skinPath,
-                        themeDataDto = content
-                    };
+                var skinData = new ThemeData
+                {
+                    Path = skinPath,
+                    themeDataDto = content
+                };
 
-                    skinData.themeDataDto.Data ??= Array.Empty<SkinPieceDataDto>();
-                    skinData.themeDataDto.SfxData ??= Array.Empty<SfxPieceDataDto>();
+                skinData.themeDataDto.Data ??= Array.Empty<SkinPieceDataDto>();
+                skinData.themeDataDto.SfxData ??= Array.Empty<SfxPieceDataDto>();
 
-                    SkinDataList.Add(skinData);
+                SkinDataList.Add(skinData);
 #if !UNITY_EDITOR
                 }
                 catch (Exception e)

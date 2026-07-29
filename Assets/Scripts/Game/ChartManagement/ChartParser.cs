@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UI.Settings;
-using UnityEditor.Localization.Plugins.XLIFF.V20;
 using UnityEngine;
 
 namespace Game.ChartManagement
@@ -432,10 +431,7 @@ namespace Game.ChartManagement
 
                     var singleLengthTypeString = string.Concat(new[] { slideCharArray[i] });
 
-                    if (!SlideStringToSlideType.TryGetValue(singleLengthTypeString, out type))
-                    {
-                        continue;
-                    }
+                    if (!SlideStringToSlideType.TryGetValue(singleLengthTypeString, out type)) continue;
 
                     individualSlideList.Add(new IndividualSlideResult
                     {
@@ -447,17 +443,17 @@ namespace Game.ChartManagement
 
             result.IndividualSlides = individualSlideList.ToArray();
             result.TimingObject = slideTiming;
-            
+
             return result;
 
             bool MatchCore(ref SlideTimingObject timingObject, bool first, ref string noteInput)
             {
                 var count = 0;
-                
+
                 foreach (var (pattern, action) in timingCases)
                 {
                     var matches = Regex.Matches(noteInput, pattern);
-                    
+
                     foreach (Match m in matches)
                     {
                         if (!m.Success)
@@ -468,10 +464,10 @@ namespace Game.ChartManagement
 
                         noteInput = new Regex(pattern).Replace(noteInput, "");
                     }
-                    
+
                     count += matches.Count;
                 }
-                
+
                 return count != 0;
             }
         }

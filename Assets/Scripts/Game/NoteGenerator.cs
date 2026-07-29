@@ -348,12 +348,12 @@ namespace Game
 
                 SlideBasedNote slideBasedNoteObjectInstance =
                     isWifi ? SlideGenerator.GenerateWifiSlide(slide) : Instantiate(normalSlidePrefab);
-                
+
                 slideBasedNoteObjectInstance.transform.position = Vector3.zero;
-                
+
                 if (!slideBasedNoteObjectInstance)
                     continue;
-                
+
                 notesList.Add(slideBasedNoteObjectInstance);
                 slideBasedNoteObjectInstance.transform.parent = _noteParent.transform;
 
@@ -361,12 +361,10 @@ namespace Game
                     .Find(x => x.waitDuration == slide.WaitDuration).Item2?.Count ?? 1) > 1;
 
                 if (slideBasedNoteObjectInstance is NormalSlide normalSlide)
-                {
                     GenerateIndividualSlides(normalSlide, slide.IndividualSlides);
-                }
-                
+
                 slideBasedNoteObjectInstance.Initialize(slide, isEach, noteDataObject.Timing, ref _slideOrder);
-                
+
                 if (noteDataObject.Timing + slide.WaitDuration + slide.SlideDuration > endingTime)
                     endingTime = noteDataObject.Timing + slide.WaitDuration + slide.SlideDuration;
             }
@@ -403,28 +401,9 @@ namespace Game
                 _ => inputLane
             };
         }
-        
-        [Serializable]
-        public class IndividualSlidePrefabDataObject
-        {
-            public CycleSlide[] cycleSlidePrefabs;
-            public PqSlide[] pqSlidePrefabs;
-            public LittleVSlide[] vSlidePrefabs;
-            public LineSlide[] lineSlidePrefabs;
-            public BigVSlide[] bigVSlidePrefabs;
-            public BigPqSlide[] bigPqSlidePrefabs;
-            public ZsSlide zsSlidePrefab;
-         }
 
-        [Serializable]
-        public class SlideJudgeDisplayDataObject
-        {
-            public Sprite[] normalSlideJudgeSprites;
-            public Sprite[] circleSlideJudgeSprites;
-            public Sprite[] wifiSlideJudgeSprites;
-        }
-
-        public static void GenerateIndividualSlides(NormalSlide normalSlide, NoteDataObject.IndividualSlideDataObject[] individualSlideData)
+        public static void GenerateIndividualSlides(NormalSlide normalSlide,
+            NoteDataObject.IndividualSlideDataObject[] individualSlideData)
         {
             foreach (var individualSlide in individualSlideData)
             {
@@ -456,13 +435,33 @@ namespace Game
 
                 if (!individualSlideInstance)
                     continue;
-                    
+
                 individualSlideInstance.transform.position = Vector3.zero;
-                
+
                 normalSlide.individualSlides.Add(individualSlideInstance);
                 individualSlideInstance?.transform.SetParent(normalSlide.transform);
                 individualSlideInstance.parentNormalSlide = normalSlide;
             }
+        }
+
+        [Serializable]
+        public class IndividualSlidePrefabDataObject
+        {
+            public CycleSlide[] cycleSlidePrefabs;
+            public PqSlide[] pqSlidePrefabs;
+            public LittleVSlide[] vSlidePrefabs;
+            public LineSlide[] lineSlidePrefabs;
+            public BigVSlide[] bigVSlidePrefabs;
+            public BigPqSlide[] bigPqSlidePrefabs;
+            public ZsSlide zsSlidePrefab;
+        }
+
+        [Serializable]
+        public class SlideJudgeDisplayDataObject
+        {
+            public Sprite[] normalSlideJudgeSprites;
+            public Sprite[] circleSlideJudgeSprites;
+            public Sprite[] wifiSlideJudgeSprites;
         }
     }
 }

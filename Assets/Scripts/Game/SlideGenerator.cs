@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using Game.ChartManagement;
 using Game.Notes;
 using Game.Notes.NormalIndividualSlides;
@@ -34,13 +33,13 @@ namespace Game
             };
 
             cycleSlideInstance.individualSlideDataObject = slide;
-            
+
             return cycleSlideInstance;
         }
 
         public static IndividualSlideBase GeneratePqSlide(NoteDataObject.IndividualSlideDataObject slide)
         {
-            var pqInterval 
+            var pqInterval
                 = IndividualSlideBase.GetIntervalInBothWays(slide.From, slide.To[0]);
 
             var pqSlidePrefabs = NoteGenerator.Instance.individualSlidePrefabs.pqSlidePrefabs;
@@ -166,7 +165,7 @@ namespace Game
             };
 
             bigPqSlideInstance.individualSlideDataObject = slide;
-            
+
             return bigPqSlideInstance;
         }
 
@@ -178,19 +177,17 @@ namespace Game
             var zsSlideInstance = Instantiate(NoteGenerator.Instance.individualSlidePrefabs.zsSlidePrefab);
 
             zsSlideInstance.individualSlideDataObject = slide;
-            
+
             return zsSlideInstance;
         }
 
         public static WifiSlide GenerateWifiSlide(NoteDataObject.SlideDataObject slide)
         {
             if (slide.IndividualSlides.Length < 1 || slide.IndividualSlides[0].Type != NoteDataObject.SlideType.Wifi)
-            {
                 throw new Exception("Invalid wifi slide data.");
-            }
-            
+
             var individualSlideData = slide.IndividualSlides[0];
-            
+
             var wifiSlideInstance = Instantiate(NoteGenerator.Instance.wifiSlidePrefab);
 
             wifiSlideInstance.slideData = individualSlideData;

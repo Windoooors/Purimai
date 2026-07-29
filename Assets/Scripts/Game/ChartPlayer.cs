@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Linq;
 using Game.Notes;
@@ -398,69 +397,69 @@ namespace Game
 
         public void InitializeLevel(Maidata maidata, int difficultyIndex)
         {
-            #if !UNITY_EDITOR
+#if !UNITY_EDITOR
             try
             {
 #endif
-                Logger.LogInfo("Loading Chart..");
+            Logger.LogInfo("Loading Chart..");
 
-                Maidata = maidata;
+            Maidata = maidata;
 
-                Maidata.SongBassHandler.Volume = _songVolume;
+            Maidata.SongBassHandler.Volume = _songVolume;
 
-                levelDifficultyIndex = difficultyIndex;
+            levelDifficultyIndex = difficultyIndex;
 
-                var chart = maidata.Charts.ToList().Find(x => x.DifficultyIndex == difficultyIndex);
+            var chart = maidata.Charts.ToList().Find(x => x.DifficultyIndex == difficultyIndex);
 
-                NoteGenerator.Instance.GenerateNotes(chart.ChartString, maidata.FirstNoteTime);
+            NoteGenerator.Instance.GenerateNotes(chart.ChartString, maidata.FirstNoteTime);
 
-                var useBlurredCover = SettingsPool.GetValue("blurred_cover") != 0;
+            var useBlurredCover = SettingsPool.GetValue("blurred_cover") != 0;
 
-                if (!TryLoadVideo(maidata.PvPath))
-                {
-                    backgroundImage.color = Color.white;
-                    var tex = useBlurredCover
-                        ? maidata.BlurredSongCoverAsBackgroundDecodedImage.GetTexture2D()
-                        : maidata.SongCoverDecodedImage.GetTexture2D();
+            if (!TryLoadVideo(maidata.PvPath))
+            {
+                backgroundImage.color = Color.white;
+                var tex = useBlurredCover
+                    ? maidata.BlurredSongCoverAsBackgroundDecodedImage.GetTexture2D()
+                    : maidata.SongCoverDecodedImage.GetTexture2D();
 
-                    judgeCircleGlowSpriteRenderer.material.SetTexture("_Background", tex);
+                judgeCircleGlowSpriteRenderer.material.SetTexture("_Background", tex);
 
-                    judgeCircleGlowSpriteRenderer.material.SetFloat("_Width", tex.width);
-                    judgeCircleGlowSpriteRenderer.material.SetFloat("_Height", tex.height);
+                judgeCircleGlowSpriteRenderer.material.SetFloat("_Width", tex.width);
+                judgeCircleGlowSpriteRenderer.material.SetFloat("_Height", tex.height);
 
-                    backgroundImage.texture = tex;
-                    backgroundImage.material.SetTexture("_MainTex", tex);
+                backgroundImage.texture = tex;
+                backgroundImage.material.SetTexture("_MainTex", tex);
 
-                    backgroundImage.material.SetFloat("_Width", tex.width);
-                    backgroundImage.material.SetFloat("_Height", tex.height);
+                backgroundImage.material.SetFloat("_Width", tex.width);
+                backgroundImage.material.SetFloat("_Height", tex.height);
 
-                    Logger.LogInfo("Chart has no video.");
-                }
-                else
-                {
-                    backgroundImage.texture = null;
-                    backgroundImage.color = Color.black;
+                Logger.LogInfo("Chart has no video.");
+            }
+            else
+            {
+                backgroundImage.texture = null;
+                backgroundImage.color = Color.black;
 
-                    Logger.LogInfo("Chart video successfully loaded.");
-                }
+                Logger.LogInfo("Chart video successfully loaded.");
+            }
 
-                InitializeCircleColor(difficultyIndex - 1, maidata.IsUtage);
+            InitializeCircleColor(difficultyIndex - 1, maidata.IsUtage);
 
-                var darkness = SettingsPool.GetValue("background_brightness") switch
-                {
-                    0 => 1f,
-                    1 => 0.7f,
-                    2 => 0.435f,
-                    3 => 0.3f,
-                    4 => 0.2f,
-                    5 => 0,
-                    _ => 0.435f
-                };
+            var darkness = SettingsPool.GetValue("background_brightness") switch
+            {
+                0 => 1f,
+                1 => 0.7f,
+                2 => 0.435f,
+                3 => 0.3f,
+                4 => 0.2f,
+                5 => 0,
+                _ => 0.435f
+            };
 
-                backgroundBrightnessCover.color = new Color(0, 0, 0, darkness);
+            backgroundBrightnessCover.color = new Color(0, 0, 0, darkness);
 
-                Play();
-                #if !UNITY_EDITOR
+            Play();
+#if !UNITY_EDITOR
             }
             catch (Exception e)
             {

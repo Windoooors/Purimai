@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.ChartManagement;
-using UI.Result;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -11,32 +9,52 @@ namespace Game.Notes
 {
     public abstract class IndividualSlideBase : MonoBehaviour
     {
-        public StarMovementController star;
+        public IndividualStarMovementController star;
         public string svgAssetPath;
         public NormalSlide parentNormalSlide;
-        
+
         public int slideArrowCount;
         public SlideBasedNote.Segment[] segments;
-        protected bool IsClockwise;
+        public bool flipPathY;
+        public float pathRotation;
+        
+        public SpriteRenderer judgeDisplaySpriteRenderer;
+        
+        public VectorGraphicsUtility GraphicsUtility { get; private set; }
+
+        private float? _pathLength;
+
+        private readonly List<SpriteRenderer> _slideArrowSpriteRenderers = new();
         public NoteDataObject.IndividualSlideDataObject individualSlideDataObject;
-        public bool flipPathY = false;
-        public float pathRotation = 0;
+        protected bool IsClockwise;
         protected int[] SlideJudgeDisplaySpriteIndexes;
         
-        private List<SpriteRenderer> _slideArrowSpriteRenderers = new List<SpriteRenderer>();
+        public virtual void UpdateJudgeDisplayDirection(int judgeSpriteGroupIndex)
+        {
+            var judgeSpriteNeedsChange =
+                judgeDisplaySpriteRenderer.transform.rotation.eulerAngles.z is > 265 and <= 365 or > -5 and <= 95;
 
-        private VectorGraphicsUtility _graphicsUtility;
+            judgeDisplaySpriteRenderer.sprite = NoteGenerator.Instance
+                .slideJudgeDisplaySprites[judgeSpriteGroupIndex]
+                .normalSlideJudgeSprites[
+                    judgeSpriteNeedsChange
+                        ? SlideJudgeDisplaySpriteIndexes[1]
+                        : SlideJudgeDisplaySpriteIndexes[0]];
+
+            if (!judgeSpriteNeedsChange)
+                judgeDisplaySpriteRenderer.transform.eulerAngles += new Vector3(0, 0, 180);
+        }
 
         public int GenerateSlideArrows(int parentalOrder)
         {
             var prefab = NoteGenerator.Instance.slideArrowPrefab;
             var order = 0;
-            
+
             for (var i = 0; i < slideArrowCount; i++)
             {
                 var division = slideArrowCount + 1.35;
                 var currentProgress = (float)i + 1;
-                
+
                 if (individualSlideDataObject.Type is NoteDataObject.SlideType.Line)
                 {
                     division -= 0.45f;
@@ -50,35 +68,35 @@ namespace Game.Notes
                 }
 
                 var progress = (float)(currentProgress / division);
-                
+
                 var arrowInstance = Instantiate(prefab, transform);
 
-                var pair = _graphicsUtility.GetPositionRotationPair(progress, true);
+                var pair = GraphicsUtility.GetPositionRotationPair(progress, true);
                 arrowInstance.transform.position = pair.position;
                 arrowInstance.transform.rotation = pair.rotation;
-                var spriteRenderer= arrowInstance.GetComponent<SpriteRenderer>();
+                var spriteRenderer = arrowInstance.GetComponent<SpriteRenderer>();
 
                 spriteRenderer.sortingOrder = order++ + parentalOrder;
                 if (parentNormalSlide.IsEach)
                     spriteRenderer.sprite = NoteGenerator.Instance.slideEachSprite;
-                
+
                 arrowInstance.transform.SetParent(transform);
-                
+
                 _slideArrowSpriteRenderers.Add(spriteRenderer);
             }
-            
+
             if (parentNormalSlide.IsEach)
                 star.spriteRenderer.sprite = NoteGenerator.Instance.eachStarSprite;
-            
+
             return slideArrowCount;
         }
 
         public void InitializeVectorGraphicsUtility()
         {
-            _graphicsUtility = new VectorGraphicsUtility(svgAssetPath, pathRotation, flipPathY,
+            GraphicsUtility = new VectorGraphicsUtility(svgAssetPath, pathRotation, flipPathY,
                 Lanes.Instance.endPoints[individualSlideDataObject.From - 1].position, 180);
         }
-        
+
         public static int GetShortestInterval(int fromLane, int toLane)
         {
             if (fromLane == toLane) return 0;
@@ -97,21 +115,17 @@ namespace Game.Notes
 
             return (clockwise, counterClockwise);
         }
-        
+
         protected void MirrorSlideSensorIds()
         {
             foreach (var segment in segments)
-            {
-                segment.sensors.ToList().ForEach(x =>
-                {
-                    x.sensor = SlideBasedNote.GetMirroredSensorId(x.sensor);
-                });
-            }
+                segment.sensors.ToList().ForEach(x => { x.sensor = SlideBasedNote.GetMirroredSensorId(x.sensor); });
         }
 
         public abstract void InitializeSlideDirection();
 
-        public (int judgeTiming, int starInLastSegmentDuration) InitializeSlideSegments(int individualSlideDuration, int individualStartTiming)
+        public (int judgeTiming, int starInLastSegmentDuration) InitializeSlideSegments(int individualSlideDuration,
+            int individualStartTiming)
         {
             var previousMatchedArrowIndex = -1;
 
@@ -127,7 +141,8 @@ namespace Game.Notes
                     continue;
                 }
 
-                var mainSensor = segment.sensors.FirstOrDefault(x => x.type == SlideBasedNote.Segment.SensorType.Main)?.sensor;
+                var mainSensor = segment.sensors.FirstOrDefault(x => x.type == SlideBasedNote.Segment.SensorType.Main)
+                    ?.sensor;
 
                 var matchedSensorShape = SensorShape.SensorShapes.Find(x => x.sensorId == mainSensor);
 
@@ -135,26 +150,24 @@ namespace Game.Notes
                 var spriteOutsideAreaList = new List<SpriteRenderer>();
 
                 var startIndex = previousMatchedArrowIndex + 1;
-                
-                int count = _slideArrowSpriteRenderers.Count;
+
+                var count = _slideArrowSpriteRenderers.Count;
                 var sensorCollider = matchedSensorShape.GetComponent<Collider2D>();
                 var slideType = individualSlideDataObject.Type;
 
                 bool IsOverlapping(int index)
                 {
                     if (index < 0 || index >= count) return false;
-                    return SlideBasedNote.ArrowOverlapsOnSensor(_slideArrowSpriteRenderers[index], slideType, sensorCollider);
+                    return SlideBasedNote.ArrowOverlapsOnSensor(_slideArrowSpriteRenderers[index], slideType,
+                        sensorCollider);
                 }
 
                 for (var i = startIndex; i < count; i++)
                 {
-                    bool prevOverlaps = IsOverlapping(i - 1);
-                    bool currentOverlaps = IsOverlapping(i);
-                    
-                    if (i > startIndex && (!prevOverlaps || !currentOverlaps))
-                    {
-                        break;
-                    }
+                    var prevOverlaps = IsOverlapping(i - 1);
+                    var currentOverlaps = IsOverlapping(i);
+
+                    if (i > startIndex && (!prevOverlaps || !currentOverlaps)) break;
 
                     if (IsOverlapping(i))
                         spriteWithinAreaList.Add(_slideArrowSpriteRenderers[i]);
@@ -177,8 +190,8 @@ namespace Game.Notes
 
             var lastSegmentArrowCount = segments[^1].slideSpriteRenderersWithinSensorArea.Length;
             var slideJudgeTiming = (int)((float)(_slideArrowSpriteRenderers.Count - lastSegmentArrowCount) /
-                                     _slideArrowSpriteRenderers.Count * individualSlideDuration
-                                     + individualStartTiming);
+                                         _slideArrowSpriteRenderers.Count * individualSlideDuration
+                                         + individualStartTiming);
 
             var starInLastSegmentDuration =
                 (int)((float)lastSegmentArrowCount / _slideArrowSpriteRenderers.Count * individualSlideDuration);
@@ -188,26 +201,22 @@ namespace Game.Notes
 
         public float GetSlidePathLength()
         {
-            if (_graphicsUtility == null)
+            if (GraphicsUtility == null)
                 return -1;
 
-            return _pathLength ??= _graphicsUtility.GetTotalLength();
+            return _pathLength ??= GraphicsUtility.GetTotalLength();
         }
 
-        private float? _pathLength;
-        
         public void InitializeSensorIds()
         {
             var chainedSlide = parentNormalSlide.individualSlides.Count > 1;
-            
+
             foreach (var segment in segments)
             {
                 foreach (var segmentSensor in segment.sensors)
-                {
                     segmentSensor.sensor =
                         SlideBasedNote.GetUpdatedSensorId(segmentSensor.sensor,
                             individualSlideDataObject.From - 1);
-                }
 
                 if (chainedSlide)
                     segment.canBeSkipped = true;

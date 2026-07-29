@@ -22,6 +22,7 @@ namespace UI.Settings
         private readonly float[] _deltaTimeArray = { 0, 0, 0, 0 };
 
         private readonly Color _originalEffectColor = new(217 / 255f, 217 / 255f, 217 / 255f);
+        private readonly float[] _timeArray = { 0, 0, 0, 0 };
 
         private VisualElement _background;
 
@@ -42,7 +43,6 @@ namespace UI.Settings
         private Button _returnButton;
 
         private MotionHandle _songFadeOutHandle;
-        private readonly float[] _timeArray = { 0, 0, 0, 0 };
 
         private float _timerInSeconds;
         public static CalibrationManager Instance => _instance ??= FindAnyObjectByType<CalibrationManager>();

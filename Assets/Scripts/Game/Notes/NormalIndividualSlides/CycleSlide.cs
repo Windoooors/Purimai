@@ -5,6 +5,26 @@ namespace Game.Notes.NormalIndividualSlides
 {
     public class CycleSlide : IndividualSlideBase
     {
+        public override void UpdateJudgeDisplayDirection(int judgeDisplaySpriteGroupIndex)
+        {
+            var judgeSpriteNeedsChange =
+                judgeDisplaySpriteRenderer.transform.position.y < 0;
+
+            var index = judgeSpriteNeedsChange
+                ? IsClockwise ? 3 : 1
+                : IsClockwise
+                    ? 2
+                    : 0;
+
+            judgeDisplaySpriteRenderer.sprite = NoteGenerator.Instance
+                .slideJudgeDisplaySprites[judgeDisplaySpriteGroupIndex]
+                .circleSlideJudgeSprites[index];
+
+            if (!judgeSpriteNeedsChange) judgeDisplaySpriteRenderer.transform.eulerAngles += new Vector3(0, 0, 180);
+
+            judgeDisplaySpriteRenderer.transform.eulerAngles += new Vector3(0, 0, IsClockwise ? 200f : -20f);
+        }
+        
         public override void InitializeSlideDirection()
         {
             IsClockwise = IsCircleClockwise(individualSlideDataObject.From, individualSlideDataObject.To[0],
@@ -24,7 +44,7 @@ namespace Game.Notes.NormalIndividualSlides
                 flipPathY = false;
                 pathRotation = -45f * fromLaneIndex;
             }
-            
+
             transform.Rotate(new Vector3(0, 0, -45f * (individualSlideDataObject.From - 1)));
         }
 
