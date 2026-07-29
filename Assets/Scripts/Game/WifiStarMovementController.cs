@@ -7,8 +7,10 @@ namespace Game
     public class WifiStarMovementController : StarMovementControllerBase, IStarMovementController
     {
         public WifiSlide wifiSlide;
-        [FormerlySerializedAs("wifiSvgAssetNameOverride")] public string wifiSvgAssetName;
-        
+
+        [FormerlySerializedAs("wifiSvgAssetNameOverride")]
+        public string wifiSvgAssetName;
+
         public override void Initialize()
         {
             VectorGraphicsUtility = new VectorGraphicsUtility(wifiSvgAssetName,

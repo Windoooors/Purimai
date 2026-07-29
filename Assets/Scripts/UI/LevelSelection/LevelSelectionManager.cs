@@ -9,6 +9,9 @@ using UI.Settings.Managers;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Logger = Logging.Logger;
+#if !UNITY_EDITOR
+using System;
+#endif
 
 namespace UI.LevelSelection
 {

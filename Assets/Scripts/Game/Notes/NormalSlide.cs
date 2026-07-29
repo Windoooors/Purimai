@@ -10,10 +10,15 @@ namespace Game.Notes
 
         private IndividualStarMovementController _individualIndividualStarMovementController;
 
+        private int _lastSegmentTouchedOnLeaveIndex;
+
+        private int _lastTouchedSegmentIndex;
+        private bool _slideStarted;
+
         protected override IStarMovementController[] GetStars()
         {
             var stars = individualSlides.Select(x => x.star).ToArray();
-            
+
             var chainedStarMovementController = new ChainedStarMovementController(stars);
 
             return new IStarMovementController[] { chainedStarMovementController };
@@ -29,8 +34,86 @@ namespace Game.Notes
             individualSlides[^1].UpdateJudgeDisplayDirection(displaySpriteIndex);
         }
 
+        protected override void OnSensorHold(TouchEventArgs e)
+        {
+            JudgeSegment(e.SensorId, true);
+        }
+
+        protected override void OnSensorLeave(TouchEventArgs e)
+        {
+            JudgeSegment(e.SensorId, false);
+        }
+
+        private void JudgeSegment(string sensorId, bool isFromHold)
+        {
+            if (ChartPlayer.Instance.TimeInMilliseconds + 50 < Timing || !SlideContentRoot.activeSelf)
+                return;
+
+            for (var i = _lastTouchedSegmentIndex + 1; i < Segments.Length; i++)
+            {
+                var segment = Segments[i];
+
+                if (!SensorContained(segment, sensorId) || !(i is 0 or 1 || Segments[i - 2].touched))
+                    continue;
+
+                if (!_slideStarted)
+                {
+                    PlaySlideSound();
+                    _slideStarted = true;
+                }
+
+                if (isFromHold)
+                {
+                    if (i - 1 >= 0 && (Segments[i - 1].canBeSkipped || Segments[i - 1].tapped))
+                    {
+                        Segments[i - 1].touched = true;
+                        Segments[i].tapped = true;
+
+                        ConcealSegment(i - 1, false);
+                        _lastTouchedSegmentIndex = i - 1;
+
+                        if (i == Segments.Length - 1)
+                            Judge();
+
+                        ConcealMiddleSegment(i);
+
+                        break;
+                    }
+                }
+                else
+                {
+                    if (i == Segments.Length - 1)
+                        break;
+
+                    var touchingSequenceJumped = false;
+                    if (i != _lastSegmentTouchedOnLeaveIndex)
+                    {
+                        touchingSequenceJumped = i - _lastSegmentTouchedOnLeaveIndex == 2;
+
+                        _lastSegmentTouchedOnLeaveIndex = i;
+                    }
+
+                    if (i != 0 &&
+                        (!Segments[i - 1].touched || (!Segments[i - 1].canBeSkipped && touchingSequenceJumped)))
+                        break;
+
+                    Segments[i].touched = true;
+                    ConcealSegment(i, touchingSequenceJumped);
+
+                    _lastTouchedSegmentIndex = i;
+                }
+            }
+        }
+
+        private bool SensorContained(Segment segment, string sensorId)
+        {
+            return segment.sensors.Any(x => x.sensor == sensorId);
+        }
+
         protected override int GenerateSlideArrowObjects()
         {
+            transform.position = Vector3.zero;
+
             var count = 0;
 
             foreach (var individualSlideBase in individualSlides)
@@ -43,8 +126,9 @@ namespace Game.Notes
         {
             foreach (var individualSlideBase in individualSlides) individualSlideBase.InitializeVectorGraphicsUtility();
         }
-        
-        protected override (int judgeTiming, int starInLastSegmentDuration, Segment[] segments) InitializeSlideSegments()
+
+        protected override (int judgeTiming, int starInLastSegmentDuration, Segment[] segments)
+            InitializeSlideSegments()
         {
             float startTimingF = WaitDuration + Timing;
             var judgeTiming = 0;
@@ -87,7 +171,7 @@ namespace Game.Notes
 
                 slideSegments.AddRange(individualSlideBase.segments);
             }
-            
+
             return (judgeTiming, starInLastSegmentDuration, slideSegments.ToArray());
         }
 

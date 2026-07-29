@@ -26,12 +26,13 @@ namespace Game
         // per-segment arc length tables
         private readonly float[][] _segmentSampleTs;
         private readonly float _totalLength;
-        private Vector2 _presetOffsetPosition;
-
-        private Vector3 _startPosition;
 
         private readonly List<(float, Quaternion _rotationBeforeTurningPoint, Quaternion _rotationAfterTurningPoint)>
             _turningPoints = new();
+
+        private Vector2 _presetOffsetPosition;
+
+        private Vector3 _startPosition;
 
         public float ObjectRotationOffset;
 

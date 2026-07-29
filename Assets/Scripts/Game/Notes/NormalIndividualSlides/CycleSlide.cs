@@ -24,7 +24,7 @@ namespace Game.Notes.NormalIndividualSlides
 
             judgeDisplaySpriteRenderer.transform.eulerAngles += new Vector3(0, 0, IsClockwise ? 200f : -20f);
         }
-        
+
         public override void InitializeSlideDirection()
         {
             IsClockwise = IsCircleClockwise(individualSlideDataObject.From, individualSlideDataObject.To[0],

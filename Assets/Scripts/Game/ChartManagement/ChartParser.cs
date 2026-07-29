@@ -10,7 +10,7 @@ namespace Game.ChartManagement
 {
     public class ChartLoader : MonoBehaviour
     {
-        private static readonly Regex NoteRegex = new("^.*?,");
+        private static readonly Regex NoteRegex = new("^.*?[,|`]");
         private static readonly Regex BpmRegex = new(@"^\(([^)]*?)\)");
         private static readonly Regex NoteValueRegex = new(@"^\{([^)]*?)\}");
 
@@ -89,13 +89,16 @@ namespace Game.ChartManagement
 
             if (noteParsed)
             {
-                var isNotSoleTimingMark = match.Groups[0].Value != ",";
+                var isNotSoleTimingMark = match.Groups[0].Value is not ("," or "`");
 
                 if (isNotSoleTimingMark)
                     noteDataObject = new NoteDataObject(match.Groups[0].Value, (int)((_time + _firstNoteTime) * 1000),
                         _bpm, _time + _firstNoteTime);
 
-                _time += 4 * (60f / _bpm / _noteValue);
+                var timingMark = NoteRegex.Match(_chartString).Value.ToCharArray()[^1];
+
+                _time += timingMark == ',' ? 4 * (60f / _bpm / _noteValue) : 0.001f;
+
                 _chartString = NoteRegex.Replace(_chartString, "", 1).Trim();
 
                 return isNotSoleTimingMark;

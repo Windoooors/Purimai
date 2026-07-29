@@ -8,16 +8,15 @@ namespace Game
         public void Initialize();
         public SpriteRenderer GetSpriteRenderer();
     }
-    
+
     public abstract class StarMovementControllerBase : MonoBehaviour
     {
+        public const float StarObjectRotationOffset = -18;
         public SpriteRenderer spriteRenderer;
-        
+
         private bool _isReturning;
 
         protected VectorGraphicsUtility VectorGraphicsUtility { get; set; }
-        
-        public const float StarObjectRotationOffset = -18;
 
         public abstract void Initialize();
 

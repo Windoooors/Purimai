@@ -12,30 +12,47 @@ namespace Game.Notes
         private const int WifiSlideArrowCount = 11;
         [FormerlySerializedAs("stars")] public WifiStarMovementController[] wifiStars;
         public Segment[] wifiSegments;
-        
-        public SpriteRenderer judgeDisplaySpriteRenderer;
 
-        protected override SpriteRenderer GetJudgeDisplaySpriteRenderer()
-        {
-            return judgeDisplaySpriteRenderer;
-        }
+        public SpriteRenderer judgeDisplaySpriteRenderer;
 
         public string svgAssetPath;
         public float pathRotation;
-        private readonly List<SpriteRenderer> _slideArrowSpriteRenderers = new();
 
         private readonly int[][] _slideArrowGroups =
         {
             new[] { 0, 1 }, new[] { 2, 3, 4 }, new[] { 5, 6, 7 }, new[] { 8, 9, 10 }
         };
 
+        private readonly List<SpriteRenderer> _slideArrowSpriteRenderers = new();
+
         private IndividualStarMovementController _individualIndividualStarMovementController;
+
+        private string _lastHeldLSensorId = "";
+        private string _lastHeldMSensorId = "";
+        private string _lastHeldRSensorId = "";
+
+        private bool _lastLSegmentTouchedByHolding;
+        private bool _lastMSegmentTouchedByHolding;
+        private bool _lastRSegmentTouchedByHolding;
+
+        private bool _sensorJumped;
+
+        private bool _slideStarted;
+        private int _touchedLSegmentIndex;
+        private int _touchedMSegmentIndex;
+        private int _touchedRSegmentIndex;
 
         private VectorGraphicsUtility _vectorGraphicsUtility;
 
         public NoteDataObject.IndividualSlideDataObject slideData;
 
-        protected override (int judgeTiming, int starInLastSegmentDuration, Segment[] segments) InitializeSlideSegments()
+        protected override SpriteRenderer GetJudgeDisplaySpriteRenderer()
+        {
+            return judgeDisplaySpriteRenderer;
+        }
+
+        protected override (int judgeTiming, int starInLastSegmentDuration, Segment[] segments)
+            InitializeSlideSegments()
         {
             var lastSegmentDuration = _slideArrowGroups[^1].Length / WifiSlideArrowCount * SlideDuration;
 
@@ -48,7 +65,7 @@ namespace Game.Notes
                 wifiSegment.slideSpriteRenderersWithinSensorArea = wifiSegment.slideSpriteRenderers;
                 wifiSegment.slideSpriteRenderersOutsideSensorArea = Array.Empty<SpriteRenderer>();
             }
-            
+
             return (Timing + WaitDuration + SlideDuration - lastSegmentDuration, lastSegmentDuration, wifiSegments);
         }
 
@@ -59,6 +76,8 @@ namespace Game.Notes
 
         private void GenerateSlideArrows()
         {
+            transform.position = Vector3.zero;
+
             for (var i = 0; i < WifiSlideArrowCount; i++)
             {
                 var division = WifiSlideArrowCount + 1.35;
@@ -95,7 +114,7 @@ namespace Game.Notes
                 foreach (var starMovementController in wifiStars)
                     starMovementController.spriteRenderer.sprite = NoteGenerator.Instance.eachStarSprite;
         }
-        
+
         protected override void UpdateJudgeDisplayDirection(int judgeDisplaySpriteGroupIndex)
         {
             var judgeSpriteNeedsChange =
@@ -185,6 +204,201 @@ namespace Game.Notes
                 rList.Add(new AutoPlayKeyFrame(AutoPlayKeyFrame.Type.PressUp, (int)leaveTime));
                 rList.Add(new AutoPlayKeyFrame(AutoPlayKeyFrame.Type.Hold, (int)leaveTime));
             }
+        }
+
+        private void CheckAndJudge()
+        {
+            if (Slided)
+                return;
+
+            if (_touchedLSegmentIndex + _touchedMSegmentIndex + _touchedRSegmentIndex == 12)
+            {
+                ConcealSegment(Segments.Length - 2,
+                    false);
+
+                Segments[^2].touched = true;
+
+                Judge();
+            }
+        }
+
+        private bool SensorContained(int segmentIndex, string sensorId, int pathIndex)
+        {
+            var leftSensors = Segments[segmentIndex].sensors.Where(x => x.lane == Segment.Lane.Left)
+                .Select(x => x.sensor);
+            var middleSensors = Segments[segmentIndex].sensors.Where(x => x.lane == Segment.Lane.Center)
+                .Select(x => x.sensor);
+            var rightSensors = Segments[segmentIndex].sensors.Where(x => x.lane == Segment.Lane.Right)
+                .Select(x => x.sensor);
+
+            return pathIndex switch
+            {
+                0 => leftSensors.Contains(sensorId),
+                1 => middleSensors.Contains(sensorId),
+                2 => rightSensors.Contains(sensorId),
+                _ => false
+            };
+        }
+
+        protected override void OnSensorHold(TouchEventArgs e)
+        {
+            if (!Slided)
+            {
+                var leftSensors = Segments[^1].sensors.Where(x => x.lane == Segment.Lane.Left).Select(x => x.sensor);
+                var middleSensors = Segments[^1].sensors.Where(x => x.lane == Segment.Lane.Center)
+                    .Select(x => x.sensor);
+                var rightSensors = Segments[^1].sensors.Where(x => x.lane == Segment.Lane.Right).Select(x => x.sensor);
+
+                if (leftSensors.Contains(e.SensorId) && _touchedLSegmentIndex == Segments.Length - 1)
+                    _touchedLSegmentIndex++;
+                if (middleSensors.Contains(e.SensorId) && _touchedMSegmentIndex == Segments.Length - 1)
+                    _touchedMSegmentIndex++;
+                if (rightSensors.Contains(e.SensorId) && _touchedRSegmentIndex == Segments.Length - 1)
+                    _touchedRSegmentIndex++;
+            }
+
+            CheckAndJudge();
+
+            ProcessSlideOnSpecificSlidePath(e, 0, true);
+            ProcessSlideOnSpecificSlidePath(e, 1, true);
+            ProcessSlideOnSpecificSlidePath(e, 2, true);
+        }
+
+        protected override void OnSensorLeave(TouchEventArgs e)
+        {
+            ProcessSlideOnSpecificSlidePath(e, 0, false);
+            ProcessSlideOnSpecificSlidePath(e, 1, false);
+            ProcessSlideOnSpecificSlidePath(e, 2, false);
+        }
+
+        private void ProcessSlideOnSpecificSlidePath(TouchEventArgs e, int pathIndex, bool isOnHold)
+        {
+            if (Slided)
+                return;
+
+            var minimalTouchedSegmentIndex =
+                TernaryMinimal(_touchedRSegmentIndex, _touchedLSegmentIndex, _touchedMSegmentIndex);
+
+            var lastSegmentToBeConcealedIndex = minimalTouchedSegmentIndex - 1;
+
+            var lastHeldSensorId = pathIndex switch
+            {
+                0 => _lastHeldLSensorId,
+                1 => _lastHeldMSensorId,
+                2 => _lastHeldRSensorId,
+                _ => ""
+            };
+
+            var touchedSegmentsIndex = pathIndex switch
+            {
+                0 => _touchedLSegmentIndex,
+                1 => _touchedMSegmentIndex,
+                2 => _touchedRSegmentIndex,
+                _ => -1
+            };
+
+            var lastSegmentTouchedByHolding = pathIndex switch
+            {
+                0 => _lastLSegmentTouchedByHolding,
+                1 => _lastMSegmentTouchedByHolding,
+                2 => _lastRSegmentTouchedByHolding,
+                _ => false
+            };
+
+            if (touchedSegmentsIndex == Segments.Length)
+                return;
+
+            if (Timing > ChartPlayer.Instance.TimeInMilliseconds + 50)
+                return;
+
+            var sensorJumped =
+                touchedSegmentsIndex + 1 != Segments.Length &&
+                SensorContained(touchedSegmentsIndex + 1, e.SensorId, pathIndex);
+
+            var activated =
+                (SensorContained(touchedSegmentsIndex, e.SensorId, pathIndex) || sensorJumped) &&
+                touchedSegmentsIndex < Segments.Length;
+
+            if (!activated)
+                return;
+
+            if (!_slideStarted)
+            {
+                PlaySlideSound();
+                _slideStarted = true;
+            }
+
+            if (isOnHold)
+                if (lastHeldSensorId != e.SensorId)
+                {
+                    if (sensorJumped)
+                        _sensorJumped = true;
+
+                    if (_sensorJumped && lastSegmentTouchedByHolding) _sensorJumped = false;
+
+                    if (sensorJumped || touchedSegmentsIndex == 0)
+                        switch (pathIndex)
+                        {
+                            case 0: _lastLSegmentTouchedByHolding = true; break;
+                            case 1: _lastMSegmentTouchedByHolding = true; break;
+                            case 2: _lastRSegmentTouchedByHolding = true; break;
+                        }
+
+                    switch (pathIndex)
+                    {
+                        case 0: _lastHeldLSensorId = e.SensorId; break;
+                        case 1: _lastHeldMSensorId = e.SensorId; break;
+                        case 2: _lastHeldRSensorId = e.SensorId; break;
+                    }
+                }
+
+            if (!isOnHold)
+                switch (pathIndex)
+                {
+                    case 0: _lastLSegmentTouchedByHolding = false; break;
+                    case 1: _lastMSegmentTouchedByHolding = false; break;
+                    case 2: _lastRSegmentTouchedByHolding = false; break;
+                }
+
+            if (sensorJumped && !isOnHold)
+                return;
+
+            if (!sensorJumped && isOnHold)
+                return;
+
+            switch (pathIndex)
+            {
+                case 0:
+                    _touchedLSegmentIndex++;
+                    break;
+                case 1:
+                    _touchedMSegmentIndex++;
+                    break;
+                case 2:
+                    _touchedRSegmentIndex++;
+                    break;
+            }
+
+            if (touchedSegmentsIndex == Segments.Length - 1)
+                return;
+
+            var segmentToBeConcealedIndex =
+                TernaryMinimal(_touchedLSegmentIndex, _touchedMSegmentIndex, _touchedRSegmentIndex) - 1;
+
+            if (segmentToBeConcealedIndex != -1 &&
+                segmentToBeConcealedIndex - lastSegmentToBeConcealedIndex > 0)
+            {
+                ConcealSegment(segmentToBeConcealedIndex, isOnHold ? false : _sensorJumped);
+                Segments[segmentToBeConcealedIndex].touched = true;
+
+                if (!isOnHold)
+                    _sensorJumped = false;
+            }
+        }
+
+        private int TernaryMinimal(int a, int b, int c)
+        {
+            return Math.Min(Math.Min(a, b), c);
         }
     }
 }

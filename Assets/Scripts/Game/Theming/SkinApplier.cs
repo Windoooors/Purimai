@@ -7,6 +7,9 @@ using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using UI;
 using UnityEngine;
+#if !UNITY_EDITOR
+using Logger = Logging.Logger;
+#endif
 
 namespace Game.Theming
 {

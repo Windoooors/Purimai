@@ -15,6 +15,9 @@ using Logger = Logging.Logger;
 #if UNITY_EDITOR
 using EditorScript;
 #endif
+#if !UNITY_EDITOR
+using System;
+#endif
 
 namespace Game
 {

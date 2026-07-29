@@ -1,18 +1,37 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Game.ChartManagement;
-using LitMotion;
+using UI.Result;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Game.Notes
 {
     public abstract class SlideBasedNote : NoteBase
     {
-        public Segment[] Segments{ get; private set; }
-        public IStarMovementController[] Stars{ get; private set; }
+        public Segment[] Segments;
+        private bool _concealed;
+        private bool _haveShown;
+        private JudgeManager.JudgeAction _holdJudgeAction;
+        private bool _isFast;
+
+        private Animator _judgeDisplayAnimator;
+        private JudgeState _judgeState;
+        private JudgeManager.JudgeAction _leaveJudgeAction;
+
+        private MaterialPropertyBlock _materialPropertyBlock;
+
+        private int _showJudgeDisplayTiming = -1;
+        private bool _slidedHalf;
+        private SlideTransform _slideTransform;
+
+        protected GameObject SlideContentRoot;
+        protected bool Slided;
+        public IStarMovementController[] Stars { get; private set; }
         public NoteDataObject.SlideDataObject SlideDataObject { get; private set; }
         public SpriteRenderer JudgeDisplaySpriteRenderer { get; private set; }
-        
+
         protected int Order { get; private set; }
         public int Timing { get; private set; }
         public bool IsEach { get; private set; }
@@ -21,11 +40,19 @@ namespace Game.Notes
         public int SlideDuration { get; private set; }
 
         public int JudgeTiming { get; private set; }
-        public int SlideInLastSegmentDuration { get; private set; }
+        public int StarInLastSegmentDuration { get; private set; }
+
+        private void Start()
+        {
+            emergingTime = Timing - ChartPlayer.Instance.timeGapBeforeSlideStartsAppearing;
+        }
 
         public void Initialize(NoteDataObject.SlideDataObject slideDataObject, bool isSlideEach, int noteTiming,
             ref int slideArrowOrder)
         {
+            _materialPropertyBlock = new MaterialPropertyBlock();
+            _slideTransform = new SlideTransform();
+
             Order = -slideArrowOrder;
             Timing = noteTiming;
             IsEach = isSlideEach;
@@ -43,27 +70,101 @@ namespace Game.Notes
 
             var dataPair = InitializeSlideSegments();
             JudgeTiming = dataPair.judgeTiming;
-            SlideInLastSegmentDuration = dataPair.starInLastSegmentDuration;
+            StarInLastSegmentDuration = dataPair.starInLastSegmentDuration;
             Segments = dataPair.segments;
-            
+
             SlideDataObject = slideDataObject;
             Stars = GetStars();
-            
-            JudgeDisplaySpriteRenderer =  GetJudgeDisplaySpriteRenderer();
-            
+
+            JudgeDisplaySpriteRenderer = GetJudgeDisplaySpriteRenderer();
+            _judgeDisplayAnimator = JudgeDisplaySpriteRenderer.GetComponent<Animator>();
+            _judgeDisplayAnimator.enabled = true;
+
+            JudgeDisplaySpriteRenderer.sortingOrder -= Order;
+
             foreach (var starMovementController in Stars)
             {
+                starMovementController.GetSpriteRenderer().sortingOrder -= Order;
                 starMovementController.Initialize();
             }
 
-            UpdateJudgeDisplayDirection(0);
+            SlideContentRoot = new GameObject("SlideContent");
+            SlideContentRoot.transform.SetParent(transform);
+
+            var children = transform.GetComponentsInChildren<Transform>();
+
+            foreach (var child in children) child.parent = SlideContentRoot.transform;
+
+            SlideContentRoot.SetActive(false);
+
+            var tapJudgeSettings = ChartPlayer.Instance.tapJudgeSettings;
+            var slideJudgeSettings = ChartPlayer.Instance.slideJudgeSettings;
+
+            JudgeManager.Instance.RegisterHold(Timing - tapJudgeSettings.fastGoodTiming - 100,
+                Timing + SlideDuration + WaitDuration + 100 + slideJudgeSettings.lateGoodTiming, OnHoldSlidePath,
+                out _holdJudgeAction);
+            JudgeManager.Instance.RegisterLeave(Timing - tapJudgeSettings.fastGoodTiming - 100,
+                Timing + SlideDuration + WaitDuration + 100 + slideJudgeSettings.lateGoodTiming, OnLeaveSlidePath,
+                out _leaveJudgeAction);
+
+            Scoreboard.SlideCount.TotalCount++;
+        }
+
+        protected void Judge()
+        {
+            if (Slided)
+                return;
+
+            var deltaTiming = JudgeTiming - ChartPlayer.Instance.TimeInMilliseconds +
+                              ChartPlayer.Instance.judgeDelay;
+
+            _isFast = deltaTiming > 0;
+
+            var absDeltaTiming = math.abs(deltaTiming);
+
+            var judgeSettings = ChartPlayer.Instance.slideJudgeSettings;
+
+            var isFast = deltaTiming > 0;
+
+            var compensatedPerfectTiming = judgeSettings.perfectTiming; //+ _starInLastSegmentDuration / 8;
+
+            if (absDeltaTiming <=
+                (compensatedPerfectTiming < judgeSettings.fastGoodTiming
+                    ? compensatedPerfectTiming
+                    : judgeSettings.fastGoodTiming))
+                _judgeState = JudgeState.CriticalPerfect;
+            else if (absDeltaTiming <= judgeSettings.greatTiming && absDeltaTiming > judgeSettings.perfectTiming)
+                _judgeState = JudgeState.Great;
+            else if (absDeltaTiming > judgeSettings.greatTiming)
+                _judgeState = JudgeState.Good;
+
+            var index = (_judgeState, isFast) switch
+            {
+                (JudgeState.CriticalPerfect, _) => 0,
+                (JudgeState.Great, true) => 1,
+                (JudgeState.Good, true) => 2,
+                (JudgeState.Great, false) => 3,
+                (JudgeState.Good, false) => 4,
+                _ => 5
+            };
+
+            UpdateJudgeDisplayDirection(index);
+            Slided = true;
+
+            _showJudgeDisplayTiming = (int)(ChartPlayer.Instance.TimeInMilliseconds + StarInLastSegmentDuration);
+
+            _holdJudgeAction.Enabled = false;
+            _leaveJudgeAction.Enabled = false;
         }
 
         protected abstract int GenerateSlideArrowObjects();
         protected abstract void InitializeVectorGraphicsUtility();
         protected abstract void InitializePathRotation();
         protected abstract void InitializeSlideSensorIds();
-        protected abstract (int judgeTiming, int starInLastSegmentDuration, Segment[] segments) InitializeSlideSegments();
+
+        protected abstract (int judgeTiming, int starInLastSegmentDuration, Segment[] segments)
+            InitializeSlideSegments();
+
         protected abstract IStarMovementController[] GetStars();
         protected abstract void UpdateJudgeDisplayDirection(int displaySpriteIndex);
         protected abstract SpriteRenderer GetJudgeDisplaySpriteRenderer();
@@ -140,6 +241,234 @@ namespace Game.Notes
 
         public override void ManualUpdate()
         {
+            GetSlideTransform(ref _slideTransform);
+
+            SlideContentRoot.SetActive(_slideTransform.Shown);
+
+            if (!_slideTransform.Shown)
+            {
+                if (_haveShown) enabled = false;
+                return;
+            }
+
+            _haveShown = true;
+
+            _materialPropertyBlock.SetFloat("_Transition", _slideTransform.StarAlpha);
+
+            foreach (var star in Stars)
+            {
+                star.Move(_slideTransform.StarPosition);
+
+                star.GetSpriteRenderer().SetPropertyBlock(_materialPropertyBlock, 0);
+                star.GetSpriteRenderer().transform.localScale =
+                    Vector3.one + Vector3.one * _slideTransform.StarAlpha / 2;
+            }
+
+            foreach (var segment in Segments)
+            foreach (var arrowRenderer in segment.slideSpriteRenderers)
+                if ((!segment.touched && !Slided && !segment.arrowInBetweenConcealed) ||
+                    _slideTransform.ArrowAlpha == 0)
+                    arrowRenderer.color = new Color(1, 1, 1, _slideTransform.ArrowAlpha);
+
+            if (ChartPlayer.Instance.TimeInMilliseconds >= _showJudgeDisplayTiming && _showJudgeDisplayTiming != -1 &&
+                Slided &&
+                !_concealed)
+            {
+                Scoreboard.SlideCount.Count(_judgeState);
+
+                if (_judgeState is not (JudgeState.CriticalPerfect or JudgeState.Miss))
+                {
+                    if (_isFast)
+                        Scoreboard.FastCount++;
+                    else
+                        Scoreboard.LateCount++;
+                }
+
+                if (_judgeState is not JudgeState.Miss)
+                    Scoreboard.Combo++;
+                else
+                    Scoreboard.ResetCombo();
+
+                PlayJudgeAnimation();
+
+                _concealed = true;
+            }
+
+            if (ChartPlayer.Instance.TimeInMilliseconds >=
+                Timing + WaitDuration + SlideDuration +
+                ChartPlayer.Instance.slideJudgeSettings.fastGoodTiming + ChartPlayer.Instance.judgeDelay
+                && !_concealed && !Slided)
+            {
+                if (!_slidedHalf)
+                {
+                    UpdateJudgeDisplayDirection(5);
+                    _judgeState = JudgeState.Miss;
+                }
+                else
+                {
+                    UpdateJudgeDisplayDirection(4);
+                    _judgeState = JudgeState.Good;
+
+                    _isFast = false;
+                }
+
+                Slided = true;
+
+                _holdJudgeAction.Enabled = false;
+                _leaveJudgeAction.Enabled = false;
+
+                _showJudgeDisplayTiming = (int)(StarInLastSegmentDuration + ChartPlayer.Instance.TimeInMilliseconds);
+            }
+        }
+
+        private void PlayJudgeAnimation()
+        {
+            JudgeDisplaySpriteRenderer.enabled = true;
+            _judgeDisplayAnimator.SetTrigger("ShowJudgeDisplay");
+        }
+
+        protected void PlaySlideSound()
+        {
+            SfxManager.Instance.PlaySlideSound();
+        }
+
+        protected abstract void OnSensorLeave(TouchEventArgs e);
+
+        protected abstract void OnSensorHold(TouchEventArgs e);
+
+        private void OnLeaveSlidePath(object sender, TouchEventArgs e)
+        {
+            OnSensorLeave(e);
+        }
+
+        private void OnHoldSlidePath(object sender, TouchEventArgs e)
+        {
+            OnSensorHold(e);
+        }
+
+        protected void ConcealSegment(int touchedSegmentsIndex, bool sensorJumpedForLastSegment)
+        {
+            if (touchedSegmentsIndex >= Segments.Length - 2)
+                _slidedHalf = true;
+
+            StartCoroutine(DelayedTrigger(() =>
+            {
+                if (touchedSegmentsIndex - 1 >= 0)
+                    if (Segments[touchedSegmentsIndex - 1].slideSpriteRenderersWithinSensorArea.Length > 0)
+                        Segments[touchedSegmentsIndex - 1].slideSpriteRenderersWithinSensorArea[^1].color =
+                            new Color(1, 1, 1, 0);
+
+                var segment = Segments[touchedSegmentsIndex];
+
+                foreach (var slideSprite in segment.slideSpriteRenderers) slideSprite.color = new Color(1, 1, 1, 0);
+
+                if (touchedSegmentsIndex != Segments.Length - 2 && sensorJumpedForLastSegment)
+                    segment.slideSpriteRenderersWithinSensorArea[^1].color = new Color(1, 1, 1, 0.5f);
+            }));
+        }
+
+        private IEnumerator DelayedTrigger(Action callback)
+        {
+            yield return new WaitForSeconds(ChartPlayer.Instance.slideConcealDelay / 1000f);
+
+            callback?.Invoke();
+        }
+
+        protected void ConcealMiddleSegment(int touchedSegmentsIndex)
+        {
+            StartCoroutine(DelayedTrigger(() =>
+            {
+                var segment = Segments[touchedSegmentsIndex];
+                if (touchedSegmentsIndex - 1 >= 0 &&
+                    Segments[touchedSegmentsIndex - 1].slideSpriteRenderersWithinSensorArea.Length > 0)
+                    Segments[touchedSegmentsIndex - 1].slideSpriteRenderersWithinSensorArea[^1].color =
+                        new Color(1, 1, 1, 0);
+
+                foreach (var slideSprite in segment.slideSpriteRenderersOutsideSensorArea)
+                    slideSprite.color = new Color(1, 1, 1, 0);
+
+                segment.arrowInBetweenConcealed = true;
+            }));
+        }
+
+        private void GetSlideTransform(ref SlideTransform result)
+        {
+            var currentTime = ChartPlayer.Instance.TimeInMilliseconds;
+
+            var startAppearingTime =
+                Timing - ChartPlayer.Instance.timeGapBeforeSlideStartsAppearing;
+
+            if (currentTime < startAppearingTime - 100 || currentTime >= Timing + WaitDuration + SlideDuration +
+                ChartPlayer.Instance.slideJudgeSettings.lateGoodTiming +
+                ChartPlayer.Instance.slideJudgeDisplayAnimationDuration + StarInLastSegmentDuration)
+            {
+                result.Shown = false;
+                return;
+            }
+
+            if (currentTime >= _showJudgeDisplayTiming && _showJudgeDisplayTiming != -1 && Slided)
+            {
+                result.Shown = true;
+                result.StarAlpha = 0;
+                result.StarPosition = 1;
+                result.ArrowAlpha = 0;
+
+                return;
+            }
+
+            if (currentTime >= startAppearingTime && currentTime < Timing)
+            {
+                result.Shown = true;
+
+                var slideFadeInDuration = ChartPlayer.Instance.slideFadeInDuration;
+
+                if (currentTime < 200 + startAppearingTime)
+                    result.ArrowAlpha = (currentTime - startAppearingTime) / 200 / 2f;
+                else if (currentTime > 200 + startAppearingTime)
+                    result.ArrowAlpha = 0.5f;
+                else if (startAppearingTime + slideFadeInDuration - currentTime <= 0)
+                    result.ArrowAlpha = 1f;
+
+                result.StarAlpha = 0;
+                result.StarPosition = 0.001f;
+            }
+            else if (currentTime >= Timing && currentTime < Timing + WaitDuration)
+            {
+                result.Shown = true;
+                result.StarAlpha = SuddenlyAppears ? 0 : (currentTime - Timing) / WaitDuration;
+                result.ArrowAlpha = 1;
+                result.StarPosition = 0.001f;
+            }
+            else if (currentTime >= Timing + WaitDuration && currentTime < Timing + WaitDuration + SlideDuration)
+            {
+                result.Shown = true;
+                result.StarAlpha = 1;
+                result.StarPosition = (currentTime - Timing - WaitDuration) / SlideDuration * 0.999f + 0.001f;
+                result.ArrowAlpha = 1;
+            }
+            else
+            {
+                result.Shown = true;
+                result.StarAlpha = 1;
+                result.StarPosition = 1;
+                result.ArrowAlpha = 1;
+
+                if (currentTime >= Timing + WaitDuration + SlideDuration +
+                    ChartPlayer.Instance.slideJudgeSettings.lateGoodTiming)
+                {
+                    result.StarAlpha = 0;
+                    result.StarPosition = 1;
+                    result.ArrowAlpha = 0;
+                }
+
+                if (currentTime < startAppearingTime)
+                {
+                    result.Shown = false;
+                    result.StarAlpha = 0;
+                    result.StarPosition = 0.001f;
+                    result.ArrowAlpha = 0;
+                }
+            }
         }
 
         [Serializable]
@@ -161,7 +490,7 @@ namespace Game.Notes
 
             public Sensor[] sensors;
 
-            [HideInInspector] public SpriteRenderer[] slideSpriteRenderers;
+            public SpriteRenderer[] slideSpriteRenderers;
             [HideInInspector] public SpriteRenderer[] slideSpriteRenderersWithinSensorArea;
             [HideInInspector] public SpriteRenderer[] slideSpriteRenderersOutsideSensorArea;
 
@@ -178,6 +507,15 @@ namespace Game.Notes
                 public Lane lane = Lane.Single;
                 public SensorType type = SensorType.Main;
             }
+        }
+
+        private class SlideTransform
+        {
+            public float ArrowAlpha;
+
+            public bool Shown;
+            public float StarAlpha;
+            public float StarPosition;
         }
     }
 }

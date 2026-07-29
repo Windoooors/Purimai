@@ -3,7 +3,6 @@ using System.Linq;
 using Game.ChartManagement;
 using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Game.Notes
 {
@@ -17,18 +16,18 @@ namespace Game.Notes
         public SlideBasedNote.Segment[] segments;
         public bool flipPathY;
         public float pathRotation;
-        
-        public SpriteRenderer judgeDisplaySpriteRenderer;
-        
-        public VectorGraphicsUtility GraphicsUtility { get; private set; }
 
-        private float? _pathLength;
+        public SpriteRenderer judgeDisplaySpriteRenderer;
 
         private readonly List<SpriteRenderer> _slideArrowSpriteRenderers = new();
+
+        private float? _pathLength;
         public NoteDataObject.IndividualSlideDataObject individualSlideDataObject;
         protected bool IsClockwise;
         protected int[] SlideJudgeDisplaySpriteIndexes;
-        
+
+        public VectorGraphicsUtility GraphicsUtility { get; private set; }
+
         public virtual void UpdateJudgeDisplayDirection(int judgeSpriteGroupIndex)
         {
             var judgeSpriteNeedsChange =
@@ -47,6 +46,8 @@ namespace Game.Notes
 
         public int GenerateSlideArrows(int parentalOrder)
         {
+            transform.position = Vector3.zero;
+
             var prefab = NoteGenerator.Instance.slideArrowPrefab;
             var order = 0;
 
@@ -84,6 +85,13 @@ namespace Game.Notes
 
                 _slideArrowSpriteRenderers.Add(spriteRenderer);
             }
+
+            GraphicsUtility.ObjectRotationOffset = StarMovementControllerBase.StarObjectRotationOffset;
+
+            var displayPair = GraphicsUtility.GetPositionRotationPair(1f - 0.6f / slideArrowCount, false);
+            judgeDisplaySpriteRenderer.transform.position = displayPair.position;
+            judgeDisplaySpriteRenderer.transform.eulerAngles =
+                displayPair.rotation.eulerAngles + new Vector3(0, 0, 18);
 
             if (parentNormalSlide.IsEach)
                 star.spriteRenderer.sprite = NoteGenerator.Instance.eachStarSprite;
@@ -151,25 +159,23 @@ namespace Game.Notes
 
                 var startIndex = previousMatchedArrowIndex + 1;
 
-                var count = _slideArrowSpriteRenderers.Count;
-                var sensorCollider = matchedSensorShape.GetComponent<Collider2D>();
                 var slideType = individualSlideDataObject.Type;
+                var sensorCollider = matchedSensorShape.GetComponent<Collider2D>();
 
-                bool IsOverlapping(int index)
+                bool ArrowOverlapsOnSensor(int index)
                 {
-                    if (index < 0 || index >= count) return false;
-                    return SlideBasedNote.ArrowOverlapsOnSensor(_slideArrowSpriteRenderers[index], slideType,
-                        sensorCollider);
+                    return index != -1 && SlideBasedNote.ArrowOverlapsOnSensor(_slideArrowSpriteRenderers[index],
+                        slideType, sensorCollider);
                 }
 
-                for (var i = startIndex; i < count; i++)
+                for (var i = startIndex;
+                     i < _slideArrowSpriteRenderers.Count &&
+                     (!ArrowOverlapsOnSensor(i - 1) ||
+                      (ArrowOverlapsOnSensor(i - 1)
+                       && ArrowOverlapsOnSensor(i)));
+                     i++)
                 {
-                    var prevOverlaps = IsOverlapping(i - 1);
-                    var currentOverlaps = IsOverlapping(i);
-
-                    if (i > startIndex && (!prevOverlaps || !currentOverlaps)) break;
-
-                    if (IsOverlapping(i))
+                    if (ArrowOverlapsOnSensor(i))
                         spriteWithinAreaList.Add(_slideArrowSpriteRenderers[i]);
                     else
                         spriteOutsideAreaList.Add(_slideArrowSpriteRenderers[i]);
