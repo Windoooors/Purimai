@@ -63,6 +63,12 @@ namespace Game.ChartManagement
             {
                 _bpm = bpm;
                 _chartString = BpmRegex.Replace(_chartString, "", 1).Trim();
+                
+                if (NoteValueRegex.IsMatch(_chartString))
+                    ParseNoteValue();
+                
+                if (BpmRegex.IsMatch(_chartString))
+                    ParseBpm();
             }
         }
 
@@ -76,6 +82,12 @@ namespace Game.ChartManagement
             {
                 _noteValue = noteValue;
                 _chartString = NoteValueRegex.Replace(_chartString, "", 1).Trim();
+                
+                if (NoteValueRegex.IsMatch(_chartString))
+                    ParseNoteValue();
+                
+                if (BpmRegex.IsMatch(_chartString))
+                    ParseBpm();
             }
         }
 

@@ -16,6 +16,14 @@ namespace Game
 
         public IndividualStarMovementController[] IndividualStarMovementControllers { get; }
 
+        public void SetStarOrder(int order)
+        {
+            foreach (var individualStarMovementController in IndividualStarMovementControllers)
+            {
+                individualStarMovementController.spriteRenderer.sortingOrder -= order;
+            }
+        }
+
         public void Initialize()
         {
             foreach (var individualStarMovementController in IndividualStarMovementControllers)

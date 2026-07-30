@@ -7,6 +7,7 @@ namespace Game
         public void Move(float progress);
         public void Initialize();
         public SpriteRenderer GetSpriteRenderer();
+        public void SetStarOrder(int order);
     }
 
     public abstract class StarMovementControllerBase : MonoBehaviour

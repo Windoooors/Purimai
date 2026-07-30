@@ -101,7 +101,7 @@ namespace Game.Notes
                     ? NoteGenerator.Instance.wifiSlideEachSprites[i]
                     : NoteGenerator.Instance.wifiSlideSprites[i];
 
-                slideSpriteRenderer.sortingOrder = i + Order;
+                slideSpriteRenderer.sortingOrder = 1 + i + Order;
 
                 arrowInstance.transform.eulerAngles = new Vector3(0, 0, 315) +
                                                       arrowInstance.transform

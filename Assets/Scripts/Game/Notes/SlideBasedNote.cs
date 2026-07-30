@@ -84,7 +84,7 @@ namespace Game.Notes
 
             foreach (var starMovementController in Stars)
             {
-                starMovementController.GetSpriteRenderer().sortingOrder -= Order;
+                starMovementController.SetStarOrder(Order);
                 starMovementController.Initialize();
             }
 

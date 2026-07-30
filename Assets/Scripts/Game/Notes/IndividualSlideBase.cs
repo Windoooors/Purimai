@@ -77,7 +77,7 @@ namespace Game.Notes
                 arrowInstance.transform.rotation = pair.rotation;
                 var spriteRenderer = arrowInstance.GetComponent<SpriteRenderer>();
 
-                spriteRenderer.sortingOrder = order++ + parentalOrder;
+                spriteRenderer.sortingOrder = order-- + parentalOrder;
                 if (parentNormalSlide.IsEach)
                     spriteRenderer.sprite = NoteGenerator.Instance.slideEachSprite;
 

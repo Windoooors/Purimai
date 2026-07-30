@@ -10,9 +10,9 @@ namespace Game.Notes
 
         private IndividualStarMovementController _individualIndividualStarMovementController;
 
-        private int _lastSegmentTouchedOnLeaveIndex;
+        private int _lastSegmentTouchedOnLeaveIndex = -1;
 
-        private int _lastTouchedSegmentIndex;
+        private int _lastTouchedSegmentIndex = -1;
         private bool _slideStarted;
 
         protected override IStarMovementController[] GetStars()
@@ -116,8 +116,10 @@ namespace Game.Notes
 
             var count = 0;
 
+            var arrowCount = individualSlides.Sum(x => x.slideArrowCount);
+
             foreach (var individualSlideBase in individualSlides)
-                count += individualSlideBase.GenerateSlideArrows(Order + count);
+                count += individualSlideBase.GenerateSlideArrows(Order - count + arrowCount);
 
             return count;
         }
