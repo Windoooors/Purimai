@@ -63,7 +63,7 @@ namespace Game.Notes
             var endPoint = Lanes.Instance.endPoints[laneIndex];
             var startPoint = Lanes.Instance.startPoints[laneIndex];
 
-            var onScreenTimeInSeconds = 4 / (((ChartPlayer.Instance.flowSpeed - 1) * 100 + 200) / 60);
+            var onScreenTimeInSeconds = 4 / ((ChartPlayer.Instance.flowSpeed + 1) * 100 / 60);
 
             var distance = (endPoint.position - startPoint.position).magnitude;
             var speed = distance / onScreenTimeInSeconds;
@@ -95,39 +95,119 @@ namespace Game.Notes
         {
         }
 
-        protected void PlayJudgeSound(bool isBreak, JudgeState state)
+        protected void PlayJudgeSound(bool isBreak, bool isEx, JudgeState state)
         {
             switch (state)
             {
                 case JudgeState.CriticalPerfect:
-                    if (isBreak)
-                        SfxManager.Instance.PlayBreakCriticalPerfectSound();
-                    else
-                        SfxManager.Instance.PlayPerfectSound();
+                    switch (isBreak, isEx)
+                    {
+                        case (true, true):
+                        {
+                            SfxManager.Instance.PlayBreakCriticalPerfectSound();
+                            SfxManager.Instance.PlayExSound();
+                            break;
+                        }
+                        case (false, false):
+                        {
+                            SfxManager.Instance.PlayPerfectSound();
+                            break;
+                        }
+                        case (false, true):
+                        {
+                            SfxManager.Instance.PlayExSound();
+                            break;
+                        }
+                        case (true, false):
+                        {
+                            SfxManager.Instance.PlayBreakCriticalPerfectSound();
+                            break;
+                        }
+                    }
 
                     break;
                 case JudgeState.Perfect:
                 case JudgeState.SemiCriticalPerfect:
-                    if (isBreak)
-                        SfxManager.Instance.PlayBreakPerfectSound();
-                    else
-                        SfxManager.Instance.PlayPerfectSound();
+                    switch (isBreak, isEx)
+                    {
+                        case (true, true):
+                        {
+                            SfxManager.Instance.PlayBreakPerfectSound();
+                            SfxManager.Instance.PlayExSound();
+                            break;
+                        }
+                        case (false, false):
+                        {
+                            SfxManager.Instance.PlayPerfectSound();
+                            break;
+                        }
+                        case (false, true):
+                        {
+                            SfxManager.Instance.PlayExSound();
+                            break;
+                        }
+                        case (true, false):
+                        {
+                            SfxManager.Instance.PlayBreakPerfectSound();
+                            break;
+                        }
+                    }
 
                     break;
                 case JudgeState.SemiGreat:
                 case JudgeState.QuarterGreat:
                 case JudgeState.Great:
-                    if (isBreak)
-                        SfxManager.Instance.PlayBreakGreatSound();
-                    else
-                        SfxManager.Instance.PlayGreatSound();
+                    switch (isBreak, isEx)
+                    {
+                        case (true, true):
+                        {
+                            SfxManager.Instance.PlayBreakGreatSound();
+                            SfxManager.Instance.PlayExSound();
+                            break;
+                        }
+                        case (false, false):
+                        {
+                            SfxManager.Instance.PlayGreatSound();
+                            break;
+                        }
+                        case (false, true):
+                        {
+                            SfxManager.Instance.PlayExSound();
+                            break;
+                        }
+                        case (true, false):
+                        {
+                            SfxManager.Instance.PlayBreakGreatSound();
+                            break;
+                        }
+                    }
 
                     break;
                 case JudgeState.Good:
-                    if (isBreak)
-                        SfxManager.Instance.PlayBreakGreatSound();
-                    else
-                        SfxManager.Instance.PlayGoodSound();
+                    switch (isBreak, isEx)
+                    {
+                        case (true, true):
+                        {
+                            SfxManager.Instance.PlayBreakGreatSound();
+                            SfxManager.Instance.PlayExSound();
+                            break;
+                        }
+                        case (false, false):
+                        {
+                            SfxManager.Instance.PlayGoodSound();
+                            break;
+                        }
+                        case (false, true):
+                        {
+                            SfxManager.Instance.PlayExSound();
+                            break;
+                        }
+                        case (true, false):
+                        {
+                            SfxManager.Instance.PlayBreakGreatSound();
+                            break;
+                        }
+                    }
 
                     break;
             }
@@ -135,7 +215,8 @@ namespace Game.Notes
 
         protected void PlayJudgeAnimation()
         {
-            lineSpriteRenderer.enabled = false;
+            if (lineSpriteRenderer)
+                lineSpriteRenderer.enabled = false;
 
             if (judgeState is not JudgeState.CriticalPerfect and not JudgeState.Miss)
             {
@@ -166,7 +247,7 @@ namespace Game.Notes
                 }
             }
 
-            if (this is Tap tap && tap.isBreak)
+            if ((this is Tap tap && tap.isBreak) || (this is Hold hold && hold.isBreak))
                 switch (judgeState)
                 {
                     case JudgeState.CriticalPerfect:
@@ -255,7 +336,8 @@ namespace Game.Notes
             result.Shown = false;
         }
 
-        protected (JudgeState, bool isFast, bool judged) GetJudgeState(float deltaTiming, JudgeSettings judgeSettings)
+        public static (JudgeState, bool isFast, bool judged) GetJudgeState(float deltaTiming, bool isEx,
+            JudgeSettings judgeSettings)
         {
             var absDeltaTiming = math.abs(deltaTiming);
 
@@ -265,7 +347,11 @@ namespace Game.Notes
             if (deltaTiming < -judgeSettings.lateGoodTiming)
                 return (JudgeState.Miss, false, false);
 
+
             var fast = deltaTiming > 0;
+
+            if (isEx)
+                return (JudgeState.CriticalPerfect, fast, true);
 
             var state = JudgeState.Miss;
 

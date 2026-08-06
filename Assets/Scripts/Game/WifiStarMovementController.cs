@@ -10,7 +10,7 @@ namespace Game
 
         [FormerlySerializedAs("wifiSvgAssetNameOverride")]
         public string wifiSvgAssetName;
-        
+
         public void SetStarOrder(int order)
         {
             spriteRenderer.sortingOrder -= order;

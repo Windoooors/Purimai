@@ -9,7 +9,9 @@ namespace Game.Notes.TapBasedNotes
     public class Hold : TapBasedNote
     {
         public SpriteRenderer holdSpriteRenderer;
+        public SpriteRenderer exSpriteRenderer;
         public Transform holdTransform;
+        public Transform exTransform;
         public SpriteRenderer holdEndSpriteRenderer;
         public Transform holdEnd;
 
@@ -18,6 +20,8 @@ namespace Game.Notes.TapBasedNotes
         public int duration;
 
         public bool isHeadFast;
+        public bool isBreak;
+        public bool isEx;
 
         private bool _compensationApplied;
         private int _disappearTime;
@@ -72,7 +76,10 @@ namespace Game.Notes.TapBasedNotes
                 holdJudged = true;
                 judgeState = JudgeState.Miss;
 
-                Scoreboard.HoldCount.Count(JudgeState.Miss);
+                if (isBreak)
+                    Scoreboard.BreakCount.Count(JudgeState.Miss);
+                else
+                    Scoreboard.HoldCount.Count(JudgeState.Miss);
 
                 Scoreboard.ResetCombo();
 
@@ -101,8 +108,11 @@ namespace Game.Notes.TapBasedNotes
                 _holdTailJudgeState = JudgeState.Good;
                 judgeState = JudgeState.Good;
 
-                PlayJudgeSound(false, JudgeState.Good);
-                Scoreboard.HoldCount.Count(JudgeState.Good);
+                PlayJudgeSound(false, false, JudgeState.Good);
+                if (!isBreak)
+                    Scoreboard.HoldCount.Count(JudgeState.Good);
+                else
+                    Scoreboard.BreakCount.Count(JudgeState.Good);
 
                 PlayJudgeAnimation();
 
@@ -121,11 +131,19 @@ namespace Game.Notes.TapBasedNotes
                                       Lanes.Instance.startPoints[lane - 1].position) *
                                      _holdTransformData.PositionInLane;
             holdTransform.localScale = _holdTransformData.Scale;
+            if (exTransform)
+            {
+                exTransform.localScale = _holdTransformData.Scale;
+                exTransform.position = holdTransform.position;
+            }
 
             var color = new Color(0.5f + 0.5f * _tapOrLineTransform.Alpha, 0.5f + 0.5f * _tapOrLineTransform.Alpha,
                 0.5f + 0.5f * _tapOrLineTransform.Alpha, 0.3f + 0.7f * _tapOrLineTransform.Alpha);
             var alphaColor = new Color(1, 1, 1, _tapOrLineTransform.Alpha);
             holdSpriteRenderer.color = color;
+            if (exSpriteRenderer)
+                exSpriteRenderer.color = new Color(exSpriteRenderer.color.r, exSpriteRenderer.color.g,
+                    exSpriteRenderer.color.b, color.a);
             lineSpriteRenderer.color = alphaColor;
 
             GetTapOrLineTransform(ref _tapOrLineTransform);
@@ -138,6 +156,8 @@ namespace Game.Notes.TapBasedNotes
                                        * Vector3.one;
 
             holdSpriteRenderer.size = new Vector2(holdSpriteRenderer.size.x, _holdTransformData.HoldSpriteLength);
+            if (exSpriteRenderer)
+                exSpriteRenderer.size = holdSpriteRenderer.size;
 
             holdEndSpriteRenderer.enabled = _holdTransformData.TailDotShown;
             holdEndSpriteRenderer.transform.position = Lanes.Instance.startPoints[lane - 1].position +
@@ -295,7 +315,7 @@ namespace Game.Notes.TapBasedNotes
 
             var judgeSettings = ChartPlayer.Instance.tapJudgeSettings;
 
-            var state = GetJudgeState(deltaTiming, judgeSettings);
+            var state = GetJudgeState(deltaTiming, isEx, judgeSettings);
 
             headJudged = state.judged;
 
@@ -323,6 +343,9 @@ namespace Game.Notes.TapBasedNotes
                     JudgeState.Great => "HoldGreat",
                     _ => "HoldPerfect"
                 });
+
+            if (isEx)
+                SfxManager.Instance.PlayExSound();
 
             if (_headJudgeState is not JudgeState.CriticalPerfect and not JudgeState.Miss)
             {
@@ -399,13 +422,14 @@ namespace Game.Notes.TapBasedNotes
 
             if (_holdTailJudgeState == JudgeState.CriticalPerfect)
                 judgeState = _headJudgeState;
-            else if (_holdTailJudgeState == JudgeState.Great)
-                judgeState = _headJudgeState == JudgeState.Good ? JudgeState.Good : JudgeState.Great;
             else if (_holdTailJudgeState == JudgeState.Good) judgeState = JudgeState.Good;
 
-            Scoreboard.HoldCount.Count(judgeState);
+            if (!isBreak)
+                Scoreboard.HoldCount.Count(judgeState);
+            else
+                Scoreboard.BreakCount.Count(judgeState);
 
-            PlayJudgeSound(false, judgeState);
+            PlayJudgeSound(isBreak, false, judgeState);
 
             Scoreboard.Combo++;
 
@@ -437,7 +461,15 @@ namespace Game.Notes.TapBasedNotes
 
             _glowAnimator = GetComponent<Animator>();
 
-            Scoreboard.HoldCount.TotalCount++;
+            if (!isBreak)
+            {
+                Scoreboard.HoldCount.TotalCount++;
+            }
+            else
+            {
+                Scoreboard.BreakCount.TotalCount++;
+                _glowAnimator.SetTrigger("Glow");
+            }
         }
 
         private class HoldTransform

@@ -120,6 +120,30 @@ MonoBehaviour:
     m_Localized: A setup tool to calibrate audio offset
     m_Metadata:
       m_Items: []
+  - m_Id: 55998899221946368
+    m_Localized: Sensor size (type D)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 55998944105193472
+    m_Localized: Sensor size (type E)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 55998979752583168
+    m_Localized: Ex note (holds & taps) answer sound volume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 55999134518206464
+    m_Localized: Answer sound volume for break slide's launch
+    m_Metadata:
+      m_Items: []
+  - m_Id: 55999405696737280
+    m_Localized: Answer sound volume when sliding break slides
+    m_Metadata:
+      m_Items: []
+  - m_Id: 55999632390479872
+    m_Localized: Break slide judge answer sound volume
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

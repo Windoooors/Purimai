@@ -118,6 +118,30 @@ MonoBehaviour:
     m_Localized: "\u97F3\u9891\u5EF6\u8FDF\u6821\u51C6\u5DE5\u5177"
     m_Metadata:
       m_Items: []
+  - m_Id: 55998899221946368
+    m_Localized: "D \u533A\u6A21\u62DF\u4F20\u611F\u5668\u5927\u5C0F"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 55998944105193472
+    m_Localized: "E \u533A\u6A21\u62DF\u4F20\u611F\u5668\u5927\u5C0F"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 55998979752583168
+    m_Localized: "Ex \u97F3\u7B26\u53CD\u9988\u97F3\u91CF\u5927\u5C0F"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 55999134518206464
+    m_Localized: "Break Slide \u542F\u52A8\u97F3\u97F3\u91CF"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 55999405696737280
+    m_Localized: "Break Slide \u6ED1\u52A8\u97F3\u97F3\u91CF"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 55999632390479872
+    m_Localized: "Break Slide \u5224\u5B9A\u97F3\u97F3\u91CF"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

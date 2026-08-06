@@ -68,6 +68,9 @@ TagManager:
   - name: Taps
     uniqueID: 177122611
     locked: 0
+  - name: Touches
+    uniqueID: 1051278103
+    locked: 0
   - name: Hold Ripples
     uniqueID: 3444545479
     locked: 0

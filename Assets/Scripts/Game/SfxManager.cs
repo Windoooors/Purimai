@@ -26,7 +26,13 @@ namespace Game
                 { "break_great", new AudioSoundNameData("break_great_sound.wav") },
                 { "perfect", new AudioSoundNameData("perfect_sound.wav") },
                 { "great", new AudioSoundNameData("great_sound.wav") },
-                { "good", new AudioSoundNameData("good_sound.wav") }
+                { "good", new AudioSoundNameData("good_sound.wav") },
+                { "ex", new AudioSoundNameData("ex_sound.wav") },
+                { "break_slide_launch", new AudioSoundNameData("break_slide_launch_sound.wav") },
+                { "break_slide_slide", new AudioSoundNameData("break_slide_slide_sound.wav") },
+                { "touch_fireworks", new AudioSoundNameData("touch_fireworks.wav") },
+                { "touch", new AudioSoundNameData("touch.wav") },
+                { "touch_hold", new AudioSoundNameData("touch_hold.wav") },
             }
         };
 
@@ -58,6 +64,12 @@ namespace Game
             UpdatePair("break", SettingsPool.GetValue("volume.break") / 10f);
             UpdatePair("slide", SettingsPool.GetValue("volume.slide") / 10f);
             UpdatePair("cue", SettingsPool.GetValue("volume.cue_sound") / 10f);
+            UpdatePair("ex", SettingsPool.GetValue("volume.ex") / 10f);
+            UpdatePair("break_slide_launch", SettingsPool.GetValue("volume.break_slide_launch") / 10f);
+            UpdatePair("break_slide_slide", SettingsPool.GetValue("volume.break_slide_slide") / 10f);
+            UpdatePair("break_slide_judge", SettingsPool.GetValue("volume.break_slide_judge") / 10f);
+            UpdatePair("touch", SettingsPool.GetValue("volume.touch") / 10f);
+            UpdatePair("touch_fireworks", SettingsPool.GetValue("volume.touch_fireworks") / 10f);
 
             LoadAllSoundData();
 
@@ -68,6 +80,41 @@ namespace Game
                 if (!_volumes.TryAdd(key, value))
                     _volumes[key] = value;
             }
+        }
+
+        public void PlayBreakSlideLaunchingSound()
+        {
+            var sound = _bassHandlers["break_slide_launch"];
+            sound.Volume = _volumes["break_slide_launch"];
+            sound.PlayOneShot();
+        }
+
+        public void PlayBreakSlideSlideSound()
+        {
+            var sound = _bassHandlers["break_slide_slide"];
+            sound.Volume = _volumes["break_slide_slide"];
+            sound.PlayOneShot();
+        }
+
+        public void PlayTouchSound()
+        {
+            var sound = _bassHandlers["touch"];
+            sound.Volume = _volumes["touch"];
+            sound.PlayOneShot();
+        }
+        
+        public void PlayTouchFireworksSound()
+        {
+            var sound = _bassHandlers["touch_fireworks"];
+            sound.Volume = _volumes["touch_fireworks"];
+            sound.PlayOneShot();
+        }
+        
+        public void PlayExSound()
+        {
+            var sound = _bassHandlers["ex"];
+            sound.Volume = _volumes["ex"];
+            sound.PlayOneShot();
         }
 
         public void PlaySlideSound()
@@ -91,6 +138,13 @@ namespace Game
             sound.PlayOneShot();
             sound = _bassHandlers["break_perfect"];
             sound.Volume = _volumes["break"];
+            sound.PlayOneShot();
+        }
+
+        public void PlaySlideBreakPerfectSound()
+        {
+            var sound = _bassHandlers["break_extra"];
+            sound.Volume = _volumes["break_slide_judge"];
             sound.PlayOneShot();
         }
 

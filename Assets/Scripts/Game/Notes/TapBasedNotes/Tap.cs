@@ -8,11 +8,14 @@ namespace Game.Notes.TapBasedNotes
         public bool isStarHead;
         public bool isNoSpinningStarHead;
         public bool isBreak;
+        public bool isEx;
 
         public float rotateSpeed;
 
         public SpriteRenderer tapSpriteRenderer;
         public Transform tapTransform;
+        public SpriteRenderer exSpriteRenderer;
+        public Transform exTransform;
 
         private JudgeManager.JudgeAction _judgeAction;
 
@@ -66,11 +69,21 @@ namespace Game.Notes.TapBasedNotes
                                     _tapOrLineTransform.PositionInLane;
             tapTransform.localScale = _tapOrLineTransform.Scale;
 
+            if (exTransform)
+            {
+                exTransform.position = tapTransform.position;
+                exTransform.localScale = tapTransform.localScale;
+            }
+
             var color = new Color(0.3f + 0.7f * _tapOrLineTransform.Alpha, 0.3f + 0.7f * _tapOrLineTransform.Alpha,
                 0.3f + 0.7f * _tapOrLineTransform.Alpha, 0.3f + 0.7f * _tapOrLineTransform.Alpha);
             var alphaColor = new Color(1, 1, 1, _tapOrLineTransform.Alpha);
             tapSpriteRenderer.color = color;
             lineSpriteRenderer.color = alphaColor;
+
+            if (exSpriteRenderer)
+                exSpriteRenderer.color = new Color(exSpriteRenderer.color.r, exSpriteRenderer.color.g,
+                    exSpriteRenderer.color.b, color.a);
 
             lineTransform.localScale = (NoteGenerator.Instance.originCircleScale +
                                         (1 - NoteGenerator.Instance.originCircleScale) *
@@ -80,6 +93,8 @@ namespace Game.Notes.TapBasedNotes
             if (!isNoSpinningStarHead && (isStarHead || isBreak))
                 tapTransform.Rotate(new Vector3(0, 0,
                     isStarHead ? -180 * Time.deltaTime * rotateSpeed : 400 * Time.deltaTime));
+
+            if (exTransform) exTransform.rotation = tapTransform.rotation;
         }
 
         protected override void LateStart()
@@ -130,7 +145,7 @@ namespace Game.Notes.TapBasedNotes
 
             var judgeSettings = ChartPlayer.Instance.tapJudgeSettings;
 
-            var state = GetJudgeState(deltaTiming, judgeSettings);
+            var state = GetJudgeState(deltaTiming, isEx, judgeSettings);
 
             headJudged = state.judged;
 
@@ -150,7 +165,7 @@ namespace Game.Notes.TapBasedNotes
 
             PlayJudgeAnimation();
 
-            PlayJudgeSound(isBreak, judgeState);
+            PlayJudgeSound(isBreak, isEx, judgeState);
 
             tapSpriteRenderer.enabled = false;
 

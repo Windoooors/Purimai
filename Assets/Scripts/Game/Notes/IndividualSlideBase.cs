@@ -48,7 +48,9 @@ namespace Game.Notes
         {
             transform.position = Vector3.zero;
 
-            var prefab = NoteGenerator.Instance.slideArrowPrefab;
+            var prefab = parentNormalSlide.IsBreak
+                ? NoteGenerator.Instance.breakSlideArrowPrefab
+                : NoteGenerator.Instance.slideArrowPrefab;
             var order = 0;
 
             for (var i = 0; i < slideArrowCount; i++)
@@ -78,8 +80,13 @@ namespace Game.Notes
                 var spriteRenderer = arrowInstance.GetComponent<SpriteRenderer>();
 
                 spriteRenderer.sortingOrder = order-- + parentalOrder;
-                if (parentNormalSlide.IsEach)
-                    spriteRenderer.sprite = NoteGenerator.Instance.slideEachSprite;
+
+                spriteRenderer.sprite = (parentNormalSlide.IsEach, parentNormalSlide.IsBreak) switch
+                {
+                    (_, true) => NoteGenerator.Instance.slideBreakSprite,
+                    (false, false) => NoteGenerator.Instance.slideSprite,
+                    (true, false) => NoteGenerator.Instance.slideEachSprite
+                };
 
                 arrowInstance.transform.SetParent(transform);
 
@@ -93,9 +100,12 @@ namespace Game.Notes
             judgeDisplaySpriteRenderer.transform.eulerAngles =
                 displayPair.rotation.eulerAngles + new Vector3(0, 0, 18);
 
-            if (parentNormalSlide.IsEach)
-                star.spriteRenderer.sprite = NoteGenerator.Instance.eachStarSprite;
-
+            star.spriteRenderer.sprite = (parentNormalSlide.IsEach, parentNormalSlide.IsBreak) switch
+            {
+                (_, true) => NoteGenerator.Instance.breakStarSprite,
+                (false, false) => NoteGenerator.Instance.starSprite,
+                (true, false) => NoteGenerator.Instance.eachStarSprite
+            };
             return slideArrowCount;
         }
 

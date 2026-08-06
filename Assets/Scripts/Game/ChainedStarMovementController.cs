@@ -19,9 +19,7 @@ namespace Game
         public void SetStarOrder(int order)
         {
             foreach (var individualStarMovementController in IndividualStarMovementControllers)
-            {
                 individualStarMovementController.spriteRenderer.sortingOrder -= order;
-            }
         }
 
         public void Initialize()

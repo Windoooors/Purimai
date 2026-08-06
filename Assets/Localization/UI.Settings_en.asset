@@ -288,6 +288,30 @@ MonoBehaviour:
     m_Localized: Audio offset calibrator
     m_Metadata:
       m_Items: []
+  - m_Id: 95955336534417408
+    m_Localized: Type D Size
+    m_Metadata:
+      m_Items: []
+  - m_Id: 95955469699375104
+    m_Localized: Type E Size
+    m_Metadata:
+      m_Items: []
+  - m_Id: 95955517795459072
+    m_Localized: Brk. Sld. Launch
+    m_Metadata:
+      m_Items: []
+  - m_Id: 95956035167051776
+    m_Localized: Brk. Sld. Answer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 95956170013925376
+    m_Localized: Brk. Sld. Judge
+    m_Metadata:
+      m_Items: []
+  - m_Id: 95956330114703360
+    m_Localized: Ex Answer
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

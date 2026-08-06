@@ -87,7 +87,9 @@ namespace Game.Notes
                 var progress = (float)(currentProgress / division + (currentProgress - 2) / 30
                                        - (currentProgress - 1) * 0.48f / division);
 
-                var prefab = NoteGenerator.Instance.slideArrowPrefab;
+                var prefab = IsBreak
+                    ? NoteGenerator.Instance.breakSlideArrowPrefab
+                    : NoteGenerator.Instance.slideArrowPrefab;
 
                 var arrowInstance = Instantiate(prefab, transform);
 
@@ -97,9 +99,12 @@ namespace Game.Notes
 
                 var slideSpriteRenderer = arrowInstance.GetComponent<SpriteRenderer>();
 
-                slideSpriteRenderer.sprite = IsEach
-                    ? NoteGenerator.Instance.wifiSlideEachSprites[i]
-                    : NoteGenerator.Instance.wifiSlideSprites[i];
+                slideSpriteRenderer.sprite = (IsEach, IsBreak) switch
+                {
+                    (_, true) => NoteGenerator.Instance.wifiSlideBreakSprites[i],
+                    (true, false) => NoteGenerator.Instance.wifiSlideEachSprites[i],
+                    (false, false) => NoteGenerator.Instance.wifiSlideSprites[i]
+                };
 
                 slideSpriteRenderer.sortingOrder = 1 + i + Order;
 
@@ -110,9 +115,13 @@ namespace Game.Notes
                 _slideArrowSpriteRenderers.Add(slideSpriteRenderer);
             }
 
-            if (IsEach)
-                foreach (var starMovementController in wifiStars)
-                    starMovementController.spriteRenderer.sprite = NoteGenerator.Instance.eachStarSprite;
+            foreach (var starMovementController in wifiStars)
+                starMovementController.spriteRenderer.sprite = (IsEach, IsBreak) switch
+                {
+                    (_, true) => NoteGenerator.Instance.breakStarSprite,
+                    (false, false) => NoteGenerator.Instance.starSprite,
+                    (true, false) => NoteGenerator.Instance.eachStarSprite
+                };
         }
 
         protected override void UpdateJudgeDisplayDirection(int judgeDisplaySpriteGroupIndex)

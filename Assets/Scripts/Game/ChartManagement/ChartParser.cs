@@ -63,10 +63,10 @@ namespace Game.ChartManagement
             {
                 _bpm = bpm;
                 _chartString = BpmRegex.Replace(_chartString, "", 1).Trim();
-                
+
                 if (NoteValueRegex.IsMatch(_chartString))
                     ParseNoteValue();
-                
+
                 if (BpmRegex.IsMatch(_chartString))
                     ParseBpm();
             }
@@ -82,10 +82,10 @@ namespace Game.ChartManagement
             {
                 _noteValue = noteValue;
                 _chartString = NoteValueRegex.Replace(_chartString, "", 1).Trim();
-                
+
                 if (NoteValueRegex.IsMatch(_chartString))
                     ParseNoteValue();
-                
+
                 if (BpmRegex.IsMatch(_chartString))
                     ParseBpm();
             }
@@ -139,7 +139,7 @@ namespace Game.ChartManagement
             Wifi
         }
 
-        private static readonly Regex HeadRegex = new("^[A-Z]?([1-8])"); // Touch will fall back to tap
+        private static readonly Regex HeadRegex = new("^(A|B|C|D|E)?([1-8]|C)"); // Touch will fall back to tap
 
         public static Dictionary<SlideType, int> SlideTypeToSlideStringLength = new()
         {
@@ -178,11 +178,13 @@ namespace Game.ChartManagement
 
         public readonly HoldDataObject[] HoldDataObjects;
         public readonly SlideDataObject[] SlideDataObjects;
-
         public readonly TapDataObject[] TapDataObjects;
         public readonly int Timing;
 
         public readonly double TimingInSeconds;
+
+        public readonly TouchDataObject[] TouchDataObjects;
+        public readonly TouchHoldDataObject[] TouchHoldDataObjects;
 
         public NoteDataObject(string noteString, int timing, double bpm, double timingInSeconds)
         {
@@ -204,41 +206,75 @@ namespace Game.ChartManagement
             var taps = new List<TapDataObject>();
             var slides = new List<SlideDataObject>();
             var holds = new List<HoldDataObject>();
+            var touches = new List<TouchDataObject>();
+            var touchHolds = new List<TouchHoldDataObject>();
 
             foreach (var separatedNoteString in separatedNoteStrings)
             {
-                var isBreak = separatedNoteString.Contains("b");
-                var isSpinningStarHead = separatedNoteString.Contains("$$");
-                var isNoSpinningStarHead = separatedNoteString.Contains("$") && !isSpinningStarHead;
-                var isTapStyleStarHead = separatedNoteString.Contains("@");
-                var isNoHeadSlide = separatedNoteString.Contains("?") || separatedNoteString.Contains("!");
-                var isSuddenAppearingSlide = separatedNoteString.Contains("!");
+                var headInformation =
+                    StringHelper.GetShortestFirstSegment(separatedNoteString, SlideStringToSlideType.Keys.ToArray());
 
-                var separatedNoteStringWithNoHeadProperties =
-                    separatedNoteString.Replace("$", "").Replace("b", "").Replace("?", "").Replace("!", "");
+                var isBreak = headInformation.Contains("b");
+                var isSpinningStarHead = headInformation.Contains("$$");
+                var isNoSpinningStarHead = headInformation.Contains("$") && !isSpinningStarHead;
+                var isTapStyleStarHead = headInformation.Contains("@");
+                var isNoHeadSlide = headInformation.Contains("?") || headInformation.Contains("!");
+                var isSuddenAppearingSlide = headInformation.Contains("!");
+                var isEx = headInformation.Contains("x");
+                var withFireworks = headInformation.Contains("f");
+
+                var headInformationWithNoHeadProperties = headInformation.Replace("$", "").Replace("b", "")
+                    .Replace("?", "").Replace("!", "").Replace("x", "").Replace("f", "");
+
+                var separatedNoteStringWithNoHeadProperties = headInformationWithNoHeadProperties +
+                                                              new Regex(Regex.Escape(headInformation)).Replace(
+                                                                  separatedNoteString, "", 1);
 
                 var headMatch = HeadRegex.Match(separatedNoteStringWithNoHeadProperties);
 
                 if (!headMatch.Success)
                     continue;
 
-                if (!int.TryParse(headMatch.Groups[1].Value, out _))
+                var isTouch = false;
+                var touchSensorType = "A";
+
+                if (!int.TryParse(headMatch.Groups[2].Value, out var lane) && headMatch.Groups[2].Value != "C")
                     continue;
 
-                var lane = int.Parse(headMatch.Groups[1].Value);
+                if (headMatch.Groups[2].Value == "C")
+                {
+                    touchSensorType = "C";
+                    isTouch = true;
+                }
+
+                if (headMatch.Groups[1].Value != "")
+                {
+                    touchSensorType = headMatch.Groups[1].Value;
+                    isTouch = true;
+                }
 
                 var holdOrSlideNoteString = HeadRegex.Replace(separatedNoteStringWithNoHeadProperties, "", 1).Trim();
 
                 var holdMatch = ParseHold(holdOrSlideNoteString, bpm);
                 if (holdMatch.Success)
                 {
-                    holds.Add(new HoldDataObject
-                    {
-                        HoldDuration = (int)(holdMatch.HoldDuration * 1000),
-                        HoldDurationInSeconds = holdMatch.HoldDuration,
-                        Lane = lane
-                    });
-
+                    if (!isTouch)
+                        holds.Add(new HoldDataObject
+                        {
+                            HoldDuration = (int)(holdMatch.HoldDuration * 1000),
+                            HoldDurationInSeconds = holdMatch.HoldDuration,
+                            Lane = lane,
+                            IsBreak = isBreak,
+                            IsEx = isEx
+                        });
+                    else
+                        touchHolds.Add(new TouchHoldDataObject
+                        {
+                            HoldDuration = (int)(holdMatch.HoldDuration * 1000),
+                            HoldDurationInSeconds = holdMatch.HoldDuration,
+                            Sensor = touchSensorType + (touchSensorType == "C" ? "" : lane.ToString()),
+                            WithFireworks = withFireworks
+                        });
                     continue;
                 }
 
@@ -251,9 +287,13 @@ namespace Game.ChartManagement
 
                 SlideDataObject slideAssociatedWithTap = null;
 
-                foreach (var separatedSlideString in separatedSlideStrings)
+                foreach (var separatedSlideStringWithBreakInformation in separatedSlideStrings)
                 {
                     //var slideCount
+
+                    var isSlideBreak = separatedSlideStringWithBreakInformation.Contains("b");
+
+                    var separatedSlideString = separatedSlideStringWithBreakInformation.Replace("b", "");
 
                     var slideMatch = ParseSlide(separatedSlideString.Trim(), bpm, lane);
 
@@ -265,6 +305,7 @@ namespace Game.ChartManagement
                         SuddenlyAppears = isSuddenAppearingSlide,
                         WaitDuration = (int)(slideMatch.TimingObject.WaitDuration * 1000),
                         SlideDuration = (int)(slideMatch.TimingObject.SlideDuration * 1000),
+                        IsBreak = isSlideBreak,
                         IndividualSlides = slideMatch.IndividualSlides.Select(x => new IndividualSlideDataObject
                         {
                             Type = x.SlideType,
@@ -279,23 +320,36 @@ namespace Game.ChartManagement
                 }
 
                 if (!isNoHeadSlide)
-                    taps.Add(new TapDataObject
-                    {
-                        IsBreak = isBreak,
-                        Lane = lane,
-                        IsStarHead = !isTapStyleStarHead && (isSpinningStarHead || isNoSpinningStarHead ||
-                                                             slides.Exists(x => x.IndividualSlides[0].From == lane)),
-                        IsNoSpinningStarHead = !isTapStyleStarHead && isNoSpinningStarHead,
-                        IsDoubleStarHead = !isTapStyleStarHead &&
-                                           slides.Where(x => x.IndividualSlides[0].From == lane).Select(x => x)
-                                               .ToArray().Length > 1,
-                        RotateSpeed = 1000 / slideAssociatedWithTap?.SlideDuration ?? 0f
-                    });
+                {
+                    if (!isTouch)
+                        taps.Add(new TapDataObject
+                        {
+                            IsBreak = isBreak,
+                            IsEx = isEx,
+                            Lane = lane,
+                            IsStarHead = !isTapStyleStarHead && (isSpinningStarHead || isNoSpinningStarHead ||
+                                                                 slides.Exists(x =>
+                                                                     x.IndividualSlides[0].From == lane)),
+                            IsNoSpinningStarHead = !isTapStyleStarHead && isNoSpinningStarHead,
+                            IsDoubleStarHead = !isTapStyleStarHead &&
+                                               slides.Where(x => x.IndividualSlides[0].From == lane).Select(x => x)
+                                                   .ToArray().Length > 1,
+                            RotateSpeed = 1000 / slideAssociatedWithTap?.SlideDuration ?? 0f
+                        });
+                    else
+                        touches.Add(new TouchDataObject
+                        {
+                            Sensor = touchSensorType + (touchSensorType == "C" ? "" : lane.ToString()),
+                            WithFireworks = withFireworks
+                        });
+                }
             }
 
             TapDataObjects = taps.ToArray();
             SlideDataObjects = slides.ToArray();
             HoldDataObjects = holds.ToArray();
+            TouchHoldDataObjects = touchHolds.ToArray();
+            TouchDataObjects = touches.ToArray();
         }
 
         private HoldResult ParseHold(string input, double globalBpm)
@@ -523,19 +577,30 @@ namespace Game.ChartManagement
             public double HoldDuration { get; set; }
         }
 
-        public class TapDataObjectBase
+        public abstract class TapDataObjectBase
         {
+            public bool IsBreak;
+            public bool IsEx;
             public int Lane;
+        }
+
+        public abstract class TouchDataObjectBase
+        {
+            public string Sensor { get; set; }
+            public bool WithFireworks { get; set; }
         }
 
         public class TapDataObject : TapDataObjectBase
         {
-            public bool IsBreak;
             public bool IsDoubleStarHead;
             public bool IsNoSpinningStarHead;
             public bool IsStarHead;
 
             public float RotateSpeed;
+        }
+
+        public class TouchDataObject : TouchDataObjectBase
+        {
         }
 
         public class HoldDataObject : TapDataObjectBase
@@ -544,9 +609,16 @@ namespace Game.ChartManagement
             public double HoldDurationInSeconds;
         }
 
+        public class TouchHoldDataObject : TouchDataObjectBase
+        {
+            public int HoldDuration;
+            public double HoldDurationInSeconds;
+        }
+
         public class SlideDataObject
         {
             public IndividualSlideDataObject[] IndividualSlides;
+            public bool IsBreak;
             public int SlideDuration;
             public bool SuddenlyAppears;
             public int WaitDuration;

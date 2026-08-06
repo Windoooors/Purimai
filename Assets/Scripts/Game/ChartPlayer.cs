@@ -15,6 +15,7 @@ using Logger = Logging.Logger;
 #if UNITY_EDITOR
 using EditorScript;
 #endif
+
 #if !UNITY_EDITOR
 using System;
 #endif
@@ -33,6 +34,7 @@ namespace Game
         public Image backgroundBrightnessCover;
 
         public float flowSpeed;
+        public float touchFlowSpeed;
         public float slideAppearanceDelay;
 
         public int slideJudgeDisplayAnimationDuration = 600;
@@ -49,11 +51,13 @@ namespace Game
         [HideInInspector] public int slideFadeInDuration;
 
         public Animator[] holdRippleAnimators;
+        public Animator fireworksAnimator;
         public Animator judgeCircleGlowAnimator;
 
         public AnimationClip judgeDisplayAnimationClip;
 
         public JudgeSettings tapJudgeSettings;
+        public JudgeSettings touchJudgeSettings;
         public JudgeSettings slideJudgeSettings;
         public JudgeSettings holdTailJudgeSettings;
 
@@ -108,7 +112,10 @@ namespace Game
             judgeDelay = SettingsPool.GetValue("input_delay") + GlobalInputOffset;
             flowSpeed = SettingsPool.GetValue("flow_speed") * 0.25f + 1;
 
+            touchFlowSpeed = SettingsPool.GetValue("touch_flow_speed") * 0.25f + 1;
+
             if (flowSpeed.Equals(10.25f)) flowSpeed = 49;
+            if (touchFlowSpeed.Equals(10.25f)) touchFlowSpeed = 49;
 
             slideAppearanceDelay = (SettingsPool.GetValue("slide_appearance_delay") - 10) / 10f;
 
@@ -414,7 +421,8 @@ namespace Game
 
             var chart = maidata.Charts.ToList().Find(x => x.DifficultyIndex == difficultyIndex);
 
-            NoteGenerator.Instance.GenerateNotes(chart.ChartString, maidata.FirstNoteTime);
+            NoteGenerator.Instance.GenerateNotes(chart.ChartString, maidata.FirstNoteTime,
+                difficultyIndex is 0 or 1 or 2);
 
             var useBlurredCover = SettingsPool.GetValue("blurred_cover") != 0;
 

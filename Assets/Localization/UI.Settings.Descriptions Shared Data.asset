@@ -111,6 +111,30 @@ MonoBehaviour:
     m_Key: settings.audio_delay_calibration
     m_Metadata:
       m_Items: []
+  - m_Id: 55998899221946368
+    m_Key: settings.sensor_radius.area.d
+    m_Metadata:
+      m_Items: []
+  - m_Id: 55998944105193472
+    m_Key: settings.sensor_radius.area.e
+    m_Metadata:
+      m_Items: []
+  - m_Id: 55998979752583168
+    m_Key: settings.volume.ex
+    m_Metadata:
+      m_Items: []
+  - m_Id: 55999134518206464
+    m_Key: settings.volume.break_slide_launch
+    m_Metadata:
+      m_Items: []
+  - m_Id: 55999405696737280
+    m_Key: settings.volume.break_slide_slide
+    m_Metadata:
+      m_Items: []
+  - m_Id: 55999632390479872
+    m_Key: settings.volume.break_slide_judge
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

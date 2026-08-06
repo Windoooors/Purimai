@@ -18,6 +18,8 @@ namespace Game.Notes
 
         private Animator _judgeDisplayAnimator;
         private JudgeState _judgeState;
+
+        private bool _launchSoundPlayed;
         private JudgeManager.JudgeAction _leaveJudgeAction;
 
         private MaterialPropertyBlock _materialPropertyBlock;
@@ -25,6 +27,8 @@ namespace Game.Notes
         private int _showJudgeDisplayTiming = -1;
         private bool _slidedHalf;
         private SlideTransform _slideTransform;
+
+        private Texture _starTexture;
 
         protected GameObject SlideContentRoot;
         protected bool Slided;
@@ -35,6 +39,7 @@ namespace Game.Notes
         protected int Order { get; private set; }
         public int Timing { get; private set; }
         public bool IsEach { get; private set; }
+        public bool IsBreak { get; private set; }
         public bool SuddenlyAppears { get; private set; }
         protected int WaitDuration { get; private set; }
         public int SlideDuration { get; private set; }
@@ -47,7 +52,8 @@ namespace Game.Notes
             emergingTime = Timing - ChartPlayer.Instance.timeGapBeforeSlideStartsAppearing;
         }
 
-        public void Initialize(NoteDataObject.SlideDataObject slideDataObject, bool isSlideEach, int noteTiming,
+        public void Initialize(NoteDataObject.SlideDataObject slideDataObject, bool isSlideEach, bool isSlideBreak,
+            int noteTiming,
             ref int slideArrowOrder)
         {
             _materialPropertyBlock = new MaterialPropertyBlock();
@@ -56,6 +62,7 @@ namespace Game.Notes
             Order = -slideArrowOrder;
             Timing = noteTiming;
             IsEach = isSlideEach;
+            IsBreak = isSlideBreak;
             WaitDuration = slideDataObject.WaitDuration;
             SlideDuration = slideDataObject.SlideDuration;
 
@@ -84,7 +91,7 @@ namespace Game.Notes
 
             foreach (var starMovementController in Stars)
             {
-                starMovementController.SetStarOrder(Order);
+                starMovementController.SetStarOrder(-Order);
                 starMovementController.Initialize();
             }
 
@@ -107,7 +114,17 @@ namespace Game.Notes
                 Timing + SlideDuration + WaitDuration + 100 + slideJudgeSettings.lateGoodTiming, OnLeaveSlidePath,
                 out _leaveJudgeAction);
 
-            Scoreboard.SlideCount.TotalCount++;
+            if (IsBreak)
+                Scoreboard.BreakCount.TotalCount++;
+            else
+                Scoreboard.SlideCount.TotalCount++;
+
+            _starTexture = (IsBreak, IsEach) switch
+            {
+                (true, _) => NoteGenerator.Instance.breakStarSprite.texture,
+                (false, true) => NoteGenerator.Instance.eachStarSprite.texture,
+                (false, false) => NoteGenerator.Instance.starSprite.texture
+            };
         }
 
         protected void Judge()
@@ -255,11 +272,19 @@ namespace Game.Notes
 
             _materialPropertyBlock.SetFloat("_Transition", _slideTransform.StarAlpha);
 
+            _materialPropertyBlock.SetTexture("_MainTex", _starTexture);
+
+            if (_slideTransform.StarPosition > 0.002 && !_launchSoundPlayed)
+            {
+                _launchSoundPlayed = true;
+                PlayLaunchSound();
+            }
+
             foreach (var star in Stars)
             {
                 star.Move(_slideTransform.StarPosition);
 
-                star.GetSpriteRenderer().SetPropertyBlock(_materialPropertyBlock, 0);
+                star.GetSpriteRenderer().SetPropertyBlock(_materialPropertyBlock);
                 star.GetSpriteRenderer().transform.localScale =
                     Vector3.one + Vector3.one * _slideTransform.StarAlpha / 2;
             }
@@ -274,7 +299,10 @@ namespace Game.Notes
                 Slided &&
                 !_concealed)
             {
-                Scoreboard.SlideCount.Count(_judgeState);
+                if (IsBreak)
+                    Scoreboard.BreakCount.Count(_judgeState);
+                else
+                    Scoreboard.SlideCount.Count(_judgeState);
 
                 if (_judgeState is not (JudgeState.CriticalPerfect or JudgeState.Miss))
                 {
@@ -285,9 +313,14 @@ namespace Game.Notes
                 }
 
                 if (_judgeState is not JudgeState.Miss)
+                {
+                    PlayJudgeSound();
                     Scoreboard.Combo++;
+                }
                 else
+                {
                     Scoreboard.ResetCombo();
+                }
 
                 PlayJudgeAnimation();
 
@@ -327,9 +360,37 @@ namespace Game.Notes
             _judgeDisplayAnimator.SetTrigger("ShowJudgeDisplay");
         }
 
+        protected void PlayLaunchSound()
+        {
+            if (IsBreak)
+                SfxManager.Instance.PlayBreakSlideLaunchingSound();
+        }
+
         protected void PlaySlideSound()
         {
-            SfxManager.Instance.PlaySlideSound();
+            if (IsBreak)
+            {
+                SfxManager.Instance.PlayBreakSlideSlideSound();
+            }
+            else
+            {
+                SfxManager.Instance.PlaySlideSound();
+            }
+        }
+
+        protected void PlayJudgeSound()
+        {
+            if (!IsBreak)
+                return;
+
+            switch (_judgeState)
+            {
+                case JudgeState.CriticalPerfect:
+                case JudgeState.Perfect:
+                case JudgeState.SemiCriticalPerfect:
+                    SfxManager.Instance.PlaySlideBreakPerfectSound();
+                    break;
+            }
         }
 
         protected abstract void OnSensorLeave(TouchEventArgs e);
