@@ -20,11 +20,13 @@ namespace Game.Theming
 
     public class ThemeApplier : MonoBehaviour
     {
-        public const int ModuleCount = 6;
+        public const int ModuleCount = 8;
 
         private static ThemeApplier _instance;
         public List<SkinPieceData> tapSkinDataList = new();
         public List<SkinPieceData> holdSkinDataList = new();
+        public List<SkinPieceData> touchSkinDataList = new();
+        public List<SkinPieceData> touchHoldSkinDataList = new();
         public List<SkinPieceData> starSkinDataList = new();
         public List<SkinPieceData> slideSkinDataList = new();
         public List<SkinPieceData> judgeDisplaySkinDataList = new();
@@ -72,10 +74,14 @@ namespace Game.Theming
                 case 1:
                     return holdSkinDataList;
                 case 2:
-                    return starSkinDataList;
+                    return touchSkinDataList;
                 case 3:
-                    return slideSkinDataList;
+                    return touchHoldSkinDataList;
                 case 4:
+                    return starSkinDataList;
+                case 5:
+                    return slideSkinDataList;
+                case 6:
                     var result = new List<SkinPieceData>();
                     result.AddRange(judgeDisplaySkinDataList);
                     result.AddRange(miscSkinDataList);
@@ -93,6 +99,12 @@ namespace Game.Theming
 
             foreach (var file in Directory.GetFiles(defaultSkinPath)) File.Delete(file);
 
+            foreach (var skinData in touchSkinDataList)
+                File.Copy(AssetDatabase.GetAssetPath(skinData.sprite), defaultSkinPath + "/" + skinData.key + ".png",
+                    true);
+            foreach (var skinData in touchHoldSkinDataList)
+                File.Copy(AssetDatabase.GetAssetPath(skinData.sprite), defaultSkinPath + "/" + skinData.key + ".png",
+                    true);
             foreach (var skinData in tapSkinDataList)
                 File.Copy(AssetDatabase.GetAssetPath(skinData.sprite), defaultSkinPath + "/" + skinData.key + ".png",
                     true);
@@ -123,6 +135,8 @@ namespace Game.Theming
             allList.AddRange(slideSkinDataList);
             allList.AddRange(judgeDisplaySkinDataList);
             allList.AddRange(miscSkinDataList);
+            allList.AddRange(touchSkinDataList);
+            allList.AddRange(touchHoldSkinDataList);
 
             var dataDtoEnum = allList.Select(x => new SkinPieceDataDto
             {

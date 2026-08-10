@@ -117,7 +117,7 @@ namespace Game.Theming
             }
 
             if (SkinDataList.Count == 1 || skinSettings.Length == 0 || needRestoringSettings)
-                SkinDataList[0].AppliedModules = 0b111111;
+                SkinDataList[0].AppliedModules = 0b11111111;
         }
     }
 }

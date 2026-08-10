@@ -43,7 +43,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 361648611328
-    m_Localized: "\u97F3\u7B26\u6D41\u52A8\u7684\u901F\u5EA6"
+    m_Localized: "Tap / Hold \u97F3\u7B26\u6D41\u52A8\u7684\u901F\u5EA6"
     m_Metadata:
       m_Items: []
   - m_Id: 3121485303504896
@@ -140,6 +140,18 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 55999632390479872
     m_Localized: "Break Slide \u5224\u5B9A\u97F3\u97F3\u91CF"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 58920797312376832
+    m_Localized: "Touch \u5224\u5B9A\u97F3\u97F3\u91CF"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 58920845647536128
+    m_Localized: "\u70DF\u82B1\u6548\u679C\u97F3\u91CF"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 58920993219928064
+    m_Localized: "Touch \u97F3\u7B26\u6D41\u901F"
     m_Metadata:
       m_Items: []
   references:

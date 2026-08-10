@@ -13,19 +13,21 @@ namespace Game.Notes.TouchBasedNotes
         public SpriteRenderer[] touchSpriteRenderers;
         public float scale = 1;
 
-        private bool _judgedByTouchGroup = false;
-        
         public SpriteRenderer dotSpriteRenderer;
 
         public SpriteRenderer justBorder;
         public SpriteRenderer overlapIndicatingBorder;
-        
-        private JudgeManager.JudgeAction _judgeAction;
-        private TouchTransform _touchTransform;
+        public SpriteRenderer overlapLargeIndicatingBorder;
 
         public List<Touch> touchGroup;
 
-        public bool isLarge;
+        private JudgeManager.JudgeAction _judgeAction;
+
+        private bool _judgedByTouchGroup;
+        private TouchTransform _touchTransform;
+
+        public (bool isEach, bool isOverlapped) LargeTouchBorderInformation;
+        public (bool isEach, bool isOverlapped) TouchBorderInformation;
 
         public override void AddAutoPlayKeyFrame()
         {
@@ -48,21 +50,27 @@ namespace Game.Notes.TouchBasedNotes
             foreach (var touchSpriteRenderer in touchSpriteRenderers) touchSpriteRenderer.color = new Color(1, 1, 1, 0);
 
             overlapIndicatingBorder.color = new Color(1, 1, 1, 0);
+            overlapLargeIndicatingBorder.color = new Color(1, 1, 1, 0);
             justBorder.color = new Color(1, 1, 1, 0);
-            
+
             Scoreboard.TapCount.TotalCount++;
-            
+
             if (TouchBorderInformation.isOverlapped)
             {
                 overlapIndicatingBorder.color = new Color(1, 1, 1, 1);
 
-                overlapIndicatingBorder.sprite = (TouchBorderInformation.isEach, isLarge) switch
-                {
-                    (false, false) => NoteGenerator.Instance.touchOverlapBorderSprites[0],
-                    (true, false) => NoteGenerator.Instance.touchOverlapBorderSprites[1],
-                    (false, true) => NoteGenerator.Instance.touchOverlapBorderSprites[2],
-                    (true, true) => NoteGenerator.Instance.touchOverlapBorderSprites[3]
-                };
+                overlapIndicatingBorder.sprite = TouchBorderInformation.isEach
+                    ? NoteGenerator.Instance.touchOverlapBorderSprites[1]
+                    : NoteGenerator.Instance.touchOverlapBorderSprites[0];
+            }
+
+            if (LargeTouchBorderInformation.isOverlapped)
+            {
+                overlapLargeIndicatingBorder.color = new Color(1, 1, 1, 1);
+
+                overlapLargeIndicatingBorder.sprite = LargeTouchBorderInformation.isEach
+                    ? NoteGenerator.Instance.touchOverlapBorderSprites[3]
+                    : NoteGenerator.Instance.touchOverlapBorderSprites[2];
             }
         }
 
@@ -71,7 +79,8 @@ namespace Game.Notes.TouchBasedNotes
             foreach (var touchSpriteRenderer in touchSpriteRenderers) touchSpriteRenderer.sortingOrder += order;
             justBorder.sortingOrder += order;
             overlapIndicatingBorder.sortingOrder += order;
-            
+            overlapLargeIndicatingBorder.sortingOrder += order;
+
             dotSpriteRenderer.sortingOrder += order;
         }
 
@@ -123,13 +132,59 @@ namespace Game.Notes.TouchBasedNotes
                     Mathf.Pow(_touchTransform.Position, 2));
             }
 
-            if (_touchTransform.ShowBorder)
-            {
-                justBorder.color = new Color(1, 1, 1, 1);
-            }
+            if (_touchTransform.ShowBorder) justBorder.color = new Color(1, 1, 1, 1);
 
             var color = new Color(1, 1, 1, _touchTransform.Alpha);
             foreach (var touchSpriteRenderer in touchSpriteRenderers) touchSpriteRenderer.color = color;
+        }
+
+        private void GetTouchTransform(ref TouchTransform result)
+        {
+            if (result == null)
+                return;
+
+            var currentPosition = ChartPlayer.Instance.TimeInMilliseconds;
+
+            var startEmergingTiming = timing - TouchOnScreenTime - TouchOnScreenTime / 4f;
+
+            var startMovingTiming = timing - TouchOnScreenTime;
+
+            if (currentPosition < startEmergingTiming - 100 ||
+                currentPosition > timing + ChartPlayer.Instance.touchJudgeSettings.lateGoodTiming + 200 ||
+                (indexInLane - 1 >= 0 && !NoteGenerator.Instance.TouchLanes[sensorId][indexInLane - 1].headJudged))
+            {
+                result.Shown = false;
+                return;
+            }
+
+            if (currentPosition > startEmergingTiming && currentPosition < startMovingTiming)
+            {
+                var factor = (currentPosition - emergingTime) / (TouchOnScreenTime / 4f);
+
+                result.Alpha = factor;
+                result.Position = 0;
+                result.Shown = true;
+
+                return;
+            }
+
+            if (currentPosition >= startMovingTiming)
+            {
+                var factor = (currentPosition - startMovingTiming) / TouchOnScreenTime;
+
+                result.Alpha = 1;
+                result.Position = factor;
+                result.Shown = true;
+
+                if (currentPosition > timing)
+                    result.ShowBorder = true;
+
+                return;
+            }
+
+            result.Alpha = 0;
+            result.Position = 0;
+            result.Shown = false;
         }
 
         public override void RegisterTapEvent()
@@ -145,7 +200,7 @@ namespace Game.Notes.TouchBasedNotes
         {
             if (headJudged)
                 return;
-            
+
             if (e.SensorId != sensorId)
                 return;
 
@@ -182,7 +237,7 @@ namespace Game.Notes.TouchBasedNotes
             _judgeAction.Enabled = false;
 
             NoteContentRoot.SetActive(false);
-            
+
             if (GetTouchGroupJudgedProportion() > 0.5f && !_judgedByTouchGroup)
             {
                 _judgedByTouchGroup = true;
@@ -191,11 +246,19 @@ namespace Game.Notes.TouchBasedNotes
                 {
                     if (x == this)
                         return;
-                    
+
                     x._judgedByTouchGroup = true;
                     x.Judge(sender, new TouchEventArgs(x.sensorId));
                 });
             }
+        }
+
+        private class TouchTransform
+        {
+            public float Alpha;
+            public float Position;
+            public bool ShowBorder;
+            public bool Shown;
         }
     }
 }

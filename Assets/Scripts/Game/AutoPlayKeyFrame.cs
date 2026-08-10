@@ -6,7 +6,9 @@ namespace Game
         {
             PressDown,
             Hold,
-            PressUp
+            PressUp,
+            HoldStart,
+            HoldEnd
         }
 
         public bool HoldNote;

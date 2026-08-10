@@ -7,6 +7,10 @@
                    style="background-image: url(&quot;project://database/Assets/Textures/UI/Theming/circle.png?fileID=2800000&amp;guid=12d912ccb0cbc452983b2fbf04e538ba&amp;type=3#circle&quot;);"/>
         <ui:Button name="hold-button" class="button"
                    style="background-image: url(&quot;project://database/Assets/Textures/UI/Theming/hexagon.png?fileID=2800000&amp;guid=701a1832e405d45cdabe3790174085cb&amp;type=3#hexagon&quot;);"/>
+        <ui:Button name="touch-button" class="button"
+                   style="background-image: url(&quot;project://database/Assets/Textures/UI/Theming/touch.png?fileID=2800000&amp;guid=091410a03db7d4132accf489a2e814a6&amp;type=3#touch&quot;);"/>
+        <ui:Button name="touch-hold-button" class="button"
+                   style="background-image: url(&quot;project://database/Assets/Textures/UI/Theming/touch_hold.png?fileID=2800000&amp;guid=03de8972bc7734f7999588a4d770e99d&amp;type=3#touch_hold&quot;);"/>
         <ui:Button name="star-button" class="button"
                    style="background-image: url(&quot;project://database/Assets/Textures/UI/Theming/star.png?fileID=2800000&amp;guid=50cb7bfdf6e7d44e087bc3c2138521e1&amp;type=3#star&quot;);"/>
         <ui:Button name="arrow-button" class="button"

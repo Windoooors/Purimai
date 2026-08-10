@@ -19,7 +19,7 @@ namespace Game.Theming
         {
             for (var i = 0; i < ThemeApplier.ModuleCount; i++)
             {
-                if (i == 5)
+                if (i == 7)
                     continue;
 
                 var mask = 1 << i;
@@ -31,7 +31,7 @@ namespace Game.Theming
 
                     if (i == 1) ThemeManager.HoldColorRelatedHoldEffect = x.themeDataDto.HoldColorRelatedHoldEffect;
 
-                    if (i == 4) ThemeManager.HasJudgeCircleColor = x.themeDataDto.HasJudgeCircleColor;
+                    if (i == 6) ThemeManager.HasJudgeCircleColor = x.themeDataDto.HasJudgeCircleColor;
 
                     var list = ThemeApplier.Instance.GetSkinPieceDataList(i);
                     LoadSingleSkinData(x, list);

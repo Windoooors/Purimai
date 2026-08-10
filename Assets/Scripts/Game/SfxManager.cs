@@ -4,6 +4,7 @@ using System.IO;
 using UI.Settings;
 using UI.Settings.Managers;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Game
 {
@@ -29,12 +30,15 @@ namespace Game
                 { "good", new AudioSoundNameData("good_sound.wav") },
                 { "ex", new AudioSoundNameData("ex_sound.wav") },
                 { "break_slide_launch", new AudioSoundNameData("break_slide_launch_sound.wav") },
-                { "break_slide_slide", new AudioSoundNameData("break_slide_slide_sound.wav") },
                 { "touch_fireworks", new AudioSoundNameData("touch_fireworks.wav") },
                 { "touch", new AudioSoundNameData("touch.wav") },
-                { "touch_hold", new AudioSoundNameData("touch_hold.wav") },
+                { "touch_hold", new AudioSoundNameData("touch_hold.wav") }
             }
         };
+
+        private bool _holdingSoundPausing;
+
+        private bool _holdingSoundPlaying;
 
         public static SfxManager Instance => _instance ??= FindAnyObjectByType<SfxManager>();
 
@@ -45,6 +49,25 @@ namespace Game
             //AdaptToSettings();
 
             SettingsManager.OnSettingsChanged += AdaptToSettings;
+        }
+
+        private void Start()
+        {
+            SceneManager.sceneLoaded += (_, _) =>
+            {
+                _holdingSoundPlaying = false;
+                _holdingSoundPausing = false;
+
+                StopTouchHoldSound();
+            };
+        }
+
+        private void Update()
+        {
+            var sound = _bassHandlers["touch_hold"];
+
+            if (_holdingSoundPlaying && !sound.IsPlaying && !_holdingSoundPausing)
+                ResetAndPlayTouchHoldSound();
         }
 
         private void LoadAllSoundData()
@@ -89,11 +112,22 @@ namespace Game
             sound.PlayOneShot();
         }
 
-        public void PlayBreakSlideSlideSound()
+        public void StopTouchHoldSound()
         {
-            var sound = _bassHandlers["break_slide_slide"];
-            sound.Volume = _volumes["break_slide_slide"];
-            sound.PlayOneShot();
+            _holdingSoundPlaying = false;
+
+            var sound = _bassHandlers["touch_hold"];
+            sound.Stop();
+        }
+
+        public void ResetAndPlayTouchHoldSound()
+        {
+            var sound = _bassHandlers["touch_hold"];
+            sound.Volume = _volumes["touch"];
+            sound.Stop();
+            sound.Play();
+
+            _holdingSoundPlaying = true;
         }
 
         public void PlayTouchSound()
@@ -102,14 +136,30 @@ namespace Game
             sound.Volume = _volumes["touch"];
             sound.PlayOneShot();
         }
-        
+
+        public void PauseTouchHoldSound()
+        {
+            var sound = _bassHandlers["touch_hold"];
+            _holdingSoundPausing = true;
+
+            sound.Pause();
+        }
+
+        public void UnpauseTouchHoldSound()
+        {
+            var sound = _bassHandlers["touch_hold"];
+            _holdingSoundPausing = false;
+
+            sound.Play();
+        }
+
         public void PlayTouchFireworksSound()
         {
             var sound = _bassHandlers["touch_fireworks"];
             sound.Volume = _volumes["touch_fireworks"];
             sound.PlayOneShot();
         }
-        
+
         public void PlayExSound()
         {
             var sound = _bassHandlers["ex"];
@@ -144,6 +194,10 @@ namespace Game
         public void PlaySlideBreakPerfectSound()
         {
             var sound = _bassHandlers["break_extra"];
+
+            if (_volumes["break_slide_judge"] == 0)
+                return;
+
             sound.Volume = _volumes["break_slide_judge"];
             sound.PlayOneShot();
         }

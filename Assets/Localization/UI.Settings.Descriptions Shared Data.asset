@@ -135,6 +135,18 @@ MonoBehaviour:
     m_Key: settings.volume.break_slide_judge
     m_Metadata:
       m_Items: []
+  - m_Id: 58920797312376832
+    m_Key: settings.volume.touch
+    m_Metadata:
+      m_Items: []
+  - m_Id: 58920845647536128
+    m_Key: settings.volume.touch_fireworks
+    m_Metadata:
+      m_Items: []
+  - m_Id: 58920993219928064
+    m_Key: settings.touch_flow_speed
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

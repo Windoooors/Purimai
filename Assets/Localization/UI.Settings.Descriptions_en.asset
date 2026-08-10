@@ -43,7 +43,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 361648611328
-    m_Localized: How fast the notes will go
+    m_Localized: How fast the tap and hold notes will go
     m_Metadata:
       m_Items: []
   - m_Id: 3121485303504896
@@ -142,6 +142,18 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 55999632390479872
     m_Localized: Break slide judge answer sound volume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 58920797312376832
+    m_Localized: Touch judge answer sound volume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 58920845647536128
+    m_Localized: Fireworks SFX volume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 58920993219928064
+    m_Localized: How fast the touch notes will go
     m_Metadata:
       m_Items: []
   references:

@@ -368,14 +368,7 @@ namespace Game.Notes
 
         protected void PlaySlideSound()
         {
-            if (IsBreak)
-            {
-                SfxManager.Instance.PlayBreakSlideSlideSound();
-            }
-            else
-            {
-                SfxManager.Instance.PlaySlideSound();
-            }
+            SfxManager.Instance.PlaySlideSound();
         }
 
         protected void PlayJudgeSound()

@@ -295,6 +295,8 @@ namespace UI.LevelSelection
                 }
 
                 InitializeGroupingRuleCore();
+
+                LoadSong(_listView.selectedIndex);
             };
 
             _modsButton = root.Q<VisualElement>("control-panel").Q<Button>("mods-button");
@@ -362,14 +364,14 @@ namespace UI.LevelSelection
             {
                 yield return new WaitForSeconds(0.1f);
 
-                var bassHandler = _lastPreviewedMaidata.SongBassHandler;
-                var volume = bassHandler.Volume;
+                var tempBassHandler = _lastPreviewedMaidata.SongBassHandler;
+                var volume = tempBassHandler.Volume;
 
                 LMotion.Create(volume, 0, 0.5f).WithOnComplete(() =>
                 {
-                    bassHandler.Stop();
+                    tempBassHandler.Stop();
                     songPreviewing = false;
-                }).Bind(x => { bassHandler.Volume = x; });
+                }).Bind(x => { tempBassHandler.Volume = x; });
 
                 LevelSelectionTree.styleSheets.Add(
                     Resources.Load<StyleSheet>("UI/USS/LevelSelection/LevelSelectionToGameInAnimated"));

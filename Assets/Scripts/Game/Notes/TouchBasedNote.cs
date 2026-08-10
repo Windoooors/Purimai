@@ -1,20 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Game.ChartManagement;
-using Game.Notes.TapBasedNotes;
 using UI.Result;
 using UI.Settings;
-using Unity.Mathematics;
 using UnityEngine;
-using Touch = Game.Notes.TouchBasedNotes.Touch;
 
 namespace Game.Notes
 {
     public abstract class TouchBasedNote : NoteBase
     {
-        public string sensorId;
-        
         private static readonly Dictionary<float, float> TouchFlowSpeed = new()
         {
             { 1f, 175f },
@@ -57,7 +51,8 @@ namespace Game.Notes
             { 49f, 5000f }
         };
 
-        public (bool isEach, bool isOverlapped) TouchBorderInformation;
+        public string sensorId;
+
         public int timing;
         public bool withFireworks;
         public bool headJudged;
@@ -67,57 +62,12 @@ namespace Game.Notes
         public bool isFast;
 
         public bool isEach;
-        protected GameObject NoteContentRoot;
-        protected int TouchOnScreenTime;
-        
-        private Animator _judgeDisplayAnimator;
-        protected Animator OffsetDisplayAnimator;
         private Animator _fireworksDisplayAnimator;
-        
-        public static (JudgeState, bool isFast, bool judged) GetJudgeState(float deltaTiming, bool isEx,
-            JudgeSettings judgeSettings)
-        {
-            if (deltaTiming > judgeSettings.criticalPerfectTiming)
-                return (JudgeState.Miss, false, false);
 
-            if (deltaTiming < -judgeSettings.lateGoodTiming)
-                return (JudgeState.Miss, false, false);
-
-            var fast = deltaTiming > 0;
-
-            var reversedDeltaTiming = -deltaTiming;
-
-            if (isEx)
-                return (JudgeState.CriticalPerfect, fast, true);
-
-            var state = JudgeState.Miss;
-
-            if ((reversedDeltaTiming <= judgeSettings.fastGoodTiming && reversedDeltaTiming > judgeSettings.quarterGreatTiming &&
-                 fast)
-                || (reversedDeltaTiming <= judgeSettings.lateGoodTiming &&
-                    reversedDeltaTiming > judgeSettings.quarterGreatTiming && !fast))
-                state = JudgeState.Good;
-            if (reversedDeltaTiming <= judgeSettings.quarterGreatTiming && reversedDeltaTiming > judgeSettings.semiGreatTiming)
-                state = JudgeState.QuarterGreat;
-            if (reversedDeltaTiming <= judgeSettings.semiGreatTiming && reversedDeltaTiming > judgeSettings.greatTiming)
-                state = JudgeState.SemiGreat;
-            if (reversedDeltaTiming <= judgeSettings.greatTiming && reversedDeltaTiming > judgeSettings.perfectTiming)
-                state = JudgeState.Great;
-            if (reversedDeltaTiming <= judgeSettings.perfectTiming &&
-                reversedDeltaTiming > judgeSettings.semiCriticalPerfectTiming)
-                state = JudgeState.Perfect;
-            if (reversedDeltaTiming <= judgeSettings.semiCriticalPerfectTiming &&
-                reversedDeltaTiming > judgeSettings.criticalPerfectTiming)
-                state = JudgeState.SemiCriticalPerfect;
-            if (Mathf.Abs(deltaTiming) <= judgeSettings.criticalPerfectTiming)
-                state = JudgeState.CriticalPerfect;
-
-            return (state, fast, true);
-        }
-        
-        public static int GetTouchOnScreenTime() {
-            return (int)(4 / (TouchFlowSpeed[ChartPlayer.Instance.touchFlowSpeed] / 60) * 1000);
-        }
+        private Animator _judgeDisplayAnimator;
+        protected GameObject NoteContentRoot;
+        protected Animator OffsetDisplayAnimator;
+        protected int TouchOnScreenTime;
 
         private void Start()
         {
@@ -150,13 +100,61 @@ namespace Game.Notes
 
             if (sensorLane != 0)
                 sensorLane--;
-            
+
             var animatorIndex = animatorIndexBase + sensorLane;
-            
+
             _judgeDisplayAnimator = JudgeDisplayManager.Instance.judgeDisplayAnimators[animatorIndex];
             OffsetDisplayAnimator = JudgeDisplayManager.Instance.offsetDisplayAnimators[animatorIndex];
-            
+
             NoteContentRoot.SetActive(false);
+        }
+
+        public static (JudgeState, bool isFast, bool judged) GetJudgeState(float deltaTiming, bool isEx,
+            JudgeSettings judgeSettings)
+        {
+            if (deltaTiming > judgeSettings.criticalPerfectTiming)
+                return (JudgeState.Miss, false, false);
+
+            if (deltaTiming < -judgeSettings.lateGoodTiming)
+                return (JudgeState.Miss, false, false);
+
+            var fast = deltaTiming > 0;
+
+            var reversedDeltaTiming = -deltaTiming;
+
+            if (isEx)
+                return (JudgeState.CriticalPerfect, fast, true);
+
+            var state = JudgeState.Miss;
+
+            if ((reversedDeltaTiming <= judgeSettings.fastGoodTiming &&
+                 reversedDeltaTiming > judgeSettings.quarterGreatTiming &&
+                 fast)
+                || (reversedDeltaTiming <= judgeSettings.lateGoodTiming &&
+                    reversedDeltaTiming > judgeSettings.quarterGreatTiming && !fast))
+                state = JudgeState.Good;
+            if (reversedDeltaTiming <= judgeSettings.quarterGreatTiming &&
+                reversedDeltaTiming > judgeSettings.semiGreatTiming)
+                state = JudgeState.QuarterGreat;
+            if (reversedDeltaTiming <= judgeSettings.semiGreatTiming && reversedDeltaTiming > judgeSettings.greatTiming)
+                state = JudgeState.SemiGreat;
+            if (reversedDeltaTiming <= judgeSettings.greatTiming && reversedDeltaTiming > judgeSettings.perfectTiming)
+                state = JudgeState.Great;
+            if (reversedDeltaTiming <= judgeSettings.perfectTiming &&
+                reversedDeltaTiming > judgeSettings.semiCriticalPerfectTiming)
+                state = JudgeState.Perfect;
+            if (reversedDeltaTiming <= judgeSettings.semiCriticalPerfectTiming &&
+                reversedDeltaTiming > judgeSettings.criticalPerfectTiming)
+                state = JudgeState.SemiCriticalPerfect;
+            if (Mathf.Abs(deltaTiming) <= judgeSettings.criticalPerfectTiming)
+                state = JudgeState.CriticalPerfect;
+
+            return (state, fast, true);
+        }
+
+        public static int GetTouchOnScreenTime()
+        {
+            return (int)(4 / (TouchFlowSpeed[ChartPlayer.Instance.touchFlowSpeed] / 60) * 1000);
         }
 
         public virtual void RegisterTapEvent()
@@ -206,13 +204,14 @@ namespace Game.Notes
                     _judgeDisplayAnimator.SetTrigger("ShowMiss"); break;
             }
 
+            if (judgeState == JudgeState.Miss) return;
+
             if (withFireworks)
             {
                 _fireworksDisplayAnimator.transform.position = transform.position;
                 _fireworksDisplayAnimator.SetTrigger("ShowFireworks");
             }
 
-            if (judgeState == JudgeState.Miss) return;
             if (sensorId.StartsWith("A"))
                 AreaARipple.AreaARipples.Find(x => x.sensorId == sensorId).CancelAnimation();
             ChartPlayer.Instance.judgeCircleGlowAnimator.SetTrigger("ShowGlow");
@@ -222,7 +221,7 @@ namespace Game.Notes
         {
             if (state == JudgeState.Miss)
                 return;
-            
+
             if (withFireworks)
                 SfxManager.Instance.PlayTouchFireworksSound();
             else
@@ -233,72 +232,23 @@ namespace Game.Notes
         {
         }
 
-        protected void GetTouchTransform(ref TouchTransform result)
+        public static List<List<TouchBasedNote>> GetAllConnectedGroups(
+            TouchBasedNote[] input)
         {
-            if (result == null)
-                return;
+            var allGroups = new List<List<TouchBasedNote>>();
 
-            var currentPosition = ChartPlayer.Instance.TimeInMilliseconds;
-
-            var startEmergingTiming = timing - TouchOnScreenTime - TouchOnScreenTime / 4f;
-
-            var startMovingTiming = timing - TouchOnScreenTime;
-
-            if (currentPosition < startEmergingTiming - 100 ||
-                currentPosition > timing + ChartPlayer.Instance.touchJudgeSettings.lateGoodTiming + 200 ||
-                (indexInLane - 1 >= 0 && !NoteGenerator.Instance.TouchLanes[sensorId][indexInLane - 1].headJudged))
-            {
-                result.Shown = false;
-                return;
-            }
-
-            if (currentPosition > startEmergingTiming && currentPosition < startMovingTiming)
-            {
-                var factor = (currentPosition - emergingTime) / (TouchOnScreenTime / 4f);
-
-                result.Alpha = factor;
-                result.Position = 0;
-                result.Shown = true;
-
-                return;
-            }
-
-            if (currentPosition >= startMovingTiming)
-            {
-                var factor = (currentPosition - startMovingTiming) / TouchOnScreenTime;
-
-                result.Alpha = 1;
-                result.Position = factor;
-                result.Shown = true;
-
-                if (currentPosition > timing)
-                    result.ShowBorder = true;
-
-                return;
-            }
-
-            result.Alpha = 0;
-            result.Position = 0;
-            result.Shown = false;
-        }
-        
-        public static List<List<Touch>> GetAllConnectedGroups(
-            Touch[] input)
-        {
-            var allGroups = new List<List<Touch>>();
-        
             if (input == null || input.Length == 0)
                 return allGroups;
-            
-            var globalVisited = new HashSet<Touch>();
+
+            var globalVisited = new HashSet<TouchBasedNote>();
 
             foreach (var item in input)
             {
                 if (item == null || globalVisited.Contains(item))
                     continue;
-                
-                var currentGroup = new List<Touch>();
-                var queue = new Queue<Touch>();
+
+                var currentGroup = new List<TouchBasedNote>();
+                var queue = new Queue<TouchBasedNote>();
 
                 queue.Enqueue(item);
                 globalVisited.Add(item);
@@ -313,13 +263,11 @@ namespace Game.Notes
                     if (adjacentTouches == null) continue;
 
                     foreach (var adj in adjacentTouches)
-                    {
                         if (adj != null && !globalVisited.Contains(adj))
                         {
                             globalVisited.Add(adj);
                             queue.Enqueue(adj);
                         }
-                    }
                 }
 
                 allGroups.Add(currentGroup);
@@ -327,37 +275,29 @@ namespace Game.Notes
 
             return allGroups;
         }
-        
-        private static Touch[] GetAdjacentTouches(Touch[] input, Touch target)
+
+        private static TouchBasedNote[] GetAdjacentTouches(TouchBasedNote[] input, TouchBasedNote target)
         {
             int.TryParse(target.sensorId.ToCharArray()[^1].ToString(), out var index);
-            
+
             var nextIndex = index + 1;
             var lastIndex = index - 1;
-            
-            nextIndex = (nextIndex > 8) ? 1 : nextIndex;
-            lastIndex = (lastIndex < 1) ? 8 : lastIndex;
+
+            nextIndex = nextIndex > 8 ? 1 : nextIndex;
+            lastIndex = lastIndex < 1 ? 8 : lastIndex;
 
             var relevantSensorTypes = target.sensorId.ToCharArray()[0] switch
             {
-                'A' => new [] { "B" + index, "D" + nextIndex, "D" + index, "E" + nextIndex, "E" + index },
-                'B' => new []
+                'A' => new[] { "B" + index, "D" + nextIndex, "D" + index, "E" + nextIndex, "E" + index },
+                'B' => new[]
                     { "B" + nextIndex, "B" + lastIndex, "A" + index, "E" + nextIndex, "E" + index, "C" },
-                'C' => new [] { "B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8" },
-                'D' => new [] { "E" + index, "A" + index, "A" + lastIndex },
-                'E' => new [] { "D" + index, "A" + index, "A" + lastIndex, "B" + index, "B" + lastIndex },
+                'C' => new[] { "B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8" },
+                'D' => new[] { "E" + index, "A" + index, "A" + lastIndex },
+                'E' => new[] { "D" + index, "A" + index, "A" + lastIndex, "B" + index, "B" + lastIndex },
                 _ => throw new ArgumentOutOfRangeException()
             };
 
             return input.Where(x => relevantSensorTypes.Any(y => y == x.sensorId)).ToArray();
-        }
-
-        protected class TouchTransform
-        {
-            public float Alpha;
-            public float Position;
-            public bool ShowBorder;
-            public bool Shown;
         }
     }
 }

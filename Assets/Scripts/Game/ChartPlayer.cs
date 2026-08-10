@@ -236,6 +236,8 @@ namespace Game
 
             SimulatedSensor.Enabled = false;
 
+            SfxManager.Instance.PauseTouchHoldSound();
+
             if (_timeInSeconds < 0)
             {
                 if (_delayedVideoPlaybackRoutine != null)
@@ -284,6 +286,8 @@ namespace Game
                     SimulatedSensor.Enabled = true;
 
                 _paused = false;
+
+                SfxManager.Instance.UnpauseTouchHoldSound();
             }
         }
 

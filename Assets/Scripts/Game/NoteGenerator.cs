@@ -5,6 +5,7 @@ using Game.ChartManagement;
 using Game.Notes;
 using Game.Notes.NormalIndividualSlides;
 using Game.Notes.TapBasedNotes;
+using Game.Notes.TouchBasedNotes;
 using UI.Settings;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -36,6 +37,7 @@ namespace Game
         public Sprite[] touchOverlapBorderSprites;
 
         public Touch[] touchPrefabs;
+        public TouchHold[] touchHoldPrefabs;
 
         public NormalSlide normalSlidePrefab;
         public WifiSlide wifiSlidePrefab;
@@ -116,9 +118,9 @@ namespace Game
 
             foreach (var noteDataObject in noteDataObjects)
             {
-                if (noteDataObject.HoldDataObjects.Length + noteDataObject.TapDataObjects.Length + 
-                   noteDataObject.TouchDataObjects.Length + noteDataObject.TouchHoldDataObjects.Length
-                   >= 1)
+                if (noteDataObject.HoldDataObjects.Length + noteDataObject.TapDataObjects.Length +
+                    noteDataObject.TouchDataObjects.Length + noteDataObject.TouchHoldDataObjects.Length
+                    >= 1)
                     criticalTimeHashSet.Add((int)((noteDataObject.TimingInSeconds - audioOffset) * 1000) +
                                             GlobalCueSoundOffset);
 
@@ -126,7 +128,7 @@ namespace Game
                     criticalTimeHashSet.Add(
                         (int)((noteDataObject.TimingInSeconds + hold.HoldDurationInSeconds - audioOffset) * 1000) +
                         GlobalCueSoundOffset);
-                
+
                 foreach (var hold in noteDataObject.TouchHoldDataObjects)
                     criticalTimeHashSet.Add(
                         (int)((noteDataObject.TimingInSeconds + hold.HoldDurationInSeconds - audioOffset) * 1000) +
@@ -136,11 +138,12 @@ namespace Game
                     noteDataObject.TouchDataObjects.Length + noteDataObject.TouchHoldDataObjects.Length > 1;
 
                 GenerateTouches(noteDataObject, isEach, order, largeTouches);
+                GenerateTouchHolds(noteDataObject, isEach, order);
                 GenerateTaps(noteDataObject, isEach, order);
                 GenerateHolds(noteDataObject, isEach, order);
                 GenerateSlides(noteDataObject);
 
-                order-=10;
+                order -= 10;
 
                 if (isEach) GenerateEachLines(noteDataObject);
             }
@@ -161,7 +164,16 @@ namespace Game
 
                     if (touchLane[i + 1].timing - TouchBasedNote.GetTouchOnScreenTime() / 4 <
                         touchLane[i].timing + ChartPlayer.Instance.touchJudgeSettings.lateGoodTiming)
-                        touchLane[i].TouchBorderInformation = (touchLane[i + 1].isEach, true);
+                        if (touchLane[i] is Touch touch)
+                            touch.TouchBorderInformation = (touchLane[i + 1].isEach, true);
+
+                    if (i + 2 >= touchLane.Count)
+                        break;
+
+                    if (touchLane[i + 2].timing - TouchBasedNote.GetTouchOnScreenTime() / 4 <
+                        touchLane[i].timing + ChartPlayer.Instance.touchJudgeSettings.lateGoodTiming)
+                        if (touchLane[i] is Touch touch)
+                            touch.LargeTouchBorderInformation = (touchLane[i + 2].isEach, true);
                 }
             }
 
@@ -261,10 +273,56 @@ namespace Game
             }
         }
 
+        private void GenerateTouchHolds(NoteDataObject noteDataObject, bool isEach, int order)
+        {
+            var generatedTouchHoldList = new List<TouchHold>();
+
+            foreach (var touchHold in noteDataObject.TouchHoldDataObjects)
+            {
+                var touchHoldPrefab = isEach ? touchHoldPrefabs[1] : touchHoldPrefabs[0];
+
+                var touchHoldInstance = Instantiate(touchHoldPrefab, _noteParent.transform);
+                touchHoldInstance.isEach = isEach;
+                notesList.Add(touchHoldInstance);
+
+                generatedTouchHoldList.Add(touchHoldInstance);
+
+                touchHoldInstance.timing = noteDataObject.Timing;
+                touchHoldInstance.holdDuration = touchHold.HoldDuration;
+                touchHoldInstance.sensorId = touchHold.Sensor;
+                touchHoldInstance.withFireworks = touchHold.WithFireworks;
+
+                var sensor = TouchPoint.TouchPoints.FirstOrDefault(x => x.sensorName == touchHold.Sensor);
+
+                if (sensor != null)
+                    touchHoldInstance.transform.position = sensor.transform.position;
+
+                touchHoldInstance.SetOrder(order--);
+
+                TouchLanes[touchHold.Sensor].Add(touchHoldInstance);
+
+                touchHoldInstance.indexInLane = TouchLanes[touchHold.Sensor].Count - 1;
+
+                if (noteDataObject.Timing > endingTime)
+                    endingTime = noteDataObject.Timing;
+            }
+
+            var groups =
+                TouchBasedNote.GetAllConnectedGroups(generatedTouchHoldList.Select(x => (TouchBasedNote)x).ToArray());
+
+            groups.ForEach(x =>
+            {
+                var list = x.Select(z => (TouchHold)z).ToList();
+
+                x.ForEach(y =>
+                    ((TouchHold)y).touchGroup = list);
+            });
+        }
+
         private void GenerateTouches(NoteDataObject noteDataObject, bool isEach, int order, bool isLargeTouch)
         {
             var generatedTouchList = new List<Touch>();
-            
+
             foreach (var touch in noteDataObject.TouchDataObjects)
             {
                 var touchPrefab = (isEach, isLargeTouch) switch
@@ -278,7 +336,7 @@ namespace Game
                 var touchObjectInstance = Instantiate(touchPrefab, _noteParent.transform);
                 touchObjectInstance.isEach = isEach;
                 notesList.Add(touchObjectInstance);
-                
+
                 generatedTouchList.Add(touchObjectInstance);
 
                 touchObjectInstance.timing = noteDataObject.Timing;
@@ -302,11 +360,15 @@ namespace Game
                     endingTime = noteDataObject.Timing;
             }
 
-            var groups = TouchBasedNote.GetAllConnectedGroups(generatedTouchList.ToArray());
-            
+            var groups =
+                TouchBasedNote.GetAllConnectedGroups(generatedTouchList.Select(x => (TouchBasedNote)x).ToArray());
+
             groups.ForEach(x =>
             {
-                x.ForEach(y => y.touchGroup = x);
+                var list = x.Select(z => (Touch)z).ToList();
+
+                x.ForEach(y =>
+                    ((Touch)y).touchGroup = list);
             });
         }
 
@@ -446,7 +508,7 @@ namespace Game
                 notesList.Add(holdObjectInstance);
 
                 holdObjectInstance.indexInLane = LaneList[laneIndex].Count - 1;
-                
+
                 if (noteDataObject.Timing + holdObjectInstance.duration > endingTime)
                     endingTime = noteDataObject.Timing + holdObjectInstance.duration;
             }

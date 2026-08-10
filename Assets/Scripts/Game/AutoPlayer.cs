@@ -92,6 +92,8 @@ namespace Game
     public class AutoPlayer : MonoBehaviour
     {
         public static KeyFrameManager KeyFrameManager = new();
+
+        private readonly HashSet<string> _holdingSensor = new();
         private bool _autoEnabled;
         private bool _initialized;
 
@@ -140,12 +142,20 @@ namespace Game
                     case AutoPlayKeyFrame.Type.Hold:
                         SimulatedSensor.OnHold?.Invoke(this, new TouchEventArgs(key.SensorId));
                         break;
+                    case AutoPlayKeyFrame.Type.HoldStart:
+                        _holdingSensor.Add(key.SensorId);
+                        break;
+                    case AutoPlayKeyFrame.Type.HoldEnd:
+                        _holdingSensor.Remove(key.SensorId);
+                        break;
                 }
 
                 _keyIndex++;
 
                 if (_keyIndex >= _keyFrames.Length) break;
             }
+
+            foreach (var sensorId in _holdingSensor) SimulatedSensor.OnHold?.Invoke(this, new TouchEventArgs(sensorId));
         }
 
         private IEnumerator AddKeyFrames()

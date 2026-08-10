@@ -291,16 +291,24 @@ MonoBehaviour:
     m_Key: settings.volume.break_slide_launch
     m_Metadata:
       m_Items: []
-  - m_Id: 95956035167051776
-    m_Key: settings.volume.break_slide_slide
-    m_Metadata:
-      m_Items: []
   - m_Id: 95956170013925376
     m_Key: settings.volume.break_slide_judge
     m_Metadata:
       m_Items: []
   - m_Id: 95956330114703360
     m_Key: settings.volume.ex
+    m_Metadata:
+      m_Items: []
+  - m_Id: 98878312749719552
+    m_Key: settings.touch_flow_speed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 98878649552330752
+    m_Key: settings.volume.touch
+    m_Metadata:
+      m_Items: []
+  - m_Id: 98878729508347904
+    m_Key: settings.volume.touch_fireworks
     m_Metadata:
       m_Items: []
   m_Metadata:

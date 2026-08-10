@@ -580,6 +580,62 @@
     {
       "Key": "firework_ball",
       "Path": ""
+    },
+    {
+      "Key": "touch_clove",
+      "Path": ""
+    },
+    {
+      "Key": "touch_clove_each",
+      "Path": ""
+    },
+    {
+      "Key": "touch_dot",
+      "Path": ""
+    },
+    {
+      "Key": "touch_dot_each",
+      "Path": ""
+    },
+    {
+      "Key": "touch_just_border",
+      "Path": ""
+    },
+    {
+      "Key": "touch_overlap_border",
+      "Path": ""
+    },
+    {
+      "Key": "touch_overlap_border_large",
+      "Path": ""
+    },
+    {
+      "Key": "touch_overlap_border_large_each",
+      "Path": ""
+    },
+    {
+      "Key": "touch_overlap_border_each",
+      "Path": ""
+    },
+    {
+      "Key": "touch_hold_clove_0",
+      "Path": ""
+    },
+    {
+      "Key": "touch_hold_clove_1",
+      "Path": ""
+    },
+    {
+      "Key": "touch_hold_clove_2",
+      "Path": ""
+    },
+    {
+      "Key": "touch_hold_clove_3",
+      "Path": ""
+    },
+    {
+      "Key": "touch_hold_progress_border",
+      "Path": ""
     }
   ],
   "DescriptionEn": "-",

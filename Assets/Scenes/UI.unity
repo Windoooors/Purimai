@@ -8613,6 +8613,7 @@ GameObject:
   - component: {fileID: 872429107}
   - component: {fileID: 872429108}
   - component: {fileID: 872429109}
+  - component: {fileID: 872429110}
   m_Layer: 5
   m_Name: UIManager
   m_TagString: Untagged
@@ -8776,6 +8777,37 @@ MonoBehaviour:
   - key: hold_break_end_glow
     sprite: {fileID: 4662718864314547373, guid: 1e486303c65ee4e0396d7cda2e406a3f,
       type: 3}
+  touchSkinDataList:
+  - key: touch_clove
+    sprite: {fileID: 21300000, guid: 902ecaa47c08344d5875094f67bf1d82, type: 3}
+  - key: touch_clove_each
+    sprite: {fileID: 21300000, guid: b8b51812d81a34dbba59402cb18cdf96, type: 3}
+  - key: touch_dot
+    sprite: {fileID: 21300000, guid: c5865006e7b5e488f92342d33d848bb9, type: 3}
+  - key: touch_dot_each
+    sprite: {fileID: 21300000, guid: f99a9ab02ffd742549827cb290869788, type: 3}
+  - key: touch_just_border
+    sprite: {fileID: 5297794216482475626, guid: d9175110214ed4bd7a980238d1475375,
+      type: 3}
+  - key: touch_overlap_border
+    sprite: {fileID: 21300000, guid: 1832ab10c6f4b418ba4b5902984147ac, type: 3}
+  - key: touch_overlap_border_large
+    sprite: {fileID: 21300000, guid: 2c2bee5048c204118aa95752da2e705a, type: 3}
+  - key: touch_overlap_border_large_each
+    sprite: {fileID: 21300000, guid: d4866f21ca3bd476eb210c454551ef35, type: 3}
+  - key: touch_overlap_border_each
+    sprite: {fileID: 21300000, guid: bc52339fc04524e689b31ef6fc97e212, type: 3}
+  touchHoldSkinDataList:
+  - key: touch_hold_clove_0
+    sprite: {fileID: 21300000, guid: 12babb4aabcf845d695c353b4180e438, type: 3}
+  - key: touch_hold_clove_1
+    sprite: {fileID: 21300000, guid: a4716883f60bf44ac87b4ac3bc89ff23, type: 3}
+  - key: touch_hold_clove_2
+    sprite: {fileID: 21300000, guid: 0ccb596122fc9455eba252d89e6f964d, type: 3}
+  - key: touch_hold_clove_3
+    sprite: {fileID: 21300000, guid: 8aed7928923a14ca4800f638b159a0c1, type: 3}
+  - key: touch_hold_progress_border
+    sprite: {fileID: 21300000, guid: 1800b3e597fe446bfa148b10eb7a83a9, type: 3}
   starSkinDataList:
   - key: star
     sprite: {fileID: 21300000, guid: 57e073b06f82de348ab42249bc7d1730, type: 3}
@@ -9035,6 +9067,18 @@ MonoBehaviour:
   - key: firework_ball
     sprite: {fileID: -5046844271428169699, guid: bb70c0183f9824a4c80133e42f384dd1,
       type: 3}
+--- !u!114 &872429110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 872429101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2631f56d31834cf09ee5b45d9257f345, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Notes.TouchHoldSoundHelper
 --- !u!1 &911175072
 GameObject:
   m_ObjectHideFlags: 0

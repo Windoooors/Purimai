@@ -1,6 +1,5 @@
 using Game.Theming;
 using UI.Result;
-using UI.Settings;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -19,7 +18,6 @@ namespace Game.Notes.TapBasedNotes
 
         public int duration;
 
-        public bool isHeadFast;
         public bool isBreak;
         public bool isEx;
 
@@ -324,7 +322,7 @@ namespace Game.Notes.TapBasedNotes
 
             _headJudgeState = state.Item1;
 
-            isHeadFast = state.isFast;
+            isFast = state.isFast;
 
             ChartPlayer.Instance.holdRippleAnimators[lane - 1].SetTrigger(ThemeManager.HoldColorRelatedHoldEffect
                 ? isEach switch
@@ -346,35 +344,6 @@ namespace Game.Notes.TapBasedNotes
 
             if (isEx)
                 SfxManager.Instance.PlayExSound();
-
-            if (_headJudgeState is not JudgeState.CriticalPerfect and not JudgeState.Miss)
-            {
-                var settings = SettingsPool.GetValue("fast_late_display_level");
-
-                switch (settings)
-                {
-                    case 0:
-                        break;
-                    case 1:
-                        if (_headJudgeState is not JudgeState.SemiCriticalPerfect and not JudgeState.Perfect)
-                        {
-                            OffsetDisplayAnimator.SetTrigger(isHeadFast ? "ShowFast" : "ShowLate");
-                            if (isHeadFast)
-                                Scoreboard.FastCount++;
-                            else
-                                Scoreboard.LateCount++;
-                        }
-
-                        break;
-                    case 2:
-                        OffsetDisplayAnimator.SetTrigger(isHeadFast ? "ShowFast" : "ShowLate");
-                        if (isHeadFast)
-                            Scoreboard.FastCount++;
-                        else
-                            Scoreboard.LateCount++;
-                        break;
-                }
-            }
 
             AreaARipple.AreaARipples.Find(x => x.sensorId == "A" + lane).CancelAnimation();
 
@@ -410,8 +379,6 @@ namespace Game.Notes.TapBasedNotes
             var absDeltaTiming = math.abs(deltaTiming);
 
             var judgeSettings = ChartPlayer.Instance.holdTailJudgeSettings;
-
-            isFast = deltaTiming > 0;
 
             if (absDeltaTiming <= judgeSettings.perfectTiming)
                 _holdTailJudgeState = JudgeState.CriticalPerfect;

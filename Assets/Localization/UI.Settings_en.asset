@@ -300,16 +300,24 @@ MonoBehaviour:
     m_Localized: Brk. Sld. Launch
     m_Metadata:
       m_Items: []
-  - m_Id: 95956035167051776
-    m_Localized: Brk. Sld. Answer
-    m_Metadata:
-      m_Items: []
   - m_Id: 95956170013925376
     m_Localized: Brk. Sld. Judge
     m_Metadata:
       m_Items: []
   - m_Id: 95956330114703360
     m_Localized: Ex Answer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 98878312749719552
+    m_Localized: Touch Speed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 98878649552330752
+    m_Localized: Touch Answer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 98878729508347904
+    m_Localized: Firework SFX
     m_Metadata:
       m_Items: []
   references:
