@@ -147,9 +147,12 @@ namespace Game
 
         public void UnpauseTouchHoldSound()
         {
-            var sound = _bassHandlers["touch_hold"];
             _holdingSoundPausing = false;
 
+            if (!_holdingSoundPlaying)
+                return;
+            
+            var sound = _bassHandlers["touch_hold"];
             sound.Play();
         }
 

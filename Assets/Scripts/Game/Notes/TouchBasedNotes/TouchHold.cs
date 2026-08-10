@@ -229,14 +229,21 @@ namespace Game.Notes.TouchBasedNotes
             list.Add(new AutoPlayKeyFrame(AutoPlayKeyFrame.Type.HoldEnd, timing + holdDuration));
         }
 
+        private bool _alreadyShown;
+        
         public override void ManualUpdate()
         {
             if (!ChartPlayer.Instance.isPlaying)
                 return;
 
             GetTouchHoldTransform(ref _touchTransform);
+            
+            if (_touchTransform.Shown && !_alreadyShown)
+            {
+                _alreadyShown = true;
+            }
 
-            if (!_touchTransform.Shown && !headJudged)
+            if (!_touchTransform.Shown && !headJudged && !_alreadyShown || (_alreadyShown && headJudged && _holdJudged))
             {
                 NoteContentRoot.SetActive(false);
                 return;
@@ -292,7 +299,8 @@ namespace Game.Notes.TouchBasedNotes
             }
 
             if (!_holdJudged && ChartPlayer.Instance.TimeInMilliseconds >
-                timing + holdDuration + ChartPlayer.Instance.judgeDelay)
+                                     timing + holdDuration + ChartPlayer.Instance.judgeDelay && headJudged
+                )
             {
                 _holdJudged = true;
                 _judgeHoldAction.Enabled = false;
@@ -304,45 +312,53 @@ namespace Game.Notes.TouchBasedNotes
 
                 if (_headJudgeState == JudgeState.Miss) _releasedTimePeriod += ReleaseCompensation;
 
-                var holdRate = (holdDuration - _releasedTimePeriod - HeadIgnoredDuration - TailIgnoredDuration) /
-                               (holdDuration - HeadIgnoredDuration - TailIgnoredDuration);
-
-                if (holdRate.CompareTo(1f) == 0)
+                var heldDuration = (holdDuration - _releasedTimePeriod - HeadIgnoredDuration - TailIgnoredDuration);
+                var checkedDuration = (holdDuration - HeadIgnoredDuration - TailIgnoredDuration);
+                
+                if (checkedDuration <= 0)
                 {
-                    if (_headJudgeState is JudgeState.CriticalPerfect)
-                        judgeState = JudgeState.CriticalPerfect;
-                    else if (_headJudgeState is JudgeState.Perfect or JudgeState.SemiCriticalPerfect)
-                        judgeState = JudgeState.SemiCriticalPerfect;
-                    else if (_headJudgeState is not JudgeState.Miss)
-                        judgeState = JudgeState.Great;
-                    else if (_headJudgeState is JudgeState.Miss) judgeState = JudgeState.Good;
+                    judgeState = _headJudgeState;
                 }
-                else if (holdRate is >= 0.67f and < 1f)
+                else
                 {
-                    if (_headJudgeState is JudgeState.CriticalPerfect or JudgeState.Perfect
-                        or JudgeState.SemiCriticalPerfect)
-                        judgeState = JudgeState.SemiCriticalPerfect;
-                    else if (_headJudgeState is not JudgeState.Miss)
-                        judgeState = JudgeState.Great;
-                    else if (_headJudgeState is JudgeState.Miss) judgeState = JudgeState.Good;
-                }
-                else if (holdRate is >= 0.33f and < 0.67f)
-                {
-                    if (_headJudgeState is not (JudgeState.Miss or JudgeState.Good))
-                        judgeState = JudgeState.Great;
-                    else
+                    var holdRate = heldDuration / checkedDuration;
+                    if (holdRate.CompareTo(1f) == 0)
+                    {
+                        if (_headJudgeState is JudgeState.CriticalPerfect)
+                            judgeState = JudgeState.CriticalPerfect;
+                        else if (_headJudgeState is JudgeState.Perfect or JudgeState.SemiCriticalPerfect)
+                            judgeState = JudgeState.SemiCriticalPerfect;
+                        else if (_headJudgeState is not JudgeState.Miss)
+                            judgeState = JudgeState.Great;
+                        else if (_headJudgeState is JudgeState.Miss) judgeState = JudgeState.Good;
+                    }
+                    else if (holdRate is >= 0.67f and < 1f)
+                    {
+                        if (_headJudgeState is JudgeState.CriticalPerfect or JudgeState.Perfect
+                            or JudgeState.SemiCriticalPerfect)
+                            judgeState = JudgeState.SemiCriticalPerfect;
+                        else if (_headJudgeState is not JudgeState.Miss)
+                            judgeState = JudgeState.Great;
+                        else if (_headJudgeState is JudgeState.Miss) judgeState = JudgeState.Good;
+                    }
+                    else if (holdRate is >= 0.33f and < 0.67f)
+                    {
+                        if (_headJudgeState is not (JudgeState.Miss or JudgeState.Good))
+                            judgeState = JudgeState.Great;
+                        else
+                            judgeState = JudgeState.Good;
+                    }
+                    else if (holdRate is >= 0.05f and < 0.33f)
+                    {
                         judgeState = JudgeState.Good;
-                }
-                else if (holdRate is >= 0.05f and < 0.33f)
-                {
-                    judgeState = JudgeState.Good;
-                }
-                else if (holdRate < 0.05f)
-                {
-                    if (_headJudgeState is not JudgeState.Miss)
-                        judgeState = JudgeState.Good;
-                    else
-                        judgeState = JudgeState.Miss;
+                    }
+                    else if (holdRate < 0.05f)
+                    {
+                        if (_headJudgeState is not JudgeState.Miss)
+                            judgeState = JudgeState.Good;
+                        else
+                            judgeState = JudgeState.Miss;
+                    }
                 }
 
                 _holding = false;
