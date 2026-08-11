@@ -57,7 +57,7 @@ namespace UI.Settings
 
             _calibrationTree = calibrationTreeAsset.Instantiate();
 
-            UIManager.Instance.uiDocument.rootVisualElement.Add(_calibrationTree);
+            UIManager.Instance.RootElement.Add(_calibrationTree);
 
             _calibrationTree.style.position = Position.Absolute;
             _calibrationTree.style.top = 0;
@@ -80,8 +80,8 @@ namespace UI.Settings
             var volume = SettingsPool.GetValue("volume.song") / 10f;
 
             _songFadeOutHandle = LMotion.Create(volume, 0, 0.5f)
-                .WithOnComplete(() => LevelSelectionManager.Instance.bassHandler.Stop())
-                .Bind(x => LevelSelectionManager.Instance.bassHandler.Volume = x);
+                .WithOnComplete(() => LevelSelectionManager.Instance.BassHandler.Stop())
+                .Bind(x => LevelSelectionManager.Instance.BassHandler.Volume = x);
 
             _preAnimatedSheet = Resources.Load<StyleSheet>("UI/USS/CalibrationPreAnimted");
 
@@ -126,13 +126,13 @@ namespace UI.Settings
             LevelSelectionManager.Instance.songPreviewing = true;
 
             var volume = SettingsPool.GetValue("volume.song") / 10f;
-            var currentVolume = LevelSelectionManager.Instance.bassHandler.Volume;
+            var currentVolume = LevelSelectionManager.Instance.BassHandler.Volume;
 
             LMotion.Create(currentVolume, volume, 0.5f)
-                .Bind(x => LevelSelectionManager.Instance.bassHandler.Volume = x);
+                .Bind(x => LevelSelectionManager.Instance.BassHandler.Volume = x);
 
             if (_calibrationTree != null)
-                UIManager.Instance.uiDocument.rootVisualElement.Remove(_calibrationTree);
+                UIManager.Instance.RootElement.Remove(_calibrationTree);
         }
 
         private void StartCalibration()

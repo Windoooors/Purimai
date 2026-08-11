@@ -17,7 +17,7 @@ namespace UI.InGame
         {
             _pausePanelTree = pausePanelTreeAsset.Instantiate();
 
-            UIManager.Instance.uiDocument.rootVisualElement.Add(_pausePanelTree);
+            UIManager.Instance.RootElement.Add(_pausePanelTree);
 
             _pausePanelTree.style.position = Position.Absolute;
             _pausePanelTree.style.top = 0;
@@ -34,7 +34,7 @@ namespace UI.InGame
 
         private void OnDestroy()
         {
-            UIManager.Instance.uiDocument.rootVisualElement.Remove(_pausePanelTree);
+            UIManager.Instance.RootElement.Remove(_pausePanelTree);
         }
 
         private void GoToMenu()

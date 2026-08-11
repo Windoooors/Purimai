@@ -23,7 +23,7 @@ namespace UI
 
         public FontAsset mainFontAsset;
 
-        [FormerlySerializedAs("uIDocument")] public UIDocument uiDocument;
+        [FormerlySerializedAs("uiDocument")] [FormerlySerializedAs("uIDocument")] public PanelRenderer panelRenderer;
 
         public LevelSelectionManager levelSelectionPrefab;
         public SettingsManager settingsPrefab;
@@ -50,13 +50,21 @@ namespace UI
 
         public static UIManager Instance => _instance ??= FindAnyObjectByType<UIManager>();
 
-        private void Awake()
+        void OnEnable()
         {
+            GetComponent<PanelRenderer>().RegisterUIReloadCallback(OnUIReload);
+        }
+        void OnDisable()
+        {
+            GetComponent<PanelRenderer>().UnregisterUIReloadCallback(OnUIReload);
+        }
+        void OnUIReload(PanelRenderer renderer, VisualElement rootElement)
+        {
+            RootElement = rootElement;
+            
             _instance = this;
 
             ApplyResolution();
-
-            uiDocument.rootVisualElement.RegisterCallback<GeometryChangedEvent>(_ => { ApplySafeArea(); });
 
             SettingsManager.OnSettingsChanged += ApplyResolution;
 
@@ -68,6 +76,8 @@ namespace UI
 
             PlayerPrefs.SetFloat("CalibrationDeltaTimeThreshold", 0.020f);
         }
+        
+        public VisualElement RootElement { get; private set; } 
 
         private void Start()
         {
@@ -121,7 +131,7 @@ namespace UI
 
         private void ApplySafeArea()
         {
-            var root = uiDocument.rootVisualElement;
+            var root = RootElement;
 
             var safeArea = Screen.safeArea;
 
@@ -180,13 +190,13 @@ namespace UI
             {
                 case ScreenOrientation.Portrait:
                 case ScreenOrientation.PortraitUpsideDown:
-                    uiDocument.panelSettings.match = 0;
-                    uiDocument.panelSettings.referenceResolution = portraitReferenceResolution;
+                    panelRenderer.panelSettings.match = 0;
+                    panelRenderer.panelSettings.referenceResolution = portraitReferenceResolution;
                     break;
                 case ScreenOrientation.LandscapeLeft:
                 case ScreenOrientation.LandscapeRight:
-                    uiDocument.panelSettings.match = 1;
-                    uiDocument.panelSettings.referenceResolution = landscapeReferenceResolution;
+                    panelRenderer.panelSettings.match = 1;
+                    panelRenderer.panelSettings.referenceResolution = landscapeReferenceResolution;
                     break;
             }
         }

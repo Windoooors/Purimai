@@ -27,8 +27,7 @@ namespace UI.Result
         private StyleSheet _toRetryAnimatedStyleSheet;
 
         public static ResultManager Instance => _instance ??=
-            FindObjectsByType<ResultManager>(FindObjectsInactive.Include,
-                FindObjectsSortMode.None)[^1];
+            FindObjectsByType<ResultManager>(FindObjectsInactive.Include)[^1];
 
         private void Awake()
         {
@@ -42,7 +41,7 @@ namespace UI.Result
                 _backgroundSongCoverManipulator);
             _coverManipulator.OnGeometryChanged = null;
             _resultPanel.Q("song-cover-parent").RemoveManipulator(_coverManipulator);
-            UIManager.Instance.uiDocument?.rootVisualElement?.Remove(_resultRoot);
+            UIManager.Instance.RootElement?.Remove(_resultRoot);
         }
 
         private void Initialize()
@@ -53,7 +52,7 @@ namespace UI.Result
 
             _resultRoot = resultVisualTreeAsset.Instantiate();
 
-            UIManager.Instance.uiDocument.rootVisualElement.Add(_resultRoot);
+            UIManager.Instance.RootElement.Add(_resultRoot);
 
             _resultRoot.style.position = new StyleEnum<Position>(Position.Absolute);
             _resultRoot.style.top = 0;

@@ -9,7 +9,7 @@ namespace Game.Notes.NormalIndividualSlides
 
         public override void InitializeSlideDirection()
         {
-            _isMirror = individualSlideDataObject.Type == NoteDataObject.SlideType.Z;
+            _isMirror = IndividualSlideDataObject.Type == NoteDataObject.SlideType.Z;
 
             SlideJudgeDisplaySpriteIndexes = new[] { 0, 1 };
 
@@ -18,15 +18,15 @@ namespace Game.Notes.NormalIndividualSlides
                 MirrorSlideSensorIds();
 
                 flipPathY = true;
-                pathRotation = -45f * (individualSlideDataObject.From - 1) - 45;
+                pathRotation = -45f * (IndividualSlideDataObject.From - 1) - 45;
             }
             else
             {
                 flipPathY = false;
-                pathRotation = -45f * (individualSlideDataObject.From - 1);
+                pathRotation = -45f * (IndividualSlideDataObject.From - 1);
             }
 
-            transform.Rotate(new Vector3(0, 0, -45f * (individualSlideDataObject.From - 1)));
+            transform.Rotate(new Vector3(0, 0, -45f * (IndividualSlideDataObject.From - 1)));
         }
     }
 }

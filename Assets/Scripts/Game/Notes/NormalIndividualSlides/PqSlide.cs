@@ -9,22 +9,22 @@ namespace Game.Notes.NormalIndividualSlides
         {
             SlideJudgeDisplaySpriteIndexes = new[] { 0, 1 };
 
-            IsClockwise = individualSlideDataObject.Type == NoteDataObject.SlideType.P;
+            IsClockwise = IndividualSlideDataObject.Type == NoteDataObject.SlideType.P;
 
             if (IsClockwise)
             {
                 flipPathY = false;
-                pathRotation = -45f * (individualSlideDataObject.From - 1);
+                pathRotation = -45f * (IndividualSlideDataObject.From - 1);
             }
             else
             {
                 MirrorSlideSensorIds();
 
                 flipPathY = true;
-                pathRotation = -45f * (individualSlideDataObject.From - 1) - 45;
+                pathRotation = -45f * (IndividualSlideDataObject.From - 1) - 45;
             }
 
-            transform.Rotate(new Vector3(0, 0, -45f * (individualSlideDataObject.From - 1)));
+            transform.Rotate(new Vector3(0, 0, -45f * (IndividualSlideDataObject.From - 1)));
         }
     }
 }

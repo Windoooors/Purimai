@@ -26,8 +26,8 @@ namespace Game.Notes.TouchBasedNotes
         private bool _judgedByTouchGroup;
         private TouchTransform _touchTransform;
 
-        public (bool isEach, bool isOverlapped) LargeTouchBorderInformation;
-        public (bool isEach, bool isOverlapped) TouchBorderInformation;
+        public (bool isEach, bool isOverlapped) LargeTouchBorderInformation { get; set; }
+        public (bool isEach, bool isOverlapped) TouchBorderInformation { get; set; }
 
         public override void AddAutoPlayKeyFrame()
         {

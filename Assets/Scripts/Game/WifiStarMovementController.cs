@@ -20,9 +20,9 @@ namespace Game
         {
             VectorGraphicsUtility = new VectorGraphicsUtility(wifiSvgAssetName,
                 wifiSlide.pathRotation, false,
-                Lanes.Instance.endPoints[wifiSlide.slideData.From - 1].position,
+                Lanes.Instance.endPoints[wifiSlide.SlideData.From - 1].position,
                 StarObjectRotationOffset);
-            VectorGraphicsUtility.SetStartPosition(Lanes.Instance.endPoints[wifiSlide.slideData.From - 1]
+            VectorGraphicsUtility.SetStartPosition(Lanes.Instance.endPoints[wifiSlide.SlideData.From - 1]
                 .position);
         }
 

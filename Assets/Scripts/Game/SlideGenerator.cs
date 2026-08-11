@@ -32,7 +32,7 @@ namespace Game
                 _ => Instantiate(cycleSlidePrefabs[1])
             };
 
-            cycleSlideInstance.individualSlideDataObject = slide;
+            cycleSlideInstance.IndividualSlideDataObject = slide;
 
             return cycleSlideInstance;
         }
@@ -61,7 +61,7 @@ namespace Game
                 _ => Instantiate(pqSlidePrefabs[0])
             };
 
-            pqSlideInstance.individualSlideDataObject = slide;
+            pqSlideInstance.IndividualSlideDataObject = slide;
             return pqSlideInstance;
         }
 
@@ -87,7 +87,7 @@ namespace Game
                 _ => Instantiate(vSlidePrefabs[0])
             };
 
-            vSlideInstance.individualSlideDataObject = slide;
+            vSlideInstance.IndividualSlideDataObject = slide;
 
             return vSlideInstance;
         }
@@ -111,7 +111,7 @@ namespace Game
                 _ => Instantiate(lineSlidePrefabs[0])
             };
 
-            lineSlideInstance.individualSlideDataObject = slide;
+            lineSlideInstance.IndividualSlideDataObject = slide;
 
             return lineSlideInstance;
         }
@@ -133,7 +133,7 @@ namespace Game
                 _ => Instantiate(bigVSlidePrefabs[0])
             };
 
-            bigVSlideInstance.individualSlideDataObject = slide;
+            bigVSlideInstance.IndividualSlideDataObject = slide;
 
             return bigVSlideInstance;
         }
@@ -164,7 +164,7 @@ namespace Game
                 _ => Instantiate(bigPqSlidePrefabs[0])
             };
 
-            bigPqSlideInstance.individualSlideDataObject = slide;
+            bigPqSlideInstance.IndividualSlideDataObject = slide;
 
             return bigPqSlideInstance;
         }
@@ -176,7 +176,7 @@ namespace Game
 
             var zsSlideInstance = Instantiate(NoteGenerator.Instance.individualSlidePrefabs.zsSlidePrefab);
 
-            zsSlideInstance.individualSlideDataObject = slide;
+            zsSlideInstance.IndividualSlideDataObject = slide;
 
             return zsSlideInstance;
         }
@@ -190,7 +190,7 @@ namespace Game
 
             var wifiSlideInstance = Instantiate(NoteGenerator.Instance.wifiSlidePrefab);
 
-            wifiSlideInstance.slideData = individualSlideData;
+            wifiSlideInstance.SlideData = individualSlideData;
 
             return wifiSlideInstance;
         }

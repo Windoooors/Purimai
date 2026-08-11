@@ -71,10 +71,10 @@ namespace UI
             var firstNoteTimeMatch = FirstNoteTimeRegex.Match(maidataString);
             var bpmMatch = BpmRegex.Match(maidataString);
 
-            Title = titleMatch.Success ? titleMatch.Groups[1].Value : "Unknown";
-            Artist = artistMatch.Success ? artistMatch.Groups[1].Value : "Unknown";
-            var mainChartDesigner = mainDesignerMatch.Success ? mainDesignerMatch.Groups[1].Value : "Unknown";
-            Genre = genreMatch.Success ? genreMatch.Groups[1].Value : "Unknown";
+            Title = (titleMatch.Success ? titleMatch.Groups[1].Value : "Unknown").Trim();
+            Artist = (artistMatch.Success ? artistMatch.Groups[1].Value : "Unknown").Trim();;
+            var mainChartDesigner = (mainDesignerMatch.Success ? mainDesignerMatch.Groups[1].Value : "Unknown").Trim();;
+            Genre = (genreMatch.Success ? genreMatch.Groups[1].Value : "Unknown").Trim();;
             Bpm = bpmMatch.Success ? float.Parse(bpmMatch.Groups[1].Value) : -1;
             FirstNoteTime = firstNoteTimeMatch.Success ? float.Parse(firstNoteTimeMatch.Groups[1].Value) : 0;
 

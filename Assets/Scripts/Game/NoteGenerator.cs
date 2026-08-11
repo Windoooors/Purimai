@@ -87,7 +87,7 @@ namespace Game
         private int _slideOrder;
 
         public static NoteGenerator Instance => _instance == null
-            ? FindObjectsByType<NoteGenerator>(FindObjectsInactive.Include, FindObjectsSortMode.None)[^1]
+            ? FindObjectsByType<NoteGenerator>(FindObjectsInactive.Include)[^1]
             : _instance;
 
         public List<int> CriticalTimeList { get; private set; }

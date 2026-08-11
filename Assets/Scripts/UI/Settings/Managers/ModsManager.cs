@@ -28,12 +28,12 @@ namespace UI.Settings.Managers
 
         private void OnDestroy()
         {
-            UIManager.Instance.uiDocument?.rootVisualElement?.Remove(_modsTree);
+            UIManager.Instance.RootElement?.Remove(_modsTree);
         }
 
         private void Initialize()
         {
-            _root = UIManager.Instance.uiDocument.rootVisualElement;
+            _root = UIManager.Instance.RootElement;
 
             _modsTree = modsTreeAsset.Instantiate();
 
@@ -57,8 +57,6 @@ namespace UI.Settings.Managers
             });
 
             var listView = _modsTree.Q<ListView>();
-
-            listView.TrySetTouchDraggingAllowed(true);
 
             SetUpList(listView, SettingsItems.ModItems);
 

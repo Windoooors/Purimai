@@ -99,12 +99,12 @@ namespace UI.Theming
 
         private void OnDestroy()
         {
-            UIManager.Instance.uiDocument?.rootVisualElement?.Remove(_themeSelectorPanelTree);
+            UIManager.Instance.RootElement?.Remove(_themeSelectorPanelTree);
         }
 
         private void Initialize()
         {
-            _root = UIManager.Instance.uiDocument.rootVisualElement;
+            _root = UIManager.Instance.RootElement;
 
             _themeSelectorPanelTree = themeSelectorPanelTreeAsset.Instantiate();
 
@@ -121,8 +121,6 @@ namespace UI.Theming
             clickablePanel.RegisterCallback<PointerUpEvent>(_ => { ClosePanel(); });
 
             var listView = _themeSelectorPanelTree.Q<ListView>();
-
-            listView.TrySetTouchDraggingAllowed(true);
 
             SetUpList(listView, ThemeManager.SkinDataList.ToArray());
 

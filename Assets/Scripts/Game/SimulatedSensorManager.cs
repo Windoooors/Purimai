@@ -14,7 +14,7 @@ namespace Game
             Instance = this;
             EnhancedTouchSupport.Enable();
 
-            if (FindObjectsByType<SimulatedSensorManager>(FindObjectsInactive.Exclude, FindObjectsSortMode.None)
+            if (FindObjectsByType<SimulatedSensorManager>(FindObjectsInactive.Exclude)
                     .Length != 1)
                 gameObject.SetActive(false);
 

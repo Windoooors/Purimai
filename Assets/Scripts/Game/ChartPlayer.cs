@@ -93,7 +93,7 @@ namespace Game
         private VideoPlayer _videoPlayer;
         private RenderTexture _videoTexture;
 
-        public Maidata Maidata;
+        public Maidata Maidata { get; private set; }
 
         public float TimeInMilliseconds => _timeInSeconds * 1000f;
 

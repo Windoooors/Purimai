@@ -29,7 +29,7 @@ namespace UI.LevelSelection
 
         public static CategoryListManager Instance =>
             _instance == null
-                ? FindObjectsByType<CategoryListManager>(FindObjectsInactive.Include, FindObjectsSortMode.None)[^1]
+                ? FindObjectsByType<CategoryListManager>(FindObjectsInactive.Include)[^1]
                 : _instance;
 
         private void Awake()
@@ -68,9 +68,7 @@ namespace UI.LevelSelection
             _categoryPanel = _controlPanel.Q<VisualElement>("category-panel");
 
             _categoryList = _categoryPanel.Q<ListView>("category-list");
-
-            _categoryList.TrySetTouchDraggingAllowed(true);
-
+            
             _scrollView = _categoryList.Q<ScrollView>();
 
             _categoryList.fixedItemHeight = 44;
@@ -85,7 +83,7 @@ namespace UI.LevelSelection
                 element.style.display = DisplayStyle.Flex;
             };
 
-            _categoryList.unbindItem = (element, index) =>
+            _categoryList.unbindItem = (element, _) =>
             {
                 element.Q<VisualElement>("category-item").Q<Label>("category-name-label").text = "";
                 element.style.display = DisplayStyle.None;
@@ -126,12 +124,12 @@ namespace UI.LevelSelection
             OnCategoryTendsToChange?.Invoke(this, e);
         }
 
-        public void ChangeCategoryPassively(CategoryData target)
+        public void ChangeCategoryPassively(CategoryData target, bool animated = true)
         {
             var targetRawIndex = _rawData.ToList().IndexOf(target);
 
             _snapManipulator.SnapToNearest(0, targetRawIndex, _categoryList.selectedIndex, _rawData.Length, _scrollView,
-                out var targetIndex);
+                out var targetIndex, false, animated);
             _categoryList.selectedIndex = targetIndex;
         }
 

@@ -44,7 +44,7 @@ namespace Game.Notes
 
         private VectorGraphicsUtility _vectorGraphicsUtility;
 
-        public NoteDataObject.IndividualSlideDataObject slideData;
+        public NoteDataObject.IndividualSlideDataObject SlideData { get; set; }
 
         protected override SpriteRenderer GetJudgeDisplaySpriteRenderer()
         {
@@ -148,7 +148,7 @@ namespace Game.Notes
         protected override void InitializeVectorGraphicsUtility()
         {
             _vectorGraphicsUtility = new VectorGraphicsUtility(svgAssetPath, pathRotation, false,
-                Lanes.Instance.endPoints[slideData.From - 1].position, 180);
+                Lanes.Instance.endPoints[SlideData.From - 1].position, 180);
         }
 
         protected override void InitializeSlideSensorIds()
@@ -156,14 +156,14 @@ namespace Game.Notes
             foreach (var wifiSegment in wifiSegments)
             foreach (var wifiSegmentSensor in wifiSegment.sensors)
                 wifiSegmentSensor.sensor =
-                    GetUpdatedSensorId(wifiSegmentSensor.sensor, slideData.From - 1);
+                    GetUpdatedSensorId(wifiSegmentSensor.sensor, SlideData.From - 1);
         }
 
         protected override void InitializePathRotation()
         {
-            transform.Rotate(new Vector3(0, 0, -45f * (slideData.From - 1)));
+            transform.Rotate(new Vector3(0, 0, -45f * (SlideData.From - 1)));
 
-            pathRotation = -45f * (slideData.From - 1);
+            pathRotation = -45f * (SlideData.From - 1);
         }
 
         public override void AddAutoPlayKeyFrame()

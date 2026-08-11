@@ -289,7 +289,6 @@ namespace Game
         }
     }
 
-    [Serializable]
     public class GameSoundNameData
     {
         public Dictionary<string, AudioSoundNameData> audioSoundNameDataDict;

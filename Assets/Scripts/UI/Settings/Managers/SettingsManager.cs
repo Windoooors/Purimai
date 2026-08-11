@@ -34,12 +34,12 @@ namespace UI.Settings.Managers
 
         private void OnDestroy()
         {
-            UIManager.Instance.uiDocument?.rootVisualElement?.Remove(_settingsTree);
+            UIManager.Instance.RootElement?.Remove(_settingsTree);
         }
 
         private void Initialize()
         {
-            _root = UIManager.Instance.uiDocument.rootVisualElement;
+            _root = UIManager.Instance.RootElement;
 
             _settingsTree = settingsTreeAsset.Instantiate();
 
@@ -86,9 +86,7 @@ namespace UI.Settings.Managers
                 tabContent.style.right = 0;
 
                 var listView = tabContent.Q<ListView>();
-
-                listView.TrySetTouchDraggingAllowed(true);
-
+                
                 SetUpList(listView, category.Items.ToArray());
 
                 _tabView.contentViewport.BringToFront();

@@ -30,14 +30,14 @@ namespace UI.TitleScreen
         private void OnDestroy()
         {
             if (_titleScreenTree != null)
-                UIManager.Instance.uiDocument.rootVisualElement.Remove(_titleScreenTree);
+                UIManager.Instance.RootElement.Remove(_titleScreenTree);
         }
 
         private void Initialize()
         {
             _titleScreenTree = titleScreenTreeAsset.Instantiate();
 
-            UIManager.Instance.uiDocument.rootVisualElement.Add(_titleScreenTree);
+            UIManager.Instance.RootElement.Add(_titleScreenTree);
 
             _titleScreenTree.style.position = Position.Absolute;
             _titleScreenTree.style.top = 0;

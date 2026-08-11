@@ -24,7 +24,7 @@ namespace UI.LevelSelection
 
         public static LevelLoader Instance =>
             _instance == null
-                ? FindObjectsByType<LevelLoader>(FindObjectsInactive.Include, FindObjectsSortMode.None)[^1]
+                ? FindObjectsByType<LevelLoader>(FindObjectsInactive.Include)[^1]
                 : _instance;
 
         private void Awake()

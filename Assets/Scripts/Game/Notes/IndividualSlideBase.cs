@@ -22,7 +22,7 @@ namespace Game.Notes
         private readonly List<SpriteRenderer> _slideArrowSpriteRenderers = new();
 
         private float? _pathLength;
-        public NoteDataObject.IndividualSlideDataObject individualSlideDataObject;
+        public NoteDataObject.IndividualSlideDataObject IndividualSlideDataObject { get; set; }
         protected bool IsClockwise;
         protected int[] SlideJudgeDisplaySpriteIndexes;
 
@@ -58,13 +58,13 @@ namespace Game.Notes
                 var division = slideArrowCount + 1.35;
                 var currentProgress = (float)i + 1;
 
-                if (individualSlideDataObject.Type is NoteDataObject.SlideType.Line)
+                if (IndividualSlideDataObject.Type is NoteDataObject.SlideType.Line)
                 {
                     division -= 0.45f;
                     currentProgress -= 0.65f;
                 }
 
-                if ((int)individualSlideDataObject.Type is 0 or 1 or 2)
+                if ((int)IndividualSlideDataObject.Type is 0 or 1 or 2)
                 {
                     division -= 1.33f;
                     currentProgress -= 0.60f;
@@ -112,7 +112,7 @@ namespace Game.Notes
         public void InitializeVectorGraphicsUtility()
         {
             GraphicsUtility = new VectorGraphicsUtility(svgAssetPath, pathRotation, flipPathY,
-                Lanes.Instance.endPoints[individualSlideDataObject.From - 1].position, 180);
+                Lanes.Instance.endPoints[IndividualSlideDataObject.From - 1].position, 180);
         }
 
         public static int GetShortestInterval(int fromLane, int toLane)
@@ -169,7 +169,7 @@ namespace Game.Notes
 
                 var startIndex = previousMatchedArrowIndex + 1;
 
-                var slideType = individualSlideDataObject.Type;
+                var slideType = IndividualSlideDataObject.Type;
                 var sensorCollider = matchedSensorShape.GetComponent<Collider2D>();
 
                 bool ArrowOverlapsOnSensor(int index)
@@ -232,7 +232,7 @@ namespace Game.Notes
                 foreach (var segmentSensor in segment.sensors)
                     segmentSensor.sensor =
                         SlideBasedNote.GetUpdatedSensorId(segmentSensor.sensor,
-                            individualSlideDataObject.From - 1);
+                            IndividualSlideDataObject.From - 1);
 
                 if (chainedSlide)
                     segment.canBeSkipped = true;

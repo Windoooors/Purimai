@@ -62,10 +62,10 @@ namespace UI.LevelSelection
         private Button _sortButton;
         private Button _themesButton;
         private Button _titleButton;
+        
+        public BassHandler BassHandler { get; set; }
 
-        public BassHandler bassHandler;
-
-        public VisualElement LevelSelectionTree;
+        public VisualElement LevelSelectionTree { get; set; }
 
         public static LevelSelectionManager Instance => _instance ??= FindAnyObjectByType<LevelSelectionManager>();
 
@@ -79,7 +79,7 @@ namespace UI.LevelSelection
             LevelSelectionTree.style.bottom = 0;
             LevelSelectionTree.style.right = 0;
 
-            UIManager.Instance.uiDocument.rootVisualElement.Add(LevelSelectionTree);
+            UIManager.Instance.RootElement.Add(LevelSelectionTree);
 
             _instance = this;
 
@@ -117,7 +117,7 @@ namespace UI.LevelSelection
 
                 maidata.SongBassHandler.PlayOneShot();
 
-                bassHandler = maidata.SongBassHandler;
+                BassHandler = maidata.SongBassHandler;
             }
 
             if (_songPlaying && maidata.SongBassHandler?.IsPlaying == false && songPreviewing)
@@ -126,7 +126,7 @@ namespace UI.LevelSelection
 
                 maidata.SongBassHandler.PlayOneShot();
 
-                bassHandler = maidata.SongBassHandler;
+                BassHandler = maidata.SongBassHandler;
             }
         }
 
@@ -138,7 +138,7 @@ namespace UI.LevelSelection
             _scrollView.RemoveManipulator(_snapManipulator);
             _largeSongCover.RemoveManipulator(_songCoverManipulator);
 
-            UIManager.Instance.uiDocument?.rootVisualElement?.Remove(LevelSelectionTree);
+            UIManager.Instance.RootElement?.Remove(LevelSelectionTree);
         }
 
         private void OnApplicationQuit()
@@ -192,9 +192,7 @@ namespace UI.LevelSelection
 
             var root = LevelSelectionTree;
             _listView = root.Q<VisualElement>("list-parent").Q<ListView>("list");
-
-            _listView.TrySetTouchDraggingAllowed(true);
-
+            
             _scrollView = _listView.Q<ScrollView>();
 
             _scoreContentPanel = root.Q<ScoreContentPanel>();
@@ -287,7 +285,7 @@ namespace UI.LevelSelection
             _refreshButton.clicked += () =>
             {
                 MaidataManager.Load(true);
-
+                
                 if (MaidataManager.MaidataList.Count == 0)
                 {
                     LoadTitle();
@@ -494,7 +492,7 @@ namespace UI.LevelSelection
                     : _scoreContentPanel.AlphabeticallySelectedDifficultyIndex);
 
             if (_lastCategoryData != _data[targetIndex].Category)
-                CategoryListManager.Instance.ChangeCategoryPassively(_data[targetIndex].Category);
+                CategoryListManager.Instance.ChangeCategoryPassively(_data[targetIndex].Category, false);
 
             _lastCategoryData = _data[targetIndex].Category;
 #if !UNITY_EDITOR

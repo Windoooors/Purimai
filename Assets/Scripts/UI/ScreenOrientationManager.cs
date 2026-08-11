@@ -1,5 +1,7 @@
 using System;
+#if UNITY_ANDROID 
 using System.Collections;
+#endif
 using UnityEngine;
 using Logger = Logging.Logger;
 
@@ -8,6 +10,7 @@ namespace UI
     public class ScreenOrientationManager : MonoBehaviour
     {
         private static ScreenOrientationManager _instance;
+
         private ScreenOrientation _lastLandscapeOrientation = ScreenOrientation.LandscapeLeft;
 
         private ScreenOrientation _lastScreenOrientation = ScreenOrientation.AutoRotation;
@@ -65,13 +68,14 @@ namespace UI
 
             Logger.LogInfo("Screen rotation set to horizontal-only.");
 
+#if UNITY_ANDROID
             return;
-
             IEnumerator WaitAndEnableAutoRotation()
             {
                 yield return new WaitForSeconds(0.5f);
                 Screen.orientation = ScreenOrientation.AutoRotation;
             }
+#endif
         }
     }
 }

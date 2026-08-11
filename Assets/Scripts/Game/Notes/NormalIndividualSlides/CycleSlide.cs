@@ -27,10 +27,10 @@ namespace Game.Notes.NormalIndividualSlides
 
         public override void InitializeSlideDirection()
         {
-            IsClockwise = IsCircleClockwise(individualSlideDataObject.From, individualSlideDataObject.To[0],
-                individualSlideDataObject.Type);
+            IsClockwise = IsCircleClockwise(IndividualSlideDataObject.From, IndividualSlideDataObject.To[0],
+                IndividualSlideDataObject.Type);
 
-            var fromLaneIndex = individualSlideDataObject.From - 1;
+            var fromLaneIndex = IndividualSlideDataObject.From - 1;
 
             if (IsClockwise)
             {
@@ -45,7 +45,7 @@ namespace Game.Notes.NormalIndividualSlides
                 pathRotation = -45f * fromLaneIndex;
             }
 
-            transform.Rotate(new Vector3(0, 0, -45f * (individualSlideDataObject.From - 1)));
+            transform.Rotate(new Vector3(0, 0, -45f * (IndividualSlideDataObject.From - 1)));
         }
 
         private static bool IsUpper(int point)
