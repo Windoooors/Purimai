@@ -54,7 +54,7 @@ namespace Game.Notes
         protected override (int judgeTiming, int starInLastSegmentDuration, Segment[] segments)
             InitializeSlideSegments()
         {
-            var lastSegmentDuration = _slideArrowGroups[^1].Length / WifiSlideArrowCount * SlideDuration;
+            var lastSegmentDuration = (int)((float)_slideArrowGroups[^1].Length / WifiSlideArrowCount * SlideDuration);
 
             for (var i = 0; i < wifiSegments.Length; i++)
             {

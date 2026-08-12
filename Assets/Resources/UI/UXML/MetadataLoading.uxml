@@ -1,0 +1,15 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd"
+         editor-extension-mode="False">
+    <Style src="project://database/Assets/Resources/UI/USS/MetadataLoadingScreen/MetadataLoadingScreen.uss?fileID=7433441132597879392&amp;guid=fee32bd7484a64263a45a29c488641a2&amp;type=3#MetadataLoadingScreen"/>
+    <ui:VisualElement name="metadata-loading" class="background" style="background-color: rgb(255, 255, 255);">
+        <ui:Label text="Searching for songs..." name="loading-label"
+                  style="-unity-font-definition: resource(&quot;Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF&quot;); -unity-text-align: upper-center; font-size: 24px;">
+            <Bindings>
+                <UnityEngine.Localization.LocalizedString property="text" table="GUID:d2b76fd67ca914cb09e3ea41b0e1f344"
+                                                          entry="Id(54689947712479232)"/>
+            </Bindings>
+        </ui:Label>
+        <ui:Label text="0%" name="progress-label"
+                  style="-unity-text-align: upper-center; -unity-font-definition: resource(&quot;Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF&quot;); font-size: 36px;"/>
+    </ui:VisualElement>
+</ui:UXML>

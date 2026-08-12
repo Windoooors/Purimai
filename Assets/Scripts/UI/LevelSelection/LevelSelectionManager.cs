@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Game;
 using LitMotion;
+using UI.ChartMetadataLoading;
 using UI.Settings;
 using UI.Settings.Managers;
 using UnityEngine;
@@ -62,7 +63,7 @@ namespace UI.LevelSelection
         private Button _sortButton;
         private Button _themesButton;
         private Button _titleButton;
-        
+
         public BassHandler BassHandler { get; set; }
 
         public VisualElement LevelSelectionTree { get; set; }
@@ -192,7 +193,7 @@ namespace UI.LevelSelection
 
             var root = LevelSelectionTree;
             _listView = root.Q<VisualElement>("list-parent").Q<ListView>("list");
-            
+
             _scrollView = _listView.Q<ScrollView>();
 
             _scoreContentPanel = root.Q<ScoreContentPanel>();
@@ -282,19 +283,24 @@ namespace UI.LevelSelection
             _settingsButton.clicked += UIManager.Instance.ShowSettingsPanel;
 
             _refreshButton = root.Q<VisualElement>("control-panel").Q<Button>("refresh-button");
-            _refreshButton.clicked += () =>
+            _refreshButton.clicked += async () =>
             {
-                MaidataManager.Load(true);
-                
-                if (MaidataManager.MaidataList.Count == 0)
+                UIManager.Instance.ShowChartMetaLoadingScreen();
+
+                await Task.Delay(300);
+
+                await ChartMetadataLoadingScreenManager.Instance.Load(() =>
                 {
-                    LoadTitle();
-                    return;
-                }
+                    if (MaidataManager.MaidataList.Count == 0)
+                    {
+                        LoadTitle();
+                        return;
+                    }
 
-                InitializeGroupingRuleCore();
+                    InitializeGroupingRuleCore();
 
-                LoadSong(_listView.selectedIndex);
+                    LoadSong(_listView.selectedIndex);
+                }, true);
             };
 
             _modsButton = root.Q<VisualElement>("control-panel").Q<Button>("mods-button");

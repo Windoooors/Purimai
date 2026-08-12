@@ -8696,6 +8696,8 @@ MonoBehaviour:
     type: 3}
   calibrationPrefab: {fileID: 8708953766314664850, guid: 3eb584123c2534ce897def09e56ec994,
     type: 3}
+  chartMetadataLoadingPrefab: {fileID: 915952750502472840, guid: a0b2c14bb46b34ffebe8b6c7fcc37baa,
+    type: 3}
   resultManager: {fileID: 0}
   levelSelectionManager: {fileID: 0}
   settingsManager: {fileID: 0}
@@ -8705,6 +8707,7 @@ MonoBehaviour:
   themeUiManager: {fileID: 0}
   titleScreenManager: {fileID: 0}
   calibrationManager: {fileID: 0}
+  chartMetadataLoadingManager: {fileID: 0}
   portraitReferenceResolution: {x: 600, y: 600}
   landscapeReferenceResolution: {x: 1024, y: 600}
 --- !u!114 &872429107

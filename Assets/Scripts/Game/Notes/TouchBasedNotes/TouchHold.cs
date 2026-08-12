@@ -25,6 +25,8 @@ namespace Game.Notes.TouchBasedNotes
         public SpriteRenderer borderSpriteRenderer;
 
         public List<TouchHold> touchGroup;
+
+        private bool _alreadyShown;
         private bool _firstCount;
 
         private bool _headJudgedByTouchGroup;
@@ -229,21 +231,17 @@ namespace Game.Notes.TouchBasedNotes
             list.Add(new AutoPlayKeyFrame(AutoPlayKeyFrame.Type.HoldEnd, timing + holdDuration));
         }
 
-        private bool _alreadyShown;
-        
         public override void ManualUpdate()
         {
             if (!ChartPlayer.Instance.isPlaying)
                 return;
 
             GetTouchHoldTransform(ref _touchTransform);
-            
-            if (_touchTransform.Shown && !_alreadyShown)
-            {
-                _alreadyShown = true;
-            }
 
-            if (!_touchTransform.Shown && !headJudged && !_alreadyShown || (_alreadyShown && headJudged && _holdJudged))
+            if (_touchTransform.Shown && !_alreadyShown) _alreadyShown = true;
+
+            if ((!_touchTransform.Shown && !headJudged && !_alreadyShown) ||
+                (_alreadyShown && headJudged && _holdJudged))
             {
                 NoteContentRoot.SetActive(false);
                 return;
@@ -299,8 +297,8 @@ namespace Game.Notes.TouchBasedNotes
             }
 
             if (!_holdJudged && ChartPlayer.Instance.TimeInMilliseconds >
-                                     timing + holdDuration + ChartPlayer.Instance.judgeDelay && headJudged
-                )
+                timing + holdDuration + ChartPlayer.Instance.judgeDelay && headJudged
+               )
             {
                 _holdJudged = true;
                 _judgeHoldAction.Enabled = false;
@@ -312,9 +310,9 @@ namespace Game.Notes.TouchBasedNotes
 
                 if (_headJudgeState == JudgeState.Miss) _releasedTimePeriod += ReleaseCompensation;
 
-                var heldDuration = (holdDuration - _releasedTimePeriod - HeadIgnoredDuration - TailIgnoredDuration);
-                var checkedDuration = (holdDuration - HeadIgnoredDuration - TailIgnoredDuration);
-                
+                var heldDuration = holdDuration - _releasedTimePeriod - HeadIgnoredDuration - TailIgnoredDuration;
+                var checkedDuration = holdDuration - HeadIgnoredDuration - TailIgnoredDuration;
+
                 if (checkedDuration <= 0)
                 {
                     judgeState = _headJudgeState;

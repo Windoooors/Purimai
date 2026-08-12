@@ -151,7 +151,7 @@ namespace Game
 
             if (!_holdingSoundPlaying)
                 return;
-            
+
             var sound = _bassHandlers["touch_hold"];
             sound.Play();
         }

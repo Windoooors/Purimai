@@ -22,9 +22,9 @@ namespace Game.Notes
         private readonly List<SpriteRenderer> _slideArrowSpriteRenderers = new();
 
         private float? _pathLength;
-        public NoteDataObject.IndividualSlideDataObject IndividualSlideDataObject { get; set; }
         protected bool IsClockwise;
         protected int[] SlideJudgeDisplaySpriteIndexes;
+        public NoteDataObject.IndividualSlideDataObject IndividualSlideDataObject { get; set; }
 
         public VectorGraphicsUtility GraphicsUtility { get; private set; }
 

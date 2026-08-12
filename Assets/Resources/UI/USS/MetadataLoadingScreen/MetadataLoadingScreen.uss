@@ -1,0 +1,17 @@
+:root {
+}
+
+.background {
+    flex-grow: 1;
+    background-color: rgb(255, 255, 255);
+    justify-content: center;
+    opacity: 1;
+}
+
+.background-hidden {
+    opacity: 0;
+}
+
+.background-in-animation {
+    transition-duration: 0.2s;
+}

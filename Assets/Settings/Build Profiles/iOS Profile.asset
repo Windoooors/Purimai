@@ -18,14 +18,17 @@ MonoBehaviour:
   m_PlatformId: ad48d16a66894befa4d8181998c3cb09
   m_PlatformBuildProfile:
     rid: 2130052135367475277
+  m_ActivePlatformGuid: 
+  m_AdditionalPlatformBuildSettings: []
   m_OverrideGlobalSceneList: 0
   m_Scenes: []
+  m_HasScriptingDefines: 0
   m_ScriptingDefines: []
   m_PlayerSettingsYaml:
     m_Settings:
     - line: '| PlayerSettings:'
     - line: '|   m_ObjectHideFlags: 0'
-    - line: '|   serializedVersion: 28'
+    - line: '|   serializedVersion: 29'
     - line: '|   productGUID: 40ffdd3912d894efd906503e87ad3cbf'
     - line: '|   AndroidProfiler: 0'
     - line: '|   AndroidFilterTouchesWhenObscured: 0'
@@ -33,7 +36,7 @@ MonoBehaviour:
     - line: '|   defaultScreenOrientation: 4'
     - line: '|   targetDevice: 2'
     - line: '|   useOnDemandResources: 0'
-    - line: '|   accelerometerFrequency: 60'
+    - line: '|   accelerometerFrequency: 0'
     - line: '|   companyName: Setchin'
     - line: '|   productName: Purimai'
     - line: '|   defaultCursor: {instanceID: 0}'
@@ -64,7 +67,6 @@ MonoBehaviour:
     - line: '|     height: 1'
     - line: '|   m_SplashScreenLogos: []'
     - line: '|   m_VirtualRealitySplashScreen: {instanceID: 0}'
-    - line: '|   m_HolographicTrackingLossScreen: {instanceID: 0}'
     - line: '|   defaultScreenWidth: 1024'
     - line: '|   defaultScreenHeight: 768'
     - line: '|   defaultScreenWidthWeb: 960'
@@ -89,10 +91,15 @@ MonoBehaviour:
     - line: '|   useOSAutorotation: 1'
     - line: '|   use32BitDisplayBuffer: 1'
     - line: '|   preserveFramebufferAlpha: 0'
+    - line: '|   adjustIOSFPSUsingThermalState: 0'
+    - line: '|   thermalStateSeriousIOSFPS: 30'
+    - line: '|   thermalStateCriticalIOSFPS: 15'
     - line: '|   disableDepthAndStencilBuffers: 0'
     - line: '|   androidStartInFullscreen: 1'
     - line: '|   androidRenderOutsideSafeArea: 1'
     - line: '|   androidUseSwappy: 0'
+    - line: '|   androidRequestedVisibleInsets: 0'
+    - line: '|   androidSystemBarsBehavior: 2'
     - line: '|   androidDisplayOptions: 1'
     - line: '|   androidBlitType: 0'
     - line: '|   androidResizeableActivity: 0'
@@ -107,9 +114,9 @@ MonoBehaviour:
     - line: '|   defaultIsNativeResolution: 1'
     - line: '|   macRetinaSupport: 1'
     - line: '|   runInBackground: 1'
-    - line: '|   muteOtherAudioSources: 0'
-    - line: '|   Prepare IOS For Recording: 0'
-    - line: '|   Force IOS Speakers When Recording: 0'
+    - line: '|   muteOtherAudioSources: 1'
+    - line: '|   Prepare IOS For Recording: 1'
+    - line: '|   Force IOS Speakers When Recording: 1'
     - line: '|   audioSpatialExperience: 0'
     - line: '|   deferSystemGesturesMode: 15'
     - line: '|   hideHomeButton: 0'
@@ -137,6 +144,7 @@ MonoBehaviour:
     - line: '|   xboxEnableGuest: 0'
     - line: '|   xboxEnablePIXSampling: 0'
     - line: '|   metalFramebufferOnly: 0'
+    - line: '|   metalUseMetalDisplayLink: 0'
     - line: '|   xboxOneResolution: 0'
     - line: '|   xboxOneSResolution: 0'
     - line: '|   xboxOneXResolution: 3'
@@ -172,12 +180,10 @@ MonoBehaviour:
         2}'
     - line: '|   metroInputSource: 0'
     - line: '|   wsaTransparentSwapchain: 0'
-    - line: '|   m_HolographicPauseOnTrackingLoss: 1'
     - line: '|   xboxOneDisableKinectGpuReservation: 1'
     - line: '|   xboxOneEnable7thCore: 1'
     - line: '|   vrSettings:'
     - line: '|     enable360StereoCapture: 0'
-    - line: '|   isWsaHolographicRemotingEnabled: 0'
     - line: '|   enableFrameTimingStats: 0'
     - line: '|   enableOpenGLProfilerGPURecorders: 1'
     - line: '|   allowHDRDisplaySupport: 0'
@@ -195,13 +201,14 @@ MonoBehaviour:
     - line: '|   buildNumber:'
     - line: '|     Standalone: 0'
     - line: '|     VisionOS: 0'
-    - line: '|     iPhone: 2026081001'
+    - line: '|     iPhone: 2026081201'
     - line: '|     tvOS: 0'
     - line: '|   overrideDefaultApplicationIdentifier: 0'
     - line: '|   AndroidBundleVersionCode: 1'
     - line: '|   AndroidMinSdkVersion: 26'
     - line: '|   AndroidTargetSdkVersion: 0'
     - line: '|   AndroidPreferredInstallLocation: 1'
+    - line: '|   AndroidPreferredDataLocation: 1'
     - line: '|   aotOptions: '
     - line: '|   stripEngineCode: 1'
     - line: '|   iPhoneStrippingLevel: 0'
@@ -216,13 +223,14 @@ MonoBehaviour:
     - line: '|   VertexChannelCompressionMask: 4054'
     - line: '|   iPhoneSdkVersion: 988'
     - line: '|   iOSSimulatorArchitecture: 0'
-    - line: '|   iOSTargetOSVersionString: 13.0'
+    - line: '|   iOSTargetOSVersionString: 15.0'
     - line: '|   tvOSSdkVersion: 0'
     - line: '|   tvOSSimulatorArchitecture: 0'
     - line: '|   tvOSRequireExtendedGameController: 0'
     - line: '|   tvOSTargetOSVersionString: 15.0'
     - line: '|   VisionOSSdkVersion: 0'
     - line: '|   VisionOSTargetOSVersionString: 1.0'
+    - line: '|   xcodeProjectType: 0'
     - line: '|   uIPrerenderedIcon: 0'
     - line: '|   uIRequiresPersistentWiFi: 0'
     - line: '|   uIRequiresFullScreen: 1'
@@ -552,7 +560,6 @@ MonoBehaviour:
     - line: '|   - m_BuildTarget: iOSSupport'
     - line: '|     m_APIs: 10000000'
     - line: '|     m_Automatic: 1'
-    - line: '|   m_BuildTargetVRSettings: []'
     - line: '|   m_DefaultShaderChunkSizeInMB: 16'
     - line: '|   m_DefaultShaderChunkCount: 0'
     - line: '|   openGLRequireES31: 0'
@@ -729,6 +736,8 @@ MonoBehaviour:
     - line: '|   switchMicroSleepForYieldTime: 25'
     - line: '|   switchRamDiskSpaceSize: 12'
     - line: '|   switchUpgradedPlayerSettingsToNMETA: 0'
+    - line: '|   switchCaStoreSource: 0'
+    - line: '|   switchCaStoreFilePath: '
     - line: '|   ps4NPAgeRating: 12'
     - line: '|   ps4NPTitleSecret: '
     - line: '|   ps4NPTrophyPackPath: '
@@ -860,7 +869,9 @@ MonoBehaviour:
     - line: '|   scriptingBackend:'
     - line: '|     Android: 0'
     - line: '|   il2cppCompilerConfiguration: {}'
-    - line: '|   il2cppCodeGeneration: {}'
+    - line: '|   il2cppCodeGeneration:'
+    - line: '|     iPhone: 0'
+    - line: '|   il2cppLTOMode: {}'
     - line: '|   il2cppStacktraceInformation:'
     - line: '|     iPhone: 0'
     - line: '|   managedStrippingLevel:'
@@ -946,7 +957,6 @@ MonoBehaviour:
     - line: '|   XboxOneXTitleMemory: 8'
     - line: '|   XboxOneOverrideIdentityName: '
     - line: '|   XboxOneOverrideIdentityPublisher: '
-    - line: '|   vrEditorSettings: {}'
     - line: '|   cloudServicesEnabled:'
     - line: '|     UNet: 1'
     - line: '|   luminIcon:'
@@ -970,6 +980,7 @@ MonoBehaviour:
     - line: '|   captureStartupLogs: {}'
     - line: '|   activeInputHandler: 1'
     - line: '|   windowsGamepadBackendHint: 0'
+    - line: '|   enableDirectStorage: 0'
     - line: '|   cloudProjectId: '
     - line: '|   framebufferDepthMemorylessMode: 0'
     - line: '|   qualitySettingsNames: []'
@@ -985,7 +996,9 @@ MonoBehaviour:
     - line: '|   androidVulkanAllowFilterList: []'
     - line: '|   androidVulkanDeviceFilterListAsset: {instanceID: 0}'
     - line: '|   d3d12DeviceFilterListAsset: {instanceID: 0}'
+    - line: '|   allowedHttpConnections: 3'
     - line: '| '
+  requiredComponents: []
   references:
     version: 2
     RefIds:
@@ -995,6 +1008,7 @@ MonoBehaviour:
         m_Development: 0
         m_ConnectProfiler: 0
         m_BuildWithDeepProfilingSupport: 0
+        m_BuildWithCodeCoverage: 0
         m_AllowDebugging: 0
         m_WaitForManagedDebugger: 0
         m_ManagedDebuggerFixedPort: 0
@@ -1005,6 +1019,7 @@ MonoBehaviour:
         m_InstallInBuildFolder: 0
         m_InsightsSettingsContainer:
           m_BuildProfileEngineDiagnosticsState: 2
+        m_AdaptivePerformanceEnabled: 0
         m_iOSXcodeBuildConfig: 1
         m_SymlinkSources: 0
         m_PreferredXcode: 

@@ -1,5 +1,8 @@
 using System;
+using System.Text;
+using System.Threading.Tasks;
 using Game;
+using UI.ChartMetadataLoading;
 using UI.InGame;
 using UI.LevelSelection;
 using UI.Result;
@@ -23,7 +26,8 @@ namespace UI
 
         public FontAsset mainFontAsset;
 
-        [FormerlySerializedAs("uiDocument")] [FormerlySerializedAs("uIDocument")] public PanelRenderer panelRenderer;
+        [FormerlySerializedAs("uiDocument")] [FormerlySerializedAs("uIDocument")]
+        public PanelRenderer panelRenderer;
 
         public LevelSelectionManager levelSelectionPrefab;
         public SettingsManager settingsPrefab;
@@ -34,6 +38,7 @@ namespace UI
         public ThemeUiManager themeUiPrefab;
         public TitleScreenManager titleScreenPrefab;
         public CalibrationManager calibrationPrefab;
+        public ChartMetadataLoadingScreenManager chartMetadataLoadingPrefab;
 
         public ResultManager resultManager;
         public LevelSelectionManager levelSelectionManager;
@@ -44,44 +49,28 @@ namespace UI
         public ThemeUiManager themeUiManager;
         public TitleScreenManager titleScreenManager;
         public CalibrationManager calibrationManager;
+        public ChartMetadataLoadingScreenManager chartMetadataLoadingManager;
 
         public Vector2Int portraitReferenceResolution = new(600, 600);
         public Vector2Int landscapeReferenceResolution = new(1024, 600);
 
         public static UIManager Instance => _instance ??= FindAnyObjectByType<UIManager>();
 
-        void OnEnable()
-        {
-            GetComponent<PanelRenderer>().RegisterUIReloadCallback(OnUIReload);
-        }
-        void OnDisable()
-        {
-            GetComponent<PanelRenderer>().UnregisterUIReloadCallback(OnUIReload);
-        }
-        void OnUIReload(PanelRenderer renderer, VisualElement rootElement)
-        {
-            RootElement = rootElement;
-            
-            _instance = this;
-
-            ApplyResolution();
-
-            SettingsManager.OnSettingsChanged += ApplyResolution;
-
-            MaidataManager.Load();
-
-            ShowTitle();
-
-            ScreenOrientationManager.Instance.ScreenChanged += ChangeLayoutConsideringOrientation;
-
-            PlayerPrefs.SetFloat("CalibrationDeltaTimeThreshold", 0.020f);
-        }
-        
-        public VisualElement RootElement { get; private set; } 
+        public VisualElement RootElement { get; private set; }
 
         private void Start()
         {
             DontDestroyOnLoad(gameObject);
+        }
+
+        private void OnEnable()
+        {
+            GetComponent<PanelRenderer>().RegisterUIReloadCallback(OnUIReload);
+        }
+
+        private void OnDisable()
+        {
+            GetComponent<PanelRenderer>().UnregisterUIReloadCallback(OnUIReload);
         }
 
         private void OnApplicationFocus(bool hasFocus)
@@ -99,6 +88,30 @@ namespace UI
             SettingsPool.Save();
         }
 
+        private async void OnUIReload(PanelRenderer renderer, VisualElement rootElement)
+        {
+            RootElement = rootElement;
+
+            _instance = this;
+
+            ApplyResolution();
+
+            SettingsManager.OnSettingsChanged += ApplyResolution;
+
+            ShowChartMetaLoadingScreen();
+
+            await Task.Delay(300);
+
+            await chartMetadataLoadingManager.Load(() =>
+            {
+                ShowTitle();
+
+                ScreenOrientationManager.Instance.ScreenChanged += ChangeLayoutConsideringOrientation;
+
+                PlayerPrefs.SetFloat("CalibrationDeltaTimeThreshold", 0.020f);
+            });
+        }
+
         public void ShowCalibrationPanel()
         {
             calibrationManager = Instantiate(calibrationPrefab, transform);
@@ -114,6 +127,12 @@ namespace UI
         public void ShowResult()
         {
             resultManager = Instantiate(resultPrefab, transform);
+            ApplySafeArea();
+        }
+
+        public void ShowChartMetaLoadingScreen()
+        {
+            chartMetadataLoadingManager = Instantiate(chartMetadataLoadingPrefab, transform);
             ApplySafeArea();
         }
 
@@ -203,9 +222,34 @@ namespace UI
 
         public void UpdateTMPAtlas(char[] characters)
         {
-            var characterString = new string(characters);
+            var missingCharsBuilder = new StringBuilder();
+            foreach (var c in characters)
+            {
+                uint unicode = c;
+                if (!mainFontAsset.HasCharacter(unicode)) missingCharsBuilder.Append(c);
+            }
 
-            mainFontAsset.TryAddCharacters(characterString);
+            var toAdd = missingCharsBuilder.ToString();
+            if (toAdd.Length == 0)
+                return;
+
+            try
+            {
+                mainFontAsset.TryAddCharacters(toAdd);
+            }
+            catch (ArgumentException)
+            {
+                Debug.LogWarning("批量添加字体出现冲突，降级为逐字添加模式...");
+
+                foreach (var c in toAdd)
+                    try
+                    {
+                        mainFontAsset.TryAddCharacters(c.ToString());
+                    }
+                    catch
+                    {
+                    }
+            }
         }
 
         private void ApplyResolution()

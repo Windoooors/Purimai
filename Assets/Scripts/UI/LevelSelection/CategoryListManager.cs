@@ -68,7 +68,7 @@ namespace UI.LevelSelection
             _categoryPanel = _controlPanel.Q<VisualElement>("category-panel");
 
             _categoryList = _categoryPanel.Q<ListView>("category-list");
-            
+
             _scrollView = _categoryList.Q<ScrollView>();
 
             _categoryList.fixedItemHeight = 44;

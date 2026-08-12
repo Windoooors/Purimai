@@ -86,7 +86,7 @@ namespace UI.Settings.Managers
                 tabContent.style.right = 0;
 
                 var listView = tabContent.Q<ListView>();
-                
+
                 SetUpList(listView, category.Items.ToArray());
 
                 _tabView.contentViewport.BringToFront();

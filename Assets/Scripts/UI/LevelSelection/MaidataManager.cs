@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using GihanSoft.String;
 using TinyPinyin;
 using UnityEngine;
@@ -157,63 +158,91 @@ namespace UI.LevelSelection
             }
         }
 
-        public static void Load(bool clear = false)
+        public static async Task LoadAsync(IProgress<LoadProgressReport> progress = null, bool clear = false)
         {
             if (MaidataList.Count != 0 && !clear)
                 return;
 
             MaidataList.Clear();
-
             Logger.LogInfo("Loading simai metadata.");
 
+            var basePath = Application.persistentDataPath;
+
+            await Task.Run(() =>
+            {
 #if !UNITY_EDITOR
             try
             {
 #endif
-            var path = Path.Combine(Application.persistentDataPath, "Charts/");
-            
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
+                var path = Path.Combine(basePath, "Charts/");
 
-            foreach (var levelPath in Directory.GetDirectories(path))
-            {
-                var actualSongOggPath = "";
-                if (!(FileExistsIgnoreCase(Path.Combine(levelPath, "maidata.txt"), out var actualMaidataPath) &&
-                      (FileExistsIgnoreCase(Path.Combine(levelPath, "track.mp3"), out var actualSongMp3Path) ||
-                       FileExistsIgnoreCase(Path.Combine(levelPath, "track.ogg"), out actualSongOggPath))))
-                    continue;
+                if (!Directory.Exists(path))
+                    Directory.CreateDirectory(path);
 
-                var aviExists = FileExistsIgnoreCase(Path.Combine(levelPath, "pv.avi"), out var actualPvPathAvi);
-                FileExistsIgnoreCase(Path.Combine(levelPath, "pv.mp4"), out var actualPvPathMp4);
+                var directories = Directory.GetDirectories(path);
+                var totalCount = directories.Length;
 
-                var pngExists = FileExistsIgnoreCase(Path.Combine(levelPath, "bg.png"), out var actualBgPathPng);
-                var jpgExists = FileExistsIgnoreCase(Path.Combine(levelPath, "bg.jpg"), out var actualBgPathJpg);
-
-                if (!jpgExists)
-                    FileExistsIgnoreCase(Path.Combine(levelPath, "bg.jpeg"), out actualBgPathJpg);
-
-                var maidata = new Maidata(actualMaidataPath,
-                    File.Exists(actualSongMp3Path) ? actualSongMp3Path : actualSongOggPath,
-                    aviExists ? actualPvPathAvi : actualPvPathMp4,
-                    pngExists ? actualBgPathPng : actualBgPathJpg);
-
-                MaidataList.Add(new MaidataReferenceCountPair
+                for (var i = 0; i < totalCount; i++)
                 {
-                    Maidata = maidata,
-                    Referenced = false
-                });
-            }
+                    var levelPath = directories[i];
+                    var folderName = Path.GetFileName(levelPath);
 
-            UIManager.Instance.UpdateTMPAtlas(Maidata.UsedCharacters.ToArray());
+                    var actualSongOggPath = "";
+                    if (!(FileExistsIgnoreCase(Path.Combine(levelPath, "maidata.txt"), out var actualMaidataPath) &&
+                          (FileExistsIgnoreCase(Path.Combine(levelPath, "track.mp3"), out var actualSongMp3Path) ||
+                           FileExistsIgnoreCase(Path.Combine(levelPath, "track.ogg"), out actualSongOggPath))))
+                        continue;
 
-            Logger.LogInfo($"Simai metadata loading completed. Found {MaidataList.Count} chart(s).");
+                    var aviExists = FileExistsIgnoreCase(Path.Combine(levelPath, "pv.avi"), out var actualPvPathAvi);
+                    FileExistsIgnoreCase(Path.Combine(levelPath, "pv.mp4"), out var actualPvPathMp4);
+
+                    var pngExists = FileExistsIgnoreCase(Path.Combine(levelPath, "bg.png"), out var actualBgPathPng);
+                    var jpgExists = FileExistsIgnoreCase(Path.Combine(levelPath, "bg.jpg"), out var actualBgPathJpg);
+
+                    if (!jpgExists)
+                        FileExistsIgnoreCase(Path.Combine(levelPath, "bg.jpeg"), out actualBgPathJpg);
+
+                    var maidata = new Maidata(actualMaidataPath,
+                        File.Exists(actualSongMp3Path) ? actualSongMp3Path : actualSongOggPath,
+                        aviExists ? actualPvPathAvi : actualPvPathMp4,
+                        pngExists ? actualBgPathPng : actualBgPathJpg);
+
+                    MaidataList.Add(new MaidataReferenceCountPair
+                    {
+                        Maidata = maidata,
+                        Referenced = false
+                    });
+
+                    progress?.Report(new LoadProgressReport
+                    {
+                        Current = i + 1,
+                        Total = totalCount,
+                        Message = folderName
+                    });
+                }
 #if !UNITY_EDITOR
-        }
+            }
             catch (Exception ex)
             {
                 Logger.LogError($"{ex.Message} Stack Trace: {ex.StackTrace}");
             }
 #endif
+            });
+
+#if !UNITY_EDITOR
+            try
+            {
+#endif
+            UIManager.Instance.UpdateTMPAtlas(Maidata.UsedCharacters.ToArray());
+#if !UNITY_EDITOR
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError($"{ex.Message} Stack Trace: {ex.StackTrace}");
+            }
+#endif
+
+            Logger.LogInfo($"Simai metadata loading completed. Found {MaidataList.Count} chart(s).");
         }
 
         private static bool FileExistsIgnoreCase(string input, out string actualPath)
@@ -249,6 +278,14 @@ namespace UI.LevelSelection
             }
 
             return false;
+        }
+
+        public struct LoadProgressReport
+        {
+            public int Current;
+            public int Total;
+            public string Message;
+            public float Percentage => Total > 0 ? (float)Current / Total : 0f;
         }
     }
 }

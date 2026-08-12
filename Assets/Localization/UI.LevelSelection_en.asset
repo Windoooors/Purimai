@@ -36,6 +36,10 @@ MonoBehaviour:
 '
     m_Metadata:
       m_Items: []
+  - m_Id: 54689947712479232
+    m_Localized: Searching for songs...
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

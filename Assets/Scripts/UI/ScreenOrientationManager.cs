@@ -1,7 +1,7 @@
-using System;
-#if UNITY_ANDROID 
+#if UNITY_ANDROID
 using System.Collections;
 #endif
+using System;
 using UnityEngine;
 using Logger = Logging.Logger;
 

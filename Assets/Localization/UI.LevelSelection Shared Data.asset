@@ -35,6 +35,10 @@ MonoBehaviour:
     m_Key: title.hint
     m_Metadata:
       m_Items: []
+  - m_Id: 54689947712479232
+    m_Key: meta_loading.message
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
