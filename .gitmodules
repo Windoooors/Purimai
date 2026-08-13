@@ -1,0 +1,9 @@
+[submodule "Assets/Plugins/ManagedBass"]
+	path = Assets/Plugins/ManagedBass
+	url = https://github.com/Windoooors/Purimai-ManagedBass.git
+[submodule "Assets/Plugins/NativeBass"]
+	path = Assets/Plugins/NativeBass
+	url = https://github.com/Windoooors/Purimai-NativeBass.git
+[submodule "Assets/StreamingAssets"]
+	path = Assets/StreamingAssets
+	url = https://github.com/Windoooors/Purimai-StreamingAssets.git
