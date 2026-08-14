@@ -9,7 +9,7 @@ namespace Game
     {
         public static readonly List<AreaARipple> AreaARipples = new();
         public string sensorId;
-        
+
         private TapJudgeDisplayHandler _handler;
 
         private void Start()

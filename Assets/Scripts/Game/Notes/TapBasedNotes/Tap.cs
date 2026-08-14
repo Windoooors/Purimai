@@ -18,6 +18,8 @@ namespace Game.Notes.TapBasedNotes
         public SpriteRenderer exSpriteRenderer;
         public Transform exTransform;
 
+        private MaterialPropertyBlock _breakTapMaterialPropertyBlock;
+
         private JudgeManager.JudgeAction _judgeAction;
 
         private TapOrLineTransform _tapOrLineTransform = new();
@@ -94,7 +96,7 @@ namespace Game.Notes.TapBasedNotes
             if (!isNoSpinningStarHead && (isStarHead || isBreak))
                 tapTransform.Rotate(new Vector3(0, 0,
                     isStarHead ? -180 * Time.deltaTime * rotateSpeed : 400 * Time.deltaTime));
-            
+
             if (isBreak)
                 UpdateBreakGlowingEffect();
 
@@ -105,7 +107,7 @@ namespace Game.Notes.TapBasedNotes
         {
             if (isBreak)
                 _breakTapMaterialPropertyBlock ??= new MaterialPropertyBlock();
-            
+
             transform.position = Vector3.zero;
             tapTransform.localScale = Vector3.zero;
             tapTransform.position *= NoteGenerator.Instance.originCircleScale;
@@ -133,9 +135,7 @@ namespace Game.Notes.TapBasedNotes
             list.Add(new AutoPlayKeyFrame(AutoPlayKeyFrame.Type.PressDown, timing));
             //list.Add(new AutoPlayKeyFrame(AutoPlayKeyFrame.Type.PressUp, timing));
         }
-                
-        private MaterialPropertyBlock _breakTapMaterialPropertyBlock;
-        
+
         private void UpdateBreakGlowingEffect()
         {
             _breakTapMaterialPropertyBlock.SetFloat("_Intensity",

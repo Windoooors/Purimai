@@ -13,6 +13,8 @@ namespace Game.Notes
     {
         public Segment[] Segments;
         private bool _concealed;
+
+        private MaterialPropertyBlock _glowingMaterialPropertyBlock;
         private bool _haveShown;
         private JudgeManager.JudgeAction _holdJudgeAction;
         private bool _isFast;
@@ -23,11 +25,11 @@ namespace Game.Notes
         private bool _launchSoundPlayed;
         private JudgeManager.JudgeAction _leaveJudgeAction;
 
-        private MaterialPropertyBlock _starMaterialPropertyBlock;
-
         private int _showJudgeDisplayTiming = -1;
         private bool _slidedHalf;
         private SlideTransform _slideTransform;
+
+        private MaterialPropertyBlock _starMaterialPropertyBlock;
 
         private Texture _starTexture;
 
@@ -57,11 +59,8 @@ namespace Game.Notes
             int noteTiming,
             ref int slideArrowOrder)
         {
-            if (isSlideBreak)
-            {
-                _glowingMaterialPropertyBlock ??= new MaterialPropertyBlock();
-            }
-            
+            if (isSlideBreak) _glowingMaterialPropertyBlock ??= new MaterialPropertyBlock();
+
             _starMaterialPropertyBlock = new MaterialPropertyBlock();
             _slideTransform = new SlideTransform();
 
@@ -261,7 +260,7 @@ namespace Game.Notes
 
             return sensorName + sensorLane;
         }
-        
+
         protected abstract List<SpriteRenderer> GetArrowSpriteRenderers();
 
         private void UpdateBreakSlideGlowingEffect()
@@ -271,8 +270,6 @@ namespace Game.Notes
 
             GetArrowSpriteRenderers().ForEach(x => x.SetPropertyBlock(_glowingMaterialPropertyBlock));
         }
-
-        private MaterialPropertyBlock _glowingMaterialPropertyBlock;
 
         public override void ManualUpdate()
         {
@@ -287,7 +284,7 @@ namespace Game.Notes
             }
 
             _haveShown = true;
-            
+
             if (IsBreak)
                 UpdateBreakSlideGlowingEffect();
 

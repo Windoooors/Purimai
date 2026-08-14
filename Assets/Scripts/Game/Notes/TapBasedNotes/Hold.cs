@@ -27,7 +27,9 @@ namespace Game.Notes.TapBasedNotes
         private float _distance;
 
         private bool _emerging;
-        
+
+        private bool _glowing;
+
         private float _grossHoldSize;
         private JudgeState _headJudgeState;
         private bool _holdDone;
@@ -38,6 +40,8 @@ namespace Game.Notes.TapBasedNotes
         private float _initialHoldLength;
         private JudgeManager.JudgeAction _leaveJudgeAction;
         private bool _lineMoving;
+
+        private MaterialPropertyBlock _materialPropertyBlock;
         private bool _moving;
 
         private int _nowEmergingTimePosition;
@@ -45,16 +49,14 @@ namespace Game.Notes.TapBasedNotes
         private JudgeManager.JudgeAction _tapJudgeAction;
         private TapOrLineTransform _tapOrLineTransform = new();
 
-        private MaterialPropertyBlock _materialPropertyBlock;
-
         private void UpdateHoldGlowingEffect()
         {
             var value = _glowing
                 ? NoteEffectPhasingManager.Instance.holdGlowingPhase
                 : NoteEffectPhasingManager.Instance.holdNormalPhase;
-            
+
             _materialPropertyBlock.SetFloat("_Intensity", value);
-            
+
             holdSpriteRenderer.SetPropertyBlock(_materialPropertyBlock);
         }
 
@@ -367,8 +369,6 @@ namespace Game.Notes.TapBasedNotes
             _tapJudgeAction.Enabled = false;
         }
 
-        private bool _glowing;
-
         private void OnLeave(object sender, TouchEventArgs e)
         {
             var parsed = int.TryParse(e.SensorId.Replace("A", ""), out var touchedLane);
@@ -432,7 +432,7 @@ namespace Game.Notes.TapBasedNotes
         protected override void LateStart()
         {
             _materialPropertyBlock ??= new MaterialPropertyBlock();
-            
+
             transform.position = Vector3.zero;
             holdTransform.localScale = Vector3.zero;
             holdTransform.position *= NoteGenerator.Instance.originCircleScale;
@@ -444,7 +444,7 @@ namespace Game.Notes.TapBasedNotes
             var endPoint = Lanes.Instance.endPoints[laneIndex];
             var startPoint = Lanes.Instance.startPoints[laneIndex];
             _distance = (endPoint.position - startPoint.position).magnitude;
-            
+
             if (!isBreak)
             {
                 Scoreboard.HoldCount.TotalCount++;

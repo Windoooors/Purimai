@@ -53,12 +53,6 @@ namespace UI
 
         public int AlphabeticallySelectedDifficultyIndex;
 
-        [UxmlAttribute("level-colors")] public Color[] FcApColors =
-        {
-            new Color(248 / 255f, 128 / 255f, 0, 1),
-            Color.black
-        };
-        
         [UxmlAttribute("level-colors")] public Color[] Colors =
         {
             new(238 / 255f, 215 / 255f, 250 / 255f),
@@ -68,6 +62,12 @@ namespace UI
             new(166 / 255f, 48 / 255f, 48 / 255f),
             new(114 / 255f, 60 / 255f, 144 / 255f),
             new(238 / 255f, 215 / 255f, 250 / 255f)
+        };
+
+        [UxmlAttribute("level-colors")] public Color[] FcApColors =
+        {
+            new(248 / 255f, 128 / 255f, 0, 1),
+            Color.black
         };
 
         public EventHandler<DifficultyChangeEventArgs> OnDifficultyTendsToChange;
@@ -85,15 +85,16 @@ namespace UI
             Color.black
         };
 
-        [UxmlAttribute("text-watermark-colors")] public Color[] TextWatermarkColors =
+        [UxmlAttribute("text-watermark-colors")]
+        public Color[] TextWatermarkColors =
         {
-            new Color(0,0,0,0.122f),
-            new Color(0,0,0,0.122f),
-            new Color(0,0,0,0.122f),
-            new Color(0,0,0,0.122f),
-            new Color(1,1,1,0.122f),
-            new Color(1,1,1,0.122f),
-            new Color(0,0,0,0.122f),
+            new(0, 0, 0, 0.122f),
+            new(0, 0, 0, 0.122f),
+            new(0, 0, 0, 0.122f),
+            new(0, 0, 0, 0.122f),
+            new(1, 1, 1, 0.122f),
+            new(1, 1, 1, 0.122f),
+            new(0, 0, 0, 0.122f)
         };
 
         public ScoreContentPanel()
@@ -220,7 +221,7 @@ namespace UI
             };
 
             _fcLabel.style.color =
-                (levelRankData.FcState is FcState.FcGold or FcState.Ap) ? FcApColors[0] : FcApColors[1];
+                levelRankData.FcState is FcState.FcGold or FcState.Ap ? FcApColors[0] : FcApColors[1];
 
             _fcLabel.text = fcText;
 

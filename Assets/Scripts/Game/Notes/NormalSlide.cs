@@ -8,6 +8,8 @@ namespace Game.Notes
     {
         [HideInInspector] public List<IndividualSlideBase> individualSlides = new();
 
+        private readonly List<SpriteRenderer> _slideArrowSpriteRenderers = new();
+
         private IndividualStarMovementController _individualIndividualStarMovementController;
 
         private int _lastSegmentTouchedOnLeaveIndex = -1;
@@ -15,9 +17,10 @@ namespace Game.Notes
         private int _lastTouchedSegmentIndex = -1;
         private bool _slideStarted;
 
-        private readonly List<SpriteRenderer> _slideArrowSpriteRenderers = new();
-
-        protected override List<SpriteRenderer> GetArrowSpriteRenderers() => _slideArrowSpriteRenderers;
+        protected override List<SpriteRenderer> GetArrowSpriteRenderers()
+        {
+            return _slideArrowSpriteRenderers;
+        }
 
         protected override IStarMovementController[] GetStars()
         {
