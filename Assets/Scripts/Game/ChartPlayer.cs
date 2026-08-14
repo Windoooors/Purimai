@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Linq;
+using Game.NoteEffects;
 using Game.Notes;
 using Game.Notes.TapBasedNotes;
 using Game.Theming;
@@ -50,8 +51,8 @@ namespace Game
         public int timeGapBeforeSlideStartsAppearing;
         [HideInInspector] public int slideFadeInDuration;
 
-        public Animator[] holdRippleAnimators;
-        public Animator fireworksAnimator;
+        public HoldRipperDisplayHandler[] holdRippleAnimators;
+        public TapJudgeDisplayHandler fireworksAnimator;
         public Animator judgeCircleGlowAnimator;
 
         public AnimationClip judgeDisplayAnimationClip;

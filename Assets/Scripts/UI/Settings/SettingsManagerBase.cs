@@ -47,7 +47,7 @@ namespace UI.Settings
                 {
                     elementRoot.Q<Label>("item-title").text = value;
                     elementRoot.Q<Label>("item-name-watermark").text =
-                        $"<color=white><gradient=\"level-item-watermark\">{value}</gradient></color>";
+                        value;
                 };
 
                 var itemDescriptionLocalizedString = new LocalizedString($"{LocalizationTableName}.Descriptions",

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Game.ChartManagement;
+using Game.NoteEffects;
 using UI.Result;
 using Unity.Mathematics;
 using UnityEngine;
@@ -22,7 +23,7 @@ namespace Game.Notes
         private bool _launchSoundPlayed;
         private JudgeManager.JudgeAction _leaveJudgeAction;
 
-        private MaterialPropertyBlock _materialPropertyBlock;
+        private MaterialPropertyBlock _starMaterialPropertyBlock;
 
         private int _showJudgeDisplayTiming = -1;
         private bool _slidedHalf;
@@ -56,7 +57,12 @@ namespace Game.Notes
             int noteTiming,
             ref int slideArrowOrder)
         {
-            _materialPropertyBlock = new MaterialPropertyBlock();
+            if (isSlideBreak)
+            {
+                _glowingMaterialPropertyBlock ??= new MaterialPropertyBlock();
+            }
+            
+            _starMaterialPropertyBlock = new MaterialPropertyBlock();
             _slideTransform = new SlideTransform();
 
             Order = -slideArrowOrder;
@@ -255,6 +261,18 @@ namespace Game.Notes
 
             return sensorName + sensorLane;
         }
+        
+        protected abstract List<SpriteRenderer> GetArrowSpriteRenderers();
+
+        private void UpdateBreakSlideGlowingEffect()
+        {
+            _glowingMaterialPropertyBlock.SetFloat("_Intensity",
+                NoteEffectPhasingManager.Instance.breakSlideGlowingPhase);
+
+            GetArrowSpriteRenderers().ForEach(x => x.SetPropertyBlock(_glowingMaterialPropertyBlock));
+        }
+
+        private MaterialPropertyBlock _glowingMaterialPropertyBlock;
 
         public override void ManualUpdate()
         {
@@ -269,10 +287,13 @@ namespace Game.Notes
             }
 
             _haveShown = true;
+            
+            if (IsBreak)
+                UpdateBreakSlideGlowingEffect();
 
-            _materialPropertyBlock.SetFloat("_Transition", _slideTransform.StarAlpha);
+            _starMaterialPropertyBlock.SetFloat("_Transition", _slideTransform.StarAlpha);
 
-            _materialPropertyBlock.SetTexture("_MainTex", _starTexture);
+            _starMaterialPropertyBlock.SetTexture("_MainTex", _starTexture);
 
             if (_slideTransform.StarPosition > 0.002 && !_launchSoundPlayed)
             {
@@ -284,7 +305,7 @@ namespace Game.Notes
             {
                 star.Move(_slideTransform.StarPosition);
 
-                star.GetSpriteRenderer().SetPropertyBlock(_materialPropertyBlock);
+                star.GetSpriteRenderer().SetPropertyBlock(_starMaterialPropertyBlock);
                 star.GetSpriteRenderer().transform.localScale =
                     Vector3.one + Vector3.one * _slideTransform.StarAlpha / 2;
             }
@@ -382,6 +403,12 @@ namespace Game.Notes
                 case JudgeState.Perfect:
                 case JudgeState.SemiCriticalPerfect:
                     SfxManager.Instance.PlaySlideBreakPerfectSound();
+                    SfxManager.Instance.PlaySlideBreakSlidedSound();
+                    break;
+                case JudgeState.Miss:
+                    break;
+                default:
+                    SfxManager.Instance.PlaySlideBreakSlidedSound();
                     break;
             }
         }

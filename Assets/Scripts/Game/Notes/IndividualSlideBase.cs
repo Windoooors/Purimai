@@ -27,6 +27,8 @@ namespace Game.Notes
         public NoteDataObject.IndividualSlideDataObject IndividualSlideDataObject { get; set; }
 
         public VectorGraphicsUtility GraphicsUtility { get; private set; }
+        
+        public List<SpriteRenderer> SlideArrowSpriteRenderers => _slideArrowSpriteRenderers;
 
         public virtual void UpdateJudgeDisplayDirection(int judgeSpriteGroupIndex)
         {

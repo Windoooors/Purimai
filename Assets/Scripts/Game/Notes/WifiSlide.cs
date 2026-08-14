@@ -69,6 +69,8 @@ namespace Game.Notes
             return (Timing + WaitDuration + SlideDuration - lastSegmentDuration, lastSegmentDuration, wifiSegments);
         }
 
+        protected override List<SpriteRenderer> GetArrowSpriteRenderers() => _slideArrowSpriteRenderers;
+
         protected override IStarMovementController[] GetStars()
         {
             return wifiStars;

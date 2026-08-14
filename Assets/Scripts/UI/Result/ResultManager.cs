@@ -257,7 +257,7 @@ namespace UI.Result
             songTitleLabel.text = _maidata.Title;
 
             songTitleWaterMark.text =
-                $"<color=white><gradient=\"level-item-watermark\">{_maidata.Title}</gradient></color>";
+                _maidata.Title;
 
             var artistLabel = informationElement.Q<Label>("song-artist");
             var bpmLabel = informationElement.Q<Label>("song-bpm");

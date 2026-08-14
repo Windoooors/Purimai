@@ -1,3 +1,4 @@
+using Game.NoteEffects;
 using Game.Theming;
 using UI.Result;
 using Unity.Mathematics;
@@ -26,8 +27,7 @@ namespace Game.Notes.TapBasedNotes
         private float _distance;
 
         private bool _emerging;
-
-        private Animator _glowAnimator;
+        
         private float _grossHoldSize;
         private JudgeState _headJudgeState;
         private bool _holdDone;
@@ -44,6 +44,19 @@ namespace Game.Notes.TapBasedNotes
 
         private JudgeManager.JudgeAction _tapJudgeAction;
         private TapOrLineTransform _tapOrLineTransform = new();
+
+        private MaterialPropertyBlock _materialPropertyBlock;
+
+        private void UpdateHoldGlowingEffect()
+        {
+            var value = _glowing
+                ? NoteEffectPhasingManager.Instance.holdGlowingPhase
+                : NoteEffectPhasingManager.Instance.holdNormalPhase;
+            
+            _materialPropertyBlock.SetFloat("_Intensity", value);
+            
+            holdSpriteRenderer.SetPropertyBlock(_materialPropertyBlock);
+        }
 
         public override void ManualUpdate()
         {
@@ -64,6 +77,8 @@ namespace Game.Notes.TapBasedNotes
 
             if (_holdTransformData.Shown && !headJudged && !holdJudged && !NoteContentRoot.activeSelf)
                 NoteContentRoot.SetActive(true);
+
+            UpdateHoldGlowingEffect();
 
             if (ChartPlayer.Instance.TimeInMilliseconds > timing +
                 ChartPlayer.Instance.tapJudgeSettings.lateGoodTiming +
@@ -95,7 +110,7 @@ namespace Game.Notes.TapBasedNotes
             if (ChartPlayer.Instance.TimeInMilliseconds >
                 timing + duration &&
                 headJudged && !holdJudged)
-                ChartPlayer.Instance.holdRippleAnimators[lane - 1].SetTrigger("Reset");
+                ChartPlayer.Instance.holdRippleAnimators[lane - 1].Hide();
 
             if (ChartPlayer.Instance.TimeInMilliseconds >
                 timing + duration + ChartPlayer.Instance.holdTailJudgeSettings.greatTiming +
@@ -117,7 +132,7 @@ namespace Game.Notes.TapBasedNotes
                 holdSpriteRenderer.enabled = false;
                 holdEndSpriteRenderer.enabled = false;
 
-                _glowAnimator.SetTrigger("Reset");
+                _glowing = false;
 
                 NoteContentRoot.SetActive(false);
 
@@ -324,7 +339,7 @@ namespace Game.Notes.TapBasedNotes
 
             isFast = state.isFast;
 
-            ChartPlayer.Instance.holdRippleAnimators[lane - 1].SetTrigger(ThemeManager.HoldColorRelatedHoldEffect
+            ChartPlayer.Instance.holdRippleAnimators[lane - 1].Show(ThemeManager.HoldColorRelatedHoldEffect
                 ? isEach switch
                 {
                     true => "HoldPerfect",
@@ -347,10 +362,12 @@ namespace Game.Notes.TapBasedNotes
 
             AreaARipple.AreaARipples.Find(x => x.sensorId == "A" + lane).CancelAnimation();
 
-            _glowAnimator.SetTrigger("Glow");
+            _glowing = true;
 
             _tapJudgeAction.Enabled = false;
         }
+
+        private bool _glowing;
 
         private void OnLeave(object sender, TouchEventArgs e)
         {
@@ -370,9 +387,9 @@ namespace Game.Notes.TapBasedNotes
                 ChartPlayer.Instance.holdTailJudgeSettings.greatTiming + ChartPlayer.Instance.judgeDelay)
                 return;
 
-            ChartPlayer.Instance.holdRippleAnimators[lane - 1].SetTrigger("Reset");
+            ChartPlayer.Instance.holdRippleAnimators[lane - 1].Hide();
 
-            _glowAnimator.SetTrigger("Reset");
+            _glowing = false;
 
             var deltaTiming = timing + duration - time + ChartPlayer.Instance.judgeDelay;
 
@@ -414,6 +431,8 @@ namespace Game.Notes.TapBasedNotes
 
         protected override void LateStart()
         {
+            _materialPropertyBlock ??= new MaterialPropertyBlock();
+            
             transform.position = Vector3.zero;
             holdTransform.localScale = Vector3.zero;
             holdTransform.position *= NoteGenerator.Instance.originCircleScale;
@@ -425,9 +444,7 @@ namespace Game.Notes.TapBasedNotes
             var endPoint = Lanes.Instance.endPoints[laneIndex];
             var startPoint = Lanes.Instance.startPoints[laneIndex];
             _distance = (endPoint.position - startPoint.position).magnitude;
-
-            _glowAnimator = GetComponent<Animator>();
-
+            
             if (!isBreak)
             {
                 Scoreboard.HoldCount.TotalCount++;
@@ -435,7 +452,7 @@ namespace Game.Notes.TapBasedNotes
             else
             {
                 Scoreboard.BreakCount.TotalCount++;
-                _glowAnimator.SetTrigger("Glow");
+                _glowing = true;
             }
         }
 

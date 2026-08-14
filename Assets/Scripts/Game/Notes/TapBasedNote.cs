@@ -1,4 +1,5 @@
 using System;
+using Game.NoteEffects;
 using Game.Notes.TapBasedNotes;
 using UI.Result;
 using UI.Settings;
@@ -48,10 +49,10 @@ namespace Game.Notes
 
         [FormerlySerializedAs("judged")] public bool headJudged;
 
-        private Animator _judgeDisplayAnimator;
+        private TapJudgeDisplayHandler _judgeDisplayAnimator;
 
         protected GameObject NoteContentRoot;
-        protected Animator OffsetDisplayAnimator;
+        protected TapJudgeDisplayHandler OffsetDisplayAnimator;
 
         protected int OnScreenTime;
 
@@ -229,7 +230,7 @@ namespace Game.Notes
                     case 1:
                         if (judgeState is not JudgeState.SemiCriticalPerfect and not JudgeState.Perfect)
                         {
-                            OffsetDisplayAnimator.SetTrigger(isFast ? "ShowFast" : "ShowLate");
+                            OffsetDisplayAnimator.Show(isFast ? "ShowFast" : "ShowLate");
                             if (isFast)
                                 Scoreboard.FastCount++;
                             else
@@ -238,7 +239,7 @@ namespace Game.Notes
 
                         break;
                     case 2:
-                        OffsetDisplayAnimator.SetTrigger(isFast ? "ShowFast" : "ShowLate");
+                        OffsetDisplayAnimator.Show(isFast ? "ShowFast" : "ShowLate");
                         if (isFast)
                             Scoreboard.FastCount++;
                         else
@@ -251,33 +252,33 @@ namespace Game.Notes
                 switch (judgeState)
                 {
                     case JudgeState.CriticalPerfect:
-                        _judgeDisplayAnimator.SetTrigger("Show2600"); break;
+                        _judgeDisplayAnimator.Show("Show2600"); break;
                     case JudgeState.SemiCriticalPerfect:
-                        _judgeDisplayAnimator.SetTrigger("Show2550"); break;
+                        _judgeDisplayAnimator.Show("Show2550"); break;
                     case JudgeState.Perfect:
-                        _judgeDisplayAnimator.SetTrigger("Show2500"); break;
+                        _judgeDisplayAnimator.Show("Show2500"); break;
                     case JudgeState.Great:
-                        _judgeDisplayAnimator.SetTrigger("Show2000"); break;
+                        _judgeDisplayAnimator.Show("Show2000"); break;
                     case JudgeState.SemiGreat:
-                        _judgeDisplayAnimator.SetTrigger("Show1500"); break;
+                        _judgeDisplayAnimator.Show("Show1500"); break;
                     case JudgeState.QuarterGreat:
-                        _judgeDisplayAnimator.SetTrigger("Show1250"); break;
+                        _judgeDisplayAnimator.Show("Show1250"); break;
                     case JudgeState.Good:
-                        _judgeDisplayAnimator.SetTrigger("Show1000"); break;
+                        _judgeDisplayAnimator.Show("Show1000"); break;
                     case JudgeState.Miss:
-                        _judgeDisplayAnimator.SetTrigger("ShowMiss"); break;
+                        _judgeDisplayAnimator.Show("ShowMiss"); break;
                 }
             else
                 switch (judgeState)
                 {
                     case JudgeState.Perfect or JudgeState.CriticalPerfect or JudgeState.SemiCriticalPerfect:
-                        _judgeDisplayAnimator.SetTrigger("ShowPerfect"); break;
+                        _judgeDisplayAnimator.Show("ShowPerfect"); break;
                     case JudgeState.Great or JudgeState.SemiGreat or JudgeState.QuarterGreat:
-                        _judgeDisplayAnimator.SetTrigger("ShowGreat"); break;
+                        _judgeDisplayAnimator.Show("ShowGreat"); break;
                     case JudgeState.Good:
-                        _judgeDisplayAnimator.SetTrigger("ShowGood"); break;
+                        _judgeDisplayAnimator.Show("ShowGood"); break;
                     case JudgeState.Miss:
-                        _judgeDisplayAnimator.SetTrigger("ShowMiss"); break;
+                        _judgeDisplayAnimator.Show("ShowMiss"); break;
                 }
 
             if (judgeState == JudgeState.Miss) return;

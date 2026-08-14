@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Game.NoteEffects;
 using UnityEngine;
 
 namespace Game
@@ -7,8 +8,8 @@ namespace Game
     {
         public static JudgeDisplayManager Instance;
 
-        public List<Animator> judgeDisplayAnimators;
-        public List<Animator> offsetDisplayAnimators;
+        public List<TapJudgeDisplayHandler> judgeDisplayAnimators;
+        public List<TapJudgeDisplayHandler> offsetDisplayAnimators;
 
         public void Awake()
         {

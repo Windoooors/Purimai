@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Game.NoteEffects;
 using Game.Theming;
 using UI.Result;
 using Unity.Mathematics;
@@ -34,7 +35,7 @@ namespace Game.Notes.TouchBasedNotes
         private JudgeState _headJudgeState;
         private bool _holdAnimationPlayed;
 
-        private Animator _holdAnimator;
+        private HoldRipperDisplayHandler _holdAnimator;
         private bool _holding;
 
         private bool _holdJudged;
@@ -193,7 +194,7 @@ namespace Game.Notes.TouchBasedNotes
 
         private void PlayHoldAnimation(JudgeState targetJudgeState)
         {
-            _holdAnimator.SetTrigger(ThemeManager.HoldColorRelatedHoldEffect
+            _holdAnimator.Show(ThemeManager.HoldColorRelatedHoldEffect
                 ? isEach switch
                 {
                     true => "HoldPerfect",
@@ -304,7 +305,7 @@ namespace Game.Notes.TouchBasedNotes
                 _judgeHoldAction.Enabled = false;
                 _judgeLeaveAction.Enabled = false;
 
-                _holdAnimator.SetTrigger("Reset");
+                _holdAnimator.Hide();
 
                 TouchHoldSoundHelper.Instance.Stop(this);
 
@@ -379,7 +380,7 @@ namespace Game.Notes.TouchBasedNotes
                 var direction = new Vector3(-Mathf.Sin(angleRad), Mathf.Cos(angleRad), 0);
 
                 touchTransform.position = Vector3.Lerp(transform.position - direction * Step, transform.position,
-                    Mathf.Pow(_touchTransform.Position, 2));
+                    Mathf.Pow(_touchTransform.Position, 4));
             }
 
             if (_touchTransform.ShowBorder && !_holdJudged)

@@ -15,6 +15,10 @@ namespace Game.Notes
         private int _lastTouchedSegmentIndex = -1;
         private bool _slideStarted;
 
+        private readonly List<SpriteRenderer> _slideArrowSpriteRenderers = new();
+
+        protected override List<SpriteRenderer> GetArrowSpriteRenderers() => _slideArrowSpriteRenderers;
+
         protected override IStarMovementController[] GetStars()
         {
             var stars = individualSlides.Select(x => x.star).ToArray();
@@ -120,6 +124,8 @@ namespace Game.Notes
 
             foreach (var individualSlideBase in individualSlides)
                 count += individualSlideBase.GenerateSlideArrows(Order - count + arrowCount);
+
+            _slideArrowSpriteRenderers.AddRange(individualSlides.SelectMany(x => x.SlideArrowSpriteRenderers));
 
             return count;
         }

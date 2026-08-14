@@ -42,7 +42,7 @@ namespace UI.Theming
                 var displayName = isZh ? itemData.themeDataDto.DisplayNameZh : itemData.themeDataDto.DisplayNameEn;
                 elementRoot.Q<Label>("item-title").text = displayName;
                 elementRoot.Q<Label>("item-name-watermark").text =
-                    $"<color=white><gradient=\"level-item-watermark\">{displayName}</gradient></color>";
+                    displayName;
 
                 var description = isZh ? itemData.themeDataDto.DescriptionZh : itemData.themeDataDto.DescriptionEn;
 

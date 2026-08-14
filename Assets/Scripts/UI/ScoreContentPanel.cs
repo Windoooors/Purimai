@@ -53,6 +53,12 @@ namespace UI
 
         public int AlphabeticallySelectedDifficultyIndex;
 
+        [UxmlAttribute("level-colors")] public Color[] FcApColors =
+        {
+            new Color(248 / 255f, 128 / 255f, 0, 1),
+            Color.black
+        };
+        
         [UxmlAttribute("level-colors")] public Color[] Colors =
         {
             new(238 / 255f, 215 / 255f, 250 / 255f),
@@ -79,15 +85,15 @@ namespace UI
             Color.black
         };
 
-        [UxmlAttribute("text-gradient-names")] public string[] TextGradients =
+        [UxmlAttribute("text-watermark-colors")] public Color[] TextWatermarkColors =
         {
-            "difficulty-name-watermark-dark-to-white",
-            "difficulty-name-watermark-dark-to-white",
-            "difficulty-name-watermark-dark-to-white",
-            "difficulty-name-watermark-dark-to-white",
-            "difficulty-name-watermark-white-to-dark",
-            "difficulty-name-watermark-white-to-dark",
-            "difficulty-name-watermark-dark-to-white"
+            new Color(0,0,0,0.122f),
+            new Color(0,0,0,0.122f),
+            new Color(0,0,0,0.122f),
+            new Color(0,0,0,0.122f),
+            new Color(1,1,1,0.122f),
+            new Color(1,1,1,0.122f),
+            new Color(0,0,0,0.122f),
         };
 
         public ScoreContentPanel()
@@ -208,10 +214,13 @@ namespace UI
             {
                 FcState.None => "Played",
                 FcState.Fc => "FC",
-                FcState.FcGold => "<color=white><gradient=\"ap-display\">FC</gradient></color>",
-                FcState.Ap => "<color=white><gradient=\"ap-display\">AP</gradient></color>",
+                FcState.FcGold => "FC",
+                FcState.Ap => "AP",
                 _ => "Unknown"
             };
+
+            _fcLabel.style.color =
+                (levelRankData.FcState is FcState.FcGold or FcState.Ap) ? FcApColors[0] : FcApColors[1];
 
             _fcLabel.text = fcText;
 
@@ -257,8 +266,12 @@ namespace UI
             if (maidata.IsUtage)
                 difficultyIndex = 7;
 
-            _difficultyNameLabel.text =
-                $"<color=white><gradient=\"{(difficultyIndex >= TextGradients.Length ? TextGradients[0] : TextGradients[difficultyIndex])}\">{(difficultyIndex >= _difficultyNames.Length ? _difficultyNames[0] : _difficultyNames[difficultyIndex])}</gradient></color>";
+            _difficultyNameLabel.style.color = difficultyIndex >= TextWatermarkColors.Length
+                ? TextWatermarkColors[0]
+                : TextWatermarkColors[difficultyIndex];
+            _difficultyNameLabel.text = difficultyIndex >= _difficultyNames.Length
+                ? _difficultyNames[0]
+                : _difficultyNames[difficultyIndex];
             _chartBackground.style.unityBackgroundImageTintColor =
                 difficultyIndex >= Colors.Length ? Colors[0] : Colors[difficultyIndex];
             //_difficultyNameLabel.style.color = difficultyIndex >= TextColors.Length ? DefaultTextColor : TextColors[difficultyIndex];

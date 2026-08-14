@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Game.NoteEffects;
 using UI.Result;
 using UI.Settings;
 using UnityEngine;
@@ -62,11 +63,11 @@ namespace Game.Notes
         public bool isFast;
 
         public bool isEach;
-        private Animator _fireworksDisplayAnimator;
+        private TapJudgeDisplayHandler _fireworksDisplayAnimator;
 
-        private Animator _judgeDisplayAnimator;
+        private TapJudgeDisplayHandler _judgeDisplayAnimator;
         protected GameObject NoteContentRoot;
-        protected Animator OffsetDisplayAnimator;
+        protected TapJudgeDisplayHandler OffsetDisplayAnimator;
         protected int TouchOnScreenTime;
 
         private void Start()
@@ -174,7 +175,7 @@ namespace Game.Notes
                     case 1:
                         if (judgeState is not JudgeState.SemiCriticalPerfect and not JudgeState.Perfect)
                         {
-                            OffsetDisplayAnimator.SetTrigger(isFast ? "ShowFast" : "ShowLate");
+                            OffsetDisplayAnimator.Show(isFast ? "ShowFast" : "ShowLate");
                             if (isFast)
                                 Scoreboard.FastCount++;
                             else
@@ -183,7 +184,7 @@ namespace Game.Notes
 
                         break;
                     case 2:
-                        OffsetDisplayAnimator.SetTrigger(isFast ? "ShowFast" : "ShowLate");
+                        OffsetDisplayAnimator.Show(isFast ? "ShowFast" : "ShowLate");
                         if (isFast)
                             Scoreboard.FastCount++;
                         else
@@ -195,13 +196,13 @@ namespace Game.Notes
             switch (judgeState)
             {
                 case JudgeState.Perfect or JudgeState.CriticalPerfect or JudgeState.SemiCriticalPerfect:
-                    _judgeDisplayAnimator.SetTrigger("ShowPerfect"); break;
+                    _judgeDisplayAnimator.Show("ShowPerfect"); break;
                 case JudgeState.Great or JudgeState.SemiGreat or JudgeState.QuarterGreat:
-                    _judgeDisplayAnimator.SetTrigger("ShowGreat"); break;
+                    _judgeDisplayAnimator.Show("ShowGreat"); break;
                 case JudgeState.Good:
-                    _judgeDisplayAnimator.SetTrigger("ShowGood"); break;
+                    _judgeDisplayAnimator.Show("ShowGood"); break;
                 case JudgeState.Miss:
-                    _judgeDisplayAnimator.SetTrigger("ShowMiss"); break;
+                    _judgeDisplayAnimator.Show("ShowMiss"); break;
             }
 
             if (judgeState == JudgeState.Miss) return;
@@ -209,7 +210,7 @@ namespace Game.Notes
             if (withFireworks)
             {
                 _fireworksDisplayAnimator.transform.position = transform.position;
-                _fireworksDisplayAnimator.SetTrigger("ShowFireworks");
+                _fireworksDisplayAnimator.Show("ShowFireworks");
             }
 
             if (sensorId.StartsWith("A"))

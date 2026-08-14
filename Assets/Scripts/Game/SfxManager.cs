@@ -22,6 +22,7 @@ namespace Game
             {
                 { "cue", new AudioSoundNameData("cue_sound.wav") },
                 { "slide", new AudioSoundNameData("slide_sound.wav") },
+                { "slided_break", new AudioSoundNameData("break_slide_slide_sound.wav") },
                 { "break_extra", new AudioSoundNameData("break_extra_sound.wav") },
                 { "break_perfect", new AudioSoundNameData("break_perfect_sound.wav") },
                 { "break_great", new AudioSoundNameData("break_great_sound.wav") },
@@ -200,6 +201,14 @@ namespace Game
 
             if (_volumes["break_slide_judge"] == 0)
                 return;
+
+            sound.Volume = _volumes["break_slide_judge"];
+            sound.PlayOneShot();
+        }
+
+        public void PlaySlideBreakSlidedSound()
+        {
+            var sound = _bassHandlers["slided_break"];
 
             sound.Volume = _volumes["break_slide_judge"];
             sound.PlayOneShot();

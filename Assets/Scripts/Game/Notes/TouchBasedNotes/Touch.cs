@@ -129,7 +129,7 @@ namespace Game.Notes.TouchBasedNotes
                 var direction = new Vector3(-Mathf.Sin(angleRad), Mathf.Cos(angleRad), 0);
 
                 touchTransform.position = Vector3.Lerp(transform.position - direction * Step, transform.position,
-                    Mathf.Pow(_touchTransform.Position, 2));
+                    Mathf.Pow(_touchTransform.Position, 4));
             }
 
             if (_touchTransform.ShowBorder) justBorder.color = new Color(1, 1, 1, 1);

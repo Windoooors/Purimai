@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Game.NoteEffects;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -8,8 +9,8 @@ namespace Game
     {
         public static readonly List<AreaARipple> AreaARipples = new();
         public string sensorId;
-
-        private Animator _animator;
+        
+        private TapJudgeDisplayHandler _handler;
 
         private void Start()
         {
@@ -17,7 +18,7 @@ namespace Game
 
             SimulatedSensor.OnTap += Show;
 
-            _animator = GetComponent<Animator>();
+            _handler = GetComponent<TapJudgeDisplayHandler>();
 
             SceneManager.sceneLoaded += ClearList;
             return;
@@ -31,13 +32,13 @@ namespace Game
 
         public void CancelAnimation()
         {
-            _animator.SetTrigger("Reset");
+            _handler.Stop();
         }
 
         private void Show(object sender, TouchEventArgs e)
         {
             if (e.SensorId == sensorId)
-                _animator.SetTrigger("ShowRipple");
+                _handler.Show("ShowRipple");
         }
     }
 }

@@ -73,6 +73,7 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _Transition: 1
+    - _XRMotionVectorsPass: 1
     - _ZWrite: 0
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
