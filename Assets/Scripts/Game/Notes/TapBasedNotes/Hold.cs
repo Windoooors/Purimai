@@ -52,8 +52,8 @@ namespace Game.Notes.TapBasedNotes
         private void UpdateHoldGlowingEffect()
         {
             var value = _glowing
-                ? NoteEffectPhasingManager.Instance.holdGlowingPhase
-                : NoteEffectPhasingManager.Instance.holdNormalPhase;
+                ? NoteEffectPhasingManager.Instance.HoldGlowingPhase
+                : NoteEffectPhasingManager.Instance.HoldNormalPhase;
 
             _materialPropertyBlock.SetFloat("_Intensity", value);
 
@@ -431,7 +431,7 @@ namespace Game.Notes.TapBasedNotes
 
         protected override void LateStart()
         {
-            _materialPropertyBlock ??= new MaterialPropertyBlock();
+            _materialPropertyBlock = new MaterialPropertyBlock();
 
             transform.position = Vector3.zero;
             holdTransform.localScale = Vector3.zero;

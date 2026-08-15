@@ -56,8 +56,6 @@ namespace UI.LevelSelection
         private Button _settingsButton;
 
         private SnapScrollManipulator _snapManipulator;
-        private SongCoverManipulator _songCoverManipulator;
-
         private bool _songPlaying;
 
         private Button _sortButton;
@@ -137,8 +135,6 @@ namespace UI.LevelSelection
             SettingsManager.OnSettingsChanged -= ChangeVolume;
 
             _scrollView.RemoveManipulator(_snapManipulator);
-            _largeSongCover.RemoveManipulator(_songCoverManipulator);
-
             UIManager.Instance.RootElement?.Remove(LevelSelectionTree);
         }
 
@@ -265,11 +261,6 @@ namespace UI.LevelSelection
             CategoryListManager.Instance.OnCategoryTendsToChange += ChangeCategory;
 
             _largeSongCover = root.Q<VisualElement>("song-cover").Q<VisualElement>("song-cover-image");
-
-            _songCoverManipulator =
-                new SongCoverManipulator(SongCoverManipulator.SongCoverLayoutPopulationMode.FixedHeight, 0);
-
-            _largeSongCover.AddManipulator(_songCoverManipulator);
 
             _sortButton = root.Q<VisualElement>("control-panel").Q<Button>("sort-button");
             _sortButton.clicked += ChangeGroupingRule;
@@ -641,8 +632,9 @@ namespace UI.LevelSelection
 
             item.style.left = normalized * normalized * 1050 - 100;
 
-            //var centerDist = Mathf.Abs(relativeY - 250);
-            //item.style.opacity = Mathf.Clamp01(1 - centerDist / 250 * 0.5f);
+            var centerDist = Mathf.Abs(relativeY - 750);
+
+            item.style.opacity = Mathf.Clamp01(1 - centerDist / 750 * 0.8f);
 
             var index = (int)item.userData;
 

@@ -29,7 +29,6 @@
 }
 
 .unity-collection-view__item--selected .information {
-    right: 0;
 }
 
 .hide-selected .unity-collection-view__item--selected {
@@ -51,8 +50,7 @@
 }
 
 .unity-collection-view__item--selected .cover {
-    opacity: 0;
-    right: -72px;
+
 }
 
 .song-item {
@@ -65,7 +63,7 @@
     bottom: 10px;
     font-size: 36px;
     color: rgba(0, 0, 0, 0.12);
-    -unity-font-definition: resource('Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF');
+    -unity-font-definition: resource("Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF");
     text-overflow: ellipsis;
     -unity-font-style: bold;
     align-items: stretch;

@@ -38,11 +38,11 @@
             <ui:VisualElement name="stats-container" class="stats-container">
                 <ui:VisualElement name="vertical-header"
                                   style="flex-grow: 1; position: absolute; top: 34px; bottom: 0; left: 179px; width: 50px;">
-                    <ui:Label text="Total&#10;" name="label" class="stats-vertical-label header"/>
+                    <ui:Label text="Total" name="label" class="stats-vertical-label header"/>
                     <ui:Label text="Tap" name="label" class="stats-vertical-label header"/>
                     <ui:Label text="Hold" name="label" class="stats-vertical-label header"/>
-                    <ui:Label text="Slide&#10;" name="label" class="stats-vertical-label header"/>
-                    <ui:Label text="Break&#10;" name="label" class="stats-vertical-label header"/>
+                    <ui:Label text="Slide" name="label" class="stats-vertical-label header"/>
+                    <ui:Label text="Break" name="label" class="stats-vertical-label header"/>
                 </ui:VisualElement>
                 <ui:VisualElement name="horizontal-header"
                                   style="flex-grow: 1; position: absolute; top: 5px; bottom: 119px; left: 148px; width: 427px; flex-direction: row-reverse;">

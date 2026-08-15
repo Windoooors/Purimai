@@ -21774,7 +21774,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea0cabfc59f74fddb35ad9d20a16077e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.NoteEffects.TapJudgeDisplayHandler
-  duration: 1
+  duration: 1.14
 --- !u!1 &791669032
 GameObject:
   m_ObjectHideFlags: 0
@@ -26159,7 +26159,6 @@ GameObject:
   - component: {fileID: 1054234685}
   - component: {fileID: 1054234686}
   - component: {fileID: 1054234688}
-  - component: {fileID: 1054234687}
   m_Layer: 0
   m_Name: Game Manager
   m_TagString: Untagged
@@ -26655,28 +26654,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb821d764d6346b292a6cb43c5cb6743, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Notes.JudgeManager
---- !u!95 &1054234687
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1054234679}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 359020eb16aed4f60b18818430b80203, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &1054234688
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26689,10 +26666,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72dd9a73d31d41a5828e5785b59af4af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.NoteEffectPhasingManager
-  holdGlowingPhase: 0
-  holdNormalPhase: 0
-  breakSlideGlowingPhase: 0
-  tapBreakGlowingPhase: 0
+  HoldGlowingPhase: 0
+  HoldNormalPhase: 0
+  BreakSlideGlowingPhase: 0
+  TapBreakGlowingPhase: 0
 --- !u!1 &1057359747
 GameObject:
   m_ObjectHideFlags: 0

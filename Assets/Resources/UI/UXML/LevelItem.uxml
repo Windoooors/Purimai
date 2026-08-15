@@ -3,7 +3,7 @@
     <ui:VisualElement name="song-item" class="item-background song-item">
         <ui:Label text="Song Title Song Title Song Title Song Title Song Title" name="song-title-watermark"
                   class="watermark"
-                  style="bottom: 12px; right: 110px; left: 20px; -unity-font-style: bold; -unity-font-definition: resource(&quot;Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF&quot;);"/>
+                  style="bottom: 12px; right: 110px; left: 20px; -unity-font-style: bold; -unity-font-definition: resource(&quot;Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF&quot;); color: rgba(0, 0, 0, 0); display: none;"/>
         <ui:VisualElement name="song-cover" class="cover"/>
         <ui:VisualElement name="information" class="information">
             <ui:Label text="ANU" name="song-title" enable-rich-text="true" emoji-fallback-support="true"

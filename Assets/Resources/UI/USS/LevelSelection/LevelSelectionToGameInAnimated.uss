@@ -5,7 +5,7 @@
 }
 
 .song-cover-parent {
-    right: -300px;
+    opacity: 0;
     transition: all ease-in-cubic 0.5s;
 }
 

@@ -106,7 +106,7 @@ namespace Game.Notes.TapBasedNotes
         protected override void LateStart()
         {
             if (isBreak)
-                _breakTapMaterialPropertyBlock ??= new MaterialPropertyBlock();
+                _breakTapMaterialPropertyBlock = new MaterialPropertyBlock();
 
             transform.position = Vector3.zero;
             tapTransform.localScale = Vector3.zero;
@@ -139,7 +139,7 @@ namespace Game.Notes.TapBasedNotes
         private void UpdateBreakGlowingEffect()
         {
             _breakTapMaterialPropertyBlock.SetFloat("_Intensity",
-                NoteEffectPhasingManager.Instance.tapBreakGlowingPhase);
+                NoteEffectPhasingManager.Instance.TapBreakGlowingPhase);
 
             tapSpriteRenderer.SetPropertyBlock(_breakTapMaterialPropertyBlock);
         }

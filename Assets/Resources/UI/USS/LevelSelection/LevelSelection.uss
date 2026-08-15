@@ -35,9 +35,11 @@
 .song-cover-parent {
     flex-grow: 1;
     position: absolute;
+    opacity: 100%;
     right: 0;
-    width: 600px;
-    height: 600px;
+    left: 0;
+    top: 0;
+    bottom: 0;
 }
 
 .song-cover-right-gradient {

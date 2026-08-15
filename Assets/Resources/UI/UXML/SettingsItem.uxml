@@ -9,6 +9,6 @@
                   style="position: absolute; top: 36px; left: 7px; -unity-font-definition: resource(&quot;Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF&quot;); color: rgba(27, 27, 27, 0.53); font-size: 14px; min-width: 200px; flex-wrap: wrap; max-width: 200px; height: 36px; white-space: normal; text-overflow: ellipsis;"/>
         <ui:Label text="Settings Item Name" enable-rich-text="true" picking-mode="Ignore" parse-escape-sequences="false"
                   name="item-name-watermark"
-                  style="position: absolute; top: 10px; left: 6px; -unity-font-definition: resource(&quot;Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF&quot;); font-size: 36px; -unity-font-style: bold; color: rgba(27, 27, 27, 0.122);"/>
+                  style="position: absolute; top: 10px; left: 6px; -unity-font-definition: resource(&quot;Fonts/LibreBaskerville/LibreBaskerville-Regular-2 SDF&quot;); font-size: 36px; -unity-font-style: bold; color: rgba(27, 27, 27, 0); display: none;"/>
     </ui:VisualElement>
 </ui:UXML>

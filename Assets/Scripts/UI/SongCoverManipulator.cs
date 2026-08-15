@@ -49,18 +49,23 @@ namespace UI
 
         private void UpdatePosition(GeometryChangedEvent evt)
         {
+            UpdatePositionCore();
+        }
+
+        public void UpdatePositionCore()
+        {
             switch (_mode)
             {
                 case SongCoverLayoutPopulationMode.FixedHeight:
-                    FixedHeight(evt);
+                    FixedHeight();
                     break;
                 case SongCoverLayoutPopulationMode.MinimalLeft:
-                    MinimalLeft(evt);
+                    MinimalLeft();
                     break;
             }
         }
 
-        private void MinimalLeft(GeometryChangedEvent evt)
+        private void MinimalLeft()
         {
             var width = _cover.layout.width;
             var freeWidth = UIManager.Instance.RootElement.layout.width - _cover.layout.xMin +
@@ -77,7 +82,7 @@ namespace UI
             }
         }
 
-        private void FixedHeight(GeometryChangedEvent evt)
+        private void FixedHeight()
         {
             var width = _cover.layout.width;
             var originalHeight = _cover.layout.height;

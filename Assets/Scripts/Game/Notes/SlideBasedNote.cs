@@ -59,7 +59,7 @@ namespace Game.Notes
             int noteTiming,
             ref int slideArrowOrder)
         {
-            if (isSlideBreak) _glowingMaterialPropertyBlock ??= new MaterialPropertyBlock();
+            if (isSlideBreak) _glowingMaterialPropertyBlock = new MaterialPropertyBlock();
 
             _starMaterialPropertyBlock = new MaterialPropertyBlock();
             _slideTransform = new SlideTransform();
@@ -266,7 +266,7 @@ namespace Game.Notes
         private void UpdateBreakSlideGlowingEffect()
         {
             _glowingMaterialPropertyBlock.SetFloat("_Intensity",
-                NoteEffectPhasingManager.Instance.breakSlideGlowingPhase);
+                NoteEffectPhasingManager.Instance.BreakSlideGlowingPhase);
 
             GetArrowSpriteRenderers().ForEach(x => x.SetPropertyBlock(_glowingMaterialPropertyBlock));
         }

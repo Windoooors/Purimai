@@ -14,6 +14,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.TextCore.Text;
 using UnityEngine.UIElements;
+using Logger = Logging.Logger;
 
 namespace UI
 {
@@ -218,6 +219,8 @@ namespace UI
                     panelRenderer.panelSettings.referenceResolution = landscapeReferenceResolution;
                     break;
             }
+
+            ApplySafeArea();
         }
 
         public void UpdateTMPAtlas(char[] characters)
@@ -239,7 +242,7 @@ namespace UI
             }
             catch (ArgumentException)
             {
-                Debug.LogWarning("批量添加字体出现冲突，降级为逐字添加模式...");
+                Logger.LogError("Batched glyph update failed.");
 
                 foreach (var c in toAdd)
                     try

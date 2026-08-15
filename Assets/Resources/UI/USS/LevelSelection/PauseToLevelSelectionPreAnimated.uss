@@ -10,7 +10,7 @@
 }
 
 .song-cover-parent {
-    right: -300px;
+    opacity: 0;
 }
 
 .score-content-panel {
