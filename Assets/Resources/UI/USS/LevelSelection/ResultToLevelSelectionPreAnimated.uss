@@ -1,10 +1,16 @@
 .list-parent {
     flex-grow: 1;
     top: 0;
-    left: -700px;
+    opacity: 0;
     right: auto;
     width: 600px;
     bottom: 0;
     overflow: visible;
     position: absolute;
+}
+
+.song-cover-parent {
+    opacity: 0;
+    scale: 1.5;
+    transition: all ease-in-cubic 0.5s;
 }

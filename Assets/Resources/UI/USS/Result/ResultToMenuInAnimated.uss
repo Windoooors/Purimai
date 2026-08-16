@@ -21,8 +21,6 @@
 .song-item-container {
     opacity: 1;
     display: flex;
-    top: 241px;
-    left: -151px;
 }
 
 .score-content-panel {
@@ -39,7 +37,7 @@
 }
 
 .song-item-container * {
-    opacity: 1;
+    opacity: 0;
     display: flex;
 }
 

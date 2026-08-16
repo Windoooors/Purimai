@@ -22,7 +22,6 @@ namespace Game.Notes
         private Animator _judgeDisplayAnimator;
         private JudgeState _judgeState;
 
-        private bool _launchSoundPlayed;
         private JudgeManager.JudgeAction _leaveJudgeAction;
 
         private int _showJudgeDisplayTiming = -1;
@@ -292,12 +291,6 @@ namespace Game.Notes
 
             _starMaterialPropertyBlock.SetTexture("_MainTex", _starTexture);
 
-            if (_slideTransform.StarPosition > 0.002 && !_launchSoundPlayed)
-            {
-                _launchSoundPlayed = true;
-                PlayLaunchSound();
-            }
-
             foreach (var star in Stars)
             {
                 star.Move(_slideTransform.StarPosition);
@@ -378,15 +371,13 @@ namespace Game.Notes
             _judgeDisplayAnimator.SetTrigger("ShowJudgeDisplay");
         }
 
-        protected void PlayLaunchSound()
-        {
-            if (IsBreak)
-                SfxManager.Instance.PlayBreakSlideLaunchingSound();
-        }
 
         protected void PlaySlideSound()
         {
-            SfxManager.Instance.PlaySlideSound();
+            if (IsBreak)
+                SfxManager.Instance.PlayBreakSlideLaunchingSound();
+            else
+                SfxManager.Instance.PlaySlideSound();
         }
 
         protected void PlayJudgeSound()

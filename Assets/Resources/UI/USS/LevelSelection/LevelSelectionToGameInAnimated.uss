@@ -1,11 +1,12 @@
 .list-parent {
-    left: -700px;
+    opacity: 0;
     transition: all ease-in-cubic 0.5s;
     position: absolute;
 }
 
 .song-cover-parent {
     opacity: 0;
+    scale: 1.5;
     transition: all ease-in-cubic 0.5s;
 }
 
@@ -16,7 +17,7 @@
 }
 
 .play-button {
-    right: -454px;
+    opacity: 0;
     transition-property: right, scale, opacity;
     transition-duration: 0.5s, 0.2s, 0.2s;
     transition-timing-function: ease-in-cubic, ease, ease;
@@ -30,6 +31,6 @@
 }
 
 .score-content-panel {
-    right: -400px;
+    opacity: 0;
     transition: all ease-in-cubic 0.5s;
 }

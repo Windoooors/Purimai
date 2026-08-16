@@ -254,6 +254,11 @@ namespace UI.Result
             var songTitleWaterMark = element.Q<VisualElement>("song-item").Q<Label>("song-title-watermark");
             var songTitleLabel = informationElement.Q<Label>("song-title");
 
+            var cover = element.Q<VisualElement>("song-cover");
+            cover.style.backgroundImage = _maidata.SongCoverDecodedImage.GetTexture2D();
+            cover.style.unityBackgroundImageTintColor = Color.white;
+            cover.style.backgroundColor = Color.white;
+
             songTitleLabel.text = _maidata.Title;
 
             songTitleWaterMark.text =
